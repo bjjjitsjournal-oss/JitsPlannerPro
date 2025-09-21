@@ -1,0 +1,14 @@
+{
+  "name": "jits-journal",
+  "version": "1.0.0",
+  "description": "BJJ Training Companion",
+  "main": "index.js",
+  "scripts": {
+    "android": "cd android && ./gradlew assembleDebug",
+    "android-release": "cd android && ./gradlew assembleRelease",
+    "bundle": "cd android && ./gradlew bundleRelease"
+  },
+  "keywords": ["bjj", "martial-arts", "training"],
+  "author": "Jits Journal Team",
+  "license": "MIT"
+}

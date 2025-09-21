@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Working Email Test",
+    "email": "workingtest@example.com",
+    "subject": "Gmail SMTP Success Test",
+    "message": "This should now work correctly with Gmail SMTP forwarding from bjjjitsjournal@gmail.com to joe833360@gmail.com!",
+    "timestamp": "2025-07-07T06:07:50.601Z",
+    "userAgent": "curl/8.7.1",
+    "ip": "127.0.0.1"
+  },
+  {
+    "name": "Final Working Test",
+    "email": "finalworkingtest@example.com",
+    "subject": "Success - Gmail SMTP Working",
+    "message": "This email should now be successfully sent from bjjjitsjournal@gmail.com to joe833360@gmail.com using Gmail SMTP!",
+    "timestamp": "2025-07-07T06:08:01.215Z",
+    "userAgent": "curl/8.7.1",
+    "ip": "127.0.0.1"
+  },
+  {
+    "name": "Nodemailer Fixed Test",
+    "email": "nodemailertest@example.com",
+    "subject": "Nodemailer Import Fixed",
+    "message": "Testing the corrected nodemailer import with proper namespace import syntax.",
+    "timestamp": "2025-07-07T06:08:12.035Z",
+    "userAgent": "curl/8.7.1",
+    "ip": "127.0.0.1"
+  },
+  {
+    "name": "Website Test User",
+    "email": "websitetest@example.com",
+    "subject": "End-to-End Website Test",
+    "message": "This is a test message submitted through the website contact form to verify the complete end-to-end functionality is working perfectly from the user interface to the backend logging system.",
+    "timestamp": "2025-07-07T06:21:25.888Z",
+    "userAgent": "curl/8.7.1",
+    "ip": "127.0.0.1"
+  },
+  {
+    "name": "Gh Hdj",
+    "email": "smjsusu@gmail.com",
+    "subject": "Hello",
+    "message": "Test 123456789",
+    "timestamp": "2025-07-07T06:23:29.584Z",
+    "userAgent": "Mozilla/5.0 (Linux; Android 15; SM-S938B Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/137.0.7151.115 Mobile Safari/537.36 Replit-Bonsai/2.140.7 (samsung/pa3qxxx/pa3q:15/AP3A.240905.015.A2/S938BXXU2AYD9_OXM2AYD9:user/release-keys 15)",
+    "ip": "172.31.128.48"
+  }
+]

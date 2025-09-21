@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "test@example.com",
+      "password": "$2b$10$cGLtfzIPGxp7qf6hozmi2.6r/vIbBhVHF18mOf5zgbgC31SEPYIX.",
+      "firstName": "Test",
+      "lastName": "User",
+      "revenueCatCustomerId": null,
+      "subscriptionExpiresAt": null,
+      "createdAt": "2025-09-16T07:27:51.004Z"
+    },
+    {
+      "id": 2,
+      "email": "Joe@cleancutconstructions.com.au",
+      "password": "$2b$10$ihRRi/Ak9zcb41UxdQL8Du12EiW9q7mjPOaumQ07CxnLGg7bAcJ.i",
+      "firstName": "Joe",
+      "lastName": "Clean Cut",
+      "subscriptionStatus": "premium",
+      "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
+      "createdAt": "2025-09-16T07:27:51.004Z"
+    },
+    {
+      "id": 3,
+      "email": "test@example.com",
+      "password": "$2b$10$1kX3uIgjii5hj116T62/weua2DYh15oWhlludOETIzBcAy2rXiFl.",
+      "firstName": "Test",
+      "lastName": "User",
+      "revenueCatCustomerId": null,
+      "subscriptionExpiresAt": null,
+      "createdAt": "2025-09-16T07:59:26.628Z"
+    },
+    {
+      "id": 4,
+      "email": "Joe@cleancutconstructions.com.au",
+      "password": "$2b$10$uarYq3x.PQGD91LC9qndUuwuIuPd81fvv575QUtxtpZaDlwQV5Diq",
+      "firstName": "Joe",
+      "lastName": "Clean Cut",
+      "subscriptionStatus": "premium",
+      "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
+      "createdAt": "2025-09-16T07:59:26.628Z"
+    }
+  ],
+  "classes": [],
+  "notes": [],
+  "videos": [],
+  "drawings": [],
+  "belts": [],
+  "trainingVideos": [],
+  "passwordResetTokens": [],
+  "noteLikes": [],
+  "weeklyCommitments": [],
+  "nextId": 5,
+  "currentCommitmentId": 1,
+  "timestamp": "2025-09-16T08:53:54.965Z"
+}

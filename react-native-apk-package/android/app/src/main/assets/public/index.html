@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jits Journal - BJJ Training Companion</title>
+    <meta name="description" content="Track your Brazilian Jiu-Jitsu training progress with Jits Journal. Log classes, manage notes, track belt progression, and connect with training partners.">
+    
+    <!-- App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/public/icon-192x192.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/public/manifest.json">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Mobile Optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <!-- Capacitor -->
+    <script type="module" src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 400px;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(45deg, #1e40af, #dc2626);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        h1 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        
+        .tagline {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e40af;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem 0;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .features {
+            text-align: left;
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: #1e40af;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">JJ</div>
+        <h1>Jits Journal</h1>
+        <p class="tagline">Your BJJ Training Companion</p>
+        
+        <div class="loading"></div>
+        <p>Loading your training dashboard...</p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📚</div>
+                <div>
+                    <strong>Class Tracking</strong><br>
+                    <small>Log your training sessions and progress</small>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🥋</div>
+                <div>
+                    <strong>Belt Progress</strong><br>
+                    <small>Track your belt and stripe promotions</small>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <div>
+                    <strong>Training Notes</strong><br>
+                    <small>Record techniques and insights</small>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <div>
+                    <strong>Weekly Goals</strong><br>
+                    <small>Set and achieve training targets</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // App initialization
+        console.log('Jits Journal initializing...');
+        
+        // Simulate loading
+        setTimeout(() => {
+            document.querySelector('.loading').style.display = 'none';
+            document.querySelector('p').textContent = 'Ready to train!';
+        }, 2000);
+        
+        // Initialize Capacitor
+        if (window.Capacitor) {
+            console.log('Capacitor initialized');
+        }
+    </script>
+</body>
+</html>
