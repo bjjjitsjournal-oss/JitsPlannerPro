@@ -4,12 +4,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, profiles } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema } from "@shared/schema";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
-import { getSupabaseUserIdForLocal } from "./supabaseService";
 
 import * as nodemailer from "nodemailer";
 import fs from "fs";
@@ -607,19 +606,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
-      // Get Supabase user ID for this local user
-      const supabaseUserId = await getSupabaseUserIdForLocal(userId);
-      
-      if (!supabaseUserId) {
-        console.error("Failed to get Supabase user ID for local user:", userId);
-        return res.status(500).json({ message: "Failed to fetch notes - user setup error" });
-      }
-      
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, supabaseUserId);
+        notes = await storage.searchNotes(search as string, userId);
       } else {
-        notes = await storage.getNotes(supabaseUserId);
+        notes = await storage.getNotes(userId);
       }
       
       res.json(notes);
@@ -633,23 +624,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // This is an integer
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Get or create Supabase user ID for this local user
-      const supabaseUserId = await getSupabaseUserIdForLocal(userId);
-      
-      if (!supabaseUserId) {
-        console.error("Failed to get/create Supabase user ID for local user:", userId);
-        return res.status(500).json({ message: "Failed to create note - user setup error" });
-      }
-      
-      console.log("Using Supabase user ID:", supabaseUserId);
-      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: supabaseUserId, // Use real Supabase UUID
+        userId: userId, // Use integer userId
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
