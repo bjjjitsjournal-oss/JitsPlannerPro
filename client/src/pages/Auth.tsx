@@ -112,10 +112,16 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   });
 
   const handleLogin = (data: LoginFormData) => {
-    console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
+    console.log('🔥 LOGIN DEBUG: Form submitted with:', { email: data.email, hasPassword: !!data.password, data });
+    console.log('🔥 LOGIN DEBUG: About to call loginMutation.mutate');
     // Use the form's rememberMe value if provided, otherwise fall back to state
     setRememberMe(data.rememberMe ?? rememberMe);
-    loginMutation.mutate(data);
+    try {
+      loginMutation.mutate(data);
+      console.log('🔥 LOGIN DEBUG: loginMutation.mutate called successfully');
+    } catch (error) {
+      console.error('🔥 LOGIN DEBUG: Error calling loginMutation.mutate:', error);
+    }
   };
 
   const handleRegister = (data: RegisterFormData) => {
