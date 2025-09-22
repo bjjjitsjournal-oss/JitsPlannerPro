@@ -61,10 +61,11 @@ export interface IStorage {
   deleteBelt(id: number): Promise<boolean>;
 
   // Statistics
-  getClassStats(): Promise<{
-    weeklyClasses: number;
-    totalHours: number;
-    monthlyClasses: number;
+  getClassStats(userId?: number): Promise<{
+    totalClasses: number;
+    lastPromotionDate?: string;
+    currentBelt?: string;
+    currentStripes?: number;
   }>;
 
   // Weekly Commitments
@@ -512,6 +513,7 @@ class MemStoragePrimary implements IStorage {
         password: hashedPassword,
         firstName: 'Test',
         lastName: 'User',
+        subscriptionStatus: 'free',
         subscriptionExpiresAt: null,
         createdAt: new Date(),
       };
@@ -659,6 +661,10 @@ class MemStoragePrimary implements IStorage {
       ...classData, 
       trainingPartners: classData.trainingPartners || null,
       techniquesFocused: classData.techniquesFocused || null,
+      rollingPartners: classData.rollingPartners || null,
+      yourSubmissions: classData.yourSubmissions || 0,
+      partnerSubmissions: classData.partnerSubmissions || 0,
+      cardioRating: classData.cardioRating || null,
       userId: classData.userId || null,
       createdAt: new Date() 
     };
@@ -684,14 +690,14 @@ class MemStoragePrimary implements IStorage {
   async getVideosByCategory(category: string, userId?: number): Promise<Video[]> { return this.videos.filter(v => v.category === category); }
   async searchVideos(query: string, userId?: number): Promise<Video[]> { return this.videos.filter(v => v.title.includes(query)); }
   async createVideo(videoData: InsertVideo): Promise<Video> {
-    const video: Video = { id: this.nextId++, ...videoData, createdAt: new Date(), updatedAt: new Date() };
+    const video: Video = { id: this.nextId++, ...videoData, createdAt: new Date() };
     this.videos.push(video);
     return video;
   }
   async updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined> {
     const index = this.videos.findIndex(v => v.id === id);
     if (index === -1) return undefined;
-    this.videos[index] = { ...this.videos[index], ...videoData, updatedAt: new Date() };
+    this.videos[index] = { ...this.videos[index], ...videoData };
     return this.videos[index];
   }
   async deleteVideo(id: number): Promise<boolean> {
@@ -711,7 +717,7 @@ class MemStoragePrimary implements IStorage {
     return userId ? filtered.filter(n => n.userId === userId) : filtered;
   }
   async createNote(noteData: InsertNote): Promise<Note> {
-    const note: Note = { id: this.nextId++, ...noteData, createdAt: new Date(), updatedAt: new Date() };
+    const note: Note = { id: this.nextId++, ...noteData, userId: noteData.userId || null, createdAt: new Date(), updatedAt: new Date() };
     this.notes.push(note);
     return note;
   }
@@ -731,11 +737,11 @@ class MemStoragePrimary implements IStorage {
 
   // Other methods - minimal implementations
   async getDrawings(userId?: number): Promise<Drawing[]> { 
-    return userId ? this.drawings.filter(d => d.userId === userId) : this.drawings; 
+    return this.drawings; 
   }
   async getDrawing(id: number): Promise<Drawing | undefined> { return this.drawings.find(d => d.id === id); }
   async createDrawing(drawingData: InsertDrawing): Promise<Drawing> {
-    const drawing: Drawing = { id: this.nextId++, ...drawingData, createdAt: new Date() };
+    const drawing: Drawing = { id: this.nextId++, ...drawingData, linkedClassId: drawingData.linkedClassId || null, linkedNoteId: drawingData.linkedNoteId || null, createdAt: new Date() };
     this.drawings.push(drawing);
     return drawing;
   }
