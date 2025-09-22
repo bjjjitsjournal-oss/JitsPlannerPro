@@ -637,8 +637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userUuid = generateUserUuid(userId);
       console.log("Creating note with data:", req.body);
       
-      // Ensure profile exists in profiles table before creating note
-      await ensureProfileExists(userUuid);
+      // Skip profile creation - test if notes work without it
       
       const noteData = {
         title: req.body.title,
