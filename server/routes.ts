@@ -19,11 +19,6 @@ import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
 
-// Helper function to generate deterministic UUID from integer userId
-function generateUserUuid(userId: number): string {
-  const hash = crypto.createHash('sha256').update(`user-${userId}`).digest('hex');
-  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
-}
 
 
 
@@ -605,16 +600,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Generate deterministic UUID for database
-      const userUuid = generateUserUuid(userId);
-      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use UUID generated from integer user ID
+        userId: userId, // Use integer user ID directly
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
