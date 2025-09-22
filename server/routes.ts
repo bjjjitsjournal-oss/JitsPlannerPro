@@ -600,7 +600,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Notes routes - using appNotes table with integer user IDs
+  // Notes routes - using existing notes table with UUID mapping
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
@@ -624,13 +624,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
       
+      // Generate deterministic UUID for database
+      const userUuid = generateUserUuid(userId);
+      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userId, // Use integer user ID directly
+        userId: userUuid, // Use mapped UUID for database
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
