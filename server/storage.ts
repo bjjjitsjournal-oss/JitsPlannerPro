@@ -474,6 +474,15 @@ export class DatabaseStorage implements IStorage {
       currentStripes: currentBelt?.stripes
     };
   }
+
+  async getCurrentBelt(userId?: number): Promise<Belt | undefined> {
+    if (userId) {
+      const userBelts = await this.getBelts(userId);
+      return userBelts[0]; // Most recent belt
+    }
+    const allBelts = await this.getBelts();
+    return allBelts[0];
+  }
 }
 
 // Using in-memory storage as primary storage (database endpoint disabled)
@@ -484,7 +493,7 @@ class MemStoragePrimary implements IStorage {
   private notes: Note[] = [];
   private drawings: Drawing[] = [];
   private belts: Belt[] = [];
-  private weeklyCommitments = new Map<number, WeeklyCommitment>();
+  private weeklyCommitments: WeeklyCommitment[] = [];
   private trainingVideos: TrainingVideo[] = [];
   private passwordResetTokens: PasswordResetToken[] = [];
   private noteLikes: NoteLike[] = [];
@@ -562,7 +571,7 @@ class MemStoragePrimary implements IStorage {
         trainingVideos: this.trainingVideos,
         passwordResetTokens: this.passwordResetTokens,
         noteLikes: this.noteLikes,
-        weeklyCommitments: Array.from(this.weeklyCommitments.entries()),
+        weeklyCommitments: this.weeklyCommitments,
         nextId: this.nextId,
         currentCommitmentId: this.currentCommitmentId,
         timestamp: new Date().toISOString()
@@ -600,15 +609,13 @@ class MemStoragePrimary implements IStorage {
       this.nextId = backupData.nextId || 1;
       this.currentCommitmentId = backupData.currentCommitmentId || 1;
       
-      // Restore weekly commitments Map
-      if (backupData.weeklyCommitments) {
-        this.weeklyCommitments = new Map(backupData.weeklyCommitments);
-      }
+      // Restore weekly commitments array
+      this.weeklyCommitments = backupData.weeklyCommitments || [];
       
       console.log('✅ Data restored from backup:', backupData.timestamp);
       console.log(`📊 Restored: ${this.users.length} users, ${this.classes.length} classes, ${this.notes.length} notes`);
     } catch (error) {
-      console.log('📝 No backup found or failed to restore, starting fresh:', error.message);
+      console.log('📝 No backup found or failed to restore, starting fresh:', error instanceof Error ? error.message : String(error));
     }
   }
 
@@ -690,7 +697,7 @@ class MemStoragePrimary implements IStorage {
   async getVideosByCategory(category: string, userId?: number): Promise<Video[]> { return this.videos.filter(v => v.category === category); }
   async searchVideos(query: string, userId?: number): Promise<Video[]> { return this.videos.filter(v => v.title.includes(query)); }
   async createVideo(videoData: InsertVideo): Promise<Video> {
-    const video: Video = { id: this.nextId++, ...videoData, createdAt: new Date() };
+    const video: Video = { id: this.nextId++, ...videoData, duration: videoData.duration || null, description: videoData.description || null, tags: videoData.tags || null, isFavorite: videoData.isFavorite || null, thumbnailUrl: videoData.thumbnailUrl || null, createdAt: new Date() };
     this.videos.push(video);
     return video;
   }
@@ -717,7 +724,7 @@ class MemStoragePrimary implements IStorage {
     return userId ? filtered.filter(n => n.userId === userId) : filtered;
   }
   async createNote(noteData: InsertNote): Promise<Note> {
-    const note: Note = { id: this.nextId++, ...noteData, userId: noteData.userId || null, createdAt: new Date(), updatedAt: new Date() };
+    const note: Note = { id: this.nextId++, ...noteData, userId: noteData.userId || null, tags: noteData.tags || null, linkedClassId: noteData.linkedClassId || null, linkedVideoId: noteData.linkedVideoId || null, isShared: noteData.isShared || null, sharedWithUsers: noteData.sharedWithUsers || null, videoUrl: noteData.videoUrl || null, videoFileName: noteData.videoFileName || null, videoThumbnail: noteData.videoThumbnail || null, createdAt: new Date(), updatedAt: new Date() };
     this.notes.push(note);
     return note;
   }
@@ -761,7 +768,7 @@ class MemStoragePrimary implements IStorage {
   async getBelts(userId: number): Promise<Belt[]> { return this.belts.filter(b => b.userId === userId); }
   async getCurrentBelt(userId: number): Promise<Belt | undefined> { return this.belts.filter(b => b.userId === userId).sort((a, b) => b.promotionDate.getTime() - a.promotionDate.getTime())[0]; }
   async createBelt(beltData: InsertBelt): Promise<Belt> {
-    const belt: Belt = { id: this.nextId++, ...beltData, createdAt: new Date() };
+    const belt: Belt = { id: this.nextId++, ...beltData, instructor: beltData.instructor || null, notes: beltData.notes || null, userId: beltData.userId || null, stripes: beltData.stripes || 0, createdAt: new Date() };
     this.belts.push(belt);
     return belt;
   }
@@ -779,7 +786,7 @@ class MemStoragePrimary implements IStorage {
   }
 
   async getWeeklyCommitments(userId: number): Promise<WeeklyCommitment[]> { return this.weeklyCommitments.filter(w => w.userId === userId); }
-  async getCurrentWeeklyCommitment(userId: number): Promise<WeeklyCommitment | undefined> { return this.weeklyCommitments.find(w => w.userId === userId && w.isActive); }
+  async getCurrentWeeklyCommitment(userId: number): Promise<WeeklyCommitment | undefined> { return this.weeklyCommitments.find(w => w.userId === userId && w.isCompleted === 0); }
   // createWeeklyCommitment moved to proper Map-based implementation below (MemStoragePrimary class)
   async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
     const index = this.weeklyCommitments.findIndex(w => w.id === id);
@@ -796,7 +803,7 @@ class MemStoragePrimary implements IStorage {
 
   async getTrainingVideos(): Promise<TrainingVideo[]> { return this.trainingVideos; }
   async createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo> {
-    const video: TrainingVideo = { id: this.nextId++, ...videoData, createdAt: new Date() };
+    const video: TrainingVideo = { id: this.nextId++, ...videoData, duration: videoData.duration || null, description: videoData.description || null, thumbnailUrl: videoData.thumbnailUrl || null, tags: videoData.tags || null, category: videoData.category || null, views: videoData.views || null, likes: videoData.likes || null, isPublic: videoData.isPublic || null, createdAt: new Date() };
     this.trainingVideos.push(video);
     return video;
   }
@@ -850,7 +857,7 @@ class MemStoragePrimary implements IStorage {
       userId,
       token,
       expiresAt,
-      isUsed: false,
+      used: 0,
       createdAt: new Date()
     };
     this.passwordResetTokens.push(resetToken);
@@ -861,7 +868,7 @@ class MemStoragePrimary implements IStorage {
   private currentCommitmentId = 1;
 
   async getWeeklyCommitments(userId?: number): Promise<WeeklyCommitment[]> {
-    const commitments = Array.from(this.weeklyCommitments.values());
+    const commitments = this.weeklyCommitments;
     if (userId) {
       return commitments.filter(c => c.userId === userId);
     }
@@ -874,7 +881,7 @@ class MemStoragePrimary implements IStorage {
     weekStart.setUTCHours(0, 0, 0, 0);
     const targetWeekString = weekStart.toISOString();
 
-    const commitments = Array.from(this.weeklyCommitments.values());
+    const commitments = this.weeklyCommitments;
     
     console.log(`🔍 getCurrentWeeklyCommitment: Looking for week ${targetWeekString} userId: ${userId}`);
     console.log(`📊 Storage has ${commitments.length} total commitments`);
@@ -898,11 +905,11 @@ class MemStoragePrimary implements IStorage {
       updatedAt: new Date(),
     };
     
-    this.weeklyCommitments.set(newCommitment.id, newCommitment);
+    this.weeklyCommitments.push(newCommitment);
     this.saveWeeklyCommitmentsBackup(); // Backup to prevent data loss
     
     console.log('✅ CREATED: Commitment ID', newCommitment.id);
-    console.log(`📊 Total storage: ${this.weeklyCommitments.size} commitments`);
+    console.log(`📊 Total storage: ${this.weeklyCommitments.length} commitments`);
     
     return newCommitment;
   }
