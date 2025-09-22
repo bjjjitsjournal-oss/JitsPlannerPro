@@ -1,0 +1,116 @@
+
+2025-09-22 14:53:50.71
+03d48a57
+User
+at afterConnectMultiple (node:net:1682:16) {
+2025-09-22 14:58:48.19
+03d48a57
+User
+routine: undefined
+2025-09-22 14:58:48.19
+03d48a57
+User
+}
+2025-09-22 14:58:48.19
+03d48a57
+User
+4:58:48 AM [express] POST /api/auth/login 500 in 1165ms :: {"message":"Failed to login"}
+2025-09-22 14:59:58.22
+03d48a57
+User
+Login error: error: password authentication failed for user "postgres"
+2025-09-22 14:59:58.22
+03d48a57
+User
+at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+2025-09-22 14:59:58.22
+03d48a57
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-09-22 14:59:58.22
+03d48a57
+User
+at async file:///home/runner/workspace/node_modules/drizzle-orm/node-postgres/session.js:83:22
+2025-09-22 14:59:58.22
+03d48a57
+User
+at async DatabaseStorage.getUserByEmail (file:///home/runner/workspace/dist/index.js:285:20)
+2025-09-22 14:59:58.22
+03d48a57
+User
+at async file:///home/runner/workspace/dist/index.js:1068:20 {
+2025-09-22 14:59:58.22
+03d48a57
+User
+length: 78,
+2025-09-22 14:59:58.22
+03d48a57
+User
+severity: 'FATAL',
+2025-09-22 14:59:58.22
+03d48a57
+User
+code: '28P01',
+2025-09-22 14:59:58.22
+03d48a57
+User
+detail: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+hint: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+position: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+internalPosition: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+internalQuery: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+where: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+schema: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+table: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+column: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+dataType: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+constraint: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+file: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+line: undefined,
+2025-09-22 14:59:58.22
+03d48a57
+User
+routine: undefined
+2025-09-22 14:59:58.22
+03d48a57
+User
+}
+2025-09-22 14:59:58.22
+03d48a57
+User
