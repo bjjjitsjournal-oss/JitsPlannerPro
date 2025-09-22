@@ -1103,5 +1103,5 @@ class MemStoragePrimary implements IStorage {
 
 // Using Supabase database for persistent data storage
 // All data will be stored permanently in Supabase PostgreSQL database
-export const storage = new DatabaseStorage();
+export const storage = new MemStoragePrimary(); // Using memory storage for now due to database issues
 
