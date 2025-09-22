@@ -615,14 +615,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notes routes
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, generateUserUuid(userId));
+        notes = await storage.searchNotes(search as string, userId);
       } else {
-        notes = await storage.getNotes(generateUserUuid(userId));
+        notes = await storage.getNotes(userId);
       }
       
       res.json(notes);
@@ -633,11 +633,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notes", authenticateToken, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
-      const userUuid = generateUserUuid(userId);
-      console.log("Creating note with data:", req.body);
-      
-      // Skip profile creation - test if notes work without it
+      const userId = (req as any).user.userId; // This is an integer
+      console.log("Creating note with data:", req.body, "for user:", userId);
       
       const noteData = {
         title: req.body.title,
@@ -645,7 +642,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use the UUID format for database
+        userId: userId, // Use integer directly
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
