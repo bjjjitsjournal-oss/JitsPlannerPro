@@ -3,9 +3,21 @@
 export const registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker registered:', registration.scope);
-      return registration;
+      // CRITICAL: Only register service worker in production to prevent caching issues
+      if (import.meta.env.PROD) {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker registered:', registration.scope);
+        return registration;
+      } else {
+        console.log('🚫 Service Worker disabled in development to prevent login caching issues');
+        // In development, unregister any existing service workers
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+          console.log('🗑️ Unregistered existing service worker');
+        }
+        return null;
+      }
     } catch (error) {
       console.error('Service Worker registration failed:', error);
       throw error;

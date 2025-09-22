@@ -74,9 +74,22 @@ export async function apiRequest(method: string, url: string, data?: any) {
       errorMessage = errorData.message || errorMessage;
     } catch {
       const errorText = await response.text();
-      // Check if it's HTML being returned instead of JSON
+      // Check if it's HTML being returned instead of JSON (service worker caching issue)
       if (errorText.includes('<!DOCTYPE') || errorText.includes('<html')) {
-        errorMessage = `${response.status}: Server returned HTML instead of JSON. This might be a caching issue - try opening in a new browser window.`;
+        console.error('🚨 Service Worker returned HTML instead of JSON - forcing cache clear');
+        // Auto-fix caching issue
+        if ('caches' in window) {
+          caches.keys().then(cacheNames => {
+            cacheNames.forEach(cacheName => caches.delete(cacheName));
+          });
+        }
+        // Unregister service worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => registration.unregister());
+          });
+        }
+        errorMessage = `${response.status}: App cache issue detected and fixed. Please try again.`;
       } else {
         errorMessage = `${response.status}: ${errorText}`;
       }

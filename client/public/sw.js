@@ -58,39 +58,43 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Handle API requests
+  // Handle API requests - NEVER cache authentication or user-specific data
   if (url.pathname.startsWith('/api/')) {
+    // CRITICAL: Never cache authentication endpoints or user-specific data
+    const authEndpoints = ['/api/auth/', '/api/user/', '/api/me'];
+    const isAuthRequest = authEndpoints.some(endpoint => url.pathname.startsWith(endpoint));
+    
+    if (isAuthRequest) {
+      // Always bypass cache for authentication - go directly to network
+      event.respondWith(
+        fetch(request).catch(err => {
+          console.log('Auth API failed:', err);
+          throw err; // Don't provide fallbacks for auth
+        })
+      );
+      return;
+    }
+    
+    // For non-auth API requests, use cache but with fresh validation
     event.respondWith(
-      caches.match(request)
-        .then(cachedResponse => {
-          // Return cached response if available
-          if (cachedResponse) {
-            // Fetch fresh data in background
-            fetch(request)
-              .then(response => {
-                if (response.ok) {
-                  const responseClone = response.clone();
-                  caches.open(API_CACHE_NAME)
-                    .then(cache => cache.put(request, responseClone));
-                }
-              })
-              .catch(err => console.log('Background fetch failed:', err));
-            
-            return cachedResponse;
+      fetch(request)
+        .then(response => {
+          // Only cache successful GET requests
+          if (response.ok && request.method === 'GET') {
+            const responseClone = response.clone();
+            caches.open(API_CACHE_NAME)
+              .then(cache => cache.put(request, responseClone));
           }
-          
-          // If not in cache, fetch from network
-          return fetch(request)
-            .then(response => {
-              if (response.ok) {
-                const responseClone = response.clone();
-                caches.open(API_CACHE_NAME)
-                  .then(cache => cache.put(request, responseClone));
+          return response;
+        })
+        .catch(err => {
+          console.log('Network failed, trying cache:', err);
+          // Only use cache as fallback for GET requests
+          if (request.method === 'GET') {
+            return caches.match(request).then(cachedResponse => {
+              if (cachedResponse) {
+                return cachedResponse;
               }
-              return response;
-            })
-            .catch(err => {
-              console.log('Network fetch failed:', err);
               // Return offline fallback for specific endpoints
               if (url.pathname === '/api/classes') {
                 return new Response(JSON.stringify([]), {
@@ -99,6 +103,8 @@ self.addEventListener('fetch', event => {
               }
               throw err;
             });
+          }
+          throw err;
         })
     );
     return;
