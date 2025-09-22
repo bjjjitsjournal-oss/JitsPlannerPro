@@ -9,6 +9,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
+import { getSupabaseUserIdForLocal } from "./supabaseService";
 
 import * as nodemailer from "nodemailer";
 import fs from "fs";
@@ -604,14 +605,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
-      const userUuid = generateUserUuid(userId); // Convert to UUID
       const { search } = req.query;
+      
+      // Get Supabase user ID for this local user
+      const supabaseUserId = await getSupabaseUserIdForLocal(userId);
+      
+      if (!supabaseUserId) {
+        console.error("Failed to get Supabase user ID for local user:", userId);
+        return res.status(500).json({ message: "Failed to fetch notes - user setup error" });
+      }
       
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userUuid);
+        notes = await storage.searchNotes(search as string, supabaseUserId);
       } else {
-        notes = await storage.getNotes(userUuid);
+        notes = await storage.getNotes(supabaseUserId);
       }
       
       res.json(notes);
@@ -623,29 +631,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // This is an integer
-      const userUuid = generateUserUuid(userId); // Convert to UUID
-      console.log("Creating note with data:", req.body, "for user:", userId, "UUID:", userUuid);
+      console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Ensure profile exists in profiles table for the constraint
-      try {
-        // First check if profile exists
-        const existingProfile = await db.select()
-          .from(profiles)
-          .where(eq(profiles.id, userUuid))
-          .limit(1);
-        
-        if (existingProfile.length === 0) {
-          console.log("Profile doesn't exist, creating minimal profile:", userUuid);
-          // Create minimal profile entry to satisfy FK constraint
-          await db.insert(profiles).values({
-            id: userUuid
-          });
-          console.log("Profile created successfully");
-        }
-      } catch (profileError: any) {
-        console.log("Profile creation/check error (might already exist):", profileError?.message);
-        // Continue - profile might already exist
+      // Get or create Supabase user ID for this local user
+      const supabaseUserId = await getSupabaseUserIdForLocal(userId);
+      
+      if (!supabaseUserId) {
+        console.error("Failed to get/create Supabase user ID for local user:", userId);
+        return res.status(500).json({ message: "Failed to create note - user setup error" });
       }
+      
+      console.log("Using Supabase user ID:", supabaseUserId);
       
       const noteData = {
         title: req.body.title,
@@ -653,10 +649,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use UUID format
+        userId: supabaseUserId, // Use real Supabase UUID
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
+      
       const newNote = await storage.createNote(noteData);
       res.status(201).json(newNote);
     } catch (error: any) {
