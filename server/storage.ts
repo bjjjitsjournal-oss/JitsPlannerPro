@@ -1075,7 +1075,7 @@ class MemStoragePrimary implements IStorage {
 
 // Duplicate storage classes removed - using only MemStoragePrimary above
 
-// Using in-memory storage temporarily while database endpoint is being enabled
-// This allows immediate testing of admin features and premium functionality for bjjjitsjournal@gmail.com
-export const storage = new MemStoragePrimary();
+// Using Supabase database for persistent data storage
+// All data will be stored permanently in Supabase PostgreSQL database
+export const storage = new DatabaseStorage();
 
