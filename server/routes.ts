@@ -601,29 +601,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notes routes
-  // Helper function to generate deterministic UUID from integer userId
-  const generateUserUuid = async (userId: number): Promise<string> => {
-    // Create a deterministic UUID v4 format based on userId
-    const crypto = await import('crypto');
-    const userStr = `user-${userId}`;
-    const hash = crypto.createHash('md5').update(userStr).digest('hex');
-    // Format as UUID: xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx
-    return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
-  };
-
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
-      // Generate deterministic UUID for database query
-      const userUuid = await generateUserUuid(userId);
-      
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userUuid);
+        notes = await storage.searchNotes(search as string, userId);
       } else {
-        notes = await storage.getNotes(userUuid);
+        notes = await storage.getNotes(userId);
       }
       
       res.json(notes);
@@ -637,35 +624,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Generate deterministic UUID for database query
-      const userUuid = await generateUserUuid(userId);
-      
-      // Ensure profile exists first (notes table has FK constraint to profiles.id)
-      try {
-        const { eq } = await import('drizzle-orm');
-        const { db } = await import('./db');
-        const { profiles } = await import('@shared/schema');
-        
-        // Check if profile exists
-        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
-        
-        if (existingProfile.length === 0) {
-          // Create profile if it doesn't exist - just insert the UUID with no constraints
-          console.log("Creating profile for UUID:", userUuid);
-          await db.insert(profiles).values({ id: userUuid }).onConflictDoNothing();
-        }
-      } catch (profileError: any) {
-        console.error("Profile creation failed:", profileError);
-        // Don't fail here - let the note creation attempt proceed and see what happens
-      }
-      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use deterministic UUID
+        userId: userId, // Use integer user ID directly
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };

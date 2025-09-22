@@ -38,9 +38,9 @@ export interface IStorage {
   deleteVideo(id: number): Promise<boolean>;
 
   // Notes with user support
-  getNotes(userId?: string): Promise<Note[]>;
+  getNotes(userId?: number): Promise<Note[]>;
   getNote(id: number): Promise<Note | undefined>;
-  searchNotes(query: string, userId?: string): Promise<Note[]>;
+  searchNotes(query: string, userId?: number): Promise<Note[]>;
   createNote(noteData: InsertNote): Promise<Note>;
   updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined>;
   deleteNote(id: number): Promise<boolean>;
@@ -154,7 +154,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Notes
-  async getNotes(userId?: string): Promise<Note[]> {
+  async getNotes(userId?: number): Promise<Note[]> {
     if (userId) {
       return db.select().from(notes).where(eq(notes.userId, userId)).orderBy(desc(notes.createdAt));
     }
@@ -426,7 +426,7 @@ export class DatabaseStorage implements IStorage {
     );
   }
 
-  async searchNotes(query: string, userId?: string): Promise<Note[]> {
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
     const searchCondition = or(
       ilike(notes.title, `%${query}%`),
       ilike(notes.content, `%${query}%`)
@@ -719,7 +719,7 @@ class MemStoragePrimary implements IStorage {
     return userId ? this.notes.filter(n => n.userId === userId) : this.notes;
   }
   async getNote(id: number): Promise<Note | undefined> { return this.notes.find(n => n.id === id); }
-  async searchNotes(query: string, userId?: string): Promise<Note[]> {
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
     let filtered = this.notes.filter(n => n.content.includes(query));
     return userId ? filtered.filter(n => n.userId === userId) : filtered;
   }
