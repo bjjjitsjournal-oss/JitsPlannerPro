@@ -559,6 +559,36 @@
       "subscriptionStatus": "premium",
       "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
       "createdAt": "2025-09-22T10:52:11.112Z"
+    },
+    {
+      "id": 57,
+      "email": "test@example.com",
+      "password": "$2b$10$rgo.fqiMa5rnSutOalY8OOR9bxJkep8hBo0L9IFDKK0h/459erSEe",
+      "firstName": "Test",
+      "lastName": "User",
+      "subscriptionStatus": "free",
+      "subscriptionExpiresAt": null,
+      "createdAt": "2025-09-22T10:54:28.725Z"
+    },
+    {
+      "id": 58,
+      "email": "Joe@cleancutconstructions.com.au",
+      "password": "$2b$10$5y9eItdWc2risp0gcLQKw.wZclMOh8ARWdSmxc3uVawHp/9DeCo9O",
+      "firstName": "Joe",
+      "lastName": "Clean Cut",
+      "subscriptionStatus": "premium",
+      "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
+      "createdAt": "2025-09-22T10:54:28.725Z"
+    },
+    {
+      "id": 59,
+      "email": "bjjjitsjournal@gmail.com",
+      "password": "$2b$10$Qlb6vcvT1d9zHvYT09d1begg4VDPKxbIsX/chjT63dgSdxQDKDtqu",
+      "firstName": "Jits ",
+      "lastName": "Journal ",
+      "subscriptionStatus": "premium",
+      "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
+      "createdAt": "2025-09-22T10:55:35.862Z"
     }
   ],
   "classes": [],
@@ -570,7 +600,7 @@
   "passwordResetTokens": [],
   "noteLikes": [],
   "weeklyCommitments": [],
-  "nextId": 57,
+  "nextId": 60,
   "currentCommitmentId": 1,
-  "timestamp": "2025-09-22T10:54:10.859Z"
+  "timestamp": "2025-09-22T10:55:58.474Z"
 }
