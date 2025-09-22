@@ -512,7 +512,6 @@ class MemStoragePrimary implements IStorage {
         password: hashedPassword,
         firstName: 'Test',
         lastName: 'User',
-        revenueCatCustomerId: null,
         subscriptionExpiresAt: null,
         createdAt: new Date(),
       };
@@ -620,9 +619,6 @@ class MemStoragePrimary implements IStorage {
     return this.users.find(user => user.email === email);
   }
 
-  async getUserByRevenueCatId(revenueCatCustomerId: string): Promise<User | undefined> {
-    return this.users.find(user => user.revenueCatCustomerId === revenueCatCustomerId);
-  }
 
   async createUser(userData: InsertUser): Promise<User> {
     const user: User = {
@@ -631,10 +627,8 @@ class MemStoragePrimary implements IStorage {
       password: userData.password,
       firstName: userData.firstName || null,
       lastName: userData.lastName || null,
-      revenueCatCustomerId: userData.revenueCatCustomerId || null,
       subscriptionStatus: userData.subscriptionStatus || "free",
       subscriptionExpiresAt: userData.subscriptionExpiresAt || null,
-      lastRevenueCatSync: userData.lastRevenueCatSync || null,
       createdAt: new Date(),
     };
     this.users.push(user);
