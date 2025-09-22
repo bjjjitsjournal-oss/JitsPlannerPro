@@ -37,7 +37,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
       console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
       
       // Auto-restore user account with premium status for known emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'Bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isPremiumUser = premiumEmails.includes(decoded.email);
       
       try {
@@ -106,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
       // Create user with premium access for specific emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'Bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isPremiumUser = premiumEmails.includes(userData.email);
       
       const newUser = await storage.createUser({
@@ -248,7 +248,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Auto-upgrade premium users if they don't already have premium
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'Bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isPremiumUser = premiumEmails.includes(email);
       if (isPremiumUser && !user.subscriptionExpiresAt) {
         const updatedUser = await storage.updateUser(user.id, {
