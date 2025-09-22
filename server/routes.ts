@@ -639,25 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Use the same deterministic UUID generation as GET
       const userUuid = await generateUserUuid(userId);
-      
-      // Ensure profile exists first (notes table has FK to profiles.id)
-      try {
-        const { eq } = await import('drizzle-orm');
-        const { db } = await import('./db');
-        const { profiles } = await import('@shared/schema');
-        
-        // Check if profile exists
-        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
-        
-        if (existingProfile.length === 0) {
-          // Create profile if it doesn't exist
-          console.log("Creating profile for UUID:", userUuid);
-          await db.insert(profiles).values({ id: userUuid });
-        }
-      } catch (profileError: any) {
-        console.error("Error ensuring profile exists:", profileError);
-        return res.status(500).json({ message: "Failed to create user profile", error: profileError?.message || 'Unknown error' });
-      }
+      console.log("Generated UUID for user", userId, ":", userUuid);
       
       const noteData = {
         title: req.body.title,
@@ -670,7 +652,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sharedWithUsers: req.body.sharedWithUsers || []
       };
       
+      console.log("Attempting to create note with UUID userId:", userUuid);
       const newNote = await storage.createNote(noteData);
+      console.log("Note created successfully:", newNote);
       res.status(201).json(newNote);
     } catch (error: any) {
       console.error("Error creating note:", error);
