@@ -97,12 +97,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (userData: User, rememberMe: boolean = true) => {
-    console.log('Login called with rememberMe:', rememberMe);
+    console.log('🔐 AUTH CONTEXT: Login called with rememberMe:', rememberMe);
+    console.log('🔐 AUTH CONTEXT: User data received:', userData);
+    console.log('🔐 AUTH CONTEXT: Token in userData?', !!(userData as any)?.token);
+    
     setUser(userData);
+    console.log('🔐 AUTH CONTEXT: setUser called');
     
     // Store auth token if provided
     if ((userData as any).token) {
+      console.log('🔐 AUTH CONTEXT: Setting auth token');
       setAuthToken((userData as any).token, rememberMe);
+      console.log('🔐 AUTH CONTEXT: Auth token set successfully');
+    } else {
+      console.error('🔐 AUTH CONTEXT: No token found in userData!');
     }
   };
 
