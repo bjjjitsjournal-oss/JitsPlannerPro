@@ -601,16 +601,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notes routes
+  // Helper function to generate deterministic UUID from integer userId
+  const generateUserUuid = async (userId: number): Promise<string> => {
+    // Create a deterministic UUID v4 format based on userId
+    const crypto = await import('crypto');
+    const userStr = `user-${userId}`;
+    const hash = crypto.createHash('md5').update(userStr).digest('hex');
+    // Format as UUID: xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx
+    return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+  };
+
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
-      // Generate the same deterministic UUID as in POST
-      const crypto = await import('crypto');
-      const userStr = `user-${userId}`;
-      const hash = crypto.createHash('md5').update(userStr).digest('hex');
-      const userUuid = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+      // Generate deterministic UUID for database query
+      const userUuid = await generateUserUuid(userId);
       
       let notes;
       if (search) {
@@ -630,13 +637,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // This is an integer
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Create a deterministic UUID v5 based on userId so we can query consistently
-      const crypto = await import('crypto');
-      const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // Standard namespace UUID
-      const userStr = `user-${userId}`;
-      const hash = crypto.createHash('md5').update(userStr).digest('hex');
-      // Format as UUID v4: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
-      const userUuid = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+      // Use the same deterministic UUID generation as GET
+      const userUuid = await generateUserUuid(userId);
+      
+      // Ensure profile exists first (notes table has FK to profiles.id)
+      try {
+        const { eq } = await import('drizzle-orm');
+        const { db } = await import('./db');
+        const { profiles } = await import('@shared/schema');
+        
+        // Check if profile exists
+        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
+        
+        if (existingProfile.length === 0) {
+          // Create profile if it doesn't exist
+          console.log("Creating profile for UUID:", userUuid);
+          await db.insert(profiles).values({ id: userUuid });
+        }
+      } catch (profileError: any) {
+        console.error("Error ensuring profile exists:", profileError);
+        return res.status(500).json({ message: "Failed to create user profile", error: profileError?.message || 'Unknown error' });
+      }
       
       const noteData = {
         title: req.body.title,
