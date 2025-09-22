@@ -1032,7 +1032,7 @@ class MemStoragePrimary implements IStorage {
 
 // Duplicate storage classes removed - using only MemStoragePrimary above
 
-// Using memory storage with persistent backup directory for now
-// Will switch to PostgreSQL once database endpoint is enabled
+// Temporarily using memory storage while fixing Supabase connection
+// Will switch back to PostgreSQL once connection issue is resolved
 export const storage = new MemStoragePrimary();
 
