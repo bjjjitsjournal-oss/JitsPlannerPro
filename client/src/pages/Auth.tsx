@@ -72,12 +72,22 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       return response?.json();
     },
     onSuccess: (user) => {
+      console.log('🎉 LOGIN SUCCESS: API returned user:', user);
+      console.log('🎉 LOGIN SUCCESS: User has token?', !!(user as any)?.token);
+      console.log('🎉 LOGIN SUCCESS: About to call onAuthSuccess with rememberMe:', rememberMe);
+      
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      // Pass rememberMe state to onAuthSuccess
-      onAuthSuccess(user, rememberMe);
+      
+      try {
+        // Pass rememberMe state to onAuthSuccess
+        onAuthSuccess(user, rememberMe);
+        console.log('🎉 LOGIN SUCCESS: onAuthSuccess called successfully');
+      } catch (error) {
+        console.error('🎉 LOGIN SUCCESS: Error in onAuthSuccess:', error);
+      }
     },
     onError: (error: any) => {
       console.log('Login error:', error);
