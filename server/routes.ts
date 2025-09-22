@@ -17,6 +17,27 @@ import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
 
+// UUID namespace for deterministic UUID generation
+const UUID_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"; // Standard UUID namespace
+
+// Helper function to generate deterministic UUID for a user
+function getUserScopedUuid(userId: number): string {
+  // Create deterministic UUID based on user ID
+  const userKey = `user-${userId}`;
+  const hash = crypto.createHash('md5').update(userKey).digest('hex');
+  
+  // Format as UUID v4 structure
+  const uuid = [
+    hash.substr(0, 8),
+    hash.substr(8, 4),
+    hash.substr(12, 4),
+    hash.substr(16, 4),
+    hash.substr(20, 12)
+  ].join('-');
+  
+  return uuid;
+}
+
 
 
 // Authentication middleware
@@ -596,10 +617,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId;
       console.log("Creating note with data:", req.body);
       
-      // Generate a deterministic UUID for the notes table based on user ID
-      const crypto = require('crypto');
-      const userUuid = crypto.createHash('md5').update(`user_${userId}`).digest('hex');
-      const formattedUserUuid = `${userUuid.substr(0,8)}-${userUuid.substr(8,4)}-${userUuid.substr(12,4)}-${userUuid.substr(16,4)}-${userUuid.substr(20,12)}`;
+      // Generate deterministic UUID for database compatibility
+      const userUuid = getUserScopedUuid(userId);
+      console.log(`Generated UUID ${userUuid} for user ${userId}`);
       
       const noteData = {
         title: req.body.title,
@@ -607,7 +627,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: formattedUserUuid,
+        userId: userUuid, // Using deterministic UUID for database compatibility
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
