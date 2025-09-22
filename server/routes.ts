@@ -19,31 +19,12 @@ import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
 
-// UUID namespace for deterministic UUID generation
-const UUID_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"; // Standard UUID namespace
-
-// Simple deterministic UUID generator for user_id field
+// Helper function to generate deterministic UUID from integer userId
 function generateUserUuid(userId: number): string {
-  // Create deterministic UUID based on user ID - always returns same UUID for same user
   const hash = crypto.createHash('sha256').update(`user-${userId}`).digest('hex');
-  
-  // Format as proper UUID v4 structure
-  return [
-    hash.slice(0, 8),
-    hash.slice(8, 12),
-    hash.slice(12, 16),
-    hash.slice(16, 20),
-    hash.slice(20, 32)
-  ].join('-');
+  return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
 }
 
-// Temporary solution: bypass constraints by using existing auth user logic
-async function ensureUserProfileChain(intUserId: number): Promise<string> {
-  // For now, use the existing authenticated user's integer ID directly
-  // This bypasses the constraint chain until we can implement full Supabase integration
-  console.log(`🔄 Using direct integer user ID approach for user ${intUserId}`);
-  return intUserId.toString(); // Return as string to match expected format
-}
 
 
 
@@ -633,7 +614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use mapped UUID for database
+        userId: userUuid, // Use UUID generated from integer user ID
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
