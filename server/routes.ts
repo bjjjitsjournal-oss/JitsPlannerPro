@@ -596,13 +596,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId;
       console.log("Creating note with data:", req.body);
       
+      // Generate a deterministic UUID for the notes table based on user ID
+      const crypto = require('crypto');
+      const userUuid = crypto.createHash('md5').update(`user_${userId}`).digest('hex');
+      const formattedUserUuid = `${userUuid.substr(0,8)}-${userUuid.substr(8,4)}-${userUuid.substr(12,4)}-${userUuid.substr(16,4)}-${userUuid.substr(20,12)}`;
+      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userId,
+        userId: formattedUserUuid,
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };

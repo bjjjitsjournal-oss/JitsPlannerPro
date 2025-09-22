@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, jsonb, varchar } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -34,13 +35,13 @@ export const videos = pgTable("videos", {
 });
 
 export const notes = pgTable("notes", {
-  id: serial("id").primaryKey(),
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   content: text("content").notNull(),
   tags: text("tags").array(),
   linkedClassId: integer("linked_class_id"),
   linkedVideoId: integer("linked_video_id"),
-  userId: integer("user_id").references(() => users.id),
+  userId: varchar("user_id"),
   isShared: integer("is_shared").default(0), // 0 = private, 1 = shared
   sharedWithUsers: text("shared_with_users").array(), // array of user IDs
   videoUrl: text("video_url"), // URL to uploaded video file
