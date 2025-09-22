@@ -1075,7 +1075,7 @@ class MemStoragePrimary implements IStorage {
 
 // Duplicate storage classes removed - using only MemStoragePrimary above
 
-// Using PostgreSQL database storage with Supabase for production-ready persistence
-// This eliminates all data loss on server restarts and deployments
-export const storage = new DatabaseStorage();
+// Using in-memory storage with backup system for development
+// Test users: test@example.com / password123 and Joe@cleancutconstructions.com.au / jitsjournal2025
+export const storage = new MemStoragePrimary();
 
