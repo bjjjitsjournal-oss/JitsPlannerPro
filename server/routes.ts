@@ -36,12 +36,12 @@ function generateUserUuid(userId: number): string {
   ].join('-');
 }
 
-// Ensure profile exists in the profiles table - minimal approach
-async function ensureProfileExists(userUuid: string): Promise<void> {
+// Just create profile with UUID - skip users table since it has different ID format
+async function ensureProfileWithUuid(userUuid: string): Promise<void> {
   const client = await pool.connect();
   
   try {
-    // Insert only the id field - no created_at or updated_at
+    // Only create profile record with UUID
     await client.query(`
       INSERT INTO profiles (id)
       VALUES ($1)
@@ -51,7 +51,7 @@ async function ensureProfileExists(userUuid: string): Promise<void> {
     console.log(`✅ Profile ensured for UUID: ${userUuid}`);
   } catch (error) {
     console.error(`❌ Error ensuring profile exists:`, error);
-    throw error; // Let the calling function handle the error
+    // Continue anyway - let the database constraint show us what's really needed
   } finally {
     client.release();
   }
@@ -616,13 +616,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
+      const userUuid = generateUserUuid(userId); // Convert to UUID
       const { search } = req.query;
       
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userId);
+        notes = await storage.searchNotes(search as string, userUuid);
       } else {
-        notes = await storage.getNotes(userId);
+        notes = await storage.getNotes(userUuid);
       }
       
       res.json(notes);
@@ -634,7 +635,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // This is an integer
-      console.log("Creating note with data:", req.body, "for user:", userId);
+      const userUuid = generateUserUuid(userId); // Convert to UUID
+      console.log("Creating note with data:", req.body, "for user:", userId, "UUID:", userUuid);
+      
+      // Create the profile record with UUID
+      await ensureProfileWithUuid(userUuid);
       
       const noteData = {
         title: req.body.title,
@@ -642,7 +647,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userId, // Use integer directly
+        userId: userUuid, // Use UUID format
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
