@@ -44,7 +44,11 @@ app.use((req, res, next) => {
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    
+    // Only log server errors (5xx), don't exit on client errors (4xx)
+    if (status >= 500) {
+      console.error("Server error:", err);
+    }
   });
 
   // importantly only setup vite in development and after
@@ -56,15 +60,40 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  // Use PORT from environment for deployment compatibility, fallback to 5000 for local development
+  const port = Number(process.env.PORT) || 5000;
+  
+  // Add server error handling
+  server.on("error", (err: any) => {
+    log(`Server startup error: ${err.message}`);
+    console.error("Server error:", err);
+    process.exit(1);
+  });
+  
+  // Add global error handlers for unhandled errors (production only to avoid dev restart issues)
+  if (process.env.NODE_ENV === "production") {
+    process.on("unhandledRejection", (reason: any, promise: any) => {
+      console.error("Unhandled Rejection at:", promise, "reason:", reason);
+      process.exit(1);
+    });
+    
+    process.on("uncaughtException", (error: any) => {
+      console.error("Uncaught Exception:", error);
+      process.exit(1);
+    });
+  } else {
+    // In development, log but don't exit to avoid restart loops
+    process.on("unhandledRejection", (reason: any, promise: any) => {
+      console.error("Unhandled Rejection at:", promise, "reason:", reason);
+    });
+    
+    process.on("uncaughtException", (error: any) => {
+      console.error("Uncaught Exception:", error);
+    });
+  }
+  
+  // Start server with autoscale-compatible configuration
+  server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 })();
