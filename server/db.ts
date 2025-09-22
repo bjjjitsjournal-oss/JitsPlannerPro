@@ -2,14 +2,11 @@ import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+// Override corrupted DATABASE_URL with correct Supabase credentials
+const SUPABASE_URL = "postgresql://postgres.umotigprfosrrjwpxlnp:u5QmZ2dHCuDpQZES@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres";
 
 export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
+  connectionString: SUPABASE_URL,
   ssl: { rejectUnauthorized: false } // Supabase requires SSL
 });
 
