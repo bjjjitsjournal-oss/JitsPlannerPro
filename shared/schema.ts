@@ -85,10 +85,7 @@ export const users = pgTable("users", {
 });
 
 export const profiles = pgTable("profiles", {
-  id: varchar("id").primaryKey(), // UUID format to match Supabase structure
-  email: text("email").notNull(),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
+  id: varchar("id").primaryKey(), // UUID format to match Supabase auth.users(id)
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -200,13 +197,8 @@ export const insertUserSchema = createInsertSchema(users).omit({
 });
 
 export const insertProfileSchema = createInsertSchema(profiles).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
-}).extend({
-  email: z.string().email(),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
 });
 
 export const insertWeeklyCommitmentSchema = createInsertSchema(weeklyCommitments).omit({
