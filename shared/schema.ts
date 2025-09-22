@@ -156,7 +156,7 @@ export const insertNoteSchema = createInsertSchema(notes).omit({
   tags: z.array(z.string()).optional(),
   linkedClassId: z.number().optional(),
   linkedVideoId: z.number().optional(),
-  userId: z.number().optional(), // Simplified to number to match integer field
+  userId: z.string().optional(), // UUID format to match varchar field
   isShared: z.number().optional(),
   sharedWithUsers: z.array(z.string()).optional(),
 });
