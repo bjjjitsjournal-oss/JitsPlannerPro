@@ -72,22 +72,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       return response?.json();
     },
     onSuccess: (user) => {
-      console.log('🎉 LOGIN SUCCESS: API returned user:', user);
-      console.log('🎉 LOGIN SUCCESS: User has token?', !!(user as any)?.token);
-      console.log('🎉 LOGIN SUCCESS: About to call onAuthSuccess with rememberMe:', rememberMe);
-      
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      
-      try {
-        // Pass rememberMe state to onAuthSuccess
-        onAuthSuccess(user, rememberMe);
-        console.log('🎉 LOGIN SUCCESS: onAuthSuccess called successfully');
-      } catch (error) {
-        console.error('🎉 LOGIN SUCCESS: Error in onAuthSuccess:', error);
-      }
+      // Pass rememberMe state to onAuthSuccess
+      onAuthSuccess(user, rememberMe);
     },
     onError: (error: any) => {
       console.log('Login error:', error);
@@ -122,16 +112,10 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   });
 
   const handleLogin = (data: LoginFormData) => {
-    console.log('🔥 LOGIN DEBUG: Form submitted with:', { email: data.email, hasPassword: !!data.password, data });
-    console.log('🔥 LOGIN DEBUG: About to call loginMutation.mutate');
+    console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
     // Use the form's rememberMe value if provided, otherwise fall back to state
     setRememberMe(data.rememberMe ?? rememberMe);
-    try {
-      loginMutation.mutate(data);
-      console.log('🔥 LOGIN DEBUG: loginMutation.mutate called successfully');
-    } catch (error) {
-      console.error('🔥 LOGIN DEBUG: Error calling loginMutation.mutate:', error);
-    }
+    loginMutation.mutate(data);
   };
 
   const handleRegister = (data: RegisterFormData) => {
