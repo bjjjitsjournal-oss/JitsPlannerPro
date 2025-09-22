@@ -2,6 +2,7 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { pool } from "./db";
 
 import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema } from "@shared/schema";
 import { z } from "zod";
@@ -36,6 +37,27 @@ function getUserScopedUuid(userId: number): string {
   ].join('-');
   
   return uuid;
+}
+
+// Helper function to ensure profile exists for the user
+async function ensureProfileExists(userId: number, userUuid: string): Promise<void> {
+  try {
+    // Try to create profile if it doesn't exist
+    const query = `
+      INSERT INTO profiles (id, user_id, created_at, updated_at)
+      VALUES ($1, $2, NOW(), NOW())
+      ON CONFLICT (id) DO NOTHING
+    `;
+    
+    console.log(`🔧 Ensuring profile exists: UUID=${userUuid}, UserId=${userId}`);
+    const client = await pool.connect();
+    await client.query(query, [userUuid, userId]);
+    client.release();
+    console.log(`✅ Profile ensured for user ${userId}`);
+  } catch (error) {
+    console.error(`❌ Error ensuring profile exists:`, error);
+    // Continue anyway - if profile creation fails, the notes creation will show the real error
+  }
 }
 
 
@@ -617,17 +639,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId;
       console.log("Creating note with data:", req.body);
       
-      // Generate deterministic UUID for database compatibility
-      const userUuid = getUserScopedUuid(userId);
-      console.log(`Generated UUID ${userUuid} for user ${userId}`);
-      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Using deterministic UUID for database compatibility
+        userId: userId, // Using simple integer userId
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
