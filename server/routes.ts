@@ -36,25 +36,12 @@ function generateUserUuid(userId: number): string {
   ].join('-');
 }
 
-// Just create profile with UUID - skip users table since it has different ID format
-async function ensureProfileWithUuid(userUuid: string): Promise<void> {
-  const client = await pool.connect();
-  
-  try {
-    // Only create profile record with UUID
-    await client.query(`
-      INSERT INTO profiles (id)
-      VALUES ($1)
-      ON CONFLICT (id) DO NOTHING
-    `, [userUuid]);
-    
-    console.log(`✅ Profile ensured for UUID: ${userUuid}`);
-  } catch (error) {
-    console.error(`❌ Error ensuring profile exists:`, error);
-    // Continue anyway - let the database constraint show us what's really needed
-  } finally {
-    client.release();
-  }
+// Temporary solution: bypass constraints by using existing auth user logic
+async function ensureUserProfileChain(intUserId: number): Promise<string> {
+  // For now, use the existing authenticated user's integer ID directly
+  // This bypasses the constraint chain until we can implement full Supabase integration
+  console.log(`🔄 Using direct integer user ID approach for user ${intUserId}`);
+  return intUserId.toString(); // Return as string to match expected format
 }
 
 
@@ -637,9 +624,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // This is an integer
       const userUuid = generateUserUuid(userId); // Convert to UUID
       console.log("Creating note with data:", req.body, "for user:", userId, "UUID:", userUuid);
-      
-      // Create the profile record with UUID
-      await ensureProfileWithUuid(userUuid);
       
       const noteData = {
         title: req.body.title,
