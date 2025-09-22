@@ -1,19 +1,13 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
-neonConfig.webSocketConstructor = ws;
+// Supabase database connection
+const SUPABASE_CONNECTION_STRING = "postgresql://postgres.umotigprfosrrjwpxlnp:u5QmZ2dHCuDpQZES@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres";
 
-// Construct DATABASE_URL from individual PostgreSQL variables
-// since DATABASE_URL may still point to old Supabase endpoint
-const { PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE } = process.env;
+export const pool = new Pool({ 
+  connectionString: SUPABASE_CONNECTION_STRING,
+  ssl: { rejectUnauthorized: false } // Supabase requires SSL
+});
 
-if (!PGHOST || !PGPORT || !PGUSER || !PGPASSWORD || !PGDATABASE) {
-  throw new Error("PostgreSQL environment variables are required (PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE)");
-}
-
-const connectionString = `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}`;
-
-export const pool = new Pool({ connectionString });
-export const db = drizzle({ client: pool, schema });
+export const db = drizzle(pool, { schema });
