@@ -21,7 +21,20 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-pro
 // UUID namespace for deterministic UUID generation
 const UUID_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"; // Standard UUID namespace
 
-// Helper functions removed - using simple integer userId approach
+// Simple deterministic UUID generator for user_id field
+function generateUserUuid(userId: number): string {
+  // Create deterministic UUID based on user ID - always returns same UUID for same user
+  const hash = crypto.createHash('sha256').update(`user-${userId}`).digest('hex');
+  
+  // Format as proper UUID v4 structure
+  return [
+    hash.slice(0, 8),
+    hash.slice(8, 12),
+    hash.slice(12, 16),
+    hash.slice(16, 20),
+    hash.slice(20, 32)
+  ].join('-');
+}
 
 
 
@@ -586,9 +599,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userId);
+        notes = await storage.searchNotes(search as string, generateUserUuid(userId));
       } else {
-        notes = await storage.getNotes(userId);
+        notes = await storage.getNotes(generateUserUuid(userId));
       }
       
       res.json(notes);
@@ -608,7 +621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userId, // Using simple integer userId
+        userId: generateUserUuid(userId), // Convert integer userId to UUID format
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
