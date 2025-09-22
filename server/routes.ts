@@ -634,12 +634,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notes", authenticateToken, async (req, res) => {
     try {
-      const userId = (req as any).user.userId; // This is an integer
+      const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Use the same deterministic UUID generation as GET
+      // Generate deterministic UUID for database query
       const userUuid = await generateUserUuid(userId);
-      console.log("Generated UUID for user", userId, ":", userUuid);
+      
+      // Ensure profile exists first (notes table has FK constraint to profiles.id)
+      try {
+        const { eq } = await import('drizzle-orm');
+        const { db } = await import('./db');
+        const { profiles } = await import('@shared/schema');
+        
+        // Check if profile exists
+        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
+        
+        if (existingProfile.length === 0) {
+          // Create profile if it doesn't exist - just insert the UUID with no constraints
+          console.log("Creating profile for UUID:", userUuid);
+          await db.insert(profiles).values({ id: userUuid }).onConflictDoNothing();
+        }
+      } catch (profileError: any) {
+        console.error("Profile creation failed:", profileError);
+        // Don't fail here - let the note creation attempt proceed and see what happens
+      }
       
       const noteData = {
         title: req.body.title,
@@ -652,7 +670,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sharedWithUsers: req.body.sharedWithUsers || []
       };
       
-      console.log("Attempting to create note with UUID userId:", userUuid);
       const newNote = await storage.createNote(noteData);
       console.log("Note created successfully:", newNote);
       res.status(201).json(newNote);
