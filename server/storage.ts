@@ -785,21 +785,6 @@ class MemStoragePrimary implements IStorage {
     return true;
   }
 
-  async getWeeklyCommitments(userId: number): Promise<WeeklyCommitment[]> { return this.weeklyCommitments.filter(w => w.userId === userId); }
-  async getCurrentWeeklyCommitment(userId: number): Promise<WeeklyCommitment | undefined> { return this.weeklyCommitments.find(w => w.userId === userId && w.isCompleted === 0); }
-  // createWeeklyCommitment moved to proper Map-based implementation below (MemStoragePrimary class)
-  async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
-    const index = this.weeklyCommitments.findIndex(w => w.id === id);
-    if (index === -1) return undefined;
-    this.weeklyCommitments[index] = { ...this.weeklyCommitments[index], ...commitmentData, updatedAt: new Date() };
-    return this.weeklyCommitments[index];
-  }
-  async deleteWeeklyCommitment(id: number): Promise<boolean> {
-    const index = this.weeklyCommitments.findIndex(w => w.id === id);
-    if (index === -1) return false;
-    this.weeklyCommitments.splice(index, 1);
-    return true;
-  }
 
   async getTrainingVideos(): Promise<TrainingVideo[]> { return this.trainingVideos; }
   async createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo> {
@@ -864,8 +849,7 @@ class MemStoragePrimary implements IStorage {
     return resetToken;
   }
 
-  // Weekly Commitments methods using Map storage
-  private currentCommitmentId = 1;
+  // Weekly Commitments methods using array storage
 
   async getWeeklyCommitments(userId?: number): Promise<WeeklyCommitment[]> {
     const commitments = this.weeklyCommitments;
@@ -901,6 +885,9 @@ class MemStoragePrimary implements IStorage {
     const newCommitment: WeeklyCommitment = {
       id: this.currentCommitmentId++,
       ...commitmentData,
+      userId: commitmentData.userId || null,
+      completedClasses: commitmentData.completedClasses || null,
+      isCompleted: commitmentData.isCompleted || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -915,29 +902,30 @@ class MemStoragePrimary implements IStorage {
   }
 
   async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
-    const commitment = this.weeklyCommitments.get(id);
-    if (!commitment) return undefined;
+    const index = this.weeklyCommitments.findIndex(c => c.id === id);
+    if (index === -1) return undefined;
 
-    const updatedCommitment = { ...commitment, ...commitmentData, updatedAt: new Date() };
-    this.weeklyCommitments.set(id, updatedCommitment);
+    const updatedCommitment = { ...this.weeklyCommitments[index], ...commitmentData, updatedAt: new Date() };
+    this.weeklyCommitments[index] = updatedCommitment;
     this.saveWeeklyCommitmentsBackup(); // Backup to prevent data loss
 
     return updatedCommitment;
   }
 
   async deleteWeeklyCommitment(id: number): Promise<boolean> {
-    const result = this.weeklyCommitments.delete(id);
-    if (result) {
-      this.saveWeeklyCommitmentsBackup(); // Backup to prevent data loss
-    }
-    return result;
+    const index = this.weeklyCommitments.findIndex(c => c.id === id);
+    if (index === -1) return false;
+    
+    this.weeklyCommitments.splice(index, 1);
+    this.saveWeeklyCommitmentsBackup(); // Backup to prevent data loss
+    return true;
   }
 
   // Weekly commitments backup/restore to prevent data loss on server restart
   private saveWeeklyCommitmentsBackup() {
     try {
       const backupData = {
-        commitments: Array.from(this.weeklyCommitments.entries()),
+        commitments: this.weeklyCommitments,
         currentCommitmentId: this.currentCommitmentId,
         timestamp: new Date().toISOString()
       };
@@ -967,10 +955,10 @@ class MemStoragePrimary implements IStorage {
         const backupData = JSON.parse(fs.readFileSync(backupPath, 'utf8'));
         
         // Restore commitments
-        this.weeklyCommitments = new Map(backupData.commitments);
+        this.weeklyCommitments = backupData.commitments || [];
         this.currentCommitmentId = backupData.currentCommitmentId || 1;
         
-        console.log(`🔄 Restored ${this.weeklyCommitments.size} weekly commitments from backup`);
+        console.log(`🔄 Restored ${this.weeklyCommitments.length} weekly commitments from backup`);
         console.log(`📅 Backup timestamp: ${backupData.timestamp}`);
       } else {
         console.log('📝 No weekly commitments backup found, starting fresh');
@@ -979,6 +967,54 @@ class MemStoragePrimary implements IStorage {
       console.error('Failed to restore weekly commitments backup:', error);
       console.log('📝 Starting with empty weekly commitments');
     }
+  }
+
+  // Missing interface methods
+  async getBelt(id: number): Promise<Belt | undefined> {
+    return this.belts.find(b => b.id === id);
+  }
+
+  async getClassStats(userId?: number): Promise<{ totalClasses: number; lastPromotionDate?: string; currentBelt?: string; currentStripes?: number; }> {
+    const userClasses = userId ? this.classes.filter(c => c.userId === userId) : this.classes;
+    const userBelts = userId ? this.belts.filter(b => b.userId === userId) : this.belts;
+    
+    const currentBelt = userBelts.sort((a, b) => new Date(b.promotionDate).getTime() - new Date(a.promotionDate).getTime())[0];
+    
+    return {
+      totalClasses: userClasses.length,
+      lastPromotionDate: currentBelt?.promotionDate?.toISOString(),
+      currentBelt: currentBelt?.belt,
+      currentStripes: currentBelt?.stripes
+    };
+  }
+
+  async getCurrentWeekCommitment(userId?: number): Promise<WeeklyCommitment | undefined> {
+    const now = new Date();
+    const weekStart = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - now.getUTCDay());
+    weekStart.setUTCHours(0, 0, 0, 0);
+    
+    return this.weeklyCommitments.find(c => {
+      const commitmentWeekStart = new Date(c.weekStartDate);
+      return commitmentWeekStart.getTime() === weekStart.getTime() && (!userId || c.userId === userId);
+    });
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    return this.passwordResetTokens.find(t => t.token === token);
+  }
+
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    const token = this.passwordResetTokens.find(t => t.id === tokenId);
+    if (token) {
+      token.used = 1;
+    }
+  }
+
+  async deleteExpiredPasswordResetTokens(): Promise<void> {
+    const now = new Date();
+    this.passwordResetTokens = this.passwordResetTokens.filter(t => 
+      t.used === 0 || new Date(t.expiresAt) > now
+    );
   }
 
   // Note Likes Implementation
