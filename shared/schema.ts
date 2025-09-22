@@ -41,7 +41,7 @@ export const notes = pgTable("notes", {
   tags: text("tags").array(),
   linkedClassId: integer("linked_class_id"),
   linkedVideoId: integer("linked_video_id"),
-  userId: varchar("user_id").notNull(), // UUID format - generated from integer user ID
+  userId: integer("user_id").notNull().references(() => users.id), // Direct integer reference to users table
   isShared: integer("is_shared").default(0), // 0 = private, 1 = shared
   sharedWithUsers: text("shared_with_users").array(), // array of user IDs
   videoUrl: text("video_url"), // URL to uploaded video file
