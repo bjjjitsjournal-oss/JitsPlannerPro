@@ -600,30 +600,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Notes routes
-  // Helper function to generate deterministic UUID from integer userId
-  const generateUserUuid = async (userId: number): Promise<string> => {
-    // Create a deterministic UUID v4 format based on userId
-    const crypto = await import('crypto');
-    const userStr = `user-${userId}`;
-    const hash = crypto.createHash('md5').update(userStr).digest('hex');
-    // Format as UUID: xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx
-    return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
-  };
-
+  // Notes routes - using appNotes table with integer user IDs
   app.get("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
-      // Generate deterministic UUID for database query
-      const userUuid = await generateUserUuid(userId);
-      
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userUuid);
+        notes = await storage.searchNotes(search as string, userId);
       } else {
-        notes = await storage.getNotes(userUuid);
+        notes = await storage.getNotes(userId);
       }
       
       res.json(notes);
@@ -637,38 +624,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
       
-      // Generate deterministic UUID for database query
-      const userUuid = await generateUserUuid(userId);
-      
-      // Ensure profile exists first (notes table has FK constraint to profiles.id)
-      try {
-        const { eq } = await import('drizzle-orm');
-        const { db } = await import('./db');
-        const { profiles } = await import('@shared/schema');
-        
-        // Check if profile exists
-        const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
-        
-        if (existingProfile.length === 0) {
-          // Create profile if it doesn't exist - just insert the UUID
-          console.log("Creating profile for UUID:", userUuid);
-          await db.insert(profiles).values({ id: userUuid }).onConflictDoNothing();
-          console.log("Profile created successfully for UUID:", userUuid);
-        } else {
-          console.log("Profile already exists for UUID:", userUuid);
-        }
-      } catch (profileError: any) {
-        console.error("Profile creation failed:", profileError);
-        return res.status(500).json({ message: "Failed to create profile", error: profileError?.message || 'Unknown error' });
-      }
-      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userUuid, // Use deterministic UUID
+        userId: userId, // Use integer user ID directly
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
@@ -684,9 +646,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/notes/:id", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
-      const noteData = insertNoteSchema.partial().parse(req.body);
+      const id = req.params.id; // UUID string
+      const userId = (req as any).user.userId; // Integer user ID
+      const noteData = req.body; // Parse as partial appNote data
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -702,18 +664,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(updatedNote);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ message: "Invalid note data", errors: error.errors });
-      } else {
-        res.status(500).json({ message: "Failed to update note" });
-      }
+      res.status(500).json({ message: "Failed to update note" });
     }
   });
 
   app.delete("/api/notes/:id", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const id = req.params.id; // UUID string
+      const userId = (req as any).user.userId; // Integer user ID
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -736,7 +694,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin endpoint for deleting any community note (moderation)
   app.delete("/api/notes/:id/admin", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id; // UUID string
       const userEmail = (req as any).user.email;
       
       // Check if user is admin (bjjjitsjournal@gmail.com - case insensitive)
