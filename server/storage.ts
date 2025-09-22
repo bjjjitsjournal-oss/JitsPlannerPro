@@ -85,7 +85,7 @@ export interface IStorage {
   deleteTrainingVideo(id: number): Promise<boolean>;
 
   // Enhanced Note Sharing
-  toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined>;
+  toggleNoteSharing(noteId: string, userId: number): Promise<Note | undefined>;
   getSharedNotes(): Promise<Note[]>; // Get all publicly shared notes
   getDrawings(userId?: number): Promise<Drawing[]>;
 
@@ -98,10 +98,10 @@ export interface IStorage {
   // Note Likes
   likeNote(noteId: number, userId: number): Promise<boolean>;
   unlikeNote(noteId: number, userId: number): Promise<boolean>;
-  getNoteLikes(noteId: number): Promise<NoteLike[]>;
+  getNoteLikes(noteId: string): Promise<NoteLike[]>;
   getUserNoteLikes(userId: number): Promise<NoteLike[]>;
-  isNoteLikedByUser(noteId: number, userId: number): Promise<boolean>;
-  getNoteWithLikes(noteId: number, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
+  isNoteLikedByUser(noteId: string, userId: number): Promise<boolean>;
+  getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
 }
 
 // Database storage implementation
@@ -328,7 +328,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Note Sharing
-  async toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined> {
+  async toggleNoteSharing(noteId: string, userId: number): Promise<Note | undefined> {
     const note = await this.getNote(noteId);
     if (!note || note.userId !== userId) return undefined;
     
@@ -388,7 +388,7 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 
-  async getNoteLikes(noteId: number): Promise<NoteLike[]> {
+  async getNoteLikes(noteId: string): Promise<NoteLike[]> {
     return db.select().from(noteLikes).where(eq(noteLikes.noteId, noteId));
   }
 
@@ -396,13 +396,13 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(noteLikes).where(eq(noteLikes.userId, userId));
   }
 
-  async isNoteLikedByUser(noteId: number, userId: number): Promise<boolean> {
+  async isNoteLikedByUser(noteId: string, userId: number): Promise<boolean> {
     const [like] = await db.select().from(noteLikes)
       .where(and(eq(noteLikes.noteId, noteId), eq(noteLikes.userId, userId)));
     return !!like;
   }
 
-  async getNoteWithLikes(noteId: number, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined> {
+  async getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined> {
     const note = await this.getNote(noteId);
     if (!note) return undefined;
     
@@ -838,7 +838,7 @@ class MemStoragePrimary implements IStorage {
     this.trainingVideos[index] = { ...this.trainingVideos[index], ...videoData };
     return this.trainingVideos[index];
   }
-  async toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined> {
+  async toggleNoteSharing(noteId: string, userId: number): Promise<Note | undefined> {
     const note = this.notes.find(n => n.id === noteId && n.userId === userId);
     if (note) {
       note.isShared = note.isShared === 1 ? 0 : 1;
@@ -1073,7 +1073,7 @@ class MemStoragePrimary implements IStorage {
     return true;
   }
 
-  async getNoteLikes(noteId: number): Promise<NoteLike[]> {
+  async getNoteLikes(noteId: string): Promise<NoteLike[]> {
     return this.noteLikes.filter(like => like.noteId === noteId);
   }
 
@@ -1081,11 +1081,11 @@ class MemStoragePrimary implements IStorage {
     return this.noteLikes.filter(like => like.userId === userId);
   }
 
-  async isNoteLikedByUser(noteId: number, userId: number): Promise<boolean> {
+  async isNoteLikedByUser(noteId: string, userId: number): Promise<boolean> {
     return this.noteLikes.some(like => like.noteId === noteId && like.userId === userId);
   }
 
-  async getNoteWithLikes(noteId: number, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined> {
+  async getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined> {
     const note = this.notes.find(n => n.id === noteId);
     if (!note) return undefined;
 

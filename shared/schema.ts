@@ -150,7 +150,7 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
 
 export const noteLikes = pgTable("note_likes", {
   id: serial("id").primaryKey(),
-  noteId: integer("note_id").references(() => notes.id).notNull(),
+  noteId: varchar("note_id").references(() => notes.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
