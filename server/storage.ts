@@ -1,5 +1,5 @@
 import { 
-  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes,
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities,
   type Class, type InsertClass,
   type Video, type InsertVideo,
   type Note, type InsertNote,
@@ -9,7 +9,9 @@ import {
   type TrainingVideo, type InsertTrainingVideo,
   type User, type InsertUser,
   type PasswordResetToken, type InsertPasswordResetToken,
-  type NoteLike, type InsertNoteLike
+  type NoteLike, type InsertNoteLike,
+  type AppNote, type InsertAppNote,
+  type AuthIdentity, type InsertAuthIdentity
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, ilike, and, or, lt } from "drizzle-orm";
@@ -37,14 +39,14 @@ export interface IStorage {
   updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined>;
   deleteVideo(id: number): Promise<boolean>;
 
-  // Notes with user support
-  getNotes(userId?: string): Promise<Note[]>;
-  getNote(id: number): Promise<Note | undefined>;
-  searchNotes(query: string, userId?: string): Promise<Note[]>;
-  createNote(noteData: InsertNote): Promise<Note>;
-  updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined>;
-  deleteNote(id: number): Promise<boolean>;
-  shareNote(noteId: number, targetUserId: number): Promise<boolean>;
+  // Notes with user support (using appNotes table with integer user IDs)
+  getNotes(userId?: number): Promise<AppNote[]>;
+  getNote(id: string): Promise<AppNote | undefined>; // UUID id for appNotes
+  searchNotes(query: string, userId?: number): Promise<AppNote[]>;
+  createNote(noteData: InsertAppNote): Promise<AppNote>;
+  updateNote(id: string, noteData: Partial<InsertAppNote>): Promise<AppNote | undefined>; // UUID id
+  deleteNote(id: string): Promise<boolean>; // UUID id
+  shareNote(noteId: string, targetUserId: number): Promise<boolean>; // UUID id
 
   // Drawings
   getDrawing(id: number): Promise<Drawing | undefined>;
@@ -153,31 +155,31 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 
-  // Notes
-  async getNotes(userId?: string): Promise<Note[]> {
+  // Notes - using appNotes table with integer user IDs
+  async getNotes(userId?: number): Promise<AppNote[]> {
     if (userId) {
-      return db.select().from(notes).where(eq(notes.userId, userId)).orderBy(desc(notes.createdAt));
+      return db.select().from(appNotes).where(eq(appNotes.userId, userId)).orderBy(desc(appNotes.createdAt));
     }
-    return db.select().from(notes).orderBy(desc(notes.createdAt));
+    return db.select().from(appNotes).orderBy(desc(appNotes.createdAt));
   }
 
-  async getNote(id: number): Promise<Note | undefined> {
-    const [note] = await db.select().from(notes).where(eq(notes.id, id));
+  async getNote(id: string): Promise<AppNote | undefined> {
+    const [note] = await db.select().from(appNotes).where(eq(appNotes.id, id));
     return note || undefined;
   }
 
-  async createNote(noteData: InsertNote): Promise<Note> {
-    const [note] = await db.insert(notes).values(noteData).returning();
+  async createNote(noteData: InsertAppNote): Promise<AppNote> {
+    const [note] = await db.insert(appNotes).values(noteData).returning();
     return note;
   }
 
-  async updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined> {
-    const [note] = await db.update(notes).set(noteData).where(eq(notes.id, id)).returning();
+  async updateNote(id: string, noteData: Partial<InsertAppNote>): Promise<AppNote | undefined> {
+    const [note] = await db.update(appNotes).set(noteData).where(eq(appNotes.id, id)).returning();
     return note || undefined;
   }
 
-  async deleteNote(id: number): Promise<boolean> {
-    const result = await db.delete(notes).where(eq(notes.id, id));
+  async deleteNote(id: string): Promise<boolean> {
+    const result = await db.delete(appNotes).where(eq(appNotes.id, id));
     return (result.rowCount || 0) > 0;
   }
 
@@ -426,24 +428,24 @@ export class DatabaseStorage implements IStorage {
     );
   }
 
-  async searchNotes(query: string, userId?: string): Promise<Note[]> {
+  async searchNotes(query: string, userId?: number): Promise<AppNote[]> {
     const searchCondition = or(
-      ilike(notes.title, `%${query}%`),
-      ilike(notes.content, `%${query}%`)
+      ilike(appNotes.title, `%${query}%`),
+      ilike(appNotes.content, `%${query}%`)
     );
     
     if (userId) {
-      return db.select().from(notes)
-        .where(and(eq(notes.userId, userId), searchCondition))
-        .orderBy(desc(notes.createdAt));
+      return db.select().from(appNotes)
+        .where(and(eq(appNotes.userId, userId), searchCondition))
+        .orderBy(desc(appNotes.createdAt));
     }
     
-    return db.select().from(notes)
+    return db.select().from(appNotes)
       .where(searchCondition)
-      .orderBy(desc(notes.createdAt));
+      .orderBy(desc(appNotes.createdAt));
   }
 
-  async shareNote(noteId: number, targetUserId: number): Promise<boolean> {
+  async shareNote(noteId: string, targetUserId: number): Promise<boolean> {
     try {
       const note = await this.getNote(noteId);
       if (!note) return false;
@@ -451,9 +453,9 @@ export class DatabaseStorage implements IStorage {
       const sharedUsers = note.sharedWithUsers || [];
       if (!sharedUsers.includes(targetUserId.toString())) {
         sharedUsers.push(targetUserId.toString());
-        await db.update(notes)
+        await db.update(appNotes)
           .set({ sharedWithUsers: sharedUsers })
-          .where(eq(notes.id, noteId));
+          .where(eq(appNotes.id, noteId));
       }
       return true;
     } catch {
@@ -490,7 +492,7 @@ class MemStoragePrimary implements IStorage {
   private users: User[] = [];
   private classes: Class[] = [];
   private videos: Video[] = [];
-  private notes: Note[] = [];
+  private appNotes: AppNote[] = []; // Changed from notes to appNotes to match new schema
   private drawings: Drawing[] = [];
   private belts: Belt[] = [];
   private weeklyCommitments: WeeklyCommitment[] = [];
@@ -714,33 +716,56 @@ class MemStoragePrimary implements IStorage {
     return true;
   }
 
-  // Notes
-  async getNotes(userId?: string): Promise<Note[]> {
-    return userId ? this.notes.filter(n => n.userId === userId) : this.notes;
+  // Notes - using appNotes with integer user IDs
+  async getNotes(userId?: number): Promise<AppNote[]> {
+    return userId ? this.appNotes.filter(n => n.userId === userId) : this.appNotes;
   }
-  async getNote(id: number): Promise<Note | undefined> { return this.notes.find(n => n.id === id); }
-  async searchNotes(query: string, userId?: string): Promise<Note[]> {
-    let filtered = this.notes.filter(n => n.content.includes(query));
+  async getNote(id: string): Promise<AppNote | undefined> { return this.appNotes.find(n => n.id === id); }
+  async searchNotes(query: string, userId?: number): Promise<AppNote[]> {
+    let filtered = this.appNotes.filter(n => n.content.includes(query));
     return userId ? filtered.filter(n => n.userId === userId) : filtered;
   }
-  async createNote(noteData: InsertNote): Promise<Note> {
-    const note: Note = { id: this.nextId++, ...noteData, userId: noteData.userId || null, tags: noteData.tags || null, linkedClassId: noteData.linkedClassId || null, linkedVideoId: noteData.linkedVideoId || null, isShared: noteData.isShared || null, sharedWithUsers: noteData.sharedWithUsers || null, videoUrl: noteData.videoUrl || null, videoFileName: noteData.videoFileName || null, videoThumbnail: noteData.videoThumbnail || null, createdAt: new Date(), updatedAt: new Date() };
-    this.notes.push(note);
+  async createNote(noteData: InsertAppNote): Promise<AppNote> {
+    // Generate UUID for the note ID
+    const noteId = this.generateUUID();
+    const note: AppNote = { 
+      id: noteId, 
+      ...noteData, 
+      tags: noteData.tags || null, 
+      linkedClassId: noteData.linkedClassId || null, 
+      linkedVideoId: noteData.linkedVideoId || null, 
+      isShared: noteData.isShared || 0, 
+      sharedWithUsers: noteData.sharedWithUsers || null, 
+      videoUrl: noteData.videoUrl || null, 
+      videoFileName: noteData.videoFileName || null, 
+      videoThumbnail: noteData.videoThumbnail || null, 
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    };
+    this.appNotes.push(note);
     return note;
   }
-  async updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined> {
-    const index = this.notes.findIndex(n => n.id === id);
+  async updateNote(id: string, noteData: Partial<InsertAppNote>): Promise<AppNote | undefined> {
+    const index = this.appNotes.findIndex(n => n.id === id);
     if (index === -1) return undefined;
-    this.notes[index] = { ...this.notes[index], ...noteData, updatedAt: new Date() };
-    return this.notes[index];
+    this.appNotes[index] = { ...this.appNotes[index], ...noteData, updatedAt: new Date() };
+    return this.appNotes[index];
   }
-  async deleteNote(id: number): Promise<boolean> {
-    const index = this.notes.findIndex(n => n.id === id);
+  async deleteNote(id: string): Promise<boolean> {
+    const index = this.appNotes.findIndex(n => n.id === id);
     if (index === -1) return false;
-    this.notes.splice(index, 1);
+    this.appNotes.splice(index, 1);
     return true;
   }
-  async shareNote(noteId: number, targetUserId: number): Promise<boolean> { return true; }
+  async shareNote(noteId: string, targetUserId: number): Promise<boolean> { return true; }
+
+  // Helper method to generate UUIDs for notes
+  private generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
   // Other methods - minimal implementations
   async getDrawings(userId?: number): Promise<Drawing[]> { 
