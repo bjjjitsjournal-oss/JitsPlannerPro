@@ -698,11 +698,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId;
       const sharedNotes = await storage.getSharedNotes();
       
-      // Include user info and like status for shared notes
+      // Include user info for shared notes (temporarily skip likes due to schema mismatch)
       const notesWithUserInfo = await Promise.all(
         sharedNotes.map(async (note) => {
           const user = await storage.getUser(note.userId);
-          const isLikedByUser = await storage.isNoteLikedByUser(note.id, userId);
           return {
             ...note,
             author: user ? {
@@ -710,7 +709,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lastName: user.lastName,
               email: user.email
             } : null,
-            isLikedByUser
+            isLikedByUser: false // Temporarily disabled until schema update
           };
         })
       );
@@ -724,7 +723,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notes/:id/toggle-sharing", authenticateToken, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
+      const noteId = req.params.id; // Keep as string (UUID)
       const userId = (req as any).user.userId;
       
       const updatedNote = await storage.toggleNoteSharing(noteId, userId);
