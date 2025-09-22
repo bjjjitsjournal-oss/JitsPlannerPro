@@ -88,6 +88,30 @@ export const profiles = pgTable("profiles", {
   id: varchar("id").primaryKey(), // UUID format to match Supabase auth.users(id)
 });
 
+// Identity bridge table to map integer user IDs to Supabase UUIDs
+export const authIdentities = pgTable("auth_identities", {
+  userId: integer("user_id").primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  supabaseUid: varchar("supabase_uid").unique().notNull(),
+});
+
+// Application-owned notes table using integer user IDs instead of problematic profiles FK
+export const appNotes = pgTable("app_notes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  tags: text("tags").array(),
+  linkedClassId: integer("linked_class_id"),
+  linkedVideoId: integer("linked_video_id"),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  isShared: integer("is_shared").default(0), // 0 = private, 1 = shared
+  sharedWithUsers: text("shared_with_users").array(), // array of user IDs
+  videoUrl: text("video_url"), // URL to uploaded video file
+  videoFileName: text("video_file_name"), // Original filename
+  videoThumbnail: text("video_thumbnail"), // Thumbnail URL
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const weeklyCommitments = pgTable("weekly_commitments", {
   id: serial("id").primaryKey(),
   weekStartDate: timestamp("week_start_date").notNull(), // Sunday of the week
@@ -199,6 +223,20 @@ export const insertProfileSchema = createInsertSchema(profiles).omit({
   updatedAt: true,
 });
 
+export const insertAuthIdentitySchema = createInsertSchema(authIdentities);
+
+export const insertAppNoteSchema = createInsertSchema(appNotes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  tags: z.array(z.string()).optional(),
+  linkedClassId: z.number().optional(),
+  linkedVideoId: z.number().optional(),
+  isShared: z.number().optional(),
+  sharedWithUsers: z.array(z.string()).optional(),
+});
+
 export const insertWeeklyCommitmentSchema = createInsertSchema(weeklyCommitments).omit({
   id: true,
   createdAt: true,
@@ -236,6 +274,10 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
+export type AuthIdentity = typeof authIdentities.$inferSelect;
+export type InsertAuthIdentity = z.infer<typeof insertAuthIdentitySchema>;
+export type AppNote = typeof appNotes.$inferSelect;
+export type InsertAppNote = z.infer<typeof insertAppNoteSchema>;
 export type WeeklyCommitment = typeof weeklyCommitments.$inferSelect;
 export type InsertWeeklyCommitment = z.infer<typeof insertWeeklyCommitmentSchema>;
 export type TrainingVideo = typeof trainingVideos.$inferSelect;
