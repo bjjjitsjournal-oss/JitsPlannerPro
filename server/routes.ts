@@ -635,13 +635,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .limit(1);
         
         if (existingProfile.length === 0) {
-          console.log("Profile doesn't exist, creating profile:", userUuid);
-          // Create profile entry to satisfy FK constraint
+          console.log("Profile doesn't exist, creating minimal profile:", userUuid);
+          // Create minimal profile entry to satisfy FK constraint
           await db.insert(profiles).values({
-            id: userUuid,
-            email: (req as any).user.email || `user${userId}@example.com`,
-            firstName: 'User',
-            lastName: `${userId}`
+            id: userUuid
           });
           console.log("Profile created successfully");
         }
