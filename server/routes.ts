@@ -46,6 +46,8 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         if (existingUser) {
           console.log('✅ Found existing user by email, using that account:', decoded.email);
           user = existingUser;
+          // Update decoded to use correct user ID from database
+          decoded.userId = existingUser.id;
         } else {
           // Create a new user account to restore session
           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -70,7 +72,9 @@ const authenticateToken = async (req: any, res: any, next: any) => {
       }
     }
     
-    req.user = decoded;
+    // Attach both decoded JWT data and actual user record
+    req.user = { ...decoded, userId: user.id };
+    req.userId = user.id;
     next();
   } catch (error: any) {
     console.error('JWT verification error:', error.message);
