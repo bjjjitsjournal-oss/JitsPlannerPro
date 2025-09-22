@@ -606,11 +606,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
       
+      // Generate the same deterministic UUID as in POST
+      const crypto = await import('crypto');
+      const userStr = `user-${userId}`;
+      const hash = crypto.createHash('md5').update(userStr).digest('hex');
+      const userUuid = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+      
       let notes;
       if (search) {
-        notes = await storage.searchNotes(search as string, userId);
+        notes = await storage.searchNotes(search as string, userUuid);
       } else {
-        notes = await storage.getNotes(userId);
+        notes = await storage.getNotes(userUuid);
       }
       
       res.json(notes);
@@ -624,13 +630,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // This is an integer
       console.log("Creating note with data:", req.body, "for user:", userId);
       
+      // Create a deterministic UUID v5 based on userId so we can query consistently
+      const crypto = await import('crypto');
+      const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // Standard namespace UUID
+      const userStr = `user-${userId}`;
+      const hash = crypto.createHash('md5').update(userStr).digest('hex');
+      // Format as UUID v4: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+      const userUuid = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+      
       const noteData = {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: userId, // Use integer userId
+        userId: userUuid, // Use deterministic UUID
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
