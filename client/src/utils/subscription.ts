@@ -5,6 +5,7 @@ const UNLIMITED_ACCESS_EMAILS = [
   'Joe@cleancutconstructions.com.au',
   'joe833360@gmail.com',
   'Bjjjitsjournal@gmail.com',
+  'bjjjitsjournal@gmail.com', // Added lowercase version
   'admin@apexbjj.com.au'
 ];
 
