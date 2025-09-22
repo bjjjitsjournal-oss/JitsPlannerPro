@@ -154,7 +154,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Notes
-  async getNotes(userId?: string): Promise<Note[]> {
+  async getNotes(userId?: number): Promise<Note[]> {
     if (userId) {
       return db.select().from(notes).where(eq(notes.userId, userId)).orderBy(desc(notes.createdAt));
     }
