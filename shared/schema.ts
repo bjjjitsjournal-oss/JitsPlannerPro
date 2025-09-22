@@ -86,8 +86,6 @@ export const users = pgTable("users", {
 
 export const profiles = pgTable("profiles", {
   id: varchar("id").primaryKey(), // UUID format to match Supabase auth.users(id)
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const weeklyCommitments = pgTable("weekly_commitments", {
