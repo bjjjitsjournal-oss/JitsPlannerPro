@@ -1134,7 +1134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.userId;
       console.log('🔍 GET /api/weekly-commitments/current called for userId:', userId);
-      const commitment = await storage.getCurrentWeeklyCommitment(userId);
+      const commitment = await storage.getCurrentWeekCommitment(userId);
       console.log('🔍 getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
       
       // Ensure no caching by setting appropriate headers
