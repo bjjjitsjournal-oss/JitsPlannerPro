@@ -58,8 +58,9 @@ export default function Social() {
     },
   });
 
-  // Check if current user is admin
-  const isAdmin = user?.email === 'Bjjjitsjournal@gmail.com';
+  // Check if current user is admin (case insensitive)
+  const adminEmails = ['Bjjjitsjournal@gmail.com', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+  const isAdmin = user?.email && adminEmails.includes(user.email);
 
   // Sample friend invitations functionality
   const [inviteEmail, setInviteEmail] = useState('');
