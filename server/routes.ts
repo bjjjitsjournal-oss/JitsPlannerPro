@@ -21,44 +21,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-pro
 // UUID namespace for deterministic UUID generation
 const UUID_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"; // Standard UUID namespace
 
-// Helper function to generate deterministic UUID for a user
-function getUserScopedUuid(userId: number): string {
-  // Create deterministic UUID based on user ID
-  const userKey = `user-${userId}`;
-  const hash = crypto.createHash('md5').update(userKey).digest('hex');
-  
-  // Format as UUID v4 structure
-  const uuid = [
-    hash.substr(0, 8),
-    hash.substr(8, 4),
-    hash.substr(12, 4),
-    hash.substr(16, 4),
-    hash.substr(20, 12)
-  ].join('-');
-  
-  return uuid;
-}
-
-// Helper function to ensure profile exists for the user
-async function ensureProfileExists(userId: number, userUuid: string): Promise<void> {
-  try {
-    // Try to create profile if it doesn't exist
-    const query = `
-      INSERT INTO profiles (id, user_id, created_at, updated_at)
-      VALUES ($1, $2, NOW(), NOW())
-      ON CONFLICT (id) DO NOTHING
-    `;
-    
-    console.log(`🔧 Ensuring profile exists: UUID=${userUuid}, UserId=${userId}`);
-    const client = await pool.connect();
-    await client.query(query, [userUuid, userId]);
-    client.release();
-    console.log(`✅ Profile ensured for user ${userId}`);
-  } catch (error) {
-    console.error(`❌ Error ensuring profile exists:`, error);
-    // Continue anyway - if profile creation fails, the notes creation will show the real error
-  }
-}
+// Helper functions removed - using simple integer userId approach
 
 
 
