@@ -1077,5 +1077,5 @@ class MemStoragePrimary implements IStorage {
 
 // Using in-memory storage with backup system for development
 // Test users: test@example.com / password123 and Joe@cleancutconstructions.com.au / jitsjournal2025
-export const storage = new MemStoragePrimary();
+export const storage = new DatabaseStorage();
 
