@@ -199,6 +199,26 @@
       "subscriptionStatus": "premium",
       "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
       "createdAt": "2025-09-22T04:17:21.540Z"
+    },
+    {
+      "id": 21,
+      "email": "test@example.com",
+      "password": "$2b$10$UP35WE47KJv2rTockmWViOXZzOlY4y/OuilWKal2CalykKt5PVsMG",
+      "firstName": "Test",
+      "lastName": "User",
+      "revenueCatCustomerId": null,
+      "subscriptionExpiresAt": null,
+      "createdAt": "2025-09-22T04:19:00.206Z"
+    },
+    {
+      "id": 22,
+      "email": "Joe@cleancutconstructions.com.au",
+      "password": "$2b$10$fC1kBY8LNlNrE.kPeGzvCucLRfquyyswqQ0YGFuToSV7GshNqZKC2",
+      "firstName": "Joe",
+      "lastName": "Clean Cut",
+      "subscriptionStatus": "premium",
+      "subscriptionExpiresAt": "2099-12-31T00:00:00.000Z",
+      "createdAt": "2025-09-22T04:19:00.206Z"
     }
   ],
   "classes": [],
@@ -210,7 +230,7 @@
   "passwordResetTokens": [],
   "noteLikes": [],
   "weeklyCommitments": [],
-  "nextId": 21,
+  "nextId": 23,
   "currentCommitmentId": 1,
-  "timestamp": "2025-09-22T04:17:51.266Z"
+  "timestamp": "2025-09-22T04:20:29.944Z"
 }
