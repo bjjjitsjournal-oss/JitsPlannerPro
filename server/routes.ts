@@ -36,6 +36,27 @@ function generateUserUuid(userId: number): string {
   ].join('-');
 }
 
+// Ensure profile exists in the profiles table - minimal approach
+async function ensureProfileExists(userUuid: string): Promise<void> {
+  const client = await pool.connect();
+  
+  try {
+    // Insert only the id field - no created_at or updated_at
+    await client.query(`
+      INSERT INTO profiles (id)
+      VALUES ($1)
+      ON CONFLICT (id) DO NOTHING
+    `, [userUuid]);
+    
+    console.log(`✅ Profile ensured for UUID: ${userUuid}`);
+  } catch (error) {
+    console.error(`❌ Error ensuring profile exists:`, error);
+    throw error; // Let the calling function handle the error
+  } finally {
+    client.release();
+  }
+}
+
 
 
 // Authentication middleware
@@ -613,7 +634,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId;
+      const userUuid = generateUserUuid(userId);
       console.log("Creating note with data:", req.body);
+      
+      // Ensure profile exists in profiles table before creating note
+      await ensureProfileExists(userUuid);
       
       const noteData = {
         title: req.body.title,
@@ -621,7 +646,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: req.body.tags || [],
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
-        userId: generateUserUuid(userId), // Convert integer userId to UUID format
+        userId: userUuid, // Use the UUID format for database
         isShared: req.body.isShared || 0,
         sharedWithUsers: req.body.sharedWithUsers || []
       };
