@@ -84,6 +84,15 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const profiles = pgTable("profiles", {
+  id: varchar("id").primaryKey(), // UUID format to match Supabase structure
+  email: text("email").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const weeklyCommitments = pgTable("weekly_commitments", {
   id: serial("id").primaryKey(),
   weekStartDate: timestamp("week_start_date").notNull(), // Sunday of the week
@@ -190,6 +199,16 @@ export const insertUserSchema = createInsertSchema(users).omit({
   subscriptionExpiresAt: z.date().optional(),
 });
 
+export const insertProfileSchema = createInsertSchema(profiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  email: z.string().email(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+
 export const insertWeeklyCommitmentSchema = createInsertSchema(weeklyCommitments).omit({
   id: true,
   createdAt: true,
@@ -225,6 +244,8 @@ export type Belt = typeof belts.$inferSelect;
 export type InsertBelt = z.infer<typeof insertBeltSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type Profile = typeof profiles.$inferSelect;
+export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type WeeklyCommitment = typeof weeklyCommitments.$inferSelect;
 export type InsertWeeklyCommitment = z.infer<typeof insertWeeklyCommitmentSchema>;
 export type TrainingVideo = typeof trainingVideos.$inferSelect;
