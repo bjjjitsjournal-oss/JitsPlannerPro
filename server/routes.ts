@@ -2,12 +2,13 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { pool } from "./db";
+import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, profiles } from "@shared/schema";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { eq } from "drizzle-orm";
 
 import * as nodemailer from "nodemailer";
 import fs from "fs";
@@ -624,6 +625,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req as any).user.userId; // This is an integer
       const userUuid = generateUserUuid(userId); // Convert to UUID
       console.log("Creating note with data:", req.body, "for user:", userId, "UUID:", userUuid);
+      
+      // Ensure profile exists in profiles table for the constraint
+      try {
+        // First check if profile exists
+        const existingProfile = await db.select()
+          .from(profiles)
+          .where(eq(profiles.id, userUuid))
+          .limit(1);
+        
+        if (existingProfile.length === 0) {
+          console.log("Profile doesn't exist, creating profile:", userUuid);
+          // Create profile entry to satisfy FK constraint
+          await db.insert(profiles).values({
+            id: userUuid,
+            email: (req as any).user.email || `user${userId}@example.com`,
+            firstName: 'User',
+            lastName: `${userId}`
+          });
+          console.log("Profile created successfully");
+        }
+      } catch (profileError: any) {
+        console.log("Profile creation/check error (might already exist):", profileError?.message);
+        // Continue - profile might already exist
+      }
       
       const noteData = {
         title: req.body.title,
