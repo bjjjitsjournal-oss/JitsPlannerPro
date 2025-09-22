@@ -79,6 +79,18 @@ const authenticateToken = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Add cache control headers to prevent aggressive caching
+  app.use((req, res, next) => {
+    // Never cache API responses - this prevents login/auth issues
+    if (req.path.startsWith('/api/')) {
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+    }
+    next();
+  });
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
