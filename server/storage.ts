@@ -39,12 +39,12 @@ export interface IStorage {
   updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined>;
   deleteVideo(id: number): Promise<boolean>;
 
-  // Notes with user support (using appNotes table with integer user IDs)
-  getNotes(userId?: number): Promise<AppNote[]>;
-  getNote(id: string): Promise<AppNote | undefined>; // UUID id for appNotes
-  searchNotes(query: string, userId?: number): Promise<AppNote[]>;
-  createNote(noteData: InsertAppNote): Promise<AppNote>;
-  updateNote(id: string, noteData: Partial<InsertAppNote>): Promise<AppNote | undefined>; // UUID id
+  // Notes with user support (using existing notes table with UUID mapping)
+  getNotes(userId?: number): Promise<Note[]>;
+  getNote(id: string): Promise<Note | undefined>; // UUID id for notes
+  searchNotes(query: string, userId?: number): Promise<Note[]>;
+  createNote(noteData: InsertNote): Promise<Note>;
+  updateNote(id: string, noteData: Partial<InsertNote>): Promise<Note | undefined>; // UUID id
   deleteNote(id: string): Promise<boolean>; // UUID id
   shareNote(noteId: string, targetUserId: number): Promise<boolean>; // UUID id
 
@@ -155,32 +155,61 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 
-  // Notes - using appNotes table with integer user IDs
-  async getNotes(userId?: number): Promise<AppNote[]> {
+  // Notes - using existing notes table with UUID mapping
+  async getNotes(userId?: number): Promise<Note[]> {
     if (userId) {
-      return db.select().from(appNotes).where(eq(appNotes.userId, userId)).orderBy(desc(appNotes.createdAt));
+      // Generate deterministic UUID for database query
+      const userUuid = await this.generateUserUuid(userId);
+      return db.select().from(notes).where(eq(notes.userId, userUuid)).orderBy(desc(notes.createdAt));
     }
-    return db.select().from(appNotes).orderBy(desc(appNotes.createdAt));
+    return db.select().from(notes).orderBy(desc(notes.createdAt));
   }
 
-  async getNote(id: string): Promise<AppNote | undefined> {
-    const [note] = await db.select().from(appNotes).where(eq(appNotes.id, id));
+  async getNote(id: string): Promise<Note | undefined> {
+    const [note] = await db.select().from(notes).where(eq(notes.id, id));
     return note || undefined;
   }
 
-  async createNote(noteData: InsertAppNote): Promise<AppNote> {
-    const [note] = await db.insert(appNotes).values(noteData).returning();
+  async createNote(noteData: InsertNote): Promise<Note> {
+    // Ensure profile exists for the user UUID
+    if (noteData.userId) {
+      await this.ensureProfileExists(noteData.userId);
+    }
+    const [note] = await db.insert(notes).values(noteData).returning();
     return note;
   }
 
-  async updateNote(id: string, noteData: Partial<InsertAppNote>): Promise<AppNote | undefined> {
-    const [note] = await db.update(appNotes).set(noteData).where(eq(appNotes.id, id)).returning();
+  async updateNote(id: string, noteData: Partial<InsertNote>): Promise<Note | undefined> {
+    const [note] = await db.update(notes).set(noteData).where(eq(notes.id, id)).returning();
     return note || undefined;
   }
 
   async deleteNote(id: string): Promise<boolean> {
-    const result = await db.delete(appNotes).where(eq(appNotes.id, id));
+    const result = await db.delete(notes).where(eq(notes.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  // Helper method to generate deterministic UUID from integer userId
+  private async generateUserUuid(userId: number): Promise<string> {
+    const crypto = await import('crypto');
+    const userStr = `user-${userId}`;
+    const hash = crypto.createHash('md5').update(userStr).digest('hex');
+    return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
+  }
+
+  // Helper method to ensure profile exists for UUID
+  private async ensureProfileExists(userUuid: string): Promise<void> {
+    try {
+      const { profiles } = await import('@shared/schema');
+      const existingProfile = await db.select().from(profiles).where(eq(profiles.id, userUuid)).limit(1);
+      
+      if (existingProfile.length === 0) {
+        await db.insert(profiles).values({ id: userUuid }).onConflictDoNothing();
+      }
+    } catch (error) {
+      console.error("Profile creation failed:", error);
+      throw error;
+    }
   }
 
   // Videos  
@@ -428,21 +457,22 @@ export class DatabaseStorage implements IStorage {
     );
   }
 
-  async searchNotes(query: string, userId?: number): Promise<AppNote[]> {
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
     const searchCondition = or(
-      ilike(appNotes.title, `%${query}%`),
-      ilike(appNotes.content, `%${query}%`)
+      ilike(notes.title, `%${query}%`),
+      ilike(notes.content, `%${query}%`)
     );
     
     if (userId) {
-      return db.select().from(appNotes)
-        .where(and(eq(appNotes.userId, userId), searchCondition))
-        .orderBy(desc(appNotes.createdAt));
+      const userUuid = await this.generateUserUuid(userId);
+      return db.select().from(notes)
+        .where(and(eq(notes.userId, userUuid), searchCondition))
+        .orderBy(desc(notes.createdAt));
     }
     
-    return db.select().from(appNotes)
+    return db.select().from(notes)
       .where(searchCondition)
-      .orderBy(desc(appNotes.createdAt));
+      .orderBy(desc(notes.createdAt));
   }
 
   async shareNote(noteId: string, targetUserId: number): Promise<boolean> {
@@ -453,9 +483,9 @@ export class DatabaseStorage implements IStorage {
       const sharedUsers = note.sharedWithUsers || [];
       if (!sharedUsers.includes(targetUserId.toString())) {
         sharedUsers.push(targetUserId.toString());
-        await db.update(appNotes)
+        await db.update(notes)
           .set({ sharedWithUsers: sharedUsers })
-          .where(eq(appNotes.id, noteId));
+          .where(eq(notes.id, noteId));
       }
       return true;
     } catch {
@@ -1103,5 +1133,5 @@ class MemStoragePrimary implements IStorage {
 
 // Using Supabase database for persistent data storage
 // All data will be stored permanently in Supabase PostgreSQL database
-export const storage = new MemStoragePrimary(); // Using memory storage for now due to database issues
+export const storage = new DatabaseStorage(); // Using database storage for persistent data
 
