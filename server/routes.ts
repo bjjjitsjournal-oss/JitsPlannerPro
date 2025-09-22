@@ -667,8 +667,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const userEmail = (req as any).user.email;
       
-      // Check if user is admin (Bjjjitsjournal@gmail.com)
-      if (userEmail !== 'Bjjjitsjournal@gmail.com') {
+      // Check if user is admin (bjjjitsjournal@gmail.com - case insensitive)
+      const adminEmails = ['Bjjjitsjournal@gmail.com', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      if (!adminEmails.includes(userEmail)) {
         return res.status(403).json({ message: "Admin access required" });
       }
       
