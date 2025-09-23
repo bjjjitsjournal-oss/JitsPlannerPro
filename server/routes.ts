@@ -770,7 +770,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Video upload route for notes
   app.post("/api/notes/:id/upload-video", authenticateToken, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
+      const noteId = req.params.id; // UUID string, not integer
       const userId = (req as any).user.userId;
       const { videoDataUrl, fileName, thumbnail } = req.body;
       
@@ -815,7 +815,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Remove video from note
   app.delete("/api/notes/:id/video", authenticateToken, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
+      const noteId = req.params.id; // UUID string, not integer
       const userId = (req as any).user.userId;
 
       const updatedNote = await storage.updateNote(noteId, {
