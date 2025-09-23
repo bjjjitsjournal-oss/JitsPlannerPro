@@ -778,6 +778,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`File name: ${fileName}`);
       console.log(`Video data size: ${videoDataUrl ? videoDataUrl.length : 'No data'}`);
       
+      // Debug: Check if note exists first
+      const existingNote = await storage.getNote(noteId);
+      console.log('Existing note found:', existingNote ? 'Yes' : 'No');
+      if (!existingNote) {
+        console.log('Note not found in storage. This usually means memory storage was reset.');
+        return res.status(404).json({ 
+          message: "Note not found. Please refresh the page and try again.",
+          reason: "memory_reset"
+        });
+      }
+      
       if (!videoDataUrl || !fileName) {
         return res.status(400).json({ message: "Video data and filename are required" });
       }
