@@ -1,73 +1,98 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+﻿import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { apiUrl } from '../config/api';
 
-interface AuthContextType {
-  authToken: string | null;
-  login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
-  logout: () => void;
-}
+type User = {
+  id: string;
+  email: string;
+  [key: string]: any;
+} | null;
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+type AuthContextType = {
+  user: User;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
 
-const BACKEND_URL = 'http://localhost:5000';
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: false,
+  login: async () => {},
+  signup: async () => {},
+  logout: async () => {},
+});
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [authToken, setAuthTokenState] = useState<string | null>(null);
+  const [user, setUser] = useState<User>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const setAuthToken = (token: string, rememberMe: boolean) => {
-    setAuthTokenState(token);
-    if (rememberMe) {
-      localStorage.setItem('authToken', token);
-    } else {
-      sessionStorage.setItem('authToken', token);
-    }
-  };
+  useEffect(() => {
+    // Optionally fetch current session/user on mount
+    // fetch(apiUrl('/api/auth/me'), { credentials: 'include' })
+    //   .then(r => r.ok ? r.json() : null)
+    //   .then(data => setUser(data?.user ?? null))
+    //   .catch(() => {})
+  }, []);
 
-  const login = async (email: string, password: string, rememberMe: boolean) => {
+  const login = async (email: string, password: string) => {
+    setLoading(true);
     try {
-      console.log('Calling API URL:', `${BACKEND_URL}/api/auth/login`);
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      const res = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+      if (!res.ok) {
+        const errTxt = await res.text().catch(() => '');
+        throw new Error(Login failed:  );
       }
-
-      const userData = await response.json();
-
-      if (userData && userData.token) {
-        setAuthToken(userData.token, rememberMe);
-      } else {
-        throw new Error('Token missing in login response');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      const data = await res.json();
+      setUser(data.user ?? null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const logout = () => {
-    setAuthTokenState(null);
-    localStorage.removeItem('authToken');
-    sessionStorage.removeItem('authToken');
+  const signup = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(apiUrl('/api/auth/signup'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const errTxt = await res.text().catch(() => '');
+        throw new Error(Signup failed:  );
+      }
+      const data = await res.json();
+      setUser(data.user ?? null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await fetch(apiUrl('/api/auth/logout'), {
+        method: 'POST',
+        credentials: 'include',
+      });
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
