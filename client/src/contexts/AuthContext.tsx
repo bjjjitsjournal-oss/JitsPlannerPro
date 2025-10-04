@@ -1,5 +1,5 @@
-﻿import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { apiUrl } from '../config/api';
+﻿import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { apiUrl } from "../config/api";
 
 type User = {
   id: string;
@@ -27,26 +27,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    // Optionally fetch current session/user on mount
-    // fetch(apiUrl('/api/auth/me'), { credentials: 'include' })
-    //   .then(r => r.ok ? r.json() : null)
-    //   .then(data => setUser(data?.user ?? null))
-    //   .catch(() => {})
-  }, []);
-
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const res = await fetch(apiUrl('/api/auth/login'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const res = await fetch(apiUrl("/api/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        const errTxt = await res.text().catch(() => '');
-        throw new Error(Login failed:  );
+        const errTxt = await res.text().catch(() => "");
+        throw new Error(`Login failed: ${res.status} ${errTxt}`);
       }
       const data = await res.json();
       setUser(data.user ?? null);
@@ -58,15 +50,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const res = await fetch(apiUrl('/api/auth/signup'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const res = await fetch(apiUrl("/api/auth/signup"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        const errTxt = await res.text().catch(() => '');
-        throw new Error(Signup failed:  );
+        const errTxt = await res.text().catch(() => "");
+        throw new Error(`Signup failed: ${res.status} ${errTxt}`);
       }
       const data = await res.json();
       setUser(data.user ?? null);
@@ -78,9 +70,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await fetch(apiUrl('/api/auth/logout'), {
-        method: 'POST',
-        credentials: 'include',
+      await fetch(apiUrl("/api/auth/logout"), {
+        method: "POST",
+        credentials: "include",
       });
       setUser(null);
     } finally {
