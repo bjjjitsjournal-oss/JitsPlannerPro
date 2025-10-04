@@ -8,3 +8,9 @@ vite.config.ts.*
 # Data backup files containing user information
 data/bjj_backup/
 .config/
+
+# Ignore env files
+.env
+.env.*
+client/.env
+server/.env
