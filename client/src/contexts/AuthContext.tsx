@@ -1,125 +1,73 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { apiRequest } from '@/lib/queryClient';
-
-interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  subscriptionStatus: string;
-  subscriptionPlan?: string;
-  createdAt: string;
-}
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  login: (userData: User, rememberMe?: boolean) => void;
+  authToken: string | null;
+  login: (email: string, password: string, rememberMe: boolean) => Promise<void>;
   logout: () => void;
-  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+const BACKEND_URL = 'http://localhost:5000';
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [authToken, setAuthTokenState] = useState<string | null>(null);
 
-// Helper functions for token management with domain isolation
-const getAuthToken = () => {
-  return sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
-};
+  const setAuthToken = (token: string, rememberMe: boolean) => {
+    setAuthTokenState(token);
+    if (rememberMe) {
+      localStorage.setItem('authToken', token);
+    } else {
+      sessionStorage.setItem('authToken', token);
+    }
+  };
 
-const setAuthToken = (token: string, remember: boolean = true) => {
-  console.log('Setting auth token, remember:', remember);
-  // Always use localStorage for mobile app experience to prevent idle logouts
-  localStorage.setItem('bjj_auth_token', token);
-  sessionStorage.removeItem('bjj_auth_token'); // Clear session storage
-  console.log('Token saved to localStorage for persistence');
-};
+  const login = async (email: string, password: string, rememberMe: boolean) => {
+    try {
+      console.log('Calling API URL:', `${BACKEND_URL}/api/auth/login`);
+      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-const clearAuthToken = () => {
-  localStorage.removeItem('bjj_auth_token');
-  sessionStorage.removeItem('bjj_auth_token');
-  // Also clear legacy token for migration
-  localStorage.removeItem('token');
-};
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if user is already logged in by checking localStorage
-    const checkAuth = async () => {
-      try {
-        const token = getAuthToken();
-        console.log('Checking auth on mount, token found:', !!token);
-        if (token) {
-          // Verify token and get user data
-          const response = await apiRequest('GET', '/api/auth/me');
-          if (response) {
-            const userData = await response.json();
-            console.log('Auth check successful, user:', userData.email);
-            setUser(userData);
-          }
-        } else {
-          console.log('No token found during auth check');
-        }
-      } catch (error: any) {
-        console.log('Auth check failed:', error);
-        // If it's a 401 error, the token is invalid or user doesn't exist
-        if (error.message && error.message.includes('401')) {
-          console.log('Authentication failed - clearing tokens');
-          
-          // Simply clear tokens without memory reset detection to prevent auto-switching to register
-          clearAuthToken();
-          setUser(null);
-          // Don't set auth_failure flags to prevent automatic form switching
-        } else {
-          // Other errors might be network issues, don't clear tokens immediately
-          console.log('Network or other error during auth check, keeping tokens');
-        }
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
-    };
 
-    checkAuth();
-  }, []);
+      const userData = await response.json();
 
-  const login = async (userData: User, rememberMe: boolean = true) => {
-    console.log('Login called with rememberMe:', rememberMe);
-    setUser(userData);
-    
-    // Store auth token if provided
-    if ((userData as any).token) {
-      setAuthToken((userData as any).token, rememberMe);
+      if (userData && userData.token) {
+        setAuthToken(userData.token, rememberMe);
+      } else {
+        throw new Error('Token missing in login response');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
   };
 
   const logout = () => {
-    setUser(null);
-    clearAuthToken();
-    // Force page refresh to clear any cached state
-    window.location.reload();
+    setAuthTokenState(null);
+    localStorage.removeItem('authToken');
+    sessionStorage.removeItem('authToken');
   };
 
-  const value: AuthContextType = {
-    user,
-    isLoading,
-    login,
-    logout,
-    isAuthenticated: !!user,
-  };
+  return (
+    <AuthContext.Provider value={{ authToken, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
