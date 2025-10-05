@@ -25,11 +25,11 @@ app.use(cors({
   credentials: true,
 }));
 
-// API routes
+// API route: login
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
 
-  // TODO: Replace with your real auth logic
+  // TODO: Replace with your real authentication logic
   if (email === 'test@example.com' && password === 'password') {
     return res.json({ user: { id: 1, email } });
   } else {
@@ -37,7 +37,18 @@ app.post('/api/auth/login', (req, res) => {
   }
 });
 
-// Add other API routes here...
+// API route: signup
+app.post('/api/auth/signup', (req, res) => {
+  const { email, password } = req.body;
+
+  // TODO: Replace with your real signup logic (e.g., create user in DB)
+  if (email && password) {
+    // Simulate user creation
+    return res.json({ user: { id: 'new-user-id', email } });
+  } else {
+    return res.status(400).json({ error: 'Missing email or password' });
+  }
+});
 
 // Serve frontend static files from Vite build output
 const publicPath = path.join(process.cwd(), 'dist', 'public');
