@@ -1,99 +1,54 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
+// CORS setup for API routes
+const allowedOrigins = [
+  'https://your-frontend-url.vercel.app', // Replace with your actual frontend URL
+  'http://localhost:5173',                 // For local dev
+];
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
     }
-  });
+  },
+  credentials: true,
+}));
 
-  next();
+// API routes
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // TODO: Replace with your real auth logic
+  if (email === 'test@example.com' && password === 'password') {
+    return res.json({ user: { id: 1, email } });
+  } else {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
 });
 
-(async () => {
-  const server = await registerRoutes(app);
+// Add other API routes here...
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+// Serve frontend static files from Vite build output
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
 
-    res.status(status).json({ message });
-    
-    // Only log server errors (5xx), don't exit on client errors (4xx)
-    if (status >= 500) {
-      console.error("Server error:", err);
-    }
-  });
+// SPA fallback: serve index.html for any unknown route (for React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  // Use PORT from environment for deployment compatibility, fallback to 5000 for local development
-  const port = Number(process.env.PORT) || 5000;
-  
-  // Add server error handling
-  server.on("error", (err: any) => {
-    log(`Server startup error: ${err.message}`);
-    console.error("Server error:", err);
-    process.exit(1);
-  });
-  
-  // Add global error handlers for unhandled errors (production only to avoid dev restart issues)
-  if (process.env.NODE_ENV === "production") {
-    process.on("unhandledRejection", (reason: any, promise: any) => {
-      console.error("Unhandled Rejection at:", promise, "reason:", reason);
-      process.exit(1);
-    });
-    
-    process.on("uncaughtException", (error: any) => {
-      console.error("Uncaught Exception:", error);
-      process.exit(1);
-    });
-  } else {
-    // In development, log but don't exit to avoid restart loops
-    process.on("unhandledRejection", (reason: any, promise: any) => {
-      console.error("Unhandled Rejection at:", promise, "reason:", reason);
-    });
-    
-    process.on("uncaughtException", (error: any) => {
-      console.error("Uncaught Exception:", error);
-    });
-  }
-  
-  // Start server with autoscale-compatible configuration
-  server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
-  });
-})();
+// Start server
+const port = process.env.PORT || 10000;
+app.listen(port, () => {
+  console.log(`[express] Server listening on port ${port}`);
+});
