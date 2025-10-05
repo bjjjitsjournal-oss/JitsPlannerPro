@@ -9,13 +9,14 @@ app.use(express.json());
 
 // CORS setup for API routes
 const allowedOrigins = [
-  'https://your-frontend-url.vercel.app', // Replace with your actual frontend URL
+  'https://jits-planner-pro.vercel.app',  // Your Vercel frontend URL
+  'https://jitsplannerpro.onrender.com',  // Your Render backend URL (optional)
   'http://localhost:5173',                 // For local dev
 ];
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -39,7 +40,7 @@ app.post('/api/auth/login', (req, res) => {
 // Add other API routes here...
 
 // Serve frontend static files from Vite build output
-const publicPath = path.join(__dirname, 'public');
+const publicPath = path.join(process.cwd(), 'dist', 'public');
 app.use(express.static(publicPath));
 
 // SPA fallback: serve index.html for any unknown route (for React Router)
