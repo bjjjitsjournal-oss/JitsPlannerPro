@@ -1,19 +1,13 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 export default function AuthPage() {
   const { login, signup, loading, user } = useAuth();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard'); // Redirect if already logged in
-    }
-  }, [user, navigate]);
+  const [, setLocation] = useLocation();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,12 +18,16 @@ export default function AuthPage() {
         await signup(email, password);
       }
       alert('Success');
-      // Redirect after successful login/signup
-      navigate('/dashboard');
+      setLocation('/dashboard'); // Navigate using wouter
     } catch (e: any) {
       alert(e?.message ?? 'Failed');
     }
   };
+
+  if (user) {
+    setLocation('/dashboard');
+    return null;
+  }
 
   return (
     <div style={{ maxWidth: 400, margin: '40px auto' }}>
