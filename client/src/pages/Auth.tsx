@@ -56,12 +56,17 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
+      console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
+      console.log('Login successful:', authData.user?.email);
       return authData;
     },
     onSuccess: (data) => {
@@ -83,10 +88,18 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       }
     },
     onError: (error: any) => {
-      console.log('Login error:', error);
+      console.error('Login mutation error:', error);
+      let description = "Please check your credentials and try again.";
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        description = "Invalid email or password. If you haven't signed up yet, please create an account.";
+      } else if (error.message?.includes('Email not confirmed')) {
+        description = "Please check your email and confirm your account before logging in.";
+      }
+      
       toast({
         title: "Login failed",
-        description: error.message || "Please check your credentials and try again.",
+        description: description,
         variant: "destructive",
       });
     },
@@ -94,6 +107,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterFormData) => {
+      console.log('Signup attempt for:', data.email);
+      
       // Sign up with Supabase Auth
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -103,13 +118,25 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             firstName: data.firstName,
             lastName: data.lastName,
           },
+          emailRedirectTo: window.location.origin,
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase signup error:', error);
+        throw error;
+      }
+      
+      console.log('Supabase signup successful:', {
+        userId: authData.user?.id,
+        email: authData.user?.email,
+        confirmed: authData.user?.confirmed_at,
+      });
       
       // Create user profile in database with auto-generated integer ID
       if (authData.user) {
+        console.log('Creating user profile in database...');
+        
         // Insert into users table (ID will be auto-generated)
         const { data: newUser, error: profileError } = await supabase
           .from('users')
@@ -125,8 +152,10 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
         if (profileError) {
           console.error('Profile creation error:', profileError);
-          throw profileError;
+          throw new Error(`Failed to create profile: ${profileError.message}`);
         }
+
+        console.log('User profile created:', newUser?.id);
 
         // Create mapping between Supabase UUID and integer user ID
         if (newUser) {
@@ -139,19 +168,31 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
           if (identityError) {
             console.error('Identity mapping error:', identityError);
+            throw new Error(`Failed to create identity mapping: ${identityError.message}`);
           }
+          
+          console.log('Identity mapping created successfully');
         }
       }
 
       return authData;
     },
     onSuccess: (data) => {
+      let description = "Welcome to Jits Journal. Your account has been created successfully.";
+      
+      // Check if email confirmation is required
+      if (data.user && !data.user.confirmed_at) {
+        description = "Please check your email to confirm your account before logging in.";
+      }
+      
       toast({
         title: "Account created!",
-        description: "Welcome to Jits Journal. Your account has been created successfully.",
+        description: description,
+        duration: 6000,
       });
       
-      if (data.user) {
+      if (data.user && data.user.confirmed_at) {
+        // User is confirmed, auto-login
         const userData = {
           id: data.user.id,
           email: data.user.email || '',
@@ -164,10 +205,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       }
     },
     onError: (error: any) => {
+      console.error('Registration mutation error:', error);
       toast({
         title: "Registration failed",
         description: error.message || "Please try again.",
         variant: "destructive",
+        duration: 6000,
       });
     },
   });
