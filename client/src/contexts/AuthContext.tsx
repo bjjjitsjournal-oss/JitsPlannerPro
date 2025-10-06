@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { apiRequest } from '@/lib/queryClient';
+import { supabase } from '@/lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface User {
-  id: number;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -13,9 +14,11 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  supabaseUser: SupabaseUser | null;
+  session: any;
   isLoading: boolean;
-  login: (userData: User, rememberMe?: boolean) => void;
-  logout: () => void;
+  login: (userData: User) => void;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -33,92 +36,88 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Helper functions for token management with domain isolation
-const getAuthToken = () => {
-  return sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
-};
-
-const setAuthToken = (token: string, remember: boolean = true) => {
-  console.log('Setting auth token, remember:', remember);
-  // Always use localStorage for mobile app experience to prevent idle logouts
-  localStorage.setItem('bjj_auth_token', token);
-  sessionStorage.removeItem('bjj_auth_token'); // Clear session storage
-  console.log('Token saved to localStorage for persistence');
-};
-
-const clearAuthToken = () => {
-  localStorage.removeItem('bjj_auth_token');
-  sessionStorage.removeItem('bjj_auth_token');
-  // Also clear legacy token for migration
-  localStorage.removeItem('token');
-};
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in by checking localStorage
-    const checkAuth = async () => {
-      try {
-        const token = getAuthToken();
-        console.log('Checking auth on mount, token found:', !!token);
-        if (token) {
-          // Verify token and get user data
-          const response = await apiRequest('GET', '/api/auth/me');
-          if (response) {
-            const userData = await response.json();
-            console.log('Auth check successful, user:', userData.email);
-            setUser(userData);
-          }
-        } else {
-          console.log('No token found during auth check');
-        }
-      } catch (error: any) {
-        console.log('Auth check failed:', error);
-        // If it's a 401 error, the token is invalid or user doesn't exist
-        if (error.message && error.message.includes('401')) {
-          console.log('Authentication failed - clearing tokens');
-          
-          // Simply clear tokens without memory reset detection to prevent auto-switching to register
-          clearAuthToken();
-          setUser(null);
-          // Don't set auth_failure flags to prevent automatic form switching
-        } else {
-          // Other errors might be network issues, don't clear tokens immediately
-          console.log('Network or other error during auth check, keeping tokens');
-        }
-      } finally {
-        setIsLoading(false);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      if (session?.user) {
+        // Map Supabase user to our User interface
+        const userData: User = {
+          id: session.user.id,
+          email: session.user.email || '',
+          firstName: session.user.user_metadata?.firstName || '',
+          lastName: session.user.user_metadata?.lastName || '',
+          subscriptionStatus: session.user.user_metadata?.subscriptionStatus || 'free',
+          subscriptionPlan: session.user.user_metadata?.subscriptionPlan,
+          createdAt: session.user.created_at,
+        };
+        setUser(userData);
       }
-    };
+      setIsLoading(false);
+    });
 
-    checkAuth();
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('Auth state changed:', _event, session?.user?.email);
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      
+      if (session?.user) {
+        // Fetch user profile data from database
+        const { data: profileData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        const userData: User = {
+          id: session.user.id,
+          email: session.user.email || '',
+          firstName: profileData?.first_name || session.user.user_metadata?.firstName || '',
+          lastName: profileData?.last_name || session.user.user_metadata?.lastName || '',
+          subscriptionStatus: profileData?.subscription_status || 'free',
+          subscriptionPlan: profileData?.subscription_plan,
+          createdAt: session.user.created_at,
+        };
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (userData: User, rememberMe: boolean = true) => {
-    console.log('Login called with rememberMe:', rememberMe);
+  const login = (userData: User) => {
+    // This is mainly for compatibility - Supabase handles login automatically
     setUser(userData);
-    
-    // Store auth token if provided
-    if ((userData as any).token) {
-      setAuthToken((userData as any).token, rememberMe);
-    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    clearAuthToken();
-    // Force page refresh to clear any cached state
-    window.location.reload();
+    setSupabaseUser(null);
+    setSession(null);
   };
 
   const value: AuthContextType = {
     user,
+    supabaseUser,
+    session,
     isLoading,
     login,
     logout,
-    isAuthenticated: !!user,
+    isAuthenticated: !!session,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
