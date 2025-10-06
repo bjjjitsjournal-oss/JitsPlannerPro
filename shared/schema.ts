@@ -218,10 +218,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
   subscriptionExpiresAt: z.date().optional(),
 });
 
-export const insertProfileSchema = createInsertSchema(profiles).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertProfileSchema = createInsertSchema(profiles);
 
 export const insertAuthIdentitySchema = createInsertSchema(authIdentities);
 
