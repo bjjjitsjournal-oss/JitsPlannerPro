@@ -72,6 +72,7 @@ export const notesQueries = {
   },
 
   async create(userId: number, noteData: any) {
+    console.log('Creating note with userId:', userId, 'noteData:', noteData);
     const { data, error } = await supabase
       .from('notes')
       .insert({
@@ -81,7 +82,12 @@ export const notesQueries = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Note creation error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      throw error;
+    }
+    console.log('Note created successfully:', data);
     return data;
   },
 
@@ -208,6 +214,7 @@ export const weeklyCommitmentsQueries = {
   },
 
   async create(userId: number, commitmentData: any) {
+    console.log('Creating weekly commitment with userId:', userId, 'data:', commitmentData);
     const { data, error } = await supabase
       .from('weekly_commitments')
       .insert({
@@ -217,11 +224,17 @@ export const weeklyCommitmentsQueries = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Weekly commitment creation error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      throw error;
+    }
+    console.log('Weekly commitment created successfully:', data);
     return data;
   },
 
   async update(commitmentId: number, userId: number, commitmentData: any) {
+    console.log('Updating weekly commitment:', commitmentId, 'userId:', userId, 'data:', commitmentData);
     const { data, error } = await supabase
       .from('weekly_commitments')
       .update(commitmentData)
@@ -230,7 +243,12 @@ export const weeklyCommitmentsQueries = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Weekly commitment update error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      throw error;
+    }
+    console.log('Weekly commitment updated successfully:', data);
     return data;
   },
 };
