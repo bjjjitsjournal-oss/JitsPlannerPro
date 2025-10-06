@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.local
+server
+react-native-apk-package
+*.log
+.replit
+replit.nix
+.upm
