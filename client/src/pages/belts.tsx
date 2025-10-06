@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBeltSchema, type Belt, type InsertBelt } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Award, Calendar as CalendarIcon, User, Plus, Edit2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
@@ -16,18 +16,25 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { beltsQueries } from "@/lib/supabaseQueries";
 
 export default function Belts() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [editingBelt, setEditingBelt] = useState<Belt | null>(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const { data: belts = [], isLoading } = useQuery<Belt[]>({
-    queryKey: ["/api/belts"],
+    queryKey: ["belts", user?.id],
+    queryFn: () => beltsQueries.getAll(user!.id),
+    enabled: !!user?.id,
   });
 
   const { data: currentBelt } = useQuery<Belt>({
-    queryKey: ["/api/belts/current"],
+    queryKey: ["belts", "current", user?.id],
+    queryFn: () => beltsQueries.getCurrent(user!.id),
+    enabled: !!user?.id,
   });
 
   const form = useForm<InsertBelt>({
@@ -43,18 +50,19 @@ export default function Belts() {
 
   const createBeltMutation = useMutation({
     mutationFn: async (data: InsertBelt) => {
-      const requestData = {
+      if (!user?.id) throw new Error('User not authenticated');
+      const beltData = {
         belt: data.belt,
         stripes: data.stripes || 0,
         promotionDate: data.promotionDate.toISOString().split('T')[0],
         instructor: data.instructor || "",
         notes: data.notes || "",
       };
-      return await apiRequest("POST", "/api/belts", requestData);
+      return await beltsQueries.create(user.id, beltData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/belts"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/belts/current"] });
+      queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
       form.reset();
       setShowUpdateForm(false);
       toast({
@@ -74,18 +82,19 @@ export default function Belts() {
 
   const updateBeltMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: InsertBelt }) => {
-      const requestData = {
+      if (!user?.id) throw new Error('User not authenticated');
+      const beltData = {
         belt: data.belt,
         stripes: data.stripes || 0,
         promotionDate: data.promotionDate.toISOString().split('T')[0],
         instructor: data.instructor || "",
         notes: data.notes || "",
       };
-      return await apiRequest("PATCH", `/api/belts/${id}`, requestData);
+      return await beltsQueries.update(id, user.id, beltData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/belts"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/belts/current"] });
+      queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
       form.reset();
       setShowUpdateForm(false);
       setEditingBelt(null);
@@ -106,11 +115,12 @@ export default function Belts() {
 
   const deleteBeltMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest("DELETE", `/api/belts/${id}`);
+      if (!user?.id) throw new Error('User not authenticated');
+      return await beltsQueries.delete(id, user.id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/belts"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/belts/current"] });
+      queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
       toast({
         title: "Belt promotion deleted",
         description: "The belt promotion has been removed.",

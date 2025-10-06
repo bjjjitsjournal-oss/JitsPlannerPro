@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { weeklyCommitmentsQueries, classesQueries } from '@/lib/supabaseQueries';
 
 export default function WeeklyGoals() {
   const [showForm, setShowForm] = useState(false);
@@ -9,10 +10,13 @@ export default function WeeklyGoals() {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Fetch current week's commitment
   const { data: currentCommitment, refetch: refetchCommitment } = useQuery({
-    queryKey: ['/api/weekly-commitments/current'],
+    queryKey: ['weeklyCommitments', 'current', user?.id],
+    queryFn: () => weeklyCommitmentsQueries.getCurrent(user!.id),
+    enabled: !!user?.id,
     staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -23,7 +27,9 @@ export default function WeeklyGoals() {
 
   // Fetch current week's classes for progress
   const { data: classes = [], refetch: refetchClasses } = useQuery({
-    queryKey: ['/api/classes'],
+    queryKey: ['classes', user?.id],
+    queryFn: () => classesQueries.getAll(user!.id),
+    enabled: !!user?.id,
     staleTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -49,19 +55,20 @@ export default function WeeklyGoals() {
   // Create/update commitment mutation
   const commitmentMutation = useMutation({
     mutationFn: async (data: any) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      
       if (currentCommitment && (currentCommitment as any).id) {
-        const response = await apiRequest('PUT', `/api/weekly-commitments/${(currentCommitment as any).id}`, data);
-        return await response?.json();
+        return await weeklyCommitmentsQueries.update((currentCommitment as any).id, user.id, data);
       } else {
-        const response = await apiRequest('POST', '/api/weekly-commitments', data);
-        return await response?.json();
+        return await weeklyCommitmentsQueries.create(user.id, data);
       }
     },
     onSuccess: (result) => {
       console.log('Weekly goal mutation success:', result);
       
-      // Completely reset the query cache
-      queryClient.clear();
+      // Invalidate queries with new keys
+      queryClient.invalidateQueries({ queryKey: ['weeklyCommitments', 'current', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
       
       // Force immediate refetch to ensure UI updates
       setTimeout(() => {

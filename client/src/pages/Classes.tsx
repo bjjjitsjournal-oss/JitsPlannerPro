@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
-import { apiRequest } from '../lib/queryClient';
+import { classesQueries } from '../lib/supabaseQueries';
 import WeeklyGoals from '../components/WeeklyGoals';
 import { useAuth } from '../contexts/AuthContext';
 import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
@@ -39,9 +39,14 @@ export default function Classes() {
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
-  // Fetch classes from API
+  // Fetch classes from Supabase
   const { data: classes = [], isLoading } = useQuery({
-    queryKey: ['/api/classes'],
+    queryKey: ['classes', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      return await classesQueries.getAll(user.id);
+    },
+    enabled: !!user?.id,
   });
 
   // Ensure classes is always an array
@@ -50,18 +55,19 @@ export default function Classes() {
   // Create class mutation with context for summary
   const createClassMutation = useMutation({
     mutationFn: async ({ classData, originalFormData }: { classData: any, originalFormData: any }) => {
-      const response = await apiRequest('POST', '/api/classes', classData);
-      return { result: await response?.json(), originalFormData };
+      if (!user?.id) throw new Error('User not authenticated');
+      const result = await classesQueries.create(user.id, classData);
+      return { result, originalFormData };
     },
     onSuccess: ({ originalFormData }) => {
       // Invalidate all related queries to refresh dashboard data
-      queryClient.invalidateQueries({ queryKey: ['/api/classes'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/weekly-commitments/current'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/belts/current'] });
+      queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['weekly-commitment', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['current-belt', user?.id] });
       
       // Also force refetch to ensure immediate updates
-      queryClient.refetchQueries({ queryKey: ['/api/classes'] });
-      queryClient.refetchQueries({ queryKey: ['/api/weekly-commitments/current'] });
+      queryClient.refetchQueries({ queryKey: ['classes', user?.id] });
+      queryClient.refetchQueries({ queryKey: ['weekly-commitment', user?.id] });
       
       // Create brief summary for toast using original form data
       let description = 'Your training session has been recorded.';

@@ -1,13 +1,47 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { drawingsQueries } from '@/lib/supabaseQueries';
 
 export default function Drawing() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(3);
-  const [drawings, setDrawings] = useState<string[]>([]);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // Fetch saved drawings from Supabase
+  const { data: drawings = [] } = useQuery({
+    queryKey: ['drawings', user?.id],
+    queryFn: () => drawingsQueries.getAll(user!.id),
+    enabled: !!user?.id,
+  });
+
+  // Mutation to save drawing to Supabase
+  const saveDrawingMutation = useMutation({
+    mutationFn: async (drawingData: { imageData: string }) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      return await drawingsQueries.create(user.id, drawingData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['drawings', user?.id] });
+      toast({
+        title: 'Drawing Saved!',
+        description: 'Your technique diagram has been saved.',
+      });
+      clearCanvas();
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: 'Failed to save drawing. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -95,14 +129,7 @@ export default function Drawing() {
     if (!canvas) return;
 
     const dataURL = canvas.toDataURL();
-    setDrawings(prev => [...prev, dataURL]);
-    
-    toast({
-      title: 'Drawing Saved!',
-      description: 'Your technique diagram has been saved.',
-    });
-
-    clearCanvas();
+    saveDrawingMutation.mutate({ imageData: dataURL });
   };
 
   const colors = [
@@ -188,15 +215,17 @@ export default function Drawing() {
         
         {drawings.length > 0 ? (
           <div className="grid grid-cols-2 gap-3">
-            {drawings.map((drawing, index) => (
-              <div key={index} className="bg-white p-2 rounded-lg shadow-md">
+            {drawings.map((drawing: any, index: number) => (
+              <div key={drawing.id} className="bg-white p-2 rounded-lg shadow-md">
                 <img
-                  src={drawing}
+                  src={drawing.imageData}
                   alt={`Drawing ${index + 1}`}
                   className="w-full rounded border"
                 />
                 <div className="mt-2 text-center">
-                  <span className="text-xs text-gray-500">Drawing {index + 1}</span>
+                  <span className="text-xs text-gray-500">
+                    {new Date(drawing.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
             ))}
