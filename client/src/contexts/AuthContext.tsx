@@ -40,14 +40,22 @@ interface AuthProviderProps {
 // Helper to fetch or create user profile from Supabase UUID
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
+    console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
+    
     // First, try to find existing user by email
-    const { data: existingUser } = await supabase
+    const { data: existingUser, error: userError } = await supabase
       .from('users')
       .select('*')
       .eq('email', email)
       .single();
 
+    if (userError) {
+      console.error('Error fetching user by email:', userError);
+    }
+
     if (existingUser) {
+      console.log('Found existing user:', existingUser.id, existingUser.email);
+      
       // Update auth_identities mapping if needed
       const { error: identityError } = await supabase
         .from('auth_identities')
@@ -58,9 +66,11 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
 
       if (identityError) {
         console.error('Failed to update auth identity:', identityError);
+      } else {
+        console.log('Auth identity mapping updated successfully');
       }
 
-      return {
+      const userData = {
         id: existingUser.id,
         email: existingUser.email,
         firstName: existingUser.first_name || metadata.firstName || '',
@@ -70,9 +80,13 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
         createdAt: existingUser.created_at,
         supabaseId,
       };
+      
+      console.log('Returning user data with ID:', userData.id);
+      return userData;
     }
 
     // If no existing user, this is a new signup - user profile will be created in Auth.tsx
+    console.log('No existing user found for email:', email);
     return null;
   } catch (error) {
     console.error('Error fetching user profile:', error);
