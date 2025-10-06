@@ -3,20 +3,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, UserPlus, LogIn } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from 'wouter';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  rememberMe: z.boolean().optional(),
 });
 
 const registerSchema = z.object({
@@ -30,13 +28,12 @@ type LoginFormData = z.infer<typeof loginSchema>;
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 interface AuthProps {
-  onAuthSuccess: (user: any, rememberMe?: boolean) => void;
+  onAuthSuccess: (user: any) => void;
 }
 
 export default function Auth({ onAuthSuccess }: AuthProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true); // Default to remember user
   const { toast } = useToast();
 
   const loginForm = useForm<LoginFormData>({
@@ -44,7 +41,6 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     defaultValues: {
       email: '',
       password: '',
-      rememberMe: true,
     },
   });
 
@@ -58,26 +54,33 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     },
   });
 
-  // Clean up any leftover data on component mount
-  React.useEffect(() => {
-    // Remove all auth failure flags and recovery data to ensure clean forms
-    sessionStorage.removeItem('auth_failure');
-    sessionStorage.removeItem('auth_failure_reason');
-    localStorage.removeItem('recovery_email');
-  }, []);
-
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const response = await apiRequest('POST', '/api/auth/login', data);
-      return response?.json();
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) throw error;
+      return authData;
     },
-    onSuccess: (user) => {
+    onSuccess: (data) => {
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      // Pass rememberMe state to onAuthSuccess
-      onAuthSuccess(user, rememberMe);
+      
+      if (data.user) {
+        const userData = {
+          id: data.user.id,
+          email: data.user.email || '',
+          firstName: data.user.user_metadata?.firstName || '',
+          lastName: data.user.user_metadata?.lastName || '',
+          subscriptionStatus: data.user.user_metadata?.subscriptionStatus || 'free',
+          createdAt: data.user.created_at,
+        };
+        onAuthSuccess(userData);
+      }
     },
     onError: (error: any) => {
       console.log('Login error:', error);
@@ -91,16 +94,74 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterFormData) => {
-      const response = await apiRequest('POST', '/api/auth/register', data);
-      return response?.json();
+      // Sign up with Supabase Auth
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+          },
+        },
+      });
+
+      if (error) throw error;
+      
+      // Create user profile in database with auto-generated integer ID
+      if (authData.user) {
+        // Insert into users table (ID will be auto-generated)
+        const { data: newUser, error: profileError } = await supabase
+          .from('users')
+          .insert({
+            email: authData.user.email,
+            password: '', // Password is managed by Supabase Auth now
+            first_name: data.firstName,
+            last_name: data.lastName,
+            subscription_status: 'free',
+          })
+          .select()
+          .single();
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+          throw profileError;
+        }
+
+        // Create mapping between Supabase UUID and integer user ID
+        if (newUser) {
+          const { error: identityError } = await supabase
+            .from('auth_identities')
+            .insert({
+              user_id: newUser.id,
+              supabase_uid: authData.user.id,
+            });
+
+          if (identityError) {
+            console.error('Identity mapping error:', identityError);
+          }
+        }
+      }
+
+      return authData;
     },
-    onSuccess: (user) => {
+    onSuccess: (data) => {
       toast({
         title: "Account created!",
         description: "Welcome to Jits Journal. Your account has been created successfully.",
       });
-      // Default to remember new users
-      onAuthSuccess(user, true);
+      
+      if (data.user) {
+        const userData = {
+          id: data.user.id,
+          email: data.user.email || '',
+          firstName: data.user.user_metadata?.firstName || '',
+          lastName: data.user.user_metadata?.lastName || '',
+          subscriptionStatus: 'free',
+          createdAt: data.user.created_at,
+        };
+        onAuthSuccess(userData);
+      }
     },
     onError: (error: any) => {
       toast({
@@ -113,8 +174,6 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const handleLogin = (data: LoginFormData) => {
     console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
-    // Use the form's rememberMe value if provided, otherwise fall back to state
-    setRememberMe(data.rememberMe ?? rememberMe);
     loginMutation.mutate(data);
   };
 
@@ -181,22 +240,11 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                   )}
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-                  />
-                  <Label htmlFor="rememberMe" className="text-white/80 text-sm cursor-pointer">
-                    Keep me signed in
-                  </Label>
-                </div>
-                
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 text-white font-medium"
                   disabled={loginMutation.isPending}
+                  data-testid="button-login"
                 >
                   {loginMutation.isPending ? (
                     <div className="flex items-center gap-2">
@@ -292,6 +340,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 text-white font-medium"
                   disabled={registerMutation.isPending}
+                  data-testid="button-register"
                 >
                   {registerMutation.isPending ? (
                     <div className="flex items-center gap-2">

@@ -3,13 +3,14 @@ import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface User {
-  id: string;
+  id: number; // Keep integer ID for compatibility with existing database
   email: string;
   firstName: string;
   lastName: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;
   createdAt: string;
+  supabaseId?: string; // Store Supabase UUID for reference
 }
 
 interface AuthContextType {
@@ -36,6 +37,49 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Helper to fetch or create user profile from Supabase UUID
+async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
+  try {
+    // First, try to find existing user by email
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      // Update auth_identities mapping if needed
+      const { error: identityError } = await supabase
+        .from('auth_identities')
+        .upsert({
+          user_id: existingUser.id,
+          supabase_uid: supabaseId,
+        });
+
+      if (identityError) {
+        console.error('Failed to update auth identity:', identityError);
+      }
+
+      return {
+        id: existingUser.id,
+        email: existingUser.email,
+        firstName: existingUser.first_name || metadata.firstName || '',
+        lastName: existingUser.last_name || metadata.lastName || '',
+        subscriptionStatus: existingUser.subscription_status || 'free',
+        subscriptionPlan: existingUser.subscription_plan,
+        createdAt: existingUser.created_at,
+        supabaseId,
+      };
+    }
+
+    // If no existing user, this is a new signup - user profile will be created in Auth.tsx
+    return null;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
@@ -44,20 +88,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
+      
       if (session?.user) {
-        // Map Supabase user to our User interface
-        const userData: User = {
-          id: session.user.id,
-          email: session.user.email || '',
-          firstName: session.user.user_metadata?.firstName || '',
-          lastName: session.user.user_metadata?.lastName || '',
-          subscriptionStatus: session.user.user_metadata?.subscriptionStatus || 'free',
-          subscriptionPlan: session.user.user_metadata?.subscriptionPlan,
-          createdAt: session.user.created_at,
-        };
+        const userData = await getUserFromSupabaseId(
+          session.user.id,
+          session.user.email || '',
+          session.user.user_metadata
+        );
         setUser(userData);
       }
       setIsLoading(false);
@@ -72,22 +112,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
-        // Fetch user profile data from database
-        const { data: profileData } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        const userData: User = {
-          id: session.user.id,
-          email: session.user.email || '',
-          firstName: profileData?.first_name || session.user.user_metadata?.firstName || '',
-          lastName: profileData?.last_name || session.user.user_metadata?.lastName || '',
-          subscriptionStatus: profileData?.subscription_status || 'free',
-          subscriptionPlan: profileData?.subscription_plan,
-          createdAt: session.user.created_at,
-        };
+        const userData = await getUserFromSupabaseId(
+          session.user.id,
+          session.user.email || '',
+          session.user.user_metadata
+        );
         setUser(userData);
       } else {
         setUser(null);
