@@ -119,6 +119,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             lastName: data.lastName,
           },
           emailRedirectTo: window.location.origin,
+          // Auto-confirm for development
+          shouldCreateUser: true,
         },
       });
 
