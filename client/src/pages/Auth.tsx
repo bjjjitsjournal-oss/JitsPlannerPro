@@ -133,46 +133,78 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         confirmed: authData.user?.confirmed_at,
       });
       
-      // Create user profile in database with auto-generated integer ID
+      // Create or update user profile in database
       if (authData.user) {
-        console.log('Creating user profile in database...');
+        console.log('Creating/updating user profile in database...');
         
-        // Insert into users table (ID will be auto-generated)
-        const { data: newUser, error: profileError } = await supabase
+        // Check if user profile already exists
+        const { data: existingUser } = await supabase
           .from('users')
-          .insert({
-            email: authData.user.email,
-            password: '', // Password is managed by Supabase Auth now
-            first_name: data.firstName,
-            last_name: data.lastName,
-            subscription_status: 'free',
-          })
-          .select()
+          .select('id')
+          .eq('email', authData.user.email)
           .single();
 
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-          throw new Error(`Failed to create profile: ${profileError.message}`);
-        }
+        let userId: number;
 
-        console.log('User profile created:', newUser?.id);
+        if (existingUser) {
+          // Update existing profile
+          console.log('Existing user found, updating profile...');
+          const { data: updatedUser, error: updateError } = await supabase
+            .from('users')
+            .update({
+              password: '', // Password is now managed by Supabase Auth
+              first_name: data.firstName,
+              last_name: data.lastName,
+            })
+            .eq('email', authData.user.email)
+            .select()
+            .single();
 
-        // Create mapping between Supabase UUID and integer user ID
-        if (newUser) {
-          const { error: identityError } = await supabase
-            .from('auth_identities')
-            .insert({
-              user_id: newUser.id,
-              supabase_uid: authData.user.id,
-            });
-
-          if (identityError) {
-            console.error('Identity mapping error:', identityError);
-            throw new Error(`Failed to create identity mapping: ${identityError.message}`);
+          if (updateError) {
+            console.error('Profile update error:', updateError);
+            throw new Error(`Failed to update profile: ${updateError.message}`);
           }
           
-          console.log('Identity mapping created successfully');
+          userId = updatedUser.id;
+          console.log('User profile updated:', userId);
+        } else {
+          // Create new profile
+          console.log('Creating new user profile...');
+          const { data: newUser, error: profileError } = await supabase
+            .from('users')
+            .insert({
+              email: authData.user.email,
+              password: '', // Password is managed by Supabase Auth now
+              first_name: data.firstName,
+              last_name: data.lastName,
+              subscription_status: 'free',
+            })
+            .select()
+            .single();
+
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+            throw new Error(`Failed to create profile: ${profileError.message}`);
+          }
+          
+          userId = newUser.id;
+          console.log('User profile created:', userId);
         }
+
+        // Create or update mapping between Supabase UUID and integer user ID
+        const { error: identityError } = await supabase
+          .from('auth_identities')
+          .upsert({
+            user_id: userId,
+            supabase_uid: authData.user.id,
+          });
+
+        if (identityError) {
+          console.error('Identity mapping error:', identityError);
+          throw new Error(`Failed to create identity mapping: ${identityError.message}`);
+        }
+        
+        console.log('Identity mapping created/updated successfully');
       }
 
       return authData;
