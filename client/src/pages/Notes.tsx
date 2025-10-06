@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import VideoUpload from '../components/VideoUpload';
+import SocialShareButton from '../components/SocialShareButton';
 import { useAuth } from '../contexts/AuthContext';
 import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
 
@@ -30,6 +31,12 @@ export default function Notes() {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchInterval: 5000, // Refetch every 5 seconds
+  });
+
+  // Fetch current belt for social sharing
+  const { data: currentBelt } = useQuery<any>({
+    queryKey: ['/api/belts/current'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Force refresh data when component mounts
@@ -417,6 +424,20 @@ export default function Notes() {
                       {note.isShared === 1 ? 'Unshare' : 'Share'}
                     </button>
                   </div>
+                </div>
+                
+                {/* Social Share Button */}
+                <div className="mb-3">
+                  <SocialShareButton 
+                    note={{
+                      id: note.id,
+                      title: note.title,
+                      content: note.content || '',
+                      createdAt: note.createdAt || note.date
+                    }}
+                    userBelt={currentBelt?.belt}
+                    userStripes={currentBelt?.stripes}
+                  />
                 </div>
                 <p className="text-black text-sm mb-3">
                   {note.content}
