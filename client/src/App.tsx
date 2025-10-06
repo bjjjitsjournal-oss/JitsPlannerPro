@@ -17,7 +17,6 @@ import Contact from './pages/Contact';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Auth from './pages/Auth';
-import DevAuth from './pages/DevAuth';
 import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
@@ -60,11 +59,6 @@ function AuthenticatedApp() {
 
 function Router() {
   const { isAuthenticated, isLoading, login } = useAuth();
-
-  // Dev auth route - always available
-  if (window.location.pathname === '/dev-auth') {
-    return <DevAuth />;
-  }
 
   if (isLoading) {
     return (
