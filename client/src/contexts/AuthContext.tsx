@@ -89,17 +89,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
-        const userData = await getUserFromSupabaseId(
-          session.user.id,
-          session.user.email || '',
-          session.user.user_metadata
-        );
-        setUser(userData);
+        try {
+          const userData = await getUserFromSupabaseId(
+            session.user.id,
+            session.user.email || '',
+            session.user.user_metadata
+          );
+          console.log('User data loaded:', userData?.email);
+          setUser(userData);
+        } catch (error) {
+          console.error('Failed to load user data:', error);
+          setUser(null);
+        }
       }
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Session check failed:', error);
       setIsLoading(false);
     });
 
@@ -112,12 +122,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
-        const userData = await getUserFromSupabaseId(
-          session.user.id,
-          session.user.email || '',
-          session.user.user_metadata
-        );
-        setUser(userData);
+        try {
+          const userData = await getUserFromSupabaseId(
+            session.user.id,
+            session.user.email || '',
+            session.user.user_metadata
+          );
+          console.log('User data loaded:', userData?.email);
+          setUser(userData);
+        } catch (error) {
+          console.error('Failed to load user data:', error);
+          setUser(null);
+        }
       } else {
         setUser(null);
       }
