@@ -4,6 +4,8 @@ import { Link } from 'wouter';
 import WeeklyGoals from '../components/WeeklyGoals';
 import ProfileDropdown from '../components/ProfileDropdown';
 import { type Belt } from '@shared/schema';
+import { useAuth } from '@/contexts/AuthContext';
+import { beltsQueries, classesQueries } from '@/lib/supabaseQueries';
 
 // BJJ Quotes Component
 const BJJQuoteBanner = () => {
@@ -41,9 +43,13 @@ const BJJQuoteBanner = () => {
 };
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
   // Fetch current belt
   const { data: currentBelt, refetch: refetchBelt } = useQuery<Belt>({
-    queryKey: ['/api/belts/current'],
+    queryKey: ['belts', 'current', user?.id],
+    queryFn: () => beltsQueries.getCurrent(user!.id),
+    enabled: !!user?.id,
     staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -54,7 +60,9 @@ export default function Dashboard() {
 
   // Fetch user's classes for statistics  
   const { data: classes = [], refetch: refetchClasses } = useQuery({
-    queryKey: ['/api/classes'],
+    queryKey: ['classes', user?.id],
+    queryFn: () => classesQueries.getAll(user!.id),
+    enabled: !!user?.id,
     staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: true,
     refetchOnMount: true,

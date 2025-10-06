@@ -59,6 +59,7 @@ export const drawings = pgTable("drawings", {
   canvasData: text("canvas_data").notNull(), // JSON string of canvas data
   linkedNoteId: integer("linked_note_id"),
   linkedClassId: integer("linked_class_id"),
+  userId: integer("user_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

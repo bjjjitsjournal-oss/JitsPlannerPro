@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
-import { apiRequest } from '../lib/queryClient';
 import VideoUpload from '../components/VideoUpload';
 import SocialShareButton from '../components/SocialShareButton';
 import { useAuth } from '../contexts/AuthContext';
 import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
+import { notesQueries, beltsQueries } from '@/lib/supabaseQueries';
 
 export default function Notes() {
   const [showForm, setShowForm] = useState(false);
@@ -24,9 +24,11 @@ export default function Notes() {
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
-  // Fetch notes from API
+  // Fetch notes from Supabase
   const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
-    queryKey: ['/api/notes'],
+    queryKey: ['notes', user?.id],
+    queryFn: () => notesQueries.getAll(user!.id),
+    enabled: !!user?.id,
     staleTime: 0,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -35,7 +37,9 @@ export default function Notes() {
 
   // Fetch current belt for social sharing
   const { data: currentBelt } = useQuery<any>({
-    queryKey: ['/api/belts/current'],
+    queryKey: ['belts', 'current', user?.id],
+    queryFn: () => beltsQueries.getCurrent(user!.id),
+    enabled: !!user?.id,
     staleTime: 60000, // Cache for 1 minute
   });
 
@@ -46,11 +50,12 @@ export default function Notes() {
 
   // Toggle note sharing mutation
   const toggleSharingMutation = useMutation({
-    mutationFn: async (noteId: number) => {
-      return await apiRequest("POST", `/api/notes/${noteId}/toggle-sharing`);
+    mutationFn: async ({ noteId, isShared }: { noteId: number, isShared: boolean }) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      return await notesQueries.toggleShare(noteId.toString(), user.id, !isShared);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
       toast({
         title: "Success",
         description: "Note sharing updated successfully",
@@ -80,11 +85,12 @@ export default function Notes() {
   // Create note mutation
   const createNoteMutation = useMutation({
     mutationFn: async (noteData: any) => {
-      return await apiRequest('POST', '/api/notes', noteData);
+      if (!user?.id) throw new Error('User not authenticated');
+      return await notesQueries.create(user.id, noteData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      queryClient.refetchQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
       refetchNotes(); // Force immediate refresh
       toast({
         title: 'Note Saved!',
@@ -110,11 +116,12 @@ export default function Notes() {
   // Update note mutation
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, noteData }: { noteId: number, noteData: any }) => {
-      return await apiRequest('PUT', `/api/notes/${noteId}`, noteData);
+      if (!user?.id) throw new Error('User not authenticated');
+      return await notesQueries.update(noteId.toString(), user.id, noteData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      queryClient.refetchQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
       refetchNotes();
       toast({
         title: 'Note Updated!',
@@ -140,11 +147,12 @@ export default function Notes() {
   // Delete note mutation  
   const deleteNoteMutation = useMutation({
     mutationFn: async (noteId: number) => {
-      return await apiRequest('DELETE', `/api/notes/${noteId}`);
+      if (!user?.id) throw new Error('User not authenticated');
+      return await notesQueries.delete(noteId.toString(), user.id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      queryClient.refetchQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
       refetchNotes();
       toast({
         title: 'Note Deleted!',
@@ -200,9 +208,9 @@ export default function Notes() {
   };
 
   // Handle toggling note sharing
-  const handleToggleSharing = async (noteId: number) => {
+  const handleToggleSharing = async (noteId: number, isShared: number) => {
     try {
-      await toggleSharingMutation.mutateAsync(noteId);
+      await toggleSharingMutation.mutateAsync({ noteId, isShared: isShared === 1 });
     } catch (error) {
       // Error handling is done in the mutation
     }
@@ -418,7 +426,7 @@ export default function Notes() {
                       Delete
                     </button>
                     <button
-                      onClick={() => handleToggleSharing(note.id)}
+                      onClick={() => handleToggleSharing(note.id, note.isShared || 0)}
                       className="text-green-600 hover:text-green-800 text-sm"
                     >
                       {note.isShared === 1 ? 'Unshare' : 'Share'}
@@ -453,7 +461,7 @@ export default function Notes() {
                   } : null}
                   onVideoUploaded={() => {
                     // Refresh the notes list when video is uploaded/removed
-                    queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+                    queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
                   }}
                 />
                 
