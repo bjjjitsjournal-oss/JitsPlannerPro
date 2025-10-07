@@ -2,24 +2,30 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Force cache clear and disable service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for(let registration of registrations) {
-      registration.unregister().then(() => {
-        window.location.reload(true);
-      });
-    }
-  });
-}
-
-// Clear all caches
-if ('caches' in window) {
-  caches.keys().then(names => {
-    names.forEach(name => {
-      caches.delete(name);
+// One-time service worker and cache cleanup
+const SW_CLEANUP_KEY = 'sw_cleanup_done_v2';
+if (!sessionStorage.getItem(SW_CLEANUP_KEY)) {
+  console.log('Cleaning up service workers and caches...');
+  
+  // Unregister service workers
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(reg => reg.unregister());
     });
-  });
+  }
+  
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(names => {
+      names.forEach(name => caches.delete(name));
+    });
+  }
+  
+  // Mark cleanup as done
+  sessionStorage.setItem(SW_CLEANUP_KEY, 'true');
+  
+  // Reload once to get fresh code
+  window.location.reload();
 }
 
 // Show update notification
