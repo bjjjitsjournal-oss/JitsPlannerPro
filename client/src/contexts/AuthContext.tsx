@@ -51,6 +51,11 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
 
     if (userError) {
       console.error('Error fetching user by email:', userError);
+      console.error('Error code:', userError.code);
+      console.error('Error message:', userError.message);
+      console.error('Error details:', userError.details);
+    } else {
+      console.log('Query successful, user found:', !!existingUser);
     }
 
     if (existingUser) {
