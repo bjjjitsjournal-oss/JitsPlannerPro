@@ -44,11 +44,25 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     
     // Query by supabase_uid to work with RLS policies
     console.log('Querying users table with supabase_uid:', supabaseId);
-    const { data: existingUser, error: userError } = await supabase
+    
+    // Add timeout to detect hanging queries
+    const queryPromise = supabase
       .from('users')
       .select('*')
       .eq('supabase_uid', supabaseId)
       .single();
+    
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Query timeout after 5s')), 5000)
+    );
+    
+    const { data: existingUser, error: userError } = await Promise.race([
+      queryPromise,
+      timeoutPromise
+    ]).catch(err => {
+      console.error('Query failed or timed out:', err);
+      return { data: null, error: err };
+    }) as any;
 
     console.log('Query result:', { existingUser, userError });
     
