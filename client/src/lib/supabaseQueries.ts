@@ -218,7 +218,10 @@ export const weeklyCommitmentsQueries = {
     const { data, error } = await supabase
       .from('weekly_commitments')
       .insert({
-        ...commitmentData,
+        week_start_date: commitmentData.weekStartDate,
+        target_classes: commitmentData.targetClasses,
+        completed_classes: commitmentData.completedClasses || 0,
+        is_completed: commitmentData.isCompleted || 0,
         user_id: userId,
       })
       .select()
@@ -235,9 +238,17 @@ export const weeklyCommitmentsQueries = {
 
   async update(commitmentId: number, userId: number, commitmentData: any) {
     console.log('Updating weekly commitment:', commitmentId, 'userId:', userId, 'data:', commitmentData);
+    
+    // Map camelCase to snake_case for database
+    const dbData: any = {};
+    if (commitmentData.weekStartDate !== undefined) dbData.week_start_date = commitmentData.weekStartDate;
+    if (commitmentData.targetClasses !== undefined) dbData.target_classes = commitmentData.targetClasses;
+    if (commitmentData.completedClasses !== undefined) dbData.completed_classes = commitmentData.completedClasses;
+    if (commitmentData.isCompleted !== undefined) dbData.is_completed = commitmentData.isCompleted;
+    
     const { data, error } = await supabase
       .from('weekly_commitments')
-      .update(commitmentData)
+      .update(dbData)
       .eq('id', commitmentId)
       .eq('user_id', userId)
       .select()
