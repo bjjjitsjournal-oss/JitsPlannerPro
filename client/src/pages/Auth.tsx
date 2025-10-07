@@ -148,14 +148,14 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         let userId: number;
 
         if (existingUser) {
-          // Update existing profile
-          console.log('Existing user found, updating profile...');
+          // Update existing profile with supabase_uid
+          console.log('Existing user found, updating profile with supabase_uid...');
           const { data: updatedUser, error: updateError } = await supabase
             .from('users')
             .update({
-              password: '', // Password is now managed by Supabase Auth
               first_name: data.firstName,
               last_name: data.lastName,
+              supabase_uid: authData.user.id, // CRITICAL: Link Supabase Auth to user
             })
             .eq('email', authData.user.email)
             .select()
@@ -167,7 +167,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           }
           
           userId = updatedUser.id;
-          console.log('User profile updated:', userId);
+          console.log('User profile updated with supabase_uid:', userId);
         } else {
           // Create new profile with supabase_uid
           console.log('Creating new user profile with Supabase UID...');
