@@ -11,6 +11,13 @@ export default function WeeklyGoals() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  
+  // Debug logging
+  React.useEffect(() => {
+    if (user) {
+      console.log('WeeklyGoals user object:', { id: user.id, type: typeof user.id, email: user.email });
+    }
+  }, [user]);
 
   // Fetch current week's commitment
   const { data: currentCommitment, refetch: refetchCommitment } = useQuery({
