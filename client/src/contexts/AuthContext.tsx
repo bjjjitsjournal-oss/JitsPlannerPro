@@ -68,6 +68,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     }
 
     // Create new user if not found
+    console.log('Creating new user with supabase_uid:', supabaseId);
     const { data: newUser, error: createError } = await supabase
       .from('users')
       .insert({
@@ -75,6 +76,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
         first_name: metadata.firstName || '',
         last_name: metadata.lastName || '',
         subscription_status: 'free',
+        supabase_uid: supabaseId, // Important: Set this for RLS policies
       })
       .select()
       .single();
