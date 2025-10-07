@@ -168,16 +168,16 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           userId = updatedUser.id;
           console.log('User profile updated:', userId);
         } else {
-          // Create new profile
-          console.log('Creating new user profile...');
+          // Create new profile with supabase_uid
+          console.log('Creating new user profile with Supabase UID...');
           const { data: newUser, error: profileError } = await supabase
             .from('users')
             .insert({
               email: authData.user.email,
-              password: '', // Password is managed by Supabase Auth now
               first_name: data.firstName,
               last_name: data.lastName,
               subscription_status: 'free',
+              supabase_uid: authData.user.id, // Store Supabase UUID
             })
             .select()
             .single();
@@ -188,23 +188,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           }
           
           userId = newUser.id;
-          console.log('User profile created:', userId);
+          console.log('User profile created with supabase_uid:', userId);
         }
-
-        // Create or update mapping between Supabase UUID and integer user ID
-        const { error: identityError } = await supabase
-          .from('auth_identities')
-          .upsert({
-            user_id: userId,
-            supabase_uid: authData.user.id,
-          });
-
-        if (identityError) {
-          console.error('Identity mapping error:', identityError);
-          throw new Error(`Failed to create identity mapping: ${identityError.message}`);
-        }
-        
-        console.log('Identity mapping created/updated successfully');
       }
 
       return authData;
