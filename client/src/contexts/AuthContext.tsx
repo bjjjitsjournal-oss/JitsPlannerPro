@@ -42,8 +42,10 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
   try {
     console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
     
-    // First, try to find existing user by email
+    // First, try to find existing user by email with timeout
     console.log('Starting Supabase query...');
+    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...');
+    
     const queryPromise = supabase
       .from('users')
       .select('*')
@@ -51,7 +53,20 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       .single();
     
     console.log('Waiting for query result...');
-    const { data: existingUser, error: userError } = await queryPromise;
+    
+    // Add 5 second timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Query timeout after 5 seconds')), 5000)
+    );
+    
+    const { data: existingUser, error: userError } = await Promise.race([
+      queryPromise,
+      timeoutPromise
+    ]).catch((err) => {
+      console.error('Query timeout or error:', err);
+      return { data: null, error: err };
+    });
+    
     console.log('Query completed!');
 
     if (userError) {
