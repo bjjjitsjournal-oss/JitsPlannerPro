@@ -158,7 +158,11 @@ export const beltsQueries = {
     const { data, error } = await supabase
       .from('belts')
       .insert({
-        ...beltData,
+        belt: beltData.belt,
+        stripes: beltData.stripes,
+        promotion_date: beltData.promotionDate,
+        instructor: beltData.instructor,
+        notes: beltData.notes,
         user_id: userId,
       })
       .select()
@@ -171,7 +175,13 @@ export const beltsQueries = {
   async update(beltId: number, userId: number, beltData: any) {
     const { data, error } = await supabase
       .from('belts')
-      .update(beltData)
+      .update({
+        belt: beltData.belt,
+        stripes: beltData.stripes,
+        promotion_date: beltData.promotionDate,
+        instructor: beltData.instructor,
+        notes: beltData.notes,
+      })
       .eq('id', beltId)
       .eq('user_id', userId)
       .select()

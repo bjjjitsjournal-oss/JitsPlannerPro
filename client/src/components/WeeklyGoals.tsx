@@ -120,7 +120,7 @@ export default function WeeklyGoals() {
     });
   };
 
-  const goal = (currentCommitment as any)?.targetClasses || 0;
+  const goal = (currentCommitment as any)?.target_classes || 0; // Database uses snake_case
   const progress = thisWeekClasses;
   const progressPercentage = goal > 0 ? Math.min((progress / goal) * 100, 100) : 0;
   const remaining = Math.max(goal - progress, 0);
