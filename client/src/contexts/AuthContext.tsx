@@ -43,11 +43,16 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
     
     // First, try to find existing user by email
-    const { data: existingUser, error: userError } = await supabase
+    console.log('Starting Supabase query...');
+    const queryPromise = supabase
       .from('users')
       .select('*')
       .eq('email', email)
       .single();
+    
+    console.log('Waiting for query result...');
+    const { data: existingUser, error: userError } = await queryPromise;
+    console.log('Query completed!');
 
     if (userError) {
       console.error('Error fetching user by email:', userError);
