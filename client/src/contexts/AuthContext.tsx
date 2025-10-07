@@ -42,12 +42,16 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
   try {
     console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
     
+    // Query by supabase_uid to work with RLS policies
+    console.log('Querying users table with supabase_uid:', supabaseId);
     const { data: existingUser, error: userError } = await supabase
       .from('users')
       .select('*')
-      .eq('email', email)
+      .eq('supabase_uid', supabaseId)
       .single();
 
+    console.log('Query result:', { existingUser, userError });
+    
     if (userError && userError.code !== 'PGRST116') {
       console.error('Database query error:', userError);
       return null;
