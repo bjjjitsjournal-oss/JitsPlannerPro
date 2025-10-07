@@ -195,20 +195,26 @@ export const beltsQueries = {
 // Weekly commitments queries
 export const weeklyCommitmentsQueries = {
   async getCurrent(userId: number) {
-    // Get the start of the current week (Sunday)
+    // Get the start of the current week (Sunday) in UTC
     const today = new Date();
-    const dayOfWeek = today.getDay();
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - dayOfWeek);
-    weekStart.setHours(0, 0, 0, 0);
+    const dayOfWeek = today.getUTCDay();
+    const daysToSunday = dayOfWeek === 0 ? 0 : -dayOfWeek;
+    const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + daysToSunday, 0, 0, 0, 0));
+    const weekStartStr = weekStart.toISOString().split('T')[0]; // Just the date part
+    
+    console.log('getCurrent - Looking for week:', weekStartStr);
 
     const { data, error } = await supabase
       .from('weekly_commitments')
       .select('*')
       .eq('user_id', userId)
-      .eq('week_start_date', weekStart.toISOString())
+      .gte('week_start_date', weekStartStr)
+      .lt('week_start_date', new Date(weekStart.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single();
 
+    console.log('getCurrent - Found:', data, 'Error:', error);
     if (error && error.code !== 'PGRST116') throw error;
     return data;
   },
