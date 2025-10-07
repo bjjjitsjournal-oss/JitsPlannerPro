@@ -9,6 +9,7 @@ interface User {
   lastName: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;
+  role?: string; // user, admin
   createdAt: string;
   supabaseId?: string; // Store Supabase UUID for reference
 }
@@ -80,6 +81,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
         lastName: existingUser.last_name || '',
         subscriptionStatus: existingUser.subscription_status || 'free',
         subscriptionPlan: existingUser.subscription_plan,
+        role: existingUser.role || 'user',
         createdAt: existingUser.created_at,
         supabaseId,
       };
@@ -111,6 +113,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       lastName: newUser.last_name || '',
       subscriptionStatus: newUser.subscription_status || 'free',
       subscriptionPlan: newUser.subscription_plan,
+      role: newUser.role || 'user',
       createdAt: newUser.created_at,
       supabaseId,
     };

@@ -84,7 +84,9 @@ export const users = pgTable("users", {
   subscriptionPlan: text("subscription_plan"), // Added for RevenueCat subscription plans
   revenuecatCustomerId: text("revenuecat_customer_id"), // Added for RevenueCat integration
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
+  role: text("role").default("user"), // user, admin
   createdAt: timestamp("created_at").defaultNow(),
+  supabaseUid: varchar("supabase_uid").unique(), // Link to Supabase Auth
 });
 
 export const profiles = pgTable("profiles", {

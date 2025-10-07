@@ -141,3 +141,11 @@ Preferred communication style: Simple, everyday language.
       - Added subscription sync API endpoint for backend validation
       - Subscription status now syncs between RevenueCat and backend automatically
       - Supports all RevenueCat platforms: iOS App Store, Google Play, and web payments
+    - **October 7, 2025**: Admin Role & Community Moderation
+      - Added role field to users table (user, admin) for access control
+      - Set bjj-jits-journal@gmail.com as admin and premium account
+      - Added AuthContext support for role field in user data
+      - Implemented adminDelete function for removing inappropriate community notes
+      - Admin users can delete any shared note from Community tab
+      - Delete button appears only for admin users with confirmation dialog
+      - Proper admin permission checks prevent unauthorized deletions
