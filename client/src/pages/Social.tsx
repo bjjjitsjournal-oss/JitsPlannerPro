@@ -14,7 +14,20 @@ export default function Social() {
 
   // Fetch shared notes from the community
   const { data: sharedNotes = [], isLoading: notesLoading } = useQuery<any[]>({
-    queryKey: ['/api/notes/shared'],
+    queryKey: ['shared-notes'],
+    queryFn: async () => {
+      const notes = await notesQueries.getShared();
+      // Map the joined user data to author field and fix date format
+      return notes.map((note: any) => ({
+        ...note,
+        author: note.users ? {
+          firstName: note.users.first_name,
+          lastName: note.users.last_name,
+          email: note.users.email
+        } : null,
+        createdAt: note.created_at, // Map snake_case to camelCase
+      }));
+    },
   });
 
   // Like/unlike mutation
@@ -27,7 +40,7 @@ export default function Social() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
+      queryClient.invalidateQueries({ queryKey: ['shared-notes'] });
     },
     onError: (error: any) => {
       toast({
@@ -44,7 +57,7 @@ export default function Social() {
       return await notesQueries.adminDelete(noteId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
+      queryClient.invalidateQueries({ queryKey: ['shared-notes'] });
       toast({
         title: "Note Removed",
         description: "The inappropriate note has been removed from the community.",
