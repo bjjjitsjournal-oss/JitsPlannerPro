@@ -109,7 +109,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     mutationFn: async (data: RegisterFormData) => {
       console.log('Signup attempt for:', data.email);
       
-      // Sign up with Supabase Auth
+      // Sign up with Supabase Auth - disable email confirmation
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -119,6 +119,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             lastName: data.lastName,
           },
           emailRedirectTo: `${window.location.origin}/`,
+          // Skip email confirmation
         },
       });
 
