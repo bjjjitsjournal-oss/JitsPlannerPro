@@ -110,9 +110,50 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       return userData;
     }
 
-    // If no existing user, this is a new signup - user profile will be created in Auth.tsx
+    // If no existing user, create one automatically
     console.log('No existing user found for email:', email);
-    return null;
+    console.log('Creating new user in database...');
+    
+    const { data: newUser, error: createError } = await supabase
+      .from('users')
+      .insert({
+        email,
+        first_name: metadata.firstName || '',
+        last_name: metadata.lastName || '',
+        subscription_status: 'free',
+      })
+      .select()
+      .single();
+
+    if (createError) {
+      console.error('Failed to create user:', createError);
+      return null;
+    }
+
+    console.log('New user created:', newUser.id);
+
+    // Create auth_identities mapping
+    const { error: identityError } = await supabase
+      .from('auth_identities')
+      .insert({
+        user_id: newUser.id,
+        supabase_uid: supabaseId,
+      });
+
+    if (identityError) {
+      console.error('Failed to create auth identity:', identityError);
+    }
+
+    return {
+      id: newUser.id,
+      email: newUser.email,
+      firstName: newUser.first_name || '',
+      lastName: newUser.last_name || '',
+      subscriptionStatus: newUser.subscription_status || 'free',
+      subscriptionPlan: newUser.subscription_plan,
+      createdAt: newUser.created_at,
+      supabaseId,
+    };
   } catch (error) {
     console.error('Error fetching user profile:', error);
     return null;
