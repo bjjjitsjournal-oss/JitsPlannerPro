@@ -54,28 +54,20 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     
     console.log('Waiting for query result...');
     
-    // Add 5 second timeout
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Query timeout after 5 seconds')), 5000)
-    );
-    
-    const { data: existingUser, error: userError } = await Promise.race([
-      queryPromise,
-      timeoutPromise
-    ]).catch((err) => {
-      console.error('Query timeout or error:', err);
-      return { data: null, error: err };
-    });
-    
+    const { data: existingUser, error: userError } = await queryPromise;
     console.log('Query completed!');
 
     if (userError) {
       console.error('Error fetching user by email:', userError);
-      console.error('Error code:', userError.code);
-      console.error('Error message:', userError.message);
-      console.error('Error details:', userError.details);
-    } else {
-      console.log('Query successful, user found:', !!existingUser);
+      console.error('Full error object:', JSON.stringify(userError, null, 2));
+      
+      // If user not found (PGRST116), that's OK - we'll create them
+      if (userError.code !== 'PGRST116') {
+        console.error('Unexpected error, returning null');
+        return null;
+      }
+    } else if (existingUser) {
+      console.log('Query successful, user found:', existingUser.id);
     }
 
     if (existingUser) {
