@@ -20,6 +20,7 @@ import Auth from './pages/Auth';
 import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
+import EnvCheck from './components/EnvCheck';
 
 function AuthenticatedApp() {
   // Automatically scroll to top when navigating between pages
@@ -27,6 +28,7 @@ function AuthenticatedApp() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <EnvCheck />
       <main className="pb-20">
         <Switch>
           <Route path="/" component={Dashboard} />
