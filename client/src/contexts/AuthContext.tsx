@@ -113,6 +113,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // TEMPORARY: Force logout to show login page
+    console.log('Forcing logout to show login page...');
+    supabase.auth.signOut().then(() => {
+      setUser(null);
+      setSupabaseUser(null);
+      setSession(null);
+      setIsLoading(false);
+    });
+    return;
+    
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       console.log('Initial session check:', session?.user?.email);
