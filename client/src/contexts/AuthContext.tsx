@@ -37,27 +37,65 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// TEMPORARY: Bypass database and use Supabase Auth directly
+// Helper to fetch or create user profile from Supabase UUID
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
-    console.log('Using Supabase user directly (DB queries disabled):', email);
+    console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
     
-    // Return user directly from Supabase Auth metadata
-    // Using a hash of the UUID as a pseudo-integer ID
-    const pseudoId = Math.abs(supabaseId.split('-')[0].split('').reduce((acc, char) => acc + char.charCodeAt(0), 0));
-    
+    const { data: existingUser, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (userError && userError.code !== 'PGRST116') {
+      console.error('Database query error:', userError);
+      return null;
+    }
+
+    if (existingUser) {
+      console.log('Found existing user:', existingUser.id);
+      return {
+        id: existingUser.id,
+        email: existingUser.email,
+        firstName: existingUser.first_name || '',
+        lastName: existingUser.last_name || '',
+        subscriptionStatus: existingUser.subscription_status || 'free',
+        subscriptionPlan: existingUser.subscription_plan,
+        createdAt: existingUser.created_at,
+        supabaseId,
+      };
+    }
+
+    // Create new user if not found
+    const { data: newUser, error: createError } = await supabase
+      .from('users')
+      .insert({
+        email,
+        first_name: metadata.firstName || '',
+        last_name: metadata.lastName || '',
+        subscription_status: 'free',
+      })
+      .select()
+      .single();
+
+    if (createError) {
+      console.error('Failed to create user:', createError);
+      return null;
+    }
+
     return {
-      id: pseudoId,
-      email: email,
-      firstName: metadata?.firstName || '',
-      lastName: metadata?.lastName || '',
-      subscriptionStatus: 'free',
-      subscriptionPlan: undefined,
-      createdAt: new Date().toISOString(),
+      id: newUser.id,
+      email: newUser.email,
+      firstName: newUser.first_name || '',
+      lastName: newUser.last_name || '',
+      subscriptionStatus: newUser.subscription_status || 'free',
+      subscriptionPlan: newUser.subscription_plan,
+      createdAt: newUser.created_at,
       supabaseId,
     };
   } catch (error) {
-    console.error('Error creating user from Supabase:', error);
+    console.error('Error in getUserFromSupabaseId:', error);
     return null;
   }
 }
