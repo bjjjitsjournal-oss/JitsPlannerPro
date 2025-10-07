@@ -37,117 +37,27 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Helper to fetch or create user profile from Supabase UUID
+// TEMPORARY: Bypass database and use Supabase Auth directly
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
-    console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
+    console.log('Using Supabase user directly (DB queries disabled):', email);
     
-    // First, try to find existing user by email with timeout
-    console.log('Starting Supabase query...');
-    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...');
+    // Return user directly from Supabase Auth metadata
+    // Using a hash of the UUID as a pseudo-integer ID
+    const pseudoId = Math.abs(supabaseId.split('-')[0].split('').reduce((acc, char) => acc + char.charCodeAt(0), 0));
     
-    const queryPromise = supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-    
-    console.log('Waiting for query result...');
-    
-    const { data: existingUser, error: userError } = await queryPromise;
-    console.log('Query completed!');
-
-    if (userError) {
-      console.error('Error fetching user by email:', userError);
-      console.error('Full error object:', JSON.stringify(userError, null, 2));
-      
-      // If user not found (PGRST116), that's OK - we'll create them
-      if (userError.code !== 'PGRST116') {
-        console.error('Unexpected error, returning null');
-        return null;
-      }
-    } else if (existingUser) {
-      console.log('Query successful, user found:', existingUser.id);
-    }
-
-    if (existingUser) {
-      console.log('Found existing user:', existingUser.id, existingUser.email);
-      
-      // Update auth_identities mapping if needed
-      const { error: identityError } = await supabase
-        .from('auth_identities')
-        .upsert({
-          user_id: existingUser.id,
-          supabase_uid: supabaseId,
-        });
-
-      if (identityError) {
-        console.error('Failed to update auth identity:', identityError);
-      } else {
-        console.log('Auth identity mapping updated successfully');
-      }
-
-      const userData = {
-        id: existingUser.id,
-        email: existingUser.email,
-        firstName: existingUser.first_name || metadata.firstName || '',
-        lastName: existingUser.last_name || metadata.lastName || '',
-        subscriptionStatus: existingUser.subscription_status || 'free',
-        subscriptionPlan: existingUser.subscription_plan,
-        createdAt: existingUser.created_at,
-        supabaseId,
-      };
-      
-      console.log('Returning user data with ID:', userData.id);
-      return userData;
-    }
-
-    // If no existing user, create one automatically
-    console.log('No existing user found for email:', email);
-    console.log('Creating new user in database...');
-    
-    const { data: newUser, error: createError } = await supabase
-      .from('users')
-      .insert({
-        email,
-        first_name: metadata.firstName || '',
-        last_name: metadata.lastName || '',
-        subscription_status: 'free',
-      })
-      .select()
-      .single();
-
-    if (createError) {
-      console.error('Failed to create user:', createError);
-      return null;
-    }
-
-    console.log('New user created:', newUser.id);
-
-    // Create auth_identities mapping
-    const { error: identityError } = await supabase
-      .from('auth_identities')
-      .insert({
-        user_id: newUser.id,
-        supabase_uid: supabaseId,
-      });
-
-    if (identityError) {
-      console.error('Failed to create auth identity:', identityError);
-    }
-
     return {
-      id: newUser.id,
-      email: newUser.email,
-      firstName: newUser.first_name || '',
-      lastName: newUser.last_name || '',
-      subscriptionStatus: newUser.subscription_status || 'free',
-      subscriptionPlan: newUser.subscription_plan,
-      createdAt: newUser.created_at,
+      id: pseudoId,
+      email: email,
+      firstName: metadata?.firstName || '',
+      lastName: metadata?.lastName || '',
+      subscriptionStatus: 'free',
+      subscriptionPlan: undefined,
+      createdAt: new Date().toISOString(),
       supabaseId,
     };
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    console.error('Error creating user from Supabase:', error);
     return null;
   }
 }
