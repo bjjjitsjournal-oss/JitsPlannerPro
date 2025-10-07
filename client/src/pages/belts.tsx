@@ -144,12 +144,14 @@ export default function Belts() {
     }
   };
 
-  const handleEdit = (belt: Belt) => {
+  const handleEdit = (belt: any) => {
     setEditingBelt(belt);
     setShowUpdateForm(true);
     form.setValue("belt", belt.belt);
     form.setValue("stripes", belt.stripes);
-    form.setValue("promotionDate", new Date(belt.promotionDate));
+    // Handle both snake_case and camelCase from database
+    const promotionDate = belt.promotion_date || belt.promotionDate;
+    form.setValue("promotionDate", new Date(promotionDate));
     form.setValue("instructor", belt.instructor || "");
     form.setValue("notes", belt.notes || "");
   };
@@ -166,8 +168,11 @@ export default function Belts() {
     }
   };
 
-  const formatDate = (date: string | Date) => {
-    return format(new Date(date), "MMM d, yyyy");
+  const formatDate = (date: string | Date | any) => {
+    // Handle both camelCase and snake_case from database
+    const dateValue = date?.promotion_date || date?.promotionDate || date;
+    if (!dateValue) return 'N/A';
+    return format(new Date(dateValue), "MMM d, yyyy");
   };
 
   // Visual belt component with proper belt tip and stripes
