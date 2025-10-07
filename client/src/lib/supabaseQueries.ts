@@ -114,6 +114,16 @@ export const notesQueries = {
     if (error) throw error;
   },
 
+  async adminDelete(noteId: string) {
+    // Admin delete - doesn't check user_id, allows admins to delete any note
+    const { error } = await supabase
+      .from('notes')
+      .delete()
+      .eq('id', noteId);
+
+    if (error) throw error;
+  },
+
   async toggleShare(noteId: string, userId: number, isShared: boolean) {
     const { data, error } = await supabase
       .from('notes')

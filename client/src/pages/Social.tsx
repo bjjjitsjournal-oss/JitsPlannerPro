@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { useAuth } from '../contexts/AuthContext';
+import { notesQueries } from '../lib/supabaseQueries';
 import { Users, UserPlus, Share2, MessageCircle, Heart, Eye, Trash2 } from 'lucide-react';
 
 export default function Social() {
@@ -39,8 +40,8 @@ export default function Social() {
 
   // Admin delete mutation for moderation
   const adminDeleteMutation = useMutation({
-    mutationFn: async (noteId: number) => {
-      return await apiRequest("DELETE", `/api/notes/${noteId}/admin`);
+    mutationFn: async (noteId: string) => {
+      return await notesQueries.adminDelete(noteId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
@@ -58,9 +59,8 @@ export default function Social() {
     },
   });
 
-  // Check if current user is admin (case insensitive)
-  const adminEmails = ['Bjjjitsjournal@gmail.com', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-  const isAdmin = user?.email && adminEmails.includes(user.email);
+  // Check if current user is admin from database role
+  const isAdmin = user?.role === 'admin';
 
   // Sample friend invitations functionality
   const [inviteEmail, setInviteEmail] = useState('');
