@@ -77,10 +77,12 @@ export const belts = pgTable("belts", {
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").unique().notNull(),
-  password: text("password").notNull(),
+  password: text("password"), // Nullable - Supabase Auth handles passwords
   firstName: text("first_name"),
   lastName: text("last_name"),
   subscriptionStatus: text("subscription_status").default("free"), // free, premium, active
+  subscriptionPlan: text("subscription_plan"), // Added for RevenueCat subscription plans
+  revenuecatCustomerId: text("revenuecat_customer_id"), // Added for RevenueCat integration
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
