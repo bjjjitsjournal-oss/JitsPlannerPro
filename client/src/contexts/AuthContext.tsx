@@ -182,6 +182,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
+        // Keep loading until user profile is fetched
         try {
           const userData = await getUserFromSupabaseId(
             session.user.id,
@@ -190,12 +191,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           );
           console.log('User data loaded:', userData?.email);
           setUser(userData);
+          setIsLoading(false); // Only stop loading after user data is ready
         } catch (error) {
           console.error('Failed to load user data:', error);
           setUser(null);
+          setIsLoading(false);
         }
+      } else {
+        // No session, stop loading immediately
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }).catch((error) => {
       console.error('Session check failed:', error);
       setIsLoading(false);
@@ -206,6 +211,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth state changed:', _event, session?.user?.email);
+      
+      // Start loading when auth state changes
+      setIsLoading(true);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
@@ -216,16 +224,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             session.user.email || '',
             session.user.user_metadata
           );
-          console.log('User data loaded:', userData?.email);
+          console.log('User data loaded after auth change:', userData?.email);
           setUser(userData);
+          setIsLoading(false); // Stop loading after user data is ready
         } catch (error) {
           console.error('Failed to load user data:', error);
           setUser(null);
+          setIsLoading(false);
         }
       } else {
         setUser(null);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
