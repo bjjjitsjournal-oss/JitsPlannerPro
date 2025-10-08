@@ -1,0 +1,92 @@
+index-BMIJiTRb.js:72 🔧 Supabase Client Initialization
+index-BMIJiTRb.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-BMIJiTRb.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-BMIJiTRb.js:314 BJJ Journal - Full App Restored!
+index-BMIJiTRb.js:314 Open in new window if you see caching issues
+index-BMIJiTRb.js:72 Initial session check: undefined
+index-BMIJiTRb.js:72 Auth state changed: INITIAL_SESSION undefined
+index-BMIJiTRb.js:314 Notification permission: denied
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+index-BMIJiTRb.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-BMIJiTRb.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-BMIJiTRb.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-BMIJiTRb.js:72 Query result: {existingUser: {…}, userError: null}
+index-BMIJiTRb.js:72 Found existing user: 1
+index-BMIJiTRb.js:72 User data loaded after auth change: bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:72 Setting user with ID: 1 type: number
+index-BMIJiTRb.js:314 Login successful: bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:270 Current belt data: undefined
+index-BMIJiTRb.js:75 WeeklyGoals user object: {id: 1, type: 'number', email: 'bjjjitsjournal@gmail.com'}
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:270 Current belt data: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:75 Creating note with userId: 1 noteData: {title: 'te', content: '', tags: Array(0)}
+index-BMIJiTRb.js:75 Note created successfully: {id: 'b5b6d4d8-010a-4211-85bb-441ead132c45', title: 'te', content: '', tags: Array(0), linked_class_id: null, …}
+index-BMIJiTRb.js:72 Class data being sent to Supabase: {
+  "date": "2025-10-08",
+  "time": "18:00",
+  "duration": 60,
+  "class_type": "Gi",
+  "instructor": "",
+  "techniques_focused": "",
+  "rolling_partners": [],
+  "your_submissions": 0,
+  "partner_submissions": 0,
+  "cardio_rating": 3,
+  "user_id": 1
+}
+index-BMIJiTRb.js:72 Class created successfully: {id: 10, date: '2025-10-08T00:00:00', time: '18:00', duration: 60, class_type: 'Gi', …}
+index-BMIJiTRb.js:270 Current belt data: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-BMIJiTRb.js:75 WeeklyGoals user object: {id: 1, type: 'number', email: 'bjjjitsjournal@gmail.com'}
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:75 getCurrent - Looking for week: 2025-10-05
+index-BMIJiTRb.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BMIJiTRb.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-BMIJiTRb.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BMIJiTRb.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-BMIJiTRb.js:72:35179
+(anonymous) @ index-BMIJiTRb.js:72
+Promise.catch
+j0 @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+_notifyAllSubscribers @ index-BMIJiTRb.js:72
+_recoverAndRefresh @ index-BMIJiTRb.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:71
+index-BMIJiTRb.js:72 Query result: {existingUser: null, userError: Error: Query timeout after 5s
+    at https://bjj-jits-journal-gffcs67vb-joes-projects-4f6e77c7.verc…}
+index-BMIJiTRb.js:72 Database query error: Error: Query timeout after 5s
+    at index-BMIJiTRb.js:72:35179
+j0 @ index-BMIJiTRb.js:72
+await in j0
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+_notifyAllSubscribers @ index-BMIJiTRb.js:72
+_recoverAndRefresh @ index-BMIJiTRb.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:71
+index-BMIJiTRb.js:72 getUserFromSupabaseId returned null after auth change - forcing logout
+(anonymous) @ index-BMIJiTRb.js:72
+await in (anonymous)
+(anonymous) @ index-BMIJiTRb.js:72
+_notifyAllSubscribers @ index-BMIJiTRb.js:72
+_recoverAndRefresh @ index-BMIJiTRb.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:72
+(anonymous) @ index-BMIJiTRb.js:71
