@@ -1,5 +1,5 @@
 import { 
-  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities,
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities, gamePlans,
   type Class, type InsertClass,
   type Video, type InsertVideo,
   type Note, type InsertNote,
@@ -11,7 +11,8 @@ import {
   type PasswordResetToken, type InsertPasswordResetToken,
   type NoteLike, type InsertNoteLike,
   type AppNote, type InsertAppNote,
-  type AuthIdentity, type InsertAuthIdentity
+  type AuthIdentity, type InsertAuthIdentity,
+  type GamePlan, type InsertGamePlan
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, ilike, and, or, lt } from "drizzle-orm";
@@ -102,6 +103,14 @@ export interface IStorage {
   getUserNoteLikes(userId: number): Promise<NoteLike[]>;
   isNoteLikedByUser(noteId: string, userId: number): Promise<boolean>;
   getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
+
+  // Game Plans
+  getGamePlans(userId: number): Promise<GamePlan[]>;
+  getGamePlanNames(userId: number): Promise<string[]>;
+  getGamePlanByName(userId: number, planName: string): Promise<GamePlan[]>;
+  createGamePlanMove(userId: number, moveData: InsertGamePlan): Promise<GamePlan>;
+  updateGamePlanMove(moveId: string, userId: number, moveData: Partial<InsertGamePlan>): Promise<GamePlan | undefined>;
+  deleteGamePlanMove(moveId: string, userId: number): Promise<boolean>;
 }
 
 // Database storage implementation
@@ -486,6 +495,97 @@ export class DatabaseStorage implements IStorage {
     }
     const allBelts = await this.getBelts();
     return allBelts[0];
+  }
+
+  // Game Plans Implementation
+  async getGamePlans(userId: number): Promise<GamePlan[]> {
+    return db.select().from(gamePlans)
+      .where(eq(gamePlans.userId, userId))
+      .orderBy(asc(gamePlans.planName), asc(gamePlans.moveOrder));
+  }
+
+  async getGamePlanNames(userId: number): Promise<string[]> {
+    const plans = await db.select({ planName: gamePlans.planName })
+      .from(gamePlans)
+      .where(eq(gamePlans.userId, userId))
+      .orderBy(asc(gamePlans.planName));
+    
+    // Return unique plan names
+    const uniquePlans = [...new Set(plans.map(p => p.planName))];
+    return uniquePlans;
+  }
+
+  async getGamePlanByName(userId: number, planName: string): Promise<GamePlan[]> {
+    return db.select().from(gamePlans)
+      .where(and(
+        eq(gamePlans.userId, userId),
+        eq(gamePlans.planName, planName)
+      ))
+      .orderBy(asc(gamePlans.moveOrder));
+  }
+
+  async createGamePlanMove(userId: number, moveData: InsertGamePlan): Promise<GamePlan> {
+    const [gamePlan] = await db.insert(gamePlans).values({
+      userId,
+      planName: moveData.planName,
+      moveName: moveData.moveName,
+      description: moveData.description,
+      parentId: moveData.parentId || null,
+      moveOrder: moveData.moveOrder || 0,
+    }).returning();
+    return gamePlan;
+  }
+
+  async updateGamePlanMove(moveId: string, userId: number, moveData: Partial<InsertGamePlan>): Promise<GamePlan | undefined> {
+    const [updated] = await db.update(gamePlans)
+      .set({
+        moveName: moveData.moveName,
+        description: moveData.description,
+        moveOrder: moveData.moveOrder,
+        updatedAt: new Date(),
+      })
+      .where(and(
+        eq(gamePlans.id, moveId),
+        eq(gamePlans.userId, userId)
+      ))
+      .returning();
+    
+    return updated || undefined;
+  }
+
+  async deleteGamePlanMove(moveId: string, userId: number): Promise<boolean> {
+    // Recursive function to get all descendant IDs
+    const getAllDescendants = async (parentId: string): Promise<string[]> => {
+      const children = await db.select({ id: gamePlans.id })
+        .from(gamePlans)
+        .where(and(
+          eq(gamePlans.userId, userId),
+          eq(gamePlans.parentId, parentId)
+        ));
+
+      if (children.length === 0) return [];
+
+      const childIds = children.map(c => c.id);
+      const grandchildIds = await Promise.all(
+        childIds.map(id => getAllDescendants(id))
+      );
+
+      return [...childIds, ...grandchildIds.flat()];
+    };
+
+    // Get all descendants
+    const descendantIds = await getAllDescendants(moveId);
+    const allIds = [moveId, ...descendantIds];
+
+    // Delete all moves (parent and descendants)
+    const result = await db.delete(gamePlans)
+      .where(and(
+        eq(gamePlans.userId, userId),
+        // Delete the move and all its descendants
+        or(...allIds.map(id => eq(gamePlans.id, id)))
+      ));
+
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 }
 
@@ -1097,6 +1197,31 @@ class MemStoragePrimary implements IStorage {
       likeCount,
       isLikedByUser
     };
+  }
+
+  // Game Plans stub implementations (not used in memory storage mode)
+  async getGamePlans(userId: number): Promise<GamePlan[]> {
+    return [];
+  }
+
+  async getGamePlanNames(userId: number): Promise<string[]> {
+    return [];
+  }
+
+  async getGamePlanByName(userId: number, planName: string): Promise<GamePlan[]> {
+    return [];
+  }
+
+  async createGamePlanMove(userId: number, moveData: InsertGamePlan): Promise<GamePlan> {
+    throw new Error("Game plans not implemented in memory storage mode");
+  }
+
+  async updateGamePlanMove(moveId: string, userId: number, moveData: Partial<InsertGamePlan>): Promise<GamePlan | undefined> {
+    return undefined;
+  }
+
+  async deleteGamePlanMove(moveId: string, userId: number): Promise<boolean> {
+    return false;
   }
 }
 
