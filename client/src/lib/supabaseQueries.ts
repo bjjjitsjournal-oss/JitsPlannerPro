@@ -30,12 +30,24 @@ export const classesQueries = {
   },
 
   async create(userId: number, classData: any) {
+    // Map camelCase fields to snake_case database columns
+    const dbData = {
+      date: classData.date,
+      time: classData.time,
+      duration: classData.duration,
+      class_type: classData.classType, // Map to snake_case
+      instructor: classData.instructor,
+      techniques_focused: classData.techniquesFocused, // Map to snake_case
+      rolling_partners: classData.rollingPartners, // Already an array
+      your_submissions: classData.yourSubmissions, // Map to snake_case
+      partner_submissions: classData.partnerSubmissions, // Map to snake_case
+      cardio_rating: classData.cardioRating, // Map to snake_case
+      user_id: userId,
+    };
+
     const { data, error } = await supabase
       .from('classes')
-      .insert({
-        ...classData,
-        user_id: userId,
-      })
+      .insert(dbData)
       .select()
       .single();
 
