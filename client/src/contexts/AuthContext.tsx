@@ -4,7 +4,7 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
 
 interface User {
-  id: number; // Keep integer ID for compatibility with existing database
+  id: string; // UUID varchar to match production database
   email: string;
   firstName: string;
   lastName: string;
@@ -56,7 +56,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       .maybeSingle(); // Use maybeSingle to handle not found without error
     
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Query timeout after 5s')), 5000)
+      setTimeout(() => reject(new Error('Query timeout after 15s')), 15000)
     );
     
     const { data: existingUser, error: userError } = await Promise.race([
