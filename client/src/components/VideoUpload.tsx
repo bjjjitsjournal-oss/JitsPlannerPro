@@ -5,7 +5,7 @@ import { apiRequest } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 
 interface VideoUploadProps {
-  noteId: number;
+  noteId: string;
   existingVideo?: {
     videoUrl: string;
     videoFileName: string;

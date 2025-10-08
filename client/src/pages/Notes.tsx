@@ -29,10 +29,9 @@ export default function Notes() {
     queryKey: ['notes', user?.id],
     queryFn: () => notesQueries.getAll(user!.id),
     enabled: !!user?.id,
-    staleTime: 0,
+    staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    refetchInterval: 5000, // Refetch every 5 seconds
   });
 
   // Fetch current belt for social sharing
