@@ -75,6 +75,16 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
 
     if (existingUser) {
       console.log('Found existing user:', existingUser.id);
+      
+      // If supabase_uid is missing, update it for future logins
+      if (!existingUser.supabase_uid) {
+        console.log('Backfilling missing supabase_uid for user:', existingUser.id);
+        await supabase
+          .from('users')
+          .update({ supabase_uid: supabaseId })
+          .eq('id', existingUser.id);
+      }
+      
       return {
         id: existingUser.id,
         email: existingUser.email,
@@ -84,6 +94,34 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
         subscriptionPlan: existingUser.subscription_plan,
         role: existingUser.role || 'user',
         createdAt: existingUser.created_at,
+        supabaseId,
+      };
+    }
+
+    // Fallback: Try to find user by email (for legacy accounts without supabase_uid)
+    const { data: emailUser } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (emailUser) {
+      console.log('Found user by email, updating supabase_uid:', emailUser.id);
+      // Update with supabase_uid for future logins
+      await supabase
+        .from('users')
+        .update({ supabase_uid: supabaseId })
+        .eq('id', emailUser.id);
+
+      return {
+        id: emailUser.id,
+        email: emailUser.email,
+        firstName: emailUser.first_name || '',
+        lastName: emailUser.last_name || '',
+        subscriptionStatus: emailUser.subscription_status || 'free',
+        subscriptionPlan: emailUser.subscription_plan,
+        role: emailUser.role || 'user',
+        createdAt: emailUser.created_at,
         supabaseId,
       };
     }
