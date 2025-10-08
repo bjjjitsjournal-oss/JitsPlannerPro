@@ -217,7 +217,7 @@ export default function GamePlans() {
     setShowAiSuggestions(true);
     
     try {
-      const response = await apiRequest('/api/game-plans/ai-suggest', {
+      const data = await apiRequest('/api/game-plans/ai-suggest', {
         method: 'POST',
         body: JSON.stringify({
           currentMove: currentMove.moveName,
@@ -226,7 +226,6 @@ export default function GamePlans() {
         }),
       });
 
-      const data = await response.json();
       setAiSuggestions(data.counterMoves || []);
       
       toast({
