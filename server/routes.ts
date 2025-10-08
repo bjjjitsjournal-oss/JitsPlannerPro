@@ -771,7 +771,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Video upload route for notes
   app.post("/api/notes/:id/upload-video", authenticateToken, async (req, res) => {
     try {
-      const noteId = req.params.id; // UUID string, not integer
+      const noteId = req.params.id; // UUID string
       const userId = (req as any).user.userId;
       const { videoDataUrl, fileName, thumbnail } = req.body;
       
@@ -779,44 +779,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`File name: ${fileName}`);
       console.log(`Video data size: ${videoDataUrl ? videoDataUrl.length : 'No data'}`);
       
-      // Debug: Check if note exists first
-      const existingNote = await storage.getNote(noteId);
-      console.log('Existing note found:', existingNote ? 'Yes' : 'No');
-      if (!existingNote) {
-        console.log('Note not found in storage. This usually means memory storage was reset.');
-        return res.status(404).json({ 
-          message: "Note not found. Please refresh the page and try again.",
-          reason: "memory_reset"
-        });
-      }
-      
       if (!videoDataUrl || !fileName) {
         return res.status(400).json({ message: "Video data and filename are required" });
       }
 
-      // In a real app, you would upload to cloud storage (AWS S3, etc.)
-      // For now, we'll store the data URL directly (not recommended for production)
-      const videoUrl = videoDataUrl;
-      const videoThumbnail = thumbnail || null;
+      // Update note in Supabase with video information
+      const { data, error } = await supabase
+        .from('notes')
+        .update({
+          video_url: videoDataUrl,
+          video_file_name: fileName,
+          video_thumbnail: thumbnail || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', noteId)
+        .eq('user_id', userId)
+        .select()
+        .single();
 
-      // Update the note with video information
-      console.log('Updating note with video data...');
-      const updatedNote = await storage.updateNote(noteId, {
-        videoUrl,
-        videoFileName: fileName,
-        videoThumbnail
-      });
-
-      console.log('Updated note result:', updatedNote ? 'Success' : 'Failed');
-
-      if (!updatedNote) {
-        return res.status(404).json({ message: "Note not found" });
+      if (error) {
+        console.error('Supabase update error:', error);
+        return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       console.log('Video upload completed successfully');
       res.json({ 
         message: "Video uploaded successfully",
-        note: updatedNote 
+        note: data 
       });
     } catch (error) {
       console.error("Error uploading video to note:", error);
@@ -827,22 +816,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Remove video from note
   app.delete("/api/notes/:id/video", authenticateToken, async (req, res) => {
     try {
-      const noteId = req.params.id; // UUID string, not integer
+      const noteId = req.params.id; // UUID string
       const userId = (req as any).user.userId;
 
-      const updatedNote = await storage.updateNote(noteId, {
-        videoUrl: null,
-        videoFileName: null,
-        videoThumbnail: null
-      });
+      const { data, error } = await supabase
+        .from('notes')
+        .update({
+          video_url: null,
+          video_file_name: null,
+          video_thumbnail: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', noteId)
+        .eq('user_id', userId)
+        .select()
+        .single();
 
-      if (!updatedNote) {
-        return res.status(404).json({ message: "Note not found" });
+      if (error) {
+        console.error('Supabase delete video error:', error);
+        return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       res.json({ 
         message: "Video removed successfully",
-        note: updatedNote 
+        note: data 
       });
     } catch (error) {
       console.error("Error removing video from note:", error);
