@@ -89,13 +89,19 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
 
     // Create new user if not found
     console.log('Creating new user with supabase_uid:', supabaseId);
+    
+    // Check if this is an admin email
+    const adminEmails = ['bjjjitsjournal@gmail.com', 'Bjjjitsjournal@gmail.com'];
+    const isAdmin = adminEmails.some(adminEmail => email.toLowerCase() === adminEmail.toLowerCase());
+    
     const { data: newUser, error: createError } = await supabase
       .from('users')
       .insert({
         email,
         first_name: metadata.firstName || '',
         last_name: metadata.lastName || '',
-        subscription_status: 'free',
+        subscription_status: isAdmin ? 'premium' : 'free',
+        role: isAdmin ? 'admin' : 'user',
         supabase_uid: supabaseId, // Important: Set this for RLS policies
       })
       .select()
