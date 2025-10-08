@@ -36,14 +36,16 @@ export const classesQueries = {
       time: classData.time,
       duration: classData.duration,
       class_type: classData.classType, // Map to snake_case
-      instructor: classData.instructor,
-      techniques_focused: classData.techniquesFocused, // Map to snake_case
-      rolling_partners: classData.rollingPartners, // Already an array
-      your_submissions: classData.yourSubmissions, // Map to snake_case
-      partner_submissions: classData.partnerSubmissions, // Map to snake_case
-      cardio_rating: classData.cardioRating, // Map to snake_case
+      instructor: classData.instructor || '', // Ensure not undefined
+      techniques_focused: classData.techniquesFocused || '', // Ensure not undefined
+      rolling_partners: classData.rollingPartners || [], // Already an array
+      your_submissions: classData.yourSubmissions || 0, // Map to snake_case
+      partner_submissions: classData.partnerSubmissions || 0, // Map to snake_case
+      cardio_rating: classData.cardioRating || 3, // Map to snake_case
       user_id: userId,
     };
+
+    console.log('Class data being sent to Supabase:', JSON.stringify(dbData, null, 2));
 
     const { data, error } = await supabase
       .from('classes')
@@ -51,7 +53,12 @@ export const classesQueries = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Class creation error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      throw error;
+    }
+    console.log('Class created successfully:', data);
     return data;
   },
 };
