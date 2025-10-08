@@ -193,9 +193,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           
           if (userData) {
             console.log('User data loaded:', userData.email);
+            console.log('Setting user with ID:', userData.id, 'type:', typeof userData.id);
+            // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
+            queryClient.clear();
             setUser(userData);
-            // Invalidate all cached queries to ensure they refetch with correct user ID
-            queryClient.invalidateQueries();
             setIsLoading(false); // Only stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null - user profile not found');
@@ -245,9 +246,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           
           if (userData) {
             console.log('User data loaded after auth change:', userData.email);
+            console.log('Setting user with ID:', userData.id, 'type:', typeof userData.id);
+            // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
+            queryClient.clear();
             setUser(userData);
-            // Invalidate all cached queries to ensure they refetch with correct user ID
-            queryClient.invalidateQueries();
             setIsLoading(false); // Stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null after auth change - forcing logout');
