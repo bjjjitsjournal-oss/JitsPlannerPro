@@ -31,6 +31,7 @@ Preferred communication style: Simple, everyday language.
 - **Video Search Functionality**: Integrated YouTube search for BJJ techniques, categorized for easy access.
 - **Weekly Commitment System**: Set and track weekly class goals with progress monitoring.
 - **Social Features**: Note sharing with community feed, friend invitation system.
+- **Competition Game Plans**: Tree-based game plan system for competition strategy with AI-powered counter move suggestions using OpenAI GPT-4.
 
 ### UI/UX Decisions
 - Custom BJJ-themed styling with a professional, clean, and modern aesthetic.
@@ -166,3 +167,15 @@ Preferred communication style: Simple, everyday language.
         - Fixed ProfileDropdown to query Supabase directly for belt data instead of legacy endpoint
         - Updated note sharing buttons for clarity: "Share to Community" and "Share to Social Media"
         - Belt display now shows proper capitalization and stripe count in dropdown menu
+      - **Competition Game Plans Feature**: Tree-based game plan system for competition strategy
+        - Created game_plans table with self-referential tree structure (id, user_id, plan_name, move_name, description, parent_id, move_order)
+        - Implemented full CRUD operations with recursive cascade delete for tree branches
+        - Built expandable tree visualization with move cards showing parent/child relationships
+        - Integrated OpenAI GPT-4 for AI-powered BJJ counter move suggestions
+        - AI suggests 3-5 contextual counter moves based on current position and move
+        - Users can apply AI suggestions with "Use This" button for quick plan building
+        - Added edit/delete functionality for individual moves with confirmation dialogs
+        - Each move card shows expand/collapse controls, AI suggest button, and action buttons
+        - Added 🎯 Game Plans icon to bottom navigation
+        - Lazy-loaded OpenAI client to prevent startup errors when API key is missing
+        - Fixed apiRequest bug where .json() was called on already-parsed JSON response
