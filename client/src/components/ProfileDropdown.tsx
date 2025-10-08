@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useAuth } from '../contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from '../lib/queryClient';
+import { classesQueries, beltsQueries } from '../lib/supabaseQueries';
 import { 
   User, 
   Settings, 
@@ -13,27 +13,29 @@ import {
   BarChart3
 } from 'lucide-react';
 
-interface UserStats {
-  totalClasses: number;
-  lastPromotionDate: string | null;
-  currentBelt: {
-    belt: string;
-    stripes: number;
-  } | null;
-}
-
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
 
-  // Get user statistics
-  const { data: stats } = useQuery({
-    queryKey: ['/api/user-stats'],
+  // Get total classes count
+  const { data: classes = [] } = useQuery({
+    queryKey: ['classes', user?.id],
     queryFn: async () => {
-      const response = await apiRequest('GET', '/api/user-stats');
-      return response.json() as UserStats;
+      if (!user?.id) return [];
+      return await classesQueries.getAll(user.id);
     },
+    enabled: !!user?.id,
+  });
+
+  // Get current belt
+  const { data: currentBelt } = useQuery({
+    queryKey: ['current-belt', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      return await beltsQueries.getCurrent(user.id);
+    },
+    enabled: !!user?.id,
   });
 
   // Close dropdown when clicking outside
@@ -48,16 +50,17 @@ export default function ProfileDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return 'No promotions yet';
     return new Date(dateString).toLocaleDateString();
   };
 
   const getBeltDisplay = () => {
-    if (!stats?.currentBelt) return 'White Belt';
-    const { belt, stripes } = stats.currentBelt;
+    if (!currentBelt) return 'White Belt';
+    const { belt, stripes } = currentBelt;
+    const beltName = belt.charAt(0).toUpperCase() + belt.slice(1);
     const stripeText = stripes > 0 ? ` (${stripes} stripe${stripes > 1 ? 's' : ''})` : '';
-    return `${belt} Belt${stripeText}`;
+    return `${beltName} Belt${stripeText}`;
   };
 
   return (
@@ -110,7 +113,7 @@ export default function ProfileDropdown() {
                   <span className="text-sm text-gray-600">Total Classes</span>
                 </div>
                 <span className="text-sm font-semibold text-gray-900">
-                  {stats?.totalClasses || 0}
+                  {classes.length}
                 </span>
               </div>
               
@@ -120,7 +123,7 @@ export default function ProfileDropdown() {
                   <span className="text-sm text-gray-600">Last Promotion</span>
                 </div>
                 <span className="text-sm font-semibold text-gray-900">
-                  {formatDate(stats?.lastPromotionDate || null)}
+                  {formatDate(currentBelt?.promotion_date)}
                 </span>
               </div>
             </div>
