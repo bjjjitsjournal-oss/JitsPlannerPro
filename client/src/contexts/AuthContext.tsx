@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { queryClient } from '@/lib/queryClient';
 
 interface User {
   id: number; // Keep integer ID for compatibility with existing database
@@ -193,6 +194,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (userData) {
             console.log('User data loaded:', userData.email);
             setUser(userData);
+            // Invalidate all cached queries to ensure they refetch with correct user ID
+            queryClient.invalidateQueries();
             setIsLoading(false); // Only stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null - user profile not found');
@@ -243,6 +246,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (userData) {
             console.log('User data loaded after auth change:', userData.email);
             setUser(userData);
+            // Invalidate all cached queries to ensure they refetch with correct user ID
+            queryClient.invalidateQueries();
             setIsLoading(false); // Stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null after auth change - forcing logout');
