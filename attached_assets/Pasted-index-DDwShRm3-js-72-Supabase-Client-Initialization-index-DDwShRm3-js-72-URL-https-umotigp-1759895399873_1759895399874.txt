@@ -1,0 +1,77 @@
+index-DDwShRm3.js:72 🔧 Supabase Client Initialization
+index-DDwShRm3.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-DDwShRm3.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-DDwShRm3.js:314 BJJ Journal - Full App Restored!
+index-DDwShRm3.js:314 Open in new window if you see caching issues
+index-DDwShRm3.js:72 Initial session check: undefined
+index-DDwShRm3.js:72 Auth state changed: INITIAL_SESSION undefined
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+(index):1 Manifest fetch from https://bjj-jits-journal-6gj3e34hp-joes-projects-4f6e77c7.vercel.app/manifest.json failed, code 401
+index-DDwShRm3.js:314 Notification permission: granted
+index-DDwShRm3.js:314 Login attempt with: Object
+index-DDwShRm3.js:314 Login attempt with: Object
+index-DDwShRm3.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:72 Query result: Object
+index-DDwShRm3.js:72 Found existing user: 1
+index-DDwShRm3.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:314 Login successful: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:75 WeeklyGoals user object: Object
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Found: null Error: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Found: null Error: Object
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Found: null Error: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Found: null Error: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-DDwShRm3.js:270 Current belt data: undefined
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+index-DDwShRm3.js:75 getCurrent - Found: null Error: Object
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+index-DDwShRm3.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-DDwShRm3.js:72:35179
+(anonymous) @ index-DDwShRm3.js:72
+index-DDwShRm3.js:72 Query result: {existingUser: null, userError: Error: Query timeout after 5s
+    at https://bjj-jits-journal-6gj3e34hp-joes-projects-4f6e77c7.verc…}
+index-DDwShRm3.js:72 Database query error: Error: Query timeout after 5s
+    at index-DDwShRm3.js:72:35179
+j0 @ index-DDwShRm3.js:72
+index-DDwShRm3.js:72 User data loaded: undefined
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+index-DDwShRm3.js:75 getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
