@@ -160,6 +160,18 @@ export const noteLikes = pgTable("note_likes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const gamePlans = pgTable("game_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  planName: text("plan_name").notNull(), // e.g., "Guard Passing Strategy", "Closed Guard Game"
+  moveName: text("move_name").notNull(), // The specific technique/move
+  description: text("description"), // Detailed notes about the move
+  parentId: varchar("parent_id"), // Self-reference for tree structure, null for root moves
+  moveOrder: integer("move_order").default(0), // Order among siblings
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertClassSchema = createInsertSchema(classes).omit({
   id: true,
   createdAt: true,
@@ -300,6 +312,19 @@ export const insertNoteLikeSchema = createInsertSchema(noteLikes).omit({
 
 export type NoteLike = typeof noteLikes.$inferSelect;
 export type InsertNoteLike = z.infer<typeof insertNoteLikeSchema>;
+
+export const insertGamePlanSchema = createInsertSchema(gamePlans).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  description: z.string().optional(),
+  parentId: z.string().optional(),
+  moveOrder: z.number().optional(),
+});
+
+export type GamePlan = typeof gamePlans.$inferSelect;
+export type InsertGamePlan = z.infer<typeof insertGamePlanSchema>;
 
 
 

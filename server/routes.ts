@@ -4,7 +4,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema } from "@shared/schema";
+import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -1281,6 +1282,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete training video" });
+    }
+  });
+
+  // Game Plan routes
+  app.get("/api/game-plans", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gamePlans = await storage.getGamePlans(userId);
+      res.json(gamePlans);
+    } catch (error) {
+      console.error("Error fetching game plans:", error);
+      res.status(500).json({ message: "Failed to fetch game plans" });
+    }
+  });
+
+  app.get("/api/game-plans/names", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const planNames = await storage.getGamePlanNames(userId);
+      res.json(planNames);
+    } catch (error) {
+      console.error("Error fetching plan names:", error);
+      res.status(500).json({ message: "Failed to fetch plan names" });
+    }
+  });
+
+  app.get("/api/game-plans/:planName", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const planName = req.params.planName;
+      const gamePlans = await storage.getGamePlanByName(userId, planName);
+      res.json(gamePlans);
+    } catch (error) {
+      console.error("Error fetching game plan:", error);
+      res.status(500).json({ message: "Failed to fetch game plan" });
+    }
+  });
+
+  app.post("/api/game-plans", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gamePlanData = insertGamePlanSchema.parse(req.body);
+      const newMove = await storage.createGamePlanMove(userId, gamePlanData);
+      res.status(201).json(newMove);
+    } catch (error) {
+      console.error("Error creating game plan move:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid game plan data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create game plan move" });
+      }
+    }
+  });
+
+  app.put("/api/game-plans/:id", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const moveId = req.params.id;
+      const moveData = insertGamePlanSchema.partial().parse(req.body);
+      const updatedMove = await storage.updateGamePlanMove(moveId, userId, moveData);
+      
+      if (!updatedMove) {
+        return res.status(404).json({ message: "Game plan move not found" });
+      }
+      
+      res.json(updatedMove);
+    } catch (error) {
+      console.error("Error updating game plan move:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid game plan data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update game plan move" });
+      }
+    }
+  });
+
+  app.delete("/api/game-plans/:id", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const moveId = req.params.id;
+      const result = await storage.deleteGamePlanMove(moveId, userId);
+      
+      if (!result) {
+        return res.status(404).json({ message: "Game plan move not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting game plan move:", error);
+      res.status(500).json({ message: "Failed to delete game plan move" });
+    }
+  });
+
+  // AI Counter Move Suggestions
+  app.post("/api/game-plans/ai-suggest", authenticateToken, async (req, res) => {
+    try {
+      const { currentMove, position, context } = req.body;
+      
+      if (!currentMove || !position) {
+        return res.status(400).json({ 
+          message: "Missing required fields: currentMove and position are required" 
+        });
+      }
+
+      const counterMoves = await generateBJJCounterMoves(currentMove, position, context);
+      res.json({ counterMoves });
+    } catch (error: any) {
+      console.error("AI suggestion error:", error);
+      res.status(500).json({ 
+        message: error.message || "Failed to generate counter move suggestions" 
+      });
     }
   });
 

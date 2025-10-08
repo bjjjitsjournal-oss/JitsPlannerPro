@@ -399,3 +399,130 @@ export const drawingsQueries = {
     return data;
   },
 };
+
+// Game Plan queries
+export const gamePlansQueries = {
+  // Get all game plans for a user, organized by plan name
+  async getAll(userId: number) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .select('*')
+      .eq('user_id', userId)
+      .order('plan_name', { ascending: true })
+      .order('move_order', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get a specific plan tree (all moves for a plan name)
+  async getByPlanName(userId: number, planName: string) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('plan_name', planName)
+      .order('move_order', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get children of a specific move
+  async getChildren(userId: number, parentId: string) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('parent_id', parentId)
+      .order('move_order', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Create a new move
+  async create(userId: number, moveData: any) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .insert({
+        user_id: userId,
+        plan_name: moveData.planName,
+        move_name: moveData.moveName,
+        description: moveData.description,
+        parent_id: moveData.parentId || null,
+        move_order: moveData.moveOrder || 0,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Update a move
+  async update(moveId: string, userId: number, moveData: any) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .update({
+        move_name: moveData.moveName,
+        description: moveData.description,
+        move_order: moveData.moveOrder,
+      })
+      .eq('id', moveId)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Delete a move and all its descendants
+  async delete(moveId: string, userId: number) {
+    // First get all descendants recursively
+    const getAllDescendants = async (parentId: string): Promise<string[]> => {
+      const { data } = await supabase
+        .from('game_plans')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('parent_id', parentId);
+
+      if (!data || data.length === 0) return [];
+
+      const childIds = data.map(d => d.id);
+      const grandchildIds = await Promise.all(
+        childIds.map(id => getAllDescendants(id))
+      );
+
+      return [...childIds, ...grandchildIds.flat()];
+    };
+
+    const descendantIds = await getAllDescendants(moveId);
+    const idsToDelete = [moveId, ...descendantIds];
+
+    const { error } = await supabase
+      .from('game_plans')
+      .delete()
+      .in('id', idsToDelete)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return { deleted: idsToDelete.length };
+  },
+
+  // Get unique plan names for a user
+  async getPlanNames(userId: number) {
+    const { data, error } = await supabase
+      .from('game_plans')
+      .select('plan_name')
+      .eq('user_id', userId)
+      .order('plan_name', { ascending: true });
+
+    if (error) throw error;
+    
+    // Return unique plan names
+    const uniquePlans = [...new Set((data || []).map(d => d.plan_name))];
+    return uniquePlans;
+  },
+};
