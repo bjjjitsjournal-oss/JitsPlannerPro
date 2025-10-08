@@ -47,9 +47,10 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     console.log('Querying users table with supabase_uid:', supabaseId);
     
     // Add timeout to detect hanging queries
+    // Explicitly select columns to avoid ID column ambiguity
     const queryPromise = supabase
       .from('users')
-      .select('*')
+      .select('id, email, first_name, last_name, subscription_status, subscription_plan, role, created_at, supabase_uid')
       .eq('supabase_uid', supabaseId)
       .single();
     
