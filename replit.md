@@ -149,3 +149,12 @@ Preferred communication style: Simple, everyday language.
       - Admin users can delete any shared note from Community tab
       - Delete button appears only for admin users with confirmation dialog
       - Proper admin permission checks prevent unauthorized deletions
+    - **October 8, 2025**: Vercel Production Deployment Fixes
+      - Fixed critical user authentication issue preventing data loading on Vercel
+      - Root cause: Missing supabase_uid in user records causing query failures
+      - Added email fallback lookup for legacy users without supabase_uid
+      - Fixed class creation 400 error - corrected camelCase to snake_case field mapping
+      - Database fields now properly mapped: cardioRating → cardio_rating, etc.
+      - Removed NOT NULL constraint on instructor field to allow optional values
+      - All CRUD operations (classes, notes, weekly goals) now working on production
+      - bjjjitsjournal@gmail.com confirmed as admin with premium access
