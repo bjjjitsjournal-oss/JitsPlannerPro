@@ -189,12 +189,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             session.user.email || '',
             session.user.user_metadata
           );
-          console.log('User data loaded:', userData?.email);
-          setUser(userData);
-          setIsLoading(false); // Only stop loading after user data is ready
+          
+          if (userData) {
+            console.log('User data loaded:', userData.email);
+            setUser(userData);
+            setIsLoading(false); // Only stop loading after user data is ready
+          } else {
+            console.error('getUserFromSupabaseId returned null - user profile not found');
+            // Force logout if profile lookup fails
+            await supabase.auth.signOut();
+            setUser(null);
+            setSession(null);
+            setSupabaseUser(null);
+            setIsLoading(false);
+          }
         } catch (error) {
           console.error('Failed to load user data:', error);
+          // Force logout on error
+          await supabase.auth.signOut();
           setUser(null);
+          setSession(null);
+          setSupabaseUser(null);
           setIsLoading(false);
         }
       } else {
@@ -224,12 +239,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             session.user.email || '',
             session.user.user_metadata
           );
-          console.log('User data loaded after auth change:', userData?.email);
-          setUser(userData);
-          setIsLoading(false); // Stop loading after user data is ready
+          
+          if (userData) {
+            console.log('User data loaded after auth change:', userData.email);
+            setUser(userData);
+            setIsLoading(false); // Stop loading after user data is ready
+          } else {
+            console.error('getUserFromSupabaseId returned null after auth change - forcing logout');
+            // Force logout if profile lookup fails
+            await supabase.auth.signOut();
+            setUser(null);
+            setSession(null);
+            setSupabaseUser(null);
+            setIsLoading(false);
+          }
         } catch (error) {
-          console.error('Failed to load user data:', error);
+          console.error('Failed to load user data after auth change:', error);
+          // Force logout on error
+          await supabase.auth.signOut();
           setUser(null);
+          setSession(null);
+          setSupabaseUser(null);
           setIsLoading(false);
         }
       } else {
@@ -260,7 +290,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     login,
     logout,
-    isAuthenticated: !!session,
+    isAuthenticated: !!(session && user), // Require BOTH session AND user profile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
