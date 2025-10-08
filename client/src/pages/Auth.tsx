@@ -75,17 +75,10 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         description: "You have successfully logged in.",
       });
       
-      if (data.user) {
-        const userData = {
-          id: data.user.id,
-          email: data.user.email || '',
-          firstName: data.user.user_metadata?.firstName || '',
-          lastName: data.user.user_metadata?.lastName || '',
-          subscriptionStatus: data.user.user_metadata?.subscriptionStatus || 'free',
-          createdAt: data.user.created_at,
-        };
-        onAuthSuccess(userData);
-      }
+      // Force page reload to clear browser cache and load fresh session
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
     },
     onError: (error: any) => {
       console.error('Login mutation error:', error);
@@ -201,25 +194,24 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       // Check if email confirmation is required
       if (data.user && !data.user.confirmed_at) {
         description = "Please check your email to confirm your account before logging in.";
-      }
-      
-      toast({
-        title: "Account created!",
-        description: description,
-        duration: 6000,
-      });
-      
-      if (data.user && data.user.confirmed_at) {
-        // User is confirmed, auto-login
-        const userData = {
-          id: data.user.id,
-          email: data.user.email || '',
-          firstName: data.user.user_metadata?.firstName || '',
-          lastName: data.user.user_metadata?.lastName || '',
-          subscriptionStatus: 'free',
-          createdAt: data.user.created_at,
-        };
-        onAuthSuccess(userData);
+        
+        toast({
+          title: "Account created!",
+          description: description,
+          duration: 6000,
+        });
+      } else {
+        // User is auto-confirmed, redirect to dashboard
+        toast({
+          title: "Account created!",
+          description: description,
+          duration: 3000,
+        });
+        
+        // Force page reload to clear browser cache and load fresh session
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       }
     },
     onError: (error: any) => {
