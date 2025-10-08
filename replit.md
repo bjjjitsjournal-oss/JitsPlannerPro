@@ -158,3 +158,11 @@ Preferred communication style: Simple, everyday language.
       - Removed NOT NULL constraint on instructor field to allow optional values
       - All CRUD operations (classes, notes, weekly goals) now working on production
       - bjjjitsjournal@gmail.com confirmed as admin with premium access
+      - **Authentication Improvements**: Fixed React Query cache pollution causing UUID/integer ID conflicts
+        - Implemented queryClient.clear() on user load to prevent stale cache data
+        - Optimized auth state listener to skip redundant database queries on token refresh
+        - Prevents forced logout when returning to app after token refresh
+      - **UI Enhancements**: 
+        - Fixed ProfileDropdown to query Supabase directly for belt data instead of legacy endpoint
+        - Updated note sharing buttons for clarity: "Share to Community" and "Share to Social Media"
+        - Belt display now shows proper capitalization and stripe count in dropdown menu
