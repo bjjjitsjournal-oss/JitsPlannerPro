@@ -231,12 +231,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth state changed:', _event, session?.user?.email);
       
-      // Start loading when auth state changes
-      setIsLoading(true);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
+        // OPTIMIZATION: Skip database query if we already have user data for this Supabase ID
+        // This prevents timeout issues on token refresh
+        if (user && user.supabaseId === session.user.id) {
+          console.log('Token refreshed - keeping existing user data:', user.email);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Only query database if we don't have user data yet
+        setIsLoading(true);
         try {
           const userData = await getUserFromSupabaseId(
             session.user.id,
