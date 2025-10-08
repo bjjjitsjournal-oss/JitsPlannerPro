@@ -74,11 +74,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      
-      // Force page reload to clear browser cache and load fresh session
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 500);
+      // AuthContext will automatically detect the session change and load user data
     },
     onError: (error: any) => {
       console.error('Login mutation error:', error);
@@ -194,25 +190,14 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       // Check if email confirmation is required
       if (data.user && !data.user.confirmed_at) {
         description = "Please check your email to confirm your account before logging in.";
-        
-        toast({
-          title: "Account created!",
-          description: description,
-          duration: 6000,
-        });
-      } else {
-        // User is auto-confirmed, redirect to dashboard
-        toast({
-          title: "Account created!",
-          description: description,
-          duration: 3000,
-        });
-        
-        // Force page reload to clear browser cache and load fresh session
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 500);
       }
+      
+      toast({
+        title: "Account created!",
+        description: description,
+        duration: data.user?.confirmed_at ? 3000 : 6000,
+      });
+      // AuthContext will automatically detect the session change and load user data
     },
     onError: (error: any) => {
       console.error('Registration mutation error:', error);
