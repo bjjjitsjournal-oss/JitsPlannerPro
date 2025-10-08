@@ -1,0 +1,56 @@
+import pg from 'pg';
+const { Client } = pg;
+
+// Extract connection details from Supabase URL
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const match = supabaseUrl.match(/https:\/\/(.+)\.supabase\.co/);
+const projectRef = match ? match[1] : null;
+
+if (!projectRef) {
+  console.error('Could not extract project reference from SUPABASE_URL');
+  process.exit(1);
+}
+
+// Supabase connection string format
+const connectionString = `postgresql://postgres.${projectRef}:${process.env.SUPABASE_SERVICE_ROLE_KEY}@aws-0-us-east-1.pooler.supabase.com:6543/postgres`;
+
+const client = new Client({
+  connectionString,
+  ssl: { rejectUnauthorized: false }
+});
+
+async function createTable() {
+  try {
+    await client.connect();
+    console.log('Connected to Supabase...');
+    
+    const sql = `
+      CREATE TABLE IF NOT EXISTS game_plans (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        plan_name TEXT NOT NULL,
+        move_name TEXT NOT NULL,
+        description TEXT,
+        parent_id VARCHAR REFERENCES game_plans(id) ON DELETE CASCADE,
+        move_order INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_game_plans_user_id ON game_plans(user_id);
+      CREATE INDEX IF NOT EXISTS idx_game_plans_plan_name ON game_plans(user_id, plan_name);
+      CREATE INDEX IF NOT EXISTS idx_game_plans_parent_id ON game_plans(parent_id);
+    `;
+    
+    await client.query(sql);
+    console.log('✅ game_plans table created successfully!');
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  } finally {
+    await client.end();
+  }
+}
+
+createTable();
