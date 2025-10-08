@@ -61,6 +61,44 @@ export const classesQueries = {
     console.log('Class created successfully:', data);
     return data;
   },
+
+  async update(classId: number, userId: number, classData: any) {
+    // Map camelCase fields to snake_case database columns
+    const dbData = {
+      date: classData.date,
+      time: classData.time,
+      duration: classData.duration,
+      class_type: classData.classType,
+      instructor: classData.instructor || '',
+      techniques_focused: classData.techniquesFocused || '',
+      rolling_partners: classData.rollingPartners || [],
+      your_submissions: classData.yourSubmissions || 0,
+      partner_submissions: classData.partnerSubmissions || 0,
+      cardio_rating: classData.cardioRating || 3,
+    };
+
+    const { data, error } = await supabase
+      .from('classes')
+      .update(dbData)
+      .eq('id', classId)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async delete(classId: number, userId: number) {
+    const { error } = await supabase
+      .from('classes')
+      .delete()
+      .eq('id', classId)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    return { success: true };
+  },
 };
 
 // Notes queries

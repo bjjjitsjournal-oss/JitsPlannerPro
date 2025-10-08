@@ -8,6 +8,10 @@ import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
 
 export default function Classes() {
   const [showForm, setShowForm] = useState(false);
+  const [editingClassId, setEditingClassId] = useState<number | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [classToDelete, setClassToDelete] = useState<number | null>(null);
+  
   // Helper function to get current date in Sydney, Australia timezone
   const getSydneyDate = () => {
     return new Intl.DateTimeFormat('en-CA', { 
@@ -94,19 +98,7 @@ export default function Classes() {
         description: description,
         duration: 4000, // Show longer to read the details
       });
-      setShowForm(false);
-      setFormData({
-        date: getSydneyDate(),
-        time: '18:00',
-        duration: 60,
-        type: 'Gi',
-        instructor: '',
-        notes: '',
-        rollingPartners: '',
-        yourSubmissions: 0,
-        partnerSubmissions: 0,
-        cardioRating: 3
-      });
+      resetForm();
     },
     onError: (error: any) => {
       toast({
@@ -117,11 +109,106 @@ export default function Classes() {
     },
   });
 
+  // Update class mutation
+  const updateClassMutation = useMutation({
+    mutationFn: async ({ classId, classData }: { classId: number, classData: any }) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      return await classesQueries.update(classId, user.id, classData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
+      toast({
+        title: 'Class Updated!',
+        description: 'Your class has been updated successfully.',
+        duration: 4000,
+      });
+      resetForm();
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to update class. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Delete class mutation
+  const deleteClassMutation = useMutation({
+    mutationFn: async (classId: number) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      return await classesQueries.delete(classId, user.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['weekly-commitment', user?.id] });
+      toast({
+        title: 'Class Deleted',
+        description: 'Your class has been removed.',
+        duration: 4000,
+      });
+      setShowDeleteDialog(false);
+      setClassToDelete(null);
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete class. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const resetForm = () => {
+    setShowForm(false);
+    setEditingClassId(null);
+    setFormData({
+      date: getSydneyDate(),
+      time: '18:00',
+      duration: 60,
+      type: 'Gi',
+      instructor: '',
+      notes: '',
+      rollingPartners: '',
+      yourSubmissions: 0,
+      partnerSubmissions: 0,
+      cardioRating: 3
+    });
+  };
+
+  const handleEdit = (classItem: any) => {
+    setEditingClassId(classItem.id);
+    setFormData({
+      date: classItem.date.split('T')[0], // Extract date from ISO string
+      time: classItem.time || '18:00',
+      duration: classItem.duration,
+      type: classItem.classType || classItem.class_type,
+      instructor: classItem.instructor || '',
+      notes: classItem.techniquesFocused || classItem.techniques_focused || '',
+      rollingPartners: classItem.rollingPartners?.join(', ') || classItem.rolling_partners?.join(', ') || '',
+      yourSubmissions: classItem.yourSubmissions || classItem.your_submissions || 0,
+      partnerSubmissions: classItem.partnerSubmissions || classItem.partner_submissions || 0,
+      cardioRating: classItem.cardioRating || classItem.cardio_rating || 3,
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = (classId: number) => {
+    setClassToDelete(classId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (classToDelete) {
+      deleteClassMutation.mutate(classToDelete);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check class limit for free tier users
-    if (!isPremium && Array.isArray(classes) && classes.length >= FREE_TIER_LIMITS.classes) {
+    // Check class limit for free tier users (only when creating new)
+    if (!editingClassId && !isPremium && Array.isArray(classes) && classes.length >= FREE_TIER_LIMITS.classes) {
       toast({
         title: 'Class Limit Reached',
         description: `Free tier is limited to ${FREE_TIER_LIMITS.classes} classes. Upgrade to Premium for unlimited class logging!`,
@@ -144,11 +231,16 @@ export default function Classes() {
       cardioRating: formData.cardioRating,
     };
 
-    // Pass both class data and original form data for the summary
-    createClassMutation.mutate({ 
-      classData, 
-      originalFormData: { ...formData } // Create a copy to preserve data
-    });
+    if (editingClassId) {
+      // Update existing class
+      updateClassMutation.mutate({ classId: editingClassId, classData });
+    } else {
+      // Create new class with summary
+      createClassMutation.mutate({ 
+        classData, 
+        originalFormData: { ...formData }
+      });
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -165,9 +257,11 @@ export default function Classes() {
     return (
       <div className="p-6 max-w-md mx-auto bg-background min-h-screen">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Log Class</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            {editingClassId ? 'Edit Class' : 'Log Class'}
+          </h2>
           <button
-            onClick={() => setShowForm(false)}
+            onClick={resetForm}
             className="text-muted-foreground hover:text-foreground"
           >
             ✕
@@ -338,7 +432,7 @@ export default function Classes() {
             type="submit"
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
           >
-            Log Class
+            {editingClassId ? 'Update Class' : 'Log Class'}
           </button>
         </form>
       </div>
@@ -369,10 +463,26 @@ export default function Classes() {
                 <span className="text-gray-400">•</span>
                 <span className="text-gray-600 dark:text-gray-400">{classItem.duration}min</span>
               </div>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {new Date(classItem.date).toLocaleDateString()}
-                {classItem.time && ` • ${classItem.time}`}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(classItem.date).toLocaleDateString()}
+                  {classItem.time && ` • ${classItem.time}`}
+                </span>
+                <button
+                  onClick={() => handleEdit(classItem)}
+                  className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors"
+                  data-testid={`button-edit-class-${classItem.id}`}
+                >
+                  ✎
+                </button>
+                <button
+                  onClick={() => handleDelete(classItem.id)}
+                  className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
+                  data-testid={`button-delete-class-${classItem.id}`}
+                >
+                  🗑
+                </button>
+              </div>
             </div>
             
             {/* Instructor Information */}
@@ -419,6 +529,39 @@ export default function Classes() {
           </div>
         ))}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              Delete Class?
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Are you sure you want to delete this class? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteDialog(false);
+                  setClassToDelete(null);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                data-testid="button-cancel-delete"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                data-testid="button-confirm-delete"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
