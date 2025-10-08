@@ -33,7 +33,10 @@ export default function ProfileDropdown() {
     queryKey: ['current-belt', user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      return await beltsQueries.getCurrent(user.id);
+      console.log('ProfileDropdown - Fetching belt for user ID:', user.id);
+      const belt = await beltsQueries.getCurrent(user.id);
+      console.log('ProfileDropdown - Belt data received:', belt);
+      return belt;
     },
     enabled: !!user?.id,
   });
