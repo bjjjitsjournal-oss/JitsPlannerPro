@@ -1,0 +1,102 @@
+Request URL
+https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*
+Request Method
+POST
+Status Code
+400 Bad Request
+Remote Address
+[2405:dc00:0:3::6812:260a]:443
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-origin
+https://bjj-jits-journal.vercel.app
+access-control-expose-headers
+Content-Encoding, Content-Location, Content-Range, Content-Type, Date, Location, Server, Transfer-Encoding, Range-Unit
+alt-svc
+h3=":443"; ma=86400
+cf-cache-status
+DYNAMIC
+cf-ray
+98b257762fabf0c6-MEL
+content-encoding
+gzip
+content-type
+application/json; charset=utf-8
+date
+Wed, 08 Oct 2025 02:52:20 GMT
+priority
+u=1,i
+proxy-status
+PostgREST; error=PGRST204
+sb-gateway-version
+1
+sb-project-ref
+umotigprfosrrjwpxlnp
+sb-request-id
+0199c1bb-e5e3-7ef5-ad66-51eff3e3fa14
+server
+cloudflare
+server-timing
+cfExtPri
+set-cookie
+__cf_bm=t_nTYyRc6VP_MzEtl4xF_k08NgWWODZG_U9cPt37KwM-1759891940-1.0.1.1-D8c.iQXavIX3F.jJae36Eq9KougHg1rF4qWhWpWwmO6KAI4T6SO2avnBTuY4fgB4MJmeJCsFIg4ZW.wZuZYI2.88zDvqL6SPfv.TXqGR7Jo; path=/; expires=Wed, 08-Oct-25 03:22:20 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None
+strict-transport-security
+max-age=31536000; includeSubDomains; preload
+vary
+Accept-Encoding
+x-content-type-options
+nosniff
+x-envoy-attempt-count
+1
+x-envoy-upstream-service-time
+36
+:authority
+umotigprfosrrjwpxlnp.supabase.co
+:method
+POST
+:path
+/rest/v1/classes?select=*
+:scheme
+https
+accept
+application/vnd.pgrst.object+json
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-AU,en-GB;q=0.9,en-US;q=0.8,en;q=0.7
+apikey
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtb3RpZ3ByZm9zcnJqd3B4bG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NjI2NjgsImV4cCI6MjA3MzEzODY2OH0.aDovd3HhJ2ItbknjwzBku6aAx2CIY270QL266_AOumk
+authorization
+Bearer eyJhbGciOiJFUzI1NiIsImtpZCI6IjRlMWNjY2IzLTUyYzMtNDY0OC04OWM2LTYwZjE1Y2U4ZTAxNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Vtb3RpZ3ByZm9zcnJqd3B4bG5wLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI1NzI3ZmRhMi0zNzgzLTRiMzYtYjZmMi0wYTY0M2Y3NjRmMjkiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU5ODkyODMyLCJpYXQiOjE3NTk4ODkyMzIsImVtYWlsIjoiYmpqaml0c2pvdXJuYWxAZ21haWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbCI6ImJqamppdHNqb3VybmFsQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJzdE5hbWUiOiJKaXRzICIsImxhc3ROYW1lIjoiSm91cm5hbCAiLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInN1YiI6IjU3MjdmZGEyLTM3ODMtNGIzNi1iNmYyLTBhNjQzZjc2NGYyOSJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzU5ODg5MjMyfV0sInNlc3Npb25faWQiOiJiNDdmODkxZS1mZjE3LTRhODEtYTUzNS0xYjJlNmJmZmJiZDUiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.qo-f6TVfdAd1xLCIJn8rBtWsdH_FhVo4xeAL5USB5p-GfPPCg4wdHUMN8TA2P6KOaqnyMh-SdIvE-1UENIQncw
+content-length
+199
+content-profile
+public
+content-type
+application/json
+dnt
+1
+origin
+https://bjj-jits-journal.vercel.app
+prefer
+return=representation
+priority
+u=1, i
+referer
+https://bjj-jits-journal.vercel.app/
+sec-ch-ua
+"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+cross-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+x-client-info
+supabase-js-web/2.57.4
