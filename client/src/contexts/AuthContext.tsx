@@ -47,12 +47,12 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     console.log('Querying users table with supabase_uid:', supabaseId);
     
     // Add timeout to detect hanging queries
-    // Explicitly select columns to avoid ID column ambiguity
+    // Use * to get all columns from the users table
     const queryPromise = supabase
       .from('users')
-      .select('id, email, first_name, last_name, subscription_status, subscription_plan, role, created_at, supabase_uid')
+      .select('*')
       .eq('supabase_uid', supabaseId)
-      .single();
+      .maybeSingle(); // Use maybeSingle to handle not found without error
     
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Query timeout after 5s')), 5000)

@@ -1,0 +1,73 @@
+umotigprfosrrjwpxlnp…b6f2-0a643f764f29:1 
+ Failed to load resource: the server responded with a status of 400 ()
+
+umotigprfosrrjwpxlnp…b6f2-0a643f764f29:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:72 Query result: 
+Object
+index-B2ZMt_t6.js:72 Database query error: 
+Object
+index-B2ZMt_t6.js:72 User data loaded: undefined
+umotigprfosrrjwpxlnp…b6f2-0a643f764f29:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:72 Query result: 
+Object
+index-B2ZMt_t6.js:72 Database query error: 
+Object
+index-B2ZMt_t6.js:72 User data loaded: undefined
+index-B2ZMt_t6.js:72 Auth state changed: SIGNED_OUT undefined
+index-B2ZMt_t6.js:314 Login attempt with: 
+Object
+index-B2ZMt_t6.js:314 Login attempt with: 
+Object
+index-B2ZMt_t6.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-B2ZMt_t6.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-B2ZMt_t6.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+2
+index-B2ZMt_t6.js:270 Current belt data: undefined
+umotigprfosrrjwpxlnp…b6f2-0a643f764f29:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:72 Query result: 
+Object
+index-B2ZMt_t6.js:72 Database query error: 
+Object
+index-B2ZMt_t6.js:72 User data loaded: undefined
+index-B2ZMt_t6.js:314 Login successful: bjjjitsjournal@gmail.com
+index-B2ZMt_t6.js:270 Current belt data: undefined
+index-B2ZMt_t6.js:75 WeeklyGoals user object: 
+Object
+index-B2ZMt_t6.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp…d_at.desc&limit=1:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:75 getCurrent - Found: null Error: 
+Object
+umotigprfosrrjwpxlnp…date.desc&limit=1:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…9&order=date.desc:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…9&order=date.desc:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…date.desc&limit=1:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…date.desc&limit=1:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…r=created_at.desc:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…date.desc&limit=1:1 
+ Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp…r=created_at.desc:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:75 Creating note with userId: 5727fda2-3783-4b36-b6f2-0a643f764f29 noteData: 
+Object
+umotigprfosrrjwpxlnp…v1/notes?select=*:1 
+ Failed to load resource: the server responded with a status of 400 ()
+index-B2ZMt_t6.js:75 Note creation error: 
+Object
+index-B2ZMt_t6.js:75 Error details: {
+  "code": "22P02",
+  "details": null,
+  "hint": null,
+  "message": "invalid input syntax for type integer: \"5727fda2-3783-4b36-b6f2-0a643f764f29\""
+}
+umotigprfosrrjwpxlnp…r=created_at.desc:1 
+ Failed to load resource: the server responded with a status of 400 ()
