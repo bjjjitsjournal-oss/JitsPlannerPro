@@ -1,0 +1,84 @@
+Request URL
+https://bjj-jits-journal-o3wk20gdq-joes-projects-4f6e77c7.vercel.app/assets/index-DDwShRm3.js
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+[2405:dc00:0:3::401d:1143]:443
+Referrer Policy
+strict-origin-when-cross-origin
+accept-ranges
+bytes
+access-control-allow-origin
+*
+age
+317
+cache-control
+public, max-age=0, must-revalidate
+content-disposition
+inline; filename="index-DDwShRm3.js"
+content-encoding
+br
+content-length
+226995
+content-type
+application/javascript; charset=utf-8
+date
+Wed, 08 Oct 2025 03:36:21 GMT
+etag
+"d2653cfb82dc5f48e3081b81ac295f2e"
+last-modified
+Wed, 08 Oct 2025 03:31:04 GMT
+server
+Vercel
+strict-transport-security
+max-age=63072000; includeSubDomains; preload
+x-robots-tag
+noindex
+x-vercel-cache
+HIT
+x-vercel-id
+syd1::9l6td-1759894581637-ef44c70644d9
+:authority
+bjj-jits-journal-o3wk20gdq-joes-projects-4f6e77c7.vercel.app
+:method
+GET
+:path
+/assets/index-DDwShRm3.js
+:scheme
+https
+accept
+*/*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-AU,en-GB;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+no-cache
+cookie
+_vercel_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmTFFlZ0IxYjZGNTdHNjFPa2FLWmFLbWQiLCJpYXQiOjE3NTk4OTQyNjMsIm93bmVySWQiOiJ0ZWFtX0FyWUVyYzFOQk9RbHNGOGl0R1Zqd3V3UCIsImF1ZCI6ImJqai1qaXRzLWpvdXJuYWwtbzN3azIwZ2RxLWpvZXMtcHJvamVjdHMtNGY2ZTc3YzcudmVyY2VsLmFwcCIsInVzZXJuYW1lIjoiam9laWFubmk2MTktNjM0MyIsInN1YiI6InNzby1wcm90ZWN0aW9uIn0.k4-qOUEgkZ-tBq6pxKdDH6SlWBfLFPHVAhT3Xzw6k1o
+dnt
+1
+origin
+https://bjj-jits-journal-o3wk20gdq-joes-projects-4f6e77c7.vercel.app
+pragma
+no-cache
+priority
+u=1
+referer
+https://bjj-jits-journal-o3wk20gdq-joes-projects-4f6e77c7.vercel.app/
+sec-ch-ua
+"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+script
+sec-fetch-mode
+cors
+sec-fetch-site
+same-origin
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
