@@ -427,9 +427,10 @@ export default function Notes() {
                     </button>
                     <button
                       onClick={() => handleToggleSharing(note.id, note.isShared || 0)}
-                      className="text-green-600 hover:text-green-800 text-sm"
+                      className="text-green-600 hover:text-green-800 text-sm font-medium"
+                      title={note.isShared === 1 ? 'Remove from Community' : 'Share with Community'}
                     >
-                      {note.isShared === 1 ? 'Unshare' : 'Share'}
+                      {note.isShared === 1 ? 'Unshare from Community' : 'Share to Community'}
                     </button>
                   </div>
                 </div>

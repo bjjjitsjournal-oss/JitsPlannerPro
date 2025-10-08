@@ -261,7 +261,7 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
           data-testid="button-share-note"
         >
           <Share2 className="w-4 h-4" />
-          Share
+          Share to Social Media
         </Button>
       ) : (
         // Desktop: Dropdown with share options
@@ -274,7 +274,7 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
               data-testid="button-share-note"
             >
               <Share2 className="w-4 h-4" />
-              Share
+              Share to Social Media
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
