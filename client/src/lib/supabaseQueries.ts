@@ -130,12 +130,20 @@ export const notesQueries = {
 
   async create(userId: number, noteData: any) {
     console.log('Creating note with userId:', userId, 'noteData:', noteData);
+    
+    // Prepare data with proper types
+    const insertData = {
+      title: noteData.title || '',
+      content: noteData.content || '',
+      tags: noteData.tags && noteData.tags.length > 0 ? noteData.tags : null,
+      user_id: userId,
+    };
+    
+    console.log('Inserting data:', insertData);
+    
     const { data, error } = await supabase
       .from('notes')
-      .insert({
-        ...noteData,
-        user_id: userId,
-      })
+      .insert(insertData)
       .select()
       .single();
 
