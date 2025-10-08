@@ -174,6 +174,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const loadedSupabaseIdRef = React.useRef<string | null>(null);
 
   useEffect(() => {
     // Get initial session
@@ -197,6 +198,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
             queryClient.clear();
             setUser(userData);
+            loadedSupabaseIdRef.current = session.user.id; // Track loaded Supabase ID
             setIsLoading(false); // Only stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null - user profile not found');
@@ -235,15 +237,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
-        // OPTIMIZATION: Skip database query if we already have user data for this Supabase ID
+        // OPTIMIZATION: Skip database query if we already loaded data for this Supabase ID
         // This prevents timeout issues on token refresh
-        if (user && user.supabaseId === session.user.id) {
-          console.log('Token refreshed - keeping existing user data:', user.email);
+        if (loadedSupabaseIdRef.current === session.user.id) {
+          console.log('Token refreshed - skipping database query for:', session.user.email);
           setIsLoading(false);
           return;
         }
         
-        // Only query database if we don't have user data yet
+        // Only query database if we haven't loaded this user yet
         setIsLoading(true);
         try {
           const userData = await getUserFromSupabaseId(
@@ -258,6 +260,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
             queryClient.clear();
             setUser(userData);
+            loadedSupabaseIdRef.current = session.user.id; // Track loaded Supabase ID
             setIsLoading(false); // Stop loading after user data is ready
           } else {
             console.error('getUserFromSupabaseId returned null after auth change - forcing logout');
@@ -279,6 +282,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } else {
         setUser(null);
+        loadedSupabaseIdRef.current = null; // Clear ref on logout
         setIsLoading(false);
       }
     });

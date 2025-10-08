@@ -1,0 +1,85 @@
+index-CnKpiRxT.js:72 🔧 Supabase Client Initialization
+index-CnKpiRxT.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-CnKpiRxT.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-CnKpiRxT.js:314 BJJ Journal - Full App Restored!
+index-CnKpiRxT.js:314 Open in new window if you see caching issues
+index-CnKpiRxT.js:72 Initial session check: undefined
+index-CnKpiRxT.js:72 Auth state changed: INITIAL_SESSION undefined
+index-CnKpiRxT.js:314 Notification permission: denied
+index-CnKpiRxT.js:314 Login attempt with: Object
+index-CnKpiRxT.js:314 Login attempt with: Object
+umotigprfosrrjwpxlnp.supabase.co/auth/v1/token?grant_type=password:1  Failed to load resource: the server responded with a status of 400 ()
+index-CnKpiRxT.js:314 Login error: AuthApiError: Invalid login credentials
+    at _0 (index-CnKpiRxT.js:71:8269)
+    at async eI (index-CnKpiRxT.js:71:9258)
+    at async xe (index-CnKpiRxT.js:71:8919)
+    at async fI.signInWithPassword (index-CnKpiRxT.js:71:22765)
+    at async Object.mutationFn (index-CnKpiRxT.js:314:287244)
+mutationFn @ index-CnKpiRxT.js:314
+index-CnKpiRxT.js:314 Login mutation error: AuthApiError: Invalid login credentials
+    at _0 (index-CnKpiRxT.js:71:8269)
+    at async eI (index-CnKpiRxT.js:71:9258)
+    at async xe (index-CnKpiRxT.js:71:8919)
+    at async fI.signInWithPassword (index-CnKpiRxT.js:71:22765)
+    at async Object.mutationFn (index-CnKpiRxT.js:314:287244)
+onError @ index-CnKpiRxT.js:314
+index-CnKpiRxT.js:314 Login attempt with: Object
+index-CnKpiRxT.js:314 Login attempt with: Object
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:72 Query result: Object
+index-CnKpiRxT.js:72 Found existing user: 1
+index-CnKpiRxT.js:72 User data loaded after auth change: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Setting user with ID: 1 type: number
+index-CnKpiRxT.js:314 Login successful: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:270 ProfileDropdown - Fetching belt for user ID: 1
+index-CnKpiRxT.js:75 WeeklyGoals user object: Object
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:270 ProfileDropdown - Belt data received: Object
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:270 Current belt data: Object
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_OUT undefined
+index-CnKpiRxT.js:314 Login attempt with: Object
+index-CnKpiRxT.js:314 Login attempt with: Object
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:72 Query result: Object
+index-CnKpiRxT.js:72 Found existing user: 1
+index-CnKpiRxT.js:72 User data loaded after auth change: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Setting user with ID: 1 type: number
+index-CnKpiRxT.js:314 Login successful: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:270 ProfileDropdown - Fetching belt for user ID: 1
+index-CnKpiRxT.js:75 WeeklyGoals user object: Object
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:270 ProfileDropdown - Belt data received: Object
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:270 Current belt data: Object
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:75 getCurrent - Found: Object Error: null
+index-CnKpiRxT.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+(anonymous) @ index-CnKpiRxT.js:72
+index-CnKpiRxT.js:72 Query result: Object
+index-CnKpiRxT.js:72 Database query error: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+j0 @ index-CnKpiRxT.js:72
+index-CnKpiRxT.js:72 getUserFromSupabaseId returned null after auth change - forcing logout
+(anonymous) @ index-CnKpiRxT.js:72
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
