@@ -52,7 +52,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
         setUploadProgress(0);
       }, 500);
       
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
       toast({
         title: "Video uploaded successfully!",
         description: "Your video has been attached to the note",
@@ -73,10 +73,12 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
 
   const removeMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("DELETE", `/api/notes/${noteId}/video`);
+      return await apiRequest("DELETE", `/api/notes/${noteId}/video`, {
+        userId: user?.id
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
       toast({
         title: "Video removed",
         description: "Video has been removed from the note",
