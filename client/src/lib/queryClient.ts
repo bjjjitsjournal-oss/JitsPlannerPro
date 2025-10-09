@@ -63,8 +63,8 @@ export async function apiRequest(method: string, url: string, data?: any) {
     if (response.status === 401 || response.status === 403) {
       console.log('Authentication failed in API request - keeping user logged in to prevent auto-logout');
       
-      // Don't store any failure flags to prevent automatic form switching and pre-filling
-      return;
+      // Throw error instead of returning undefined so mutations handle it properly
+      throw new Error('Authentication required. Please refresh the page and try again.');
     }
     
     // Try to parse error as JSON, fallback to text
