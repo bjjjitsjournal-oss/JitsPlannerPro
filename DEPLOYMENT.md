@@ -1,5 +1,14 @@
 # Deployment Guide for Jits Journal
 
+## ⚠️ CRITICAL: Supabase Storage Setup Required
+
+**Before deploying**, you MUST set up Supabase Storage for video uploads. See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for detailed instructions.
+
+**Quick setup:**
+1. Create a `videos` bucket in Supabase Storage (public)
+2. Add upload/read policies (see SUPABASE_SETUP.md)
+3. This fixes Vercel's 4.5MB request body limit issue
+
 ## Frontend Deployment to Vercel
 
 1. **Install Vercel CLI** (if not already installed):
