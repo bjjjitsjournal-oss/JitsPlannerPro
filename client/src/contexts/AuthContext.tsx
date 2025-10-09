@@ -44,47 +44,14 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
   try {
     console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
     
-    // Query by supabase_uid to work with RLS policies
-    console.log('Querying users table with supabase_uid:', supabaseId);
+    // Use backend API instead of direct Supabase query to avoid timeouts
+    console.log('Fetching user from backend API...');
     
-    // Add timeout to detect hanging queries
-    // Use * to get all columns from the users table
-    const queryPromise = supabase
-      .from('users')
-      .select('*')
-      .eq('supabase_uid', supabaseId)
-      .maybeSingle(); // Use maybeSingle to handle not found without error
+    const response = await fetch(`/api/user/by-supabase-id/${supabaseId}`);
     
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Query timeout after 15s')), 15000)
-    );
-    
-    const { data: existingUser, error: userError } = await Promise.race([
-      queryPromise,
-      timeoutPromise
-    ]).catch(err => {
-      console.error('Query failed or timed out:', err);
-      return { data: null, error: err };
-    }) as any;
-
-    console.log('Query result:', { existingUser, userError });
-    
-    if (userError && userError.code !== 'PGRST116') {
-      console.error('Database query error:', userError);
-      return null;
-    }
-
-    if (existingUser) {
-      console.log('Found existing user:', existingUser.id);
-      
-      // If supabase_uid is missing, update it for future logins
-      if (!existingUser.supabase_uid) {
-        console.log('Backfilling missing supabase_uid for user:', existingUser.id);
-        await supabase
-          .from('users')
-          .update({ supabase_uid: supabaseId })
-          .eq('id', existingUser.id);
-      }
+    if (response.ok) {
+      const existingUser = await response.json();
+      console.log('Found existing user from backend:', existingUser.id);
       
       return {
         id: existingUser.id,

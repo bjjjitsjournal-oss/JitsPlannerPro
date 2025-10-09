@@ -921,6 +921,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+  // Get user by Supabase UID - No auth required for login
+  app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
+    try {
+      const { supabaseId } = req.params;
+      console.log('Looking up user by Supabase ID:', supabaseId);
+      
+      const result = await pool.query(
+        'SELECT * FROM users WHERE supabase_uid = $1',
+        [supabaseId]
+      );
+      
+      if (result.rows.length > 0) {
+        console.log('Found user:', result.rows[0].id);
+        res.json(result.rows[0]);
+      } else {
+        console.log('User not found');
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error: any) {
+      console.error('Error fetching user by Supabase ID:', error);
+      res.status(500).json({ message: 'Error fetching user: ' + error.message });
+    }
+  });
 
   // Get user statistics
   app.get("/api/user-stats", authenticateToken, async (req, res) => {
