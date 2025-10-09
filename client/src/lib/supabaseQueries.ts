@@ -111,7 +111,20 @@ export const notesQueries = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    // Transform snake_case to camelCase
+    return (data || []).map(note => ({
+      ...note,
+      userId: note.user_id,
+      linkedClassId: note.linked_class_id,
+      linkedVideoId: note.linked_video_id,
+      isShared: note.is_shared,
+      sharedWithUsers: note.shared_with_users,
+      videoUrl: note.video_url,
+      videoFileName: note.video_file_name,
+      videoThumbnail: note.video_thumbnail,
+      createdAt: note.created_at,
+      updatedAt: note.updated_at
+    }));
   },
 
   async getShared() {
