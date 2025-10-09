@@ -4,12 +4,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, notes } from "@shared/schema";
 import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 import * as nodemailer from "nodemailer";
 import fs from "fs";
@@ -786,29 +786,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Video data and filename are required" });
       }
 
-      // Update note in Supabase with video information
-      const { data, error } = await supabase
-        .from('notes')
-        .update({
-          video_url: videoDataUrl,
-          video_file_name: fileName,
-          video_thumbnail: thumbnail || null,
-          updated_at: new Date().toISOString()
+      // Update note in database with video information
+      const [updatedNote] = await db.update(notes)
+        .set({
+          videoUrl: videoDataUrl,
+          videoFileName: fileName,
+          videoThumbnail: thumbnail || null,
+          updatedAt: new Date()
         })
-        .eq('id', noteId)
-        .eq('user_id', userId)
-        .select()
-        .single();
+        .where(and(
+          eq(notes.id, noteId),
+          eq(notes.userId, userId)
+        ))
+        .returning();
 
-      if (error) {
-        console.error('Supabase update error:', error);
+      if (!updatedNote) {
+        console.error('Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       console.log('Video upload completed successfully');
       res.json({ 
         message: "Video uploaded successfully",
-        note: data 
+        note: updatedNote 
       });
     } catch (error) {
       console.error("Error uploading video to note:", error);
@@ -816,33 +816,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Remove video from note
-  app.delete("/api/notes/:id/video", authenticateToken, async (req, res) => {
+  // Remove video from note  
+  app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const userId = (req as any).user.userId;
+      const { userId } = req.body;
 
-      const { data, error } = await supabase
-        .from('notes')
-        .update({
-          video_url: null,
-          video_file_name: null,
-          video_thumbnail: null,
-          updated_at: new Date().toISOString()
+      if (!userId) {
+        return res.status(401).json({ message: 'User ID required' });
+      }
+
+      const [updatedNote] = await db.update(notes)
+        .set({
+          videoUrl: null,
+          videoFileName: null,
+          videoThumbnail: null,
+          updatedAt: new Date()
         })
-        .eq('id', noteId)
-        .eq('user_id', userId)
-        .select()
-        .single();
+        .where(and(
+          eq(notes.id, noteId),
+          eq(notes.userId, userId)
+        ))
+        .returning();
 
-      if (error) {
-        console.error('Supabase delete video error:', error);
+      if (!updatedNote) {
+        console.error('Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       res.json({ 
         message: "Video removed successfully",
-        note: data 
+        note: updatedNote 
       });
     } catch (error) {
       console.error("Error removing video from note:", error);
