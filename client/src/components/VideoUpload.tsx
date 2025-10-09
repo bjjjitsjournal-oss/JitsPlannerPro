@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 interface VideoUploadProps {
   noteId: string;
@@ -25,28 +26,47 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
   const { user } = useAuth();
 
   const uploadMutation = useMutation({
-    mutationFn: async ({ videoDataUrl, fileName, thumbnail }: {
-      videoDataUrl: string;
-      fileName: string;
+    mutationFn: async ({ file, thumbnail }: {
+      file: File;
       thumbnail?: string;
     }) => {
-      // Update progress to show upload starting
-      setUploadProgress(70);
+      // Generate unique file path
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${noteId}-${Date.now()}.${fileExt}`;
+      const filePath = `note-videos/${fileName}`;
       
+      // Upload to Supabase Storage
+      setUploadProgress(30);
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('videos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+      
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+      
+      // Get public URL
+      setUploadProgress(60);
+      const { data: { publicUrl } } = supabase.storage
+        .from('videos')
+        .getPublicUrl(filePath);
+      
+      // Save URL to database via backend
+      setUploadProgress(80);
       const response = await apiRequest("POST", `/api/notes/${noteId}/upload-video`, {
-        videoDataUrl,
-        fileName,
+        videoUrl: publicUrl,
+        fileName: file.name,
         thumbnail,
         userId: user?.id
       });
       
-      // Simulate upload progress completion
       setUploadProgress(100);
-      
       return response;
     },
     onSuccess: () => {
-      // Keep progress at 100% briefly before clearing
       setTimeout(() => {
         setIsUploading(false);
         setUploadProgress(0);
@@ -65,7 +85,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       console.error('Video upload error:', error);
       toast({
         title: "Upload failed",
-        description: "Failed to upload video. Please try again.",
+        description: error.message || "Failed to upload video. Please try again.",
         variant: "destructive",
       });
     },
@@ -122,51 +142,19 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
 
   const uploadVideo = async (file: File) => {
     setIsUploading(true);
-    setUploadProgress(0);
+    setUploadProgress(10);
 
     try {
-      // Show initial processing message
-      toast({
-        title: "Processing video...",
-        description: "Preparing your video for upload",
-      });
-
-      // Convert file to data URL with better progress tracking
-      const reader = new FileReader();
+      // Generate thumbnail (optional)
+      const thumbnail = await generateThumbnail(file);
       
-      reader.onprogress = (e) => {
-        if (e.lengthComputable) {
-          // FileReader progress represents file reading (0-50%)
-          const readProgress = (e.loaded / e.total) * 50;
-          setUploadProgress(readProgress);
-        }
-      };
-
-      reader.onload = async (e) => {
-        const videoDataUrl = e.target?.result as string;
-        
-        // Update progress to show file reading is complete
-        setUploadProgress(50);
-        
-        // Generate thumbnail (optional)
-        const thumbnail = await generateThumbnail(file);
-        
-        // Update progress for thumbnail generation
-        setUploadProgress(60);
-        
-        // Start actual upload
-        uploadMutation.mutate({
-          videoDataUrl,
-          fileName: file.name,
-          thumbnail
-        });
-      };
-
-      reader.onerror = () => {
-        throw new Error('Failed to read file');
-      };
-
-      reader.readAsDataURL(file);
+      setUploadProgress(20);
+      
+      // Start upload to Supabase Storage
+      uploadMutation.mutate({
+        file,
+        thumbnail
+      });
     } catch (error) {
       console.error('Upload error:', error);
       setIsUploading(false);

@@ -768,11 +768,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Video upload route for notes
+  // Video upload route for notes - saves Supabase Storage URL
   app.post("/api/notes/:id/upload-video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const { videoDataUrl, fileName, thumbnail, userId } = req.body;
+      const { videoUrl, fileName, thumbnail, userId } = req.body;
       
       if (!userId) {
         return res.status(401).json({ message: 'User ID required' });
@@ -780,16 +780,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Video upload request for note ${noteId} by user ${userId}`);
       console.log(`File name: ${fileName}`);
-      console.log(`Video data size: ${videoDataUrl ? videoDataUrl.length : 'No data'}`);
+      console.log(`Video URL: ${videoUrl}`);
       
-      if (!videoDataUrl || !fileName) {
-        return res.status(400).json({ message: "Video data and filename are required" });
+      if (!videoUrl || !fileName) {
+        return res.status(400).json({ message: "Video URL and filename are required" });
       }
 
-      // Update note in database with video information
+      // Update note in database with video URL from Supabase Storage
       const [updatedNote] = await db.update(notes)
         .set({
-          videoUrl: videoDataUrl,
+          videoUrl: videoUrl,
           videoFileName: fileName,
           videoThumbnail: thumbnail || null,
           updatedAt: new Date()
@@ -805,7 +805,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
-      console.log('Video upload completed successfully');
+      console.log('Video URL saved successfully');
       res.json({ 
         message: "Video uploaded successfully",
         note: updatedNote 
@@ -816,20 +816,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Remove video from note  
+  // Remove video from note (video file stays in Supabase Storage for now)
   app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      console.log('Delete video - query params:', req.query);
-      console.log('Delete video - userId from query:', req.query.userId);
       const userId = parseInt(req.query.userId as string);
-      console.log('Delete video - parsed userId:', userId);
 
       if (!userId || isNaN(userId)) {
-        console.error('Invalid or missing userId:', userId);
         return res.status(401).json({ message: 'User ID required' });
       }
 
+      // Note: We don't delete the video file from Supabase Storage here
+      // The file remains in storage but is unlinked from the note
+      // You can add cleanup logic later if needed
+      
       const [updatedNote] = await db.update(notes)
         .set({
           videoUrl: null,
@@ -844,7 +844,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .returning();
 
       if (!updatedNote) {
-        console.error('Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
