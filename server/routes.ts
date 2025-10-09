@@ -820,9 +820,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
+      console.log('Delete video - query params:', req.query);
+      console.log('Delete video - userId from query:', req.query.userId);
       const userId = parseInt(req.query.userId as string);
+      console.log('Delete video - parsed userId:', userId);
 
-      if (!userId) {
+      if (!userId || isNaN(userId)) {
+        console.error('Invalid or missing userId:', userId);
         return res.status(401).json({ message: 'User ID required' });
       }
 
