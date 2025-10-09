@@ -769,11 +769,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Video upload route for notes
-  app.post("/api/notes/:id/upload-video", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/upload-video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const userId = (req as any).user.userId;
-      const { videoDataUrl, fileName, thumbnail } = req.body;
+      const { videoDataUrl, fileName, thumbnail, userId } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ message: 'User ID required' });
+      }
       
       console.log(`Video upload request for note ${noteId} by user ${userId}`);
       console.log(`File name: ${fileName}`);

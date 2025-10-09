@@ -3,6 +3,7 @@ import { Upload, Video, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 interface VideoUploadProps {
   noteId: string;
@@ -21,6 +22,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const uploadMutation = useMutation({
     mutationFn: async ({ videoDataUrl, fileName, thumbnail }: {
@@ -34,7 +36,8 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       const response = await apiRequest("POST", `/api/notes/${noteId}/upload-video`, {
         videoDataUrl,
         fileName,
-        thumbnail
+        thumbnail,
+        userId: user?.id
       });
       
       // Simulate upload progress completion
