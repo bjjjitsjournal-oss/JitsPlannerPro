@@ -820,7 +820,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const { userId } = req.body;
+      const userId = parseInt(req.query.userId as string);
 
       if (!userId) {
         return res.status(401).json({ message: 'User ID required' });
