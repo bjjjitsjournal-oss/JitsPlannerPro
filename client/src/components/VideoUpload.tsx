@@ -73,9 +73,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
 
   const removeMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("DELETE", `/api/notes/${noteId}/video`, {
-        userId: user?.id
-      });
+      return await apiRequest("DELETE", `/api/notes/${noteId}/video?userId=${user?.id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
