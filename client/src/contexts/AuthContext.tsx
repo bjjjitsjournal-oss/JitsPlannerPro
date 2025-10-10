@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
 
+// Get API base URL from environment variable or use relative path for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 interface User {
   id: string; // UUID varchar to match production database
   email: string;
@@ -47,7 +50,7 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     // Use backend API instead of direct Supabase query to avoid timeouts
     console.log('Fetching user from backend API...');
     
-    const response = await fetch(`/api/user/by-supabase-id/${supabaseId}`);
+    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
     if (response.ok) {
       const existingUser = await response.json();
