@@ -1,7 +1,19 @@
 import { QueryClient } from '@tanstack/react-query';
+import { supabase } from './supabase';
 
 // Get API base URL from environment variable or use relative path for development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
+// Helper to get Supabase access token
+async function getSupabaseToken(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token || null;
+  } catch (e) {
+    console.error('Failed to get Supabase session:', e);
+    return null;
+  }
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -9,7 +21,12 @@ export const queryClient = new QueryClient({
       retry: 1,
       refetchOnWindowFocus: false,
       queryFn: async ({ queryKey }) => {
-        const token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+        // Get Supabase access token (preferred) or fallback to legacy token
+        let token = await getSupabaseToken();
+        if (!token) {
+          token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+        }
+        
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
         };
@@ -48,7 +65,12 @@ export async function apiRequest(method: string, url: string, data?: any) {
   };
 
   // Add authentication token if available
-  const token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+  // Get Supabase access token (preferred) or fallback to legacy token
+  let token = await getSupabaseToken();
+  if (!token) {
+    token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+  }
+  
   if (token) {
     options.headers = {
       ...options.headers,
