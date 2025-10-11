@@ -17,6 +17,7 @@ import Contact from './pages/Contact';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Auth from './pages/Auth';
+import Admin from './pages/Admin';
 import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
@@ -41,6 +42,7 @@ function AuthenticatedApp() {
           <Route path="/my-videos" component={MyVideos} />
           <Route path="/drawing" component={Drawing} />
           <Route path="/contact" component={Contact} />
+          <Route path="/admin" component={Admin} />
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password" component={ResetPassword} />
           <Route>

@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/subscription';
+import { apiRequest, queryClient } from '../lib/queryClient';
+import { useToast } from '../hooks/use-toast';
+import { Building2, Users } from 'lucide-react';
 
 export default function Settings() {
   const [showSubscription, setShowSubscription] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
+  const [gymCode, setGymCode] = useState('');
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
+  const { toast } = useToast();
   
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus, user?.subscriptionExpiresAt);
@@ -59,6 +64,45 @@ export default function Settings() {
   const { data: userNotes } = useQuery({
     queryKey: ['/api/notes'],
   });
+
+  // Fetch user's gym membership
+  const { data: gymMembership } = useQuery({
+    queryKey: ['/api/my-gym'],
+  });
+
+  // Join gym mutation
+  const joinGymMutation = useMutation({
+    mutationFn: async (code: string) => {
+      return await apiRequest('POST', '/api/gyms/join', { code });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/my-gym'] });
+      toast({
+        title: "Success!",
+        description: "You've joined the gym!",
+      });
+      setGymCode('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to join gym",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleJoinGym = () => {
+    if (!gymCode.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a gym code",
+        variant: "destructive",
+      });
+      return;
+    }
+    joinGymMutation.mutate(gymCode.trim().toUpperCase());
+  };
 
   return (
     <div className="p-6 max-w-md mx-auto dark:bg-gray-900 min-h-screen">
@@ -163,6 +207,66 @@ export default function Settings() {
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Upgrade to Premium
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Gym Community */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+          <Building2 className="w-5 h-5" />
+          Gym Community
+        </h3>
+        <div className="space-y-4">
+          {gymMembership ? (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold text-gray-800 dark:text-white">{gymMembership.name}</span>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Code: <span className="font-mono font-bold">{gymMembership.code}</span>
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                You're a member of this gym community
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                Join a gym community to share notes with your training partners
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter gym code..."
+                  value={gymCode}
+                  onChange={(e) => setGymCode(e.target.value.toUpperCase())}
+                  onKeyPress={(e) => e.key === 'Enter' && handleJoinGym()}
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  data-testid="input-gym-code"
+                />
+                <button
+                  onClick={handleJoinGym}
+                  disabled={joinGymMutation.isPending || !gymCode.trim()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  data-testid="button-join-gym"
+                >
+                  {joinGymMutation.isPending ? 'Joining...' : 'Join'}
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {user?.role === 'admin' && (
+            <button 
+              onClick={() => window.location.href = '/admin'}
+              className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+              data-testid="button-admin-panel"
+            >
+              <Building2 className="w-4 h-4" />
+              Manage Gyms (Admin)
             </button>
           )}
         </div>
