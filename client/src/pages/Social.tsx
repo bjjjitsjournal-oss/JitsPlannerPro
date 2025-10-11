@@ -26,6 +26,9 @@ export default function Social() {
           email: note.users.email
         } : null,
         createdAt: note.created_at, // Map snake_case to camelCase
+        videoUrl: note.video_url, // Map video fields
+        videoFileName: note.video_file_name,
+        videoThumbnail: note.video_thumbnail,
       }));
     },
   });
