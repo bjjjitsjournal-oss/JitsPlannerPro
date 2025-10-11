@@ -118,11 +118,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isPremiumUser = premiumEmails.includes(userData.email);
       
+      // Assign admin role for specific emails
+      const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const isAdmin = adminEmails.includes(userData.email);
+      
       const newUser = await storage.createUser({
         ...userData,
         password: hashedPassword,
         subscriptionStatus: isPremiumUser ? 'premium' : 'free',
         subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
+        role: isAdmin ? 'admin' : 'user',
       });
       
       // Send welcome email
@@ -265,6 +270,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           subscriptionExpiresAt: new Date('2099-12-31')
         });
         console.log(`✅ Auto-upgraded ${email} to premium access`);
+        
+        // Update the user object for the response
+        if (updatedUser) {
+          Object.assign(user, updatedUser);
+        }
+      }
+      
+      // Auto-assign admin role for specific emails
+      const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const isAdmin = adminEmails.includes(email);
+      if (isAdmin && user.role !== 'admin') {
+        const updatedUser = await storage.updateUser(user.id, {
+          role: 'admin'
+        });
+        console.log(`✅ Auto-assigned admin role to ${email}`);
         
         // Update the user object for the response
         if (updatedUser) {
