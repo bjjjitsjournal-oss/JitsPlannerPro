@@ -1,0 +1,78 @@
+g
+        modified:   app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png
+        modified:   app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+        modified:   app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+        modified:   app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
+        modified:   app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+        modified:   app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+        modified:   app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+        modified:   app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-hdpi/ic_launcher.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-mdpi/ic_launcher.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+        modified:   ../final-android-package/android-studio/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+        modified:   ../final-android-package/android-studio/build.gradle
+        modified:   ../final-android-package/android-studio/gradle/wrapper/gradle-wrapper.properties
+        modified:   ../package-lock.json
+        modified:   ../package.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        ../JitsPlannerPro-NEW/
+        .idea/studiobot.xml
+        app/src/main/res/drawable-land-ldpi/
+        app/src/main/res/drawable-land-night-hdpi/
+        app/src/main/res/drawable-land-night-ldpi/
+        app/src/main/res/drawable-land-night-mdpi/
+        app/src/main/res/drawable-land-night-xhdpi/
+        app/src/main/res/drawable-land-night-xxhdpi/
+        app/src/main/res/drawable-land-night-xxxhdpi/
+        app/src/main/res/drawable-night/
+        app/src/main/res/drawable-port-ldpi/
+        app/src/main/res/drawable-port-night-hdpi/
+        app/src/main/res/drawable-port-night-ldpi/
+        app/src/main/res/drawable-port-night-mdpi/
+        app/src/main/res/drawable-port-night-xhdpi/
+        app/src/main/res/drawable-port-night-xxhdpi/
+        app/src/main/res/drawable-port-night-xxxhdpi/
+        app/src/main/res/mipmap-hdpi/ic_launcher_background.png
+        app/src/main/res/mipmap-ldpi/
+        app/src/main/res/mipmap-mdpi/ic_launcher_background.png
+        app/src/main/res/mipmap-xhdpi/ic_launcher_background.png
+        app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png
+        app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png
+        ../assets/
+        ../final-android-package/android-studio/.gradle/
+        ../final-android-package/android-studio/.idea/
+        ../final-android-package/android-studio/app/src/main/res/mipmap-hdpi/ic_launcher_background.png
+        ../final-android-package/android-studio/app/src/main/res/mipmap-ldpi/
+        ../final-android-package/android-studio/app/src/main/res/mipmap-mdpi/ic_launcher_background.png
+        ../final-android-package/android-studio/app/src/main/res/mipmap-xhdpi/ic_launcher_background.png
+        ../final-android-package/android-studio/app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png
+        ../final-android-package/android-studio/app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png
+        ../final-android-package/android-studio/build/
+        ../final-android-package/android-studio/local.properties
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\Projects\JitsPlannerPro\android> git pull origin main
+From https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal
+ * branch            main       -> FETCH_HEAD
+error: Your local changes to the following files would be overwritten by merge:
+        android/app/build.gradle
+Please commit your changes or stash them before you merge.
+Aborting
+Merge with strategy ort failed.
+PS C:\Projects\JitsPlannerPro\android>
