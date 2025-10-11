@@ -26,13 +26,19 @@ Preferred communication style: Simple, everyday language.
 
 ### Core Features
 - **Class Tracking System**: Log training sessions, track instructors/partners, record techniques, and generate attendance statistics, including rolling partner tracking and submission details.
-- **Note-Taking System**: Rich text notes with tagging, linking to classes/videos, video attachment capabilities (gallery upload and camera recording), and community sharing.
+- **Note-Taking System**: Rich text notes with tagging, linking to classes/videos, video attachment capabilities (5GB video upload limit), and community sharing.
 - **Belt Tracking System**: Track belt promotions, stripes, and visually represent current belt status.
 - **Video Search Functionality**: Integrated YouTube search for categorized BJJ techniques.
 - **Weekly Commitment System**: Set and track weekly class goals with progress monitoring.
 - **Competition Game Plans**: Tree-based game plan system for competition strategy with AI-powered counter move suggestions using OpenAI GPT-4.
 - **Subscription Management**: Supports free and premium tiers with in-app purchases via RevenueCat integration.
 - **Admin Tools**: Role-based access control for community moderation.
+- **Gym Community System**: Private gym communities where users join using auto-generated codes. Only gym admins can share notes to their gym. Features include:
+  - Admin panel for gym creation with unique auto-generated codes
+  - Join gym functionality via code entry in Settings
+  - Private gym-specific note sharing (admin-only)
+  - "My Gym" tab in Social page to view gym notes
+  - Role-based access control (admin vs member)
 
 ### UI/UX Decisions
 - Custom BJJ-themed styling with a professional, clean, and modern aesthetic.
