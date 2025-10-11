@@ -1,0 +1,31 @@
+index-DtAme4-c.js:72 🔧 Supabase Client Initialization
+index-DtAme4-c.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-DtAme4-c.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-DtAme4-c.js:314 BJJ Journal - Full App Restored!
+index-DtAme4-c.js:314 Open in new window if you see caching issues
+index-DtAme4-c.js:72 Initial session check: undefined
+index-DtAme4-c.js:72 Auth state changed: INITIAL_SESSION undefined
+/manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+(index):1 Manifest fetch from https://bjj-jits-journal-q6o71qzji-joes-projects-4f6e77c7.vercel.app/manifest.json failed, code 401
+index-DtAme4-c.js:314 Notification permission: granted
+index-DtAme4-c.js:314 Login attempt with: Object
+index-DtAme4-c.js:314 Login attempt with: Object
+index-DtAme4-c.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-DtAme4-c.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DtAme4-c.js:72 Fetching user from backend API...
+(index):1 Access to fetch at 'https://bjj-jits-journal.onrender.com/api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29' from origin 'https://bjj-jits-journal-q6o71qzji-joes-projects-4f6e77c7.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+bjj-jits-journal.onrender.com/api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29:1  Failed to load resource: net::ERR_FAILED
+index-DtAme4-c.js:72 Error in getUserFromSupabaseId: TypeError: Failed to fetch
+    at O0 (index-DtAme4-c.js:72:35118)
+    at Object.callback (index-DtAme4-c.js:72:37895)
+    at index-DtAme4-c.js:72:21290
+    at Array.map (<anonymous>)
+    at gI._notifyAllSubscribers (index-DtAme4-c.js:72:21264)
+    at gI.signInWithPassword (index-DtAme4-c.js:71:23498)
+    at async Object.mutationFn (index-DtAme4-c.js:314:286725)
+O0 @ index-DtAme4-c.js:72
+index-DtAme4-c.js:72 getUserFromSupabaseId returned null after auth change - forcing logout
+(anonymous) @ index-DtAme4-c.js:72
+index-DtAme4-c.js:72 Auth state changed: SIGNED_OUT undefined
+index-DtAme4-c.js:314 Login successful: bjjjitsjournal@gmail.com
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()

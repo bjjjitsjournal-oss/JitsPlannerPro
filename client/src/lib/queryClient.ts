@@ -1,5 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 
+// Get API base URL from environment variable or use relative path for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,7 +18,8 @@ export const queryClient = new QueryClient({
           headers['Authorization'] = `Bearer ${token}`;
         }
         
-        const response = await fetch(queryKey[0] as string, {
+        const url = `${API_BASE_URL}${queryKey[0] as string}`;
+        const response = await fetch(url, {
           headers,
         });
         
@@ -56,7 +60,8 @@ export async function apiRequest(method: string, url: string, data?: any) {
     options.body = JSON.stringify(data);
   }
 
-  const response = await fetch(url, options);
+  const fullUrl = `${API_BASE_URL}${url}`;
+  const response = await fetch(fullUrl, options);
   
   if (!response.ok) {
     // Handle authentication errors - but don't auto-logout to prevent short-time logouts
