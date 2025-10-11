@@ -347,6 +347,9 @@ export type InsertGamePlan = z.infer<typeof insertGamePlanSchema>;
 export const insertGymSchema = createInsertSchema(gyms).omit({
   id: true,
   createdAt: true,
+}).extend({
+  code: z.string().optional(),
+  ownerId: z.number().optional(),
 });
 
 export type Gym = typeof gyms.$inferSelect;

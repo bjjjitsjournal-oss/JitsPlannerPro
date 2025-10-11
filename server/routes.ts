@@ -964,7 +964,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (result.rows.length > 0) {
         console.log('Found user:', result.rows[0].id);
-        res.json(result.rows[0]);
+        let user = result.rows[0];
+        
+        // Auto-assign admin role for specific emails
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isAdmin = adminEmails.includes(user.email);
+        if (isAdmin && user.role !== 'admin') {
+          const updatedUser = await storage.updateUser(user.id, {
+            role: 'admin'
+          });
+          console.log(`✅ Auto-assigned admin role to ${user.email}`);
+          
+          // Return updated user
+          if (updatedUser) {
+            user = updatedUser;
+          }
+        }
+        
+        res.json(user);
       } else {
         console.log('User not found');
         res.status(404).json({ message: 'User not found' });
