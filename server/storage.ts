@@ -1,5 +1,5 @@
 import { 
-  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities, gamePlans,
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities, gamePlans, gyms, gymMemberships,
   type Class, type InsertClass,
   type Video, type InsertVideo,
   type Note, type InsertNote,
@@ -12,7 +12,9 @@ import {
   type NoteLike, type InsertNoteLike,
   type AppNote, type InsertAppNote,
   type AuthIdentity, type InsertAuthIdentity,
-  type GamePlan, type InsertGamePlan
+  type GamePlan, type InsertGamePlan,
+  type Gym, type InsertGym,
+  type GymMembership, type InsertGymMembership
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, ilike, and, or, lt } from "drizzle-orm";
@@ -111,6 +113,17 @@ export interface IStorage {
   createGamePlanMove(userId: number, moveData: InsertGamePlan): Promise<GamePlan>;
   updateGamePlanMove(moveId: string, userId: number, moveData: Partial<InsertGamePlan>): Promise<GamePlan | undefined>;
   deleteGamePlanMove(moveId: string, userId: number): Promise<boolean>;
+
+  // Gyms
+  createGym(gymData: InsertGym): Promise<Gym>;
+  getGymByCode(code: string): Promise<Gym | undefined>;
+  getAllGyms(): Promise<Gym[]>;
+  getUserGyms(userId: number): Promise<Gym[]>;
+  getGymNotes(gymId: number): Promise<Note[]>;
+  
+  // Gym Memberships
+  createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership>;
+  getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined>;
 }
 
 // Database storage implementation
@@ -586,6 +599,68 @@ export class DatabaseStorage implements IStorage {
       ));
 
     return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  // Gym Management
+  async createGym(gymData: InsertGym): Promise<Gym> {
+    const [gym] = await db.insert(gyms).values(gymData).returning();
+    return gym;
+  }
+
+  async getGymByCode(code: string): Promise<Gym | undefined> {
+    const [gym] = await db.select().from(gyms).where(eq(gyms.code, code));
+    return gym || undefined;
+  }
+
+  async getAllGyms(): Promise<Gym[]> {
+    return await db.select().from(gyms).orderBy(desc(gyms.createdAt));
+  }
+
+  async getUserGyms(userId: number): Promise<Gym[]> {
+    const memberships = await db.select({
+      gym: gyms,
+      role: gymMemberships.role
+    })
+      .from(gymMemberships)
+      .innerJoin(gyms, eq(gymMemberships.gymId, gyms.id))
+      .where(eq(gymMemberships.userId, userId));
+    
+    return memberships.map(m => ({ ...m.gym, userRole: m.role })) as any;
+  }
+
+  async getGymNotes(gymId: number): Promise<Note[]> {
+    const gymNotes = await db.select({
+      note: notes,
+      user: users
+    })
+      .from(notes)
+      .innerJoin(users, eq(notes.userId, users.id))
+      .where(eq(notes.gymId, gymId))
+      .orderBy(desc(notes.createdAt));
+    
+    return gymNotes.map(gn => ({
+      ...gn.note,
+      author: {
+        firstName: gn.user.firstName,
+        lastName: gn.user.lastName,
+        email: gn.user.email
+      }
+    })) as any;
+  }
+
+  async createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership> {
+    const [membership] = await db.insert(gymMemberships).values(membershipData).returning();
+    return membership;
+  }
+
+  async getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined> {
+    const [membership] = await db.select()
+      .from(gymMemberships)
+      .where(and(
+        eq(gymMemberships.userId, userId),
+        eq(gymMemberships.gymId, gymId)
+      ));
+    return membership || undefined;
   }
 }
 
@@ -1222,6 +1297,35 @@ class MemStoragePrimary implements IStorage {
 
   async deleteGamePlanMove(moveId: string, userId: number): Promise<boolean> {
     return false;
+  }
+
+  // Gym stub implementations (not used in memory storage mode)
+  async createGym(gymData: InsertGym): Promise<Gym> {
+    throw new Error("Gyms not implemented in memory storage mode");
+  }
+
+  async getGymByCode(code: string): Promise<Gym | undefined> {
+    return undefined;
+  }
+
+  async getAllGyms(): Promise<Gym[]> {
+    return [];
+  }
+
+  async getUserGyms(userId: number): Promise<Gym[]> {
+    return [];
+  }
+
+  async getGymNotes(gymId: number): Promise<Note[]> {
+    return [];
+  }
+
+  async createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership> {
+    throw new Error("Gym memberships not implemented in memory storage mode");
+  }
+
+  async getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined> {
+    return undefined;
   }
 }
 

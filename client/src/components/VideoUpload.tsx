@@ -126,12 +126,12 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       return;
     }
 
-    // Check file size (50MB limit)
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    // Check file size (5GB limit)
+    const maxSize = 5 * 1024 * 1024 * 1024; // 5GB
     if (file.size > maxSize) {
       toast({
         title: "File too large",
-        description: "Video must be less than 50MB",
+        description: "Video must be less than 5GB",
         variant: "destructive",
       });
       return;
@@ -280,7 +280,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       )}
       
       <p className="text-xs text-gray-500 mt-3 text-center">
-        Supported formats: MP4, MOV, AVI • Maximum file size: 50MB
+        Supported formats: MP4, MOV, AVI • Maximum file size: 5GB
       </p>
     </div>
   );
