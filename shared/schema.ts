@@ -42,7 +42,8 @@ export const notes = pgTable("notes", {
   linkedClassId: integer("linked_class_id"),
   linkedVideoId: integer("linked_video_id"),
   userId: integer("user_id").notNull().references(() => users.id), // Direct integer reference to users table
-  isShared: integer("is_shared").default(0), // 0 = private, 1 = shared
+  isShared: integer("is_shared").default(0), // 0 = private, 1 = shared to community
+  gymId: integer("gym_id").references(() => gyms.id), // If shared to a specific gym
   sharedWithUsers: text("shared_with_users").array(), // array of user IDs
   videoUrl: text("video_url"), // URL to uploaded video file
   videoFileName: text("video_file_name"), // Original filename
@@ -172,6 +173,22 @@ export const gamePlans = pgTable("game_plans", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const gyms = pgTable("gyms", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  code: text("code").notNull().unique(), // Unique code to join gym
+  ownerId: integer("owner_id").references(() => users.id).notNull(), // Admin who created the gym
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const gymMemberships = pgTable("gym_memberships", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  gymId: integer("gym_id").references(() => gyms.id).notNull(),
+  role: text("role").notNull().default("member"), // 'admin' or 'member'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertClassSchema = createInsertSchema(classes).omit({
   id: true,
   createdAt: true,
@@ -203,6 +220,7 @@ export const insertNoteSchema = createInsertSchema(notes).omit({
   linkedVideoId: z.number().optional(),
   userId: z.string().optional(), // UUID format to match database structure
   isShared: z.number().optional(),
+  gymId: z.number().optional(), // Optional gym ID for gym-specific sharing
   sharedWithUsers: z.array(z.string()).optional(),
 });
 
@@ -326,6 +344,23 @@ export const insertGamePlanSchema = createInsertSchema(gamePlans).omit({
 export type GamePlan = typeof gamePlans.$inferSelect;
 export type InsertGamePlan = z.infer<typeof insertGamePlanSchema>;
 
+export const insertGymSchema = createInsertSchema(gyms).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  code: z.string().optional(),
+  ownerId: z.number().optional(),
+});
 
+export type Gym = typeof gyms.$inferSelect;
+export type InsertGym = z.infer<typeof insertGymSchema>;
 
+export const insertGymMembershipSchema = createInsertSchema(gymMemberships).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  role: z.enum(["admin", "member"]).default("member"),
+});
 
+export type GymMembership = typeof gymMemberships.$inferSelect;
+export type InsertGymMembership = z.infer<typeof insertGymMembershipSchema>;

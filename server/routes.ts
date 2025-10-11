@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, notes } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes } from "@shared/schema";
 import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -118,11 +118,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isPremiumUser = premiumEmails.includes(userData.email);
       
+      // Assign admin role for specific emails
+      const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const isAdmin = adminEmails.includes(userData.email);
+      
       const newUser = await storage.createUser({
         ...userData,
         password: hashedPassword,
         subscriptionStatus: isPremiumUser ? 'premium' : 'free',
         subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
+        role: isAdmin ? 'admin' : 'user',
       });
       
       // Send welcome email
@@ -265,6 +270,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           subscriptionExpiresAt: new Date('2099-12-31')
         });
         console.log(`✅ Auto-upgraded ${email} to premium access`);
+        
+        // Update the user object for the response
+        if (updatedUser) {
+          Object.assign(user, updatedUser);
+        }
+      }
+      
+      // Auto-assign admin role for specific emails
+      const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const isAdmin = adminEmails.includes(email);
+      if (isAdmin && user.role !== 'admin') {
+        const updatedUser = await storage.updateUser(user.id, {
+          role: 'admin'
+        });
+        console.log(`✅ Auto-assigned admin role to ${email}`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -944,7 +964,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (result.rows.length > 0) {
         console.log('Found user:', result.rows[0].id);
-        res.json(result.rows[0]);
+        let user = result.rows[0];
+        
+        // Auto-assign admin role for specific emails
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isAdmin = adminEmails.includes(user.email);
+        if (isAdmin && user.role !== 'admin') {
+          const updatedUser = await storage.updateUser(user.id, {
+            role: 'admin'
+          });
+          console.log(`✅ Auto-assigned admin role to ${user.email}`);
+          
+          // Return updated user
+          if (updatedUser) {
+            user = updatedUser;
+          }
+        }
+        
+        res.json(user);
       } else {
         console.log('User not found');
         res.status(404).json({ message: 'User not found' });
@@ -1426,6 +1463,271 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Gym Management Routes
+  
+  // Get all gyms (admin only)
+  app.get("/api/gyms", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      
+      // Check if user is admin
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const gyms = await storage.getAllGyms();
+      res.json(gyms);
+    } catch (error: any) {
+      console.error("Get gyms error:", error);
+      res.status(500).json({ message: error.message || "Failed to fetch gyms" });
+    }
+  });
+  
+  // Create a new gym (admin only)
+  app.post("/api/gyms", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      
+      // Check if user is admin
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const gymData = insertGymSchema.parse(req.body);
+      
+      // Generate unique code if not provided
+      if (!gymData.code) {
+        gymData.code = crypto.randomBytes(4).toString('hex').toUpperCase();
+      }
+      
+      const newGym = await storage.createGym({
+        ...gymData,
+        ownerId: userId
+      });
+      
+      // Automatically add creator as admin member
+      await storage.createGymMembership({
+        userId,
+        gymId: newGym.id,
+        role: 'admin'
+      });
+      
+      res.status(201).json(newGym);
+    } catch (error) {
+      console.error("Error creating gym:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid gym data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create gym" });
+      }
+    }
+  });
+  
+  // Join a gym with code
+  app.post("/api/gyms/join", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { code } = req.body;
+      
+      if (!code) {
+        return res.status(400).json({ message: "Gym code is required" });
+      }
+      
+      // Find gym by code
+      const gym = await storage.getGymByCode(code);
+      if (!gym) {
+        return res.status(404).json({ message: "Invalid gym code" });
+      }
+      
+      // Check if already a member
+      const existingMembership = await storage.getGymMembership(userId, gym.id);
+      if (existingMembership) {
+        return res.status(400).json({ message: "You are already a member of this gym" });
+      }
+      
+      // Create membership
+      const membership = await storage.createGymMembership({
+        userId,
+        gymId: gym.id,
+        role: 'member'
+      });
+      
+      res.status(201).json({ gym, membership });
+    } catch (error) {
+      console.error("Error joining gym:", error);
+      res.status(500).json({ message: "Failed to join gym" });
+    }
+  });
+
+  // Get user's gym membership
+  app.get("/api/my-gym", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      
+      // Get user's gym memberships
+      const userGyms = await storage.getUserGyms(userId);
+      
+      if (userGyms.length === 0) {
+        return res.json(null);
+      }
+      
+      // Get membership details including role
+      const gym = userGyms[0];
+      const membership = await storage.getGymMembership(userId, gym.id);
+      
+      // Return gym with membership role
+      res.json({
+        ...gym,
+        role: membership?.role || 'member'
+      });
+    } catch (error) {
+      console.error("Error getting user gym:", error);
+      res.status(500).json({ message: "Failed to get gym membership" });
+    }
+  });
+
+  // Get gym notes (only for gym members)
+  app.get("/api/gym-notes", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      
+      // Get user's gym memberships
+      const userGyms = await storage.getUserGyms(userId);
+      
+      if (userGyms.length === 0) {
+        return res.json([]);
+      }
+      
+      // Get notes for the first gym (users can only be in one gym for now)
+      const gymId = userGyms[0].id;
+      const gymNotes = await storage.getGymNotes(gymId);
+      
+      res.json(gymNotes);
+    } catch (error) {
+      console.error("Error getting gym notes:", error);
+      res.status(500).json({ message: "Failed to get gym notes" });
+    }
+  });
+
+  // Share note to gym (admin only)
+  app.post("/api/notes/:id/share-to-gym", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const noteId = req.params.id;
+      
+      // Verify note belongs to user
+      const note = await storage.getNote(noteId);
+      if (!note || note.userId !== userId) {
+        return res.status(403).json({ message: "Not authorized to share this note" });
+      }
+      
+      // Get user's gym
+      const userGyms = await storage.getUserGyms(userId);
+      if (userGyms.length === 0) {
+        return res.status(400).json({ message: "You must be a member of a gym to share notes" });
+      }
+      
+      // Verify user is gym admin
+      const gymMembership = await storage.getGymMembership(userId, userGyms[0].id);
+      if (!gymMembership || gymMembership.role !== 'admin') {
+        return res.status(403).json({ message: "Only gym admins can share notes to the gym" });
+      }
+      
+      // Share note to gym
+      await storage.shareNoteToGym(noteId, userGyms[0].id);
+      
+      res.json({ message: "Note shared to gym successfully" });
+    } catch (error) {
+      console.error("Error sharing note to gym:", error);
+      res.status(500).json({ message: "Failed to share note to gym" });
+    }
+  });
+
+  // Unshare note from gym (admin only)
+  app.post("/api/notes/:id/unshare-from-gym", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const noteId = req.params.id;
+      
+      // Verify note belongs to user
+      const note = await storage.getNote(noteId);
+      if (!note || note.userId !== userId) {
+        return res.status(403).json({ message: "Not authorized to modify this note" });
+      }
+      
+      // Get gym from note
+      if (!note.gymId) {
+        return res.status(400).json({ message: "Note is not shared to any gym" });
+      }
+      
+      // Verify user is gym admin
+      const gymMembership = await storage.getGymMembership(userId, note.gymId);
+      if (!gymMembership || gymMembership.role !== 'admin') {
+        return res.status(403).json({ message: "Only gym admins can remove notes from the gym" });
+      }
+      
+      // Unshare note from gym
+      await storage.unshareNoteFromGym(noteId);
+      
+      res.json({ message: "Note removed from gym successfully" });
+    } catch (error) {
+      console.error("Error unsharing note from gym:", error);
+      res.status(500).json({ message: "Failed to remove note from gym" });
+    }
+  });
+  
+  // Get user's gyms
+  app.get("/api/gyms/my-gyms", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gyms = await storage.getUserGyms(userId);
+      res.json(gyms);
+    } catch (error) {
+      console.error("Error fetching user gyms:", error);
+      res.status(500).json({ message: "Failed to fetch gyms" });
+    }
+  });
+  
+  // Get gym-specific shared notes
+  app.get("/api/gyms/:gymId/notes", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gymId = parseInt(req.params.gymId);
+      
+      // Verify user is a member of this gym
+      const membership = await storage.getGymMembership(userId, gymId);
+      if (!membership) {
+        return res.status(403).json({ message: "You are not a member of this gym" });
+      }
+      
+      const notes = await storage.getGymNotes(gymId);
+      res.json(notes);
+    } catch (error) {
+      console.error("Error fetching gym notes:", error);
+      res.status(500).json({ message: "Failed to fetch gym notes" });
+    }
+  });
+  
+  // Get all gyms (admin only)
+  app.get("/api/gyms", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.userId;
+      
+      // Check if user is admin
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const gyms = await storage.getAllGyms();
+      res.json(gyms);
+    } catch (error) {
+      console.error("Error fetching gyms:", error);
+      res.status(500).json({ message: "Failed to fetch gyms" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

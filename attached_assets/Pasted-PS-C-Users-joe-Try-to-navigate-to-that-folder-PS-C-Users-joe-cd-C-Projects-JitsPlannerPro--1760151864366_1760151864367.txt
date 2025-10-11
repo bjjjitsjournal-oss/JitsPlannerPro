@@ -1,0 +1,111 @@
+PS C:\Users\joe> # Try to navigate to that folder
+PS C:\Users\joe> cd "C:\Projects\JitsPlannerPro"
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # List the contents - you should see: client/, server/, package.json, etc.
+PS C:\Projects\JitsPlannerPro> dir
+
+
+    Directory: C:\Projects\JitsPlannerPro
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         9/10/2025   9:17 PM                .config
+d-----        11/10/2025  12:25 PM                .git
+d-----         9/10/2025   9:18 PM                .local
+d-----        10/10/2025   8:04 AM                .vercel
+d-----        11/10/2025  12:26 PM                android
+d-----        11/10/2025  12:23 PM                attached_asse
+                                                  ts
+d-----        11/10/2025  12:23 PM                client
+d-----         9/10/2025   9:28 PM                cordova-apk-p
+                                                  ackage
+d-----         9/10/2025   9:19 PM                data
+d-----         9/10/2025   9:28 PM                dist
+d-----         9/10/2025   9:28 PM                final-android
+                                                  -package
+d-----         9/10/2025   9:52 PM                node_modules
+d-----         9/10/2025   9:19 PM                pwa-apk-packa
+                                                  ge
+d-----         9/10/2025   9:28 PM                react-native-
+                                                  apk-package
+d-----         9/10/2025   9:28 PM                scripts
+d-----         9/10/2025   9:28 PM                server
+d-----         9/10/2025   9:28 PM                shared
+d-----         9/10/2025   9:28 PM                simple-build
+d-----         9/10/2025   9:28 PM                zip-packages
+-a----        11/10/2025   9:16 AM             57 .env
+-a----        10/10/2025   8:04 AM            144 .gitignore
+-a----         9/10/2025   9:11 AM           1316 .replit
+-a----         9/10/2025   8:31 AM             79 .vercelignore
+-a----        11/10/2025  12:23 PM           3590 AAB_BUILD_COM
+                                                  MANDS.md
+-a----         8/07/2025   7:46 AM           3361 android-relea
+                                                  se-guide.md
+-a----        13/07/2025   9:50 AM           6857 android-submi
+                                                  ssion-package
+                                                  .md
+-a----        13/07/2025   8:50 PM           2118 APK-BUILD-MET
+                                                  HODS.md
+-a----         4/07/2025  11:06 AM           2899 app-store-inf
+                                                  o.md
+-a----         5/07/2025   3:05 AM           5149 app-store-lau
+                                                  nch-guide.md
+-a----         8/07/2025   7:47 AM           1106 build-android
+                                                  .sh
+-a----        13/07/2025   8:49 PM           2852 build-apk-dir
+                                                  ect.sh
+-a----        11/10/2025   8:28 AM           1164 capacitor.con
+                                                  fig.ts
+-a----         4/07/2025   7:11 AM            459 components.js
+                                                  on
+-a----         7/07/2025   6:23 AM           1963 contact-submi
+                                                  ssions.json
+-a----        13/07/2025   9:49 AM           4450 create-apk.sh
+-a----         3/10/2025   9:03 PM           4792 create-downlo
+                                                  ad-package.sh
+-a----        22/09/2025   1:54 AM           1941 create-zip-pa
+                                                  ckages.sh
+-a----         9/10/2025   9:27 AM           2661 DEPLOYMENT.md
+-a----         4/07/2025   7:11 AM            325 drizzle.confi
+                                                  g.ts
+-a----         9/10/2025   8:35 AM            315 eas.json
+-a----        13/07/2025   8:49 PM           4378 fast-apk-buil
+                                                  d.sh
+-a----        12/08/2025   2:28 AM           5148 FINAL-APP-STO
+                                                  RE-READINESS.
+                                                  md
+-a----         8/07/2025   7:50 AM           6779 google-play-s
+                                                  tore-listing.
+                                                  md
+-a----        13/07/2025   8:50 PM           7436 hybrid-apk-ge
+                                                  nerator.sh
+-a----        13/07/2025   8:50 PM         512481 jits-journal-
+                                                  final.tar.gz
+-a----        16/09/2025   8:29 AM              0 login
+-a----        16/09/2025   8:29 AM              0 Login.jsx
+-a----         9/10/2025   9:57 PM         541459 package-lock.
+                                                  json
+-a----         8/10/2025   6:13 AM           4087 package.json
+-a----         4/07/2025   7:11 AM             80 postcss.confi
+                                                  g.js
+-a----        11/10/2025  12:23 PM           7434 RENDER_VERCEL
+                                                  _DEPLOYMENT.m
+                                                  d
+-a----         9/10/2025   8:36 AM           3652 replit.md
+-a----         9/10/2025   9:27 AM           3160 SUPABASE_SETU
+                                                  P.md
+-a----         4/07/2025   7:11 AM           2627 tailwind.conf
+                                                  ig.ts
+-a----         4/07/2025   7:11 AM            657 tsconfig.json
+-a----         9/10/2025   8:31 AM            187 vercel.json
+-a----         4/07/2025   7:11 AM            971 vite.config.t
+                                                  s
+-a----        10/09/2025  12:19 PM            407 weekly_commit
+                                                  ments_backup.
+                                                  json
+-a----         9/08/2025   6:46 AM           1971 working-crede
+                                                  ntials.md
+
+
+PS C:\Projects\JitsPlannerPro>

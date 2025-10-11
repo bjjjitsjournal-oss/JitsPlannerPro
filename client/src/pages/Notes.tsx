@@ -6,6 +6,14 @@ import SocialShareButton from '../components/SocialShareButton';
 import { useAuth } from '../contexts/AuthContext';
 import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
 import { notesQueries, beltsQueries } from '@/lib/supabaseQueries';
+import { apiRequest } from '../lib/queryClient';
+import { Share2, Users, Globe } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function Notes() {
   const [showForm, setShowForm] = useState(false);
@@ -42,12 +50,17 @@ export default function Notes() {
     staleTime: 60000, // Cache for 1 minute
   });
 
+  // Fetch user's gym membership
+  const { data: gymMembership } = useQuery({
+    queryKey: ['/api/my-gym'],
+  });
+
   // Force refresh data when component mounts
   React.useEffect(() => {
     refetchNotes();
   }, [refetchNotes]);
 
-  // Toggle note sharing mutation
+  // Toggle note sharing mutation (public community)
   const toggleSharingMutation = useMutation({
     mutationFn: async ({ noteId, isShared }: { noteId: number, isShared: boolean }) => {
       if (!user?.id) throw new Error('User not authenticated');
@@ -64,6 +77,50 @@ export default function Notes() {
       toast({
         title: "Error", 
         description: "Failed to update note sharing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Share note to gym mutation
+  const shareToGymMutation = useMutation({
+    mutationFn: async (noteId: number) => {
+      return await apiRequest('POST', `/api/notes/${noteId}/share-to-gym`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
+      toast({
+        title: "Success",
+        description: "Note shared to your gym!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to share note to gym",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Unshare note from gym mutation
+  const unshareFromGymMutation = useMutation({
+    mutationFn: async (noteId: number) => {
+      return await apiRequest('POST', `/api/notes/${noteId}/unshare-from-gym`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
+      toast({
+        title: "Success",
+        description: "Note removed from gym",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove note from gym",
         variant: "destructive",
       });
     },
@@ -406,8 +463,15 @@ export default function Notes() {
                   <h3 className="font-semibold text-black">{note.title}</h3>
                   <div className="flex items-center gap-2">
                     {note.isShared === 1 && (
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                        Shared
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded flex items-center gap-1">
+                        <Globe className="w-3 h-3" />
+                        Community
+                      </span>
+                    )}
+                    {note.gymId && (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        Gym
                       </span>
                     )}
                     <button
@@ -424,13 +488,38 @@ export default function Notes() {
                     >
                       Delete
                     </button>
-                    <button
-                      onClick={() => handleToggleSharing(note.id, note.isShared || 0)}
-                      className="text-green-600 hover:text-green-800 text-sm font-medium"
-                      title={note.isShared === 1 ? 'Remove from Community' : 'Share with Community'}
-                    >
-                      {note.isShared === 1 ? 'Unshare from Community' : 'Share to Community'}
-                    </button>
+                    
+                    {/* Sharing Dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center gap-1"
+                          data-testid={`button-share-menu-${note.id}`}
+                        >
+                          <Share2 className="w-4 h-4" />
+                          Share
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => handleToggleSharing(note.id, note.isShared || 0)}
+                          data-testid={`button-share-community-${note.id}`}
+                        >
+                          <Globe className="w-4 h-4 mr-2" />
+                          {note.isShared === 1 ? 'Remove from Community' : 'Share to Community'}
+                        </DropdownMenuItem>
+                        
+                        {gymMembership && gymMembership.role === 'admin' && (
+                          <DropdownMenuItem
+                            onClick={() => note.gymId ? unshareFromGymMutation.mutate(note.id) : shareToGymMutation.mutate(note.id)}
+                            data-testid={`button-share-gym-${note.id}`}
+                          >
+                            <Users className="w-4 h-4 mr-2" />
+                            {note.gymId ? 'Remove from Gym' : 'Share to My Gym'}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
                 
