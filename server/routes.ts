@@ -10,6 +10,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { eq, and } from "drizzle-orm";
+import { createClient } from "@supabase/supabase-js";
 
 import * as nodemailer from "nodemailer";
 import fs from "fs";
@@ -19,6 +20,18 @@ import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
 
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
+
+// Supabase admin client for token verification
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
+}
+
+const supabaseAdmin = supabaseUrl && supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
 
 
 
@@ -33,33 +46,90 @@ const authenticateToken = async (req: any, res: any, next: any) => {
     return res.status(401).json({ message: 'Access token required' });
   }
 
+  let decoded: any = null;
+  let isSupabaseToken = false;
+
+  // Try Supabase token verification first (only if configured)
+  if (supabaseAdmin) {
+    try {
+      const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
+      
+      if (supabaseUser && !error) {
+        console.log('✅ Supabase token verified for:', supabaseUser.email);
+        decoded = {
+          email: supabaseUser.email,
+          supabaseId: supabaseUser.id,
+        };
+        isSupabaseToken = true;
+      }
+    } catch (supabaseError) {
+      console.log('Not a Supabase token, trying legacy JWT...');
+    }
+  }
+
+  // Fallback to legacy JWT verification
+  if (!decoded) {
+    try {
+      decoded = jwt.verify(token, JWT_SECRET) as any;
+      console.log('✅ Legacy JWT verified for:', decoded.email);
+    } catch (error: any) {
+      console.error('Token verification error:', error.message);
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+  }
+
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    // Find user in database
+    let user;
     
-    // Verify the user still exists in storage, auto-restore if needed
-    let user = await storage.getUser(decoded.userId);
-    if (!user) {
-      console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
+    if (isSupabaseToken) {
+      // For Supabase tokens, look up by email or supabase_uid
+      user = await storage.getUserByEmail(decoded.email);
       
-      // Auto-restore user account with premium status for known emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-      const isPremiumUser = premiumEmails.includes(decoded.email);
+      if (!user) {
+        console.log('Supabase user not found in database, auto-creating:', decoded.email);
+        
+        // Auto-create user account with premium status for known emails
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isPremiumUser = premiumEmails.includes(decoded.email);
+        const isAdmin = adminEmails.includes(decoded.email);
+        
+        const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
+        user = await storage.createUser({
+          email: decoded.email,
+          password: tempPassword,
+          firstName: decoded.email.split('@')[0],
+          lastName: '',
+          subscriptionStatus: isPremiumUser ? 'premium' : 'free',
+          subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
+          supabaseUid: decoded.supabaseId,
+          role: isAdmin ? 'admin' : 'user',
+        });
+        
+        console.log('✅ Auto-created user account for Supabase user:', decoded.email);
+      }
+    } else {
+      // For legacy JWT, use userId from token
+      user = await storage.getUser(decoded.userId);
       
-      try {
-        // Check if user exists by email first (might be ID mismatch after restart)
+      if (!user) {
+        console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
+        
+        // Auto-restore user account
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isPremiumUser = premiumEmails.includes(decoded.email);
+        
         const existingUser = await storage.getUserByEmail(decoded.email);
         if (existingUser) {
           console.log('✅ Found existing user by email, using that account:', decoded.email);
           user = existingUser;
-          // Update decoded to use correct user ID from database
-          decoded.userId = existingUser.id;
         } else {
-          // Create a new user account to restore session
           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
           user = await storage.createUser({
             email: decoded.email,
             password: tempPassword,
-            firstName: decoded.email.split('@')[0], // Use email prefix as name
+            firstName: decoded.email.split('@')[0],
             lastName: '',
             subscriptionStatus: isPremiumUser ? 'premium' : 'free',
             subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
@@ -67,23 +137,19 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           
           console.log('✅ Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
         }
-      } catch (error) {
-        console.error('Failed to auto-restore user:', error);
-        return res.status(401).json({ 
-          message: 'Account data was lost due to server restart. Please register again with the same email to restore your account.',
-          email: decoded.email,
-          reason: 'memory_reset'
-        });
       }
     }
     
-    // Attach both decoded JWT data and actual user record
-    req.user = { ...decoded, userId: user.id };
+    // Attach user data to request
+    req.user = { ...decoded, userId: user.id, email: user.email };
     req.userId = user.id;
     next();
   } catch (error: any) {
-    console.error('JWT verification error:', error.message);
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    console.error('User lookup/creation error:', error);
+    return res.status(401).json({ 
+      message: 'Authentication failed',
+      error: error.message,
+    });
   }
 };
 
