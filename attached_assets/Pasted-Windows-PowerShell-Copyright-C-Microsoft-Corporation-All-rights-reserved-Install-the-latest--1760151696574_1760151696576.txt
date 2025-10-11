@@ -1,0 +1,64 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\joe> # Step 1: Install Capacitor Assets tool
+PS C:\Users\joe> npm install @capacitor/assets --save-dev
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
+
+added 425 packages in 45s
+
+54 packages are looking for funding
+  run `npm fund` for details
+PS C:\Users\joe>
+PS C:\Users\joe> # Step 2: Create assets folder and copy your icon
+PS C:\Users\joe> New-Item -ItemType Directory -Force -Path "assets" | Out-Null
+PS C:\Users\joe> Copy-Item "client/public/icon-512x512.png" -Destination "assets/icon.png"
+Copy-Item : Cannot find path
+'C:\Users\joe\client\public\icon-512x512.png' because it does
+not exist.
+At line:1 char:1
++ Copy-Item "client/public/icon-512x512.png" -Destination
+"assets/icon. ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\cl
+   ...con-512x512.png:String) [Copy-Item], ItemNotFoundExcept
+  ion
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.CopyItemCommand
+
+PS C:\Users\joe>
+PS C:\Users\joe> # Step 3: Generate all Android icon sizes automatically
+PS C:\Users\joe> npx @capacitor/assets generate --android
+No assets found in the asset path C:\Users\joe\assets. See https://github.com/ionic-team/capacitor-assets to learn how to use this tool.
+PS C:\Users\joe>
+PS C:\Users\joe> # Step 4: Copy generated icons to final Android package
+PS C:\Users\joe> Copy-Item -Path "android/app/src/main/res/mipmap-*" -Destination "final-android-package/android-studio/app/src/main/res/" -Recurse -Force
+Copy-Item : Cannot find path
+'C:\Users\joe\android\app\src\main\res' because it does not
+exist.
+At line:1 char:1
++ Copy-Item -Path "android/app/src/main/res/mipmap-*"
+-Destination "fin ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\an
+   droid\app\src\main\res:String) [Copy-Item], ItemNotFoundEx
+  ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.CopyItemCommand
+
+PS C:\Users\joe>
+PS C:\Users\joe> Write-Host "✅ App icon updated successfully!" -ForegroundColor Green
+✅ App icon updated successfully!
+PS C:\Users\joe> Write-Host "📱 Icons are now in: final-android-package/android-studio/app/src/main/res/mipmap-*" -ForegroundColor Cyan
+📱 Icons are now in: final-android-package/android-studio/app/src/main/res/mipmap-*
+PS C:\Users\joe>
