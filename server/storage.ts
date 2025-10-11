@@ -120,6 +120,8 @@ export interface IStorage {
   getAllGyms(): Promise<Gym[]>;
   getUserGyms(userId: number): Promise<Gym[]>;
   getGymNotes(gymId: number): Promise<Note[]>;
+  shareNoteToGym(noteId: string, gymId: number): Promise<void>;
+  unshareNoteFromGym(noteId: string): Promise<void>;
   
   // Gym Memberships
   createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership>;
@@ -646,6 +648,18 @@ export class DatabaseStorage implements IStorage {
         email: gn.user.email
       }
     })) as any;
+  }
+
+  async shareNoteToGym(noteId: string, gymId: number): Promise<void> {
+    await db.update(notes)
+      .set({ gymId, isShared: 0 })
+      .where(eq(notes.id, noteId));
+  }
+
+  async unshareNoteFromGym(noteId: string): Promise<void> {
+    await db.update(notes)
+      .set({ gymId: null })
+      .where(eq(notes.id, noteId));
   }
 
   async createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership> {
@@ -1318,6 +1332,14 @@ class MemStoragePrimary implements IStorage {
 
   async getGymNotes(gymId: number): Promise<Note[]> {
     return [];
+  }
+
+  async shareNoteToGym(noteId: string, gymId: number): Promise<void> {
+    // Not implemented in memory storage mode
+  }
+
+  async unshareNoteFromGym(noteId: string): Promise<void> {
+    // Not implemented in memory storage mode
   }
 
   async createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership> {

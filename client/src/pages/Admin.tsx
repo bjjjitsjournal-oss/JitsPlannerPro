@@ -18,11 +18,16 @@ export default function Admin() {
   const { data: gyms = [], isLoading } = useQuery({
     queryKey: ['admin-gyms'],
     queryFn: async () => {
-      return await fetch('/api/gyms', {
+      const res = await fetch('/api/gyms', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-      }).then(res => res.json());
+      });
+      if (!res.ok) {
+        throw new Error('Failed to fetch gyms');
+      }
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
     },
     enabled: user?.role === 'admin'
   });
