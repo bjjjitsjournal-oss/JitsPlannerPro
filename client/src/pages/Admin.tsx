@@ -16,19 +16,7 @@ export default function Admin() {
 
   // Fetch all gyms
   const { data: gyms = [], isLoading } = useQuery({
-    queryKey: ['admin-gyms'],
-    queryFn: async () => {
-      const res = await fetch('/api/gyms', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      if (!res.ok) {
-        throw new Error('Failed to fetch gyms');
-      }
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
+    queryKey: ['/api/gyms'],
     enabled: user?.role === 'admin'
   });
 
@@ -38,7 +26,7 @@ export default function Admin() {
       return await apiRequest('POST', '/api/gyms', { name });
     },
     onSuccess: (newGym) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-gyms'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
       toast({
         title: "Gym created!",
         description: `${newGym.name} has been created with code: ${newGym.code}`,
