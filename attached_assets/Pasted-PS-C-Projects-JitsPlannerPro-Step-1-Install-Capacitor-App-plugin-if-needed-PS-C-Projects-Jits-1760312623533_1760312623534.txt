@@ -1,0 +1,50 @@
+PS C:\Projects\JitsPlannerPro> # Step 1: Install Capacitor App plugin if needed
+PS C:\Projects\JitsPlannerPro> Write-Host "Installing @capacitor/app plugin..."
+Installing @capacitor/app plugin...
+PS C:\Projects\JitsPlannerPro> npm install @capacitor/app
+
+added 1 package, and audited 1283 packages in 8s
+
+143 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Step 2: Update Settings.tsx to show real version
+PS C:\Projects\JitsPlannerPro> Write-Host "Updating Settings.tsx..."
+Updating Settings.tsx...
+PS C:\Projects\JitsPlannerPro> $settingsContent = Get-Content client\src\pages\Settings.tsx -Raw
+PS C:\Projects\JitsPlannerPro> $settingsContent = $settingsContent -replace "import \{ Home, User, Settings as SettingsIcon, LogOut, Shield, CreditCard \} from 'lucide-react';", "import { Home, User, Settings as SettingsIcon, LogOut, Shield, CreditCard } from 'lucide-react';`nimport { App } from '@capacitor/app';" `
+>>   -replace "export function Settings\(\) \{", @"
+>> export function Settings() {
+>>   const [appVersion, setAppVersion] = React.useState('1.0.0');
+>>
+>>   React.useEffect(() => {
+>>     App.getInfo().then(info => {
+>>       setAppVersion(info.version);
+>>     }).catch(() => {
+>>       setAppVersion('1.0.0'); // Fallback for web
+>>     });
+>>   }, []);
+>> "@ `
+>>   -replace "<span>1\.0\.0</span>", "<span>{appVersion}</span>"
+PS C:\Projects\JitsPlannerPro> $settingsContent | Set-Content client\src\pages\Settings.tsx -Encoding UTF8
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> Write-Host "✅ Settings updated to show real version!"
+✅ Settings updated to show real version!
+PS C:\Projects\JitsPlannerPro> Write-Host "`nNow I need to see your backend routes to implement the auth workaround..."
+
+Now I need to see your backend routes to implement the auth workaround...
+PS C:\Projects\JitsPlannerPro> Write-Host "Please send me the output of this command:"
+Please send me the output of this command:
+PS C:\Projects\JitsPlannerPro> Write-Host "Select-String -Path server\routes.ts -Pattern 'app.post.*gyms' -Context 0,20"
+Select-String -Path server\routes.ts -Pattern 'app.post.*gyms' -Context 0,20
+PS C:\Projects\JitsPlannerPro>
