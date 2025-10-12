@@ -7,6 +7,17 @@ const API_BASE_URL = Capacitor.isNativePlatform()
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
+// Helper to get Supabase user ID (for mobile workaround)
+async function getSupabaseUserId(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.user?.id || null;
+  } catch (e) {
+    console.error('Failed to get Supabase user ID:', e);
+    return null;
+  }
+}
+
 // Helper to get Supabase access token
 async function getSupabaseToken(): Promise<string | null> {
   try {
@@ -91,6 +102,13 @@ export async function apiRequest(method: string, url: string, data?: any) {
       ...options.headers,
       'Authorization': `Bearer ${token}`,
     };
+  } else if (Capacitor.isNativePlatform()) {
+    // MOBILE WORKAROUND: If no token on mobile, add supabaseId to request body
+    const supabaseId = await getSupabaseUserId();
+    if (supabaseId) {
+      console.log('📱 Adding supabaseId to request body for mobile auth workaround');
+      data = { ...data, supabaseId };
+    }
   }
 
   if (data) {
