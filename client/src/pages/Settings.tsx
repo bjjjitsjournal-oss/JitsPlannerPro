@@ -6,12 +6,14 @@ import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/s
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 import { Building2, Users } from 'lucide-react';
+import { App } from '@capacitor/app';
 
 export default function Settings() {
   const [showSubscription, setShowSubscription] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
+  const [appVersion, setAppVersion] = useState('1.0.0');
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -33,6 +35,15 @@ export default function Settings() {
     
     setAutoSync(savedAutoSync);
     setNotifications(savedNotifications);
+  }, []);
+
+  // Get real app version from Capacitor
+  useEffect(() => {
+    App.getInfo().then(info => {
+      setAppVersion(info.version);
+    }).catch(() => {
+      setAppVersion('1.0.0'); // Fallback for web
+    });
   }, []);
 
   // Toggle functions
@@ -473,7 +484,7 @@ export default function Settings() {
         <div className="space-y-2 text-sm text-gray-600">
           <div className="flex justify-between">
             <span>Version</span>
-            <span>1.0.0</span>
+            <span>{appVersion}</span>
           </div>
           <div className="flex justify-between">
             <span>Build</span>
