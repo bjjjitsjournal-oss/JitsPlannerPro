@@ -1,8 +1,11 @@
 import { QueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
+import { Capacitor } from '@capacitor/core';
 
-// Get API base URL from environment variable or use relative path for development
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+// Get API base URL - use Render for mobile app, env var for web, or relative path
+const API_BASE_URL = Capacitor.isNativePlatform() 
+  ? 'https://bjj-jits-journal.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 // Helper to get Supabase access token
 async function getSupabaseToken(): Promise<string | null> {
