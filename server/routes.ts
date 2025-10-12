@@ -153,6 +153,89 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   }
 };
 
+// Flexible auth middleware - accepts either Authorization header OR supabaseId in body (for mobile)
+const flexibleAuth = async (req: any, res: any, next: any) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  // Try token-based auth first
+  if (token) {
+    let decoded: any = null;
+    let isSupabaseToken = false;
+
+    if (supabaseAdmin) {
+      try {
+        const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
+        
+        if (supabaseUser && !error) {
+          console.log('✅ Supabase token verified for:', supabaseUser.email);
+          decoded = {
+            email: supabaseUser.email,
+            supabaseId: supabaseUser.id,
+          };
+          isSupabaseToken = true;
+        }
+      } catch (supabaseError) {
+        console.log('Not a Supabase token, trying legacy JWT...');
+      }
+    }
+
+    if (!decoded) {
+      try {
+        decoded = jwt.verify(token, JWT_SECRET) as any;
+        console.log('✅ Legacy JWT verified for:', decoded.email);
+      } catch (error: any) {
+        // Token invalid, fall through to supabaseId check
+      }
+    }
+
+    if (decoded) {
+      try {
+        let user;
+        if (isSupabaseToken) {
+          user = await storage.getUserByEmail(decoded.email);
+        } else {
+          user = await storage.getUser(decoded.userId);
+        }
+        
+        if (user) {
+          req.userId = user.id;
+          req.user = user;
+          return next();
+        }
+      } catch (error) {
+        console.error('Error loading user from token:', error);
+      }
+    }
+  }
+
+  // Fallback: Check for supabaseId in body (mobile workaround)
+  const { supabaseId } = req.body;
+  if (supabaseId) {
+    console.log('📱 Mobile auth: Using supabaseId from body:', supabaseId);
+    
+    try {
+      // Look up user by Supabase UID
+      const result = await pool.query(
+        'SELECT * FROM users WHERE supabase_uid = $1',
+        [supabaseId]
+      );
+      
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        req.userId = user.id;
+        req.user = user;
+        console.log('✅ Mobile auth successful for user:', user.id);
+        return next();
+      }
+    } catch (error) {
+      console.error('Error in mobile auth:', error);
+    }
+  }
+
+  return res.status(401).json({ message: 'Access token or supabaseId required' });
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add cache control headers to prevent aggressive caching
   app.use((req, res, next) => {
@@ -1551,7 +1634,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Create a new gym (admin only)
-  app.post("/api/gyms", authenticateToken, async (req, res) => {
+  app.post("/api/gyms", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       
@@ -1592,7 +1675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Join a gym with code
-  app.post("/api/gyms/join", authenticateToken, async (req, res) => {
+  app.post("/api/gyms/join", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const { code } = req.body;
