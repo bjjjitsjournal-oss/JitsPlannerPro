@@ -153,6 +153,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
+      // Save access token to localStorage for API requests
+      if (session?.access_token) {
+        localStorage.setItem('supabase_access_token', session.access_token);
+        console.log('✅ Saved Supabase token to localStorage');
+      }
+      
       if (session?.user) {
         // Keep loading until user profile is fetched
         try {
@@ -206,6 +212,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
+      // Save access token to localStorage for API requests
+      if (session?.access_token) {
+        localStorage.setItem('supabase_access_token', session.access_token);
+        console.log('✅ Saved Supabase token to localStorage on auth change');
+      }
+      
       if (session?.user) {
         // CRITICAL FIX: Skip database query on token refresh to avoid timeout
         if (event === 'TOKEN_REFRESHED' || loadedSupabaseIdRef.current === session.user.id) {
@@ -250,6 +262,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
+        // Clear token when no session
+        localStorage.removeItem('supabase_access_token');
+        console.log('✅ Cleared Supabase token (no session)');
         setUser(null);
         loadedSupabaseIdRef.current = null; // Clear ref on logout
         setIsLoading(false);
@@ -266,6 +281,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
+    // Clear stored token on logout
+    localStorage.removeItem('supabase_access_token');
+    console.log('✅ Cleared Supabase token from localStorage');
     setUser(null);
     setSupabaseUser(null);
     setSession(null);
