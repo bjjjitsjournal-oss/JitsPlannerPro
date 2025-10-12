@@ -10,6 +10,14 @@ const API_BASE_URL = Capacitor.isNativePlatform()
 // Helper to get Supabase access token
 async function getSupabaseToken(): Promise<string | null> {
   try {
+    // MOBILE FIX: Check localStorage first (where AuthContext persists the token)
+    const storedToken = localStorage.getItem('supabase_access_token');
+    if (storedToken) {
+      console.log('✅ Using stored Supabase token from localStorage');
+      return storedToken;
+    }
+    
+    // Fallback to session (for web/desktop browsers)
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token || null;
   } catch (e) {
