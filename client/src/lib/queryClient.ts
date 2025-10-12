@@ -12,13 +12,17 @@ async function getSupabaseToken(): Promise<string | null> {
   try {
     // MOBILE FIX: Check localStorage first (where AuthContext persists the token)
     const storedToken = localStorage.getItem('supabase_access_token');
+    console.log('[DEBUG] getSupabaseToken - localStorage check:', storedToken ? 'TOKEN FOUND' : 'NO TOKEN');
+    
     if (storedToken) {
       console.log('✅ Using stored Supabase token from localStorage');
       return storedToken;
     }
     
     // Fallback to session (for web/desktop browsers)
+    console.log('[DEBUG] Trying supabase.auth.getSession fallback...');
     const { data: { session } } = await supabase.auth.getSession();
+    console.log('[DEBUG] Session access_token:', session?.access_token ? 'EXISTS' : 'MISSING');
     return session?.access_token || null;
   } catch (e) {
     console.error('Failed to get Supabase session:', e);
