@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
+<<<<<<< HEAD
+import { updateCachedToken, ensureSession } from '@/lib/sessionProvider';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+=======
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
 
@@ -9,17 +14,18 @@ import { Capacitor } from '@capacitor/core';
 const API_BASE_URL = Capacitor.isNativePlatform() 
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
+>>>>>>> 086d4188abcbc865749134f9e2ff1e69585ba240
 
 interface User {
-  id: string; // UUID varchar to match production database
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
   subscriptionStatus: string;
   subscriptionPlan?: string;
-  role?: string; // user, admin
+  role?: string;
   createdAt: string;
-  supabaseId?: string; // Store Supabase UUID for reference
+  supabaseId?: string;
 }
 
 interface AuthContextType {
@@ -46,20 +52,12 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Helper to fetch or create user profile from Supabase UUID
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
-    console.log('Looking up user with Supabase ID:', supabaseId, 'email:', email);
-    
-    // Use backend API instead of direct Supabase query to avoid timeouts
-    console.log('Fetching user from backend API...');
-    
     const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
     if (response.ok) {
       const existingUser = await response.json();
-      console.log('Found existing user from backend:', existingUser.id);
-      
       return {
         id: existingUser.id,
         email: existingUser.email,
@@ -73,21 +71,10 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       };
     }
 
-    // Fallback: Try to find user by email (for legacy accounts without supabase_uid)
-    const { data: emailUser } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
+    const { data: emailUser } = await supabase.from('users').select('*').eq('email', email).maybeSingle();
 
     if (emailUser) {
-      console.log('Found user by email, updating supabase_uid:', emailUser.id);
-      // Update with supabase_uid for future logins
-      await supabase
-        .from('users')
-        .update({ supabase_uid: supabaseId })
-        .eq('id', emailUser.id);
-
+      await supabase.from('users').update({ supabase_uid: supabaseId }).eq('id', emailUser.id);
       return {
         id: emailUser.id,
         email: emailUser.email,
@@ -101,25 +88,17 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       };
     }
 
-    // Create new user if not found
-    console.log('Creating new user with supabase_uid:', supabaseId);
-    
-    // Check if this is an admin email
-    const adminEmails = ['bjjjitsjournal@gmail.com', 'Bjjjitsjournal@gmail.com'];
+    const adminEmails = ['bjjjitsjournal@gmail.com'];
     const isAdmin = adminEmails.some(adminEmail => email.toLowerCase() === adminEmail.toLowerCase());
     
-    const { data: newUser, error: createError } = await supabase
-      .from('users')
-      .insert({
-        email,
-        first_name: metadata.firstName || '',
-        last_name: metadata.lastName || '',
-        subscription_status: isAdmin ? 'premium' : 'free',
-        role: isAdmin ? 'admin' : 'user',
-        supabase_uid: supabaseId, // Important: Set this for RLS policies
-      })
-      .select()
-      .single();
+    const { data: newUser, error: createError } = await supabase.from('users').insert({
+      email,
+      first_name: metadata.firstName || '',
+      last_name: metadata.lastName || '',
+      subscription_status: isAdmin ? 'premium' : 'free',
+      role: isAdmin ? 'admin' : 'user',
+      supabase_uid: supabaseId,
+    }).select().single();
 
     if (createError) {
       console.error('Failed to create user:', createError);
@@ -151,12 +130,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('Initial session check:', session?.user?.email);
+    ensureSession().then(async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
+<<<<<<< HEAD
+      if (session?.access_token) {
+        updateCachedToken(session.access_token);
+=======
       // Exchange Supabase token for server JWT (mobile fix)
       if (session?.user) {
         // CRITICAL FIX: Mobile PKCE flow doesn't provide access_token, so refresh first
@@ -198,28 +180,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           console.error('❌ NO TOKEN AVAILABLE - Cannot exchange for server JWT');
         }
+>>>>>>> 086d4188abcbc865749134f9e2ff1e69585ba240
       }
       
       if (session?.user) {
-        // Keep loading until user profile is fetched
         try {
-          const userData = await getUserFromSupabaseId(
-            session.user.id,
-            session.user.email || '',
-            session.user.user_metadata
-          );
-          
+          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
-            console.log('User data loaded:', userData.email);
-            console.log('Setting user with ID:', userData.id, 'type:', typeof userData.id);
-            // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
             queryClient.clear();
             setUser(userData);
-            loadedSupabaseIdRef.current = session.user.id; // Track loaded Supabase ID
-            setIsLoading(false); // Only stop loading after user data is ready
+            loadedSupabaseIdRef.current = session.user.id;
+            setIsLoading(false);
           } else {
-            console.error('getUserFromSupabaseId returned null - user profile not found');
-            // Force logout if profile lookup fails
             await supabase.auth.signOut();
             setUser(null);
             setSession(null);
@@ -227,8 +199,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setIsLoading(false);
           }
         } catch (error) {
-          console.error('Failed to load user data:', error);
-          // Force logout on error
           await supabase.auth.signOut();
           setUser(null);
           setSession(null);
@@ -236,7 +206,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
-        // No session, stop loading immediately
         setIsLoading(false);
       }
     }).catch((error) => {
@@ -244,15 +213,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(false);
     });
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
-      
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
+<<<<<<< HEAD
+      if (session?.access_token) {
+        updateCachedToken(session.access_token);
+=======
       // Exchange Supabase token for server JWT (mobile fix)
       if (session?.user) {
         // CRITICAL FIX: Mobile PKCE flow doesn't provide access_token, so refresh first
@@ -294,36 +262,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           console.error('❌ NO TOKEN AVAILABLE on auth change - Cannot exchange');
         }
+>>>>>>> 086d4188abcbc865749134f9e2ff1e69585ba240
       }
       
       if (session?.user) {
-        // CRITICAL FIX: Skip database query on token refresh to avoid timeout
         if (event === 'TOKEN_REFRESHED' || loadedSupabaseIdRef.current === session.user.id) {
-          console.log('Token refresh detected - skipping database query for:', session.user.email);
           setIsLoading(false);
           return;
         }
         
-        // Only query database on actual sign-in
         setIsLoading(true);
         try {
-          const userData = await getUserFromSupabaseId(
-            session.user.id,
-            session.user.email || '',
-            session.user.user_metadata
-          );
-          
+          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
-            console.log('User data loaded after auth change:', userData.email);
-            console.log('Setting user with ID:', userData.id, 'type:', typeof userData.id);
-            // CRITICAL: Clear ALL cache before setting user to prevent UUID pollution
             queryClient.clear();
             setUser(userData);
-            loadedSupabaseIdRef.current = session.user.id; // Track loaded Supabase ID
-            setIsLoading(false); // Stop loading after user data is ready
+            loadedSupabaseIdRef.current = session.user.id;
+            setIsLoading(false);
           } else {
-            console.error('getUserFromSupabaseId returned null after auth change - forcing logout');
-            // Force logout if profile lookup fails
             await supabase.auth.signOut();
             setUser(null);
             setSession(null);
@@ -331,8 +287,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setIsLoading(false);
           }
         } catch (error) {
-          console.error('Failed to load user data after auth change:', error);
-          // Force logout on error
           await supabase.auth.signOut();
           setUser(null);
           setSession(null);
@@ -340,11 +294,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
+<<<<<<< HEAD
+        updateCachedToken(null);
+=======
         // Clear JWT from Capacitor Preferences
         await Preferences.remove({ key: 'bjj_jwt_token' });
         console.log('✅ Cleared JWT from Capacitor Preferences');
+>>>>>>> 086d4188abcbc865749134f9e2ff1e69585ba240
         setUser(null);
-        loadedSupabaseIdRef.current = null; // Clear ref on logout
+        loadedSupabaseIdRef.current = null;
         setIsLoading(false);
       }
     });
@@ -353,15 +311,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = (userData: User) => {
-    // This is mainly for compatibility - Supabase handles login automatically
     setUser(userData);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
+<<<<<<< HEAD
+    updateCachedToken(null);
+=======
     // Clear JWT from Capacitor Preferences
     await Preferences.remove({ key: 'bjj_jwt_token' });
     console.log('✅ Cleared JWT on logout');
+>>>>>>> 086d4188abcbc865749134f9e2ff1e69585ba240
     setUser(null);
     setSupabaseUser(null);
     setSession(null);
@@ -374,7 +335,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     login,
     logout,
-    isAuthenticated: !!(session && user), // Require BOTH session AND user profile
+    isAuthenticated: !!(session && user),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
