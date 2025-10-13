@@ -9,23 +9,34 @@ import { useToast } from '../hooks/use-toast';
 import { Building2, Users, Copy, Check } from 'lucide-react';
 
 export default function Admin() {
-  const { user } = useAuth();
+  const { user, supabaseUser } = useAuth();
   const { toast } = useToast();
   const [gymName, setGymName] = useState('');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Fetch all gyms
   const { data: gyms = [], isLoading } = useQuery({
-    queryKey: ['/api/gyms'],
-    enabled: user?.role === 'admin'
+    queryKey: ['/api/gyms', { supabaseId: supabaseUser?.id }],
+    queryFn: async () => {
+      const url = `/api/gyms${supabaseUser?.id ? `?supabaseId=${supabaseUser.id}` : ''}`;
+      const res = await fetch(url, {
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+        }
+      });
+      if (!res.ok) throw new Error('Failed to fetch gyms');
+      return res.json();
+    },
+    enabled: user?.role === 'admin' && !!supabaseUser
   });
 
   // Create gym mutation
   const createGymMutation = useMutation({
     mutationFn: async (name: string) => {
-      return await apiRequest('POST', '/api/gyms', { name });
+      return await apiRequest('POST', '/api/gyms', { name, supabaseId: supabaseUser?.id });
     },
-    onSuccess: (newGym) => {
+    onSuccess: (newGym: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
       toast({
         title: "Gym created!",
