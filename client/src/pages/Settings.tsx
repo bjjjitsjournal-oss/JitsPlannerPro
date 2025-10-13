@@ -13,7 +13,7 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.28'; // Will be auto-updated by build process
+  const appVersion = '1.0.31'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
