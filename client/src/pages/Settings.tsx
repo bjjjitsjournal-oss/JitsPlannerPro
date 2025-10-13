@@ -6,14 +6,13 @@ import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/s
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 import { Building2, Users } from 'lucide-react';
-import { App } from '@capacitor/app';
 
 export default function Settings() {
   const [showSubscription, setShowSubscription] = useState(false);
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const [appVersion, setAppVersion] = useState('1.0.0');
+  const appVersion = '1.0.28'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -35,15 +34,6 @@ export default function Settings() {
     
     setAutoSync(savedAutoSync);
     setNotifications(savedNotifications);
-  }, []);
-
-  // Get real app version from Capacitor
-  useEffect(() => {
-    App.getInfo().then(info => {
-      setAppVersion(info.version);
-    }).catch(() => {
-      setAppVersion('1.0.0'); // Fallback for web
-    });
   }, []);
 
   // Toggle functions
