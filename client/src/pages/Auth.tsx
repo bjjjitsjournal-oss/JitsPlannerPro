@@ -98,8 +98,9 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     mutationFn: async (data: RegisterFormData) => {
       console.log('Signup attempt for:', data.email);
       
-      // Sign up with Supabase Auth - disable email confirmation
-      const { data: authData, error } = await supabase.auth.signUp({
+      // STEP 1: Create Supabase auth account (but sign out immediately to prevent auto-login)
+      console.log('Step 1: Creating Supabase auth account...');
+      const { data: authData, error: signupError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -108,55 +109,59 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             lastName: data.lastName,
           },
           emailRedirectTo: `${window.location.origin}/`,
-          // Skip email confirmation
         },
       });
 
-      if (error) {
-        console.error('Supabase signup error:', error);
-        throw error;
+      if (signupError || !authData.user) {
+        console.error('Supabase signup error:', signupError);
+        throw signupError || new Error('Failed to create auth account');
       }
       
-      console.log('Supabase signup successful:', {
-        userId: authData.user?.id,
-        email: authData.user?.email,
-        confirmed: authData.user?.confirmed_at,
+      console.log('✅ Supabase account created:', authData.user.id);
+      
+      // STEP 2: Immediately sign out to prevent AuthContext from looking for user too early
+      await supabase.auth.signOut();
+      console.log('✅ Signed out to prevent race condition');
+      
+      // STEP 3: Create PostgreSQL user profile with Supabase ID
+      console.log('Step 2: Creating user profile in PostgreSQL database...');
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+      const profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          supabaseId: authData.user.id,
+        }),
       });
-      
-      // Create user profile in PostgreSQL database via backend API
-      if (authData.user) {
-        console.log('Creating user profile in PostgreSQL database...');
-        
-        try {
-          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-          const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: data.email,
-              password: data.password,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              supabaseId: authData.user.id, // Link Supabase Auth to PostgreSQL user
-            }),
-          });
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to create user profile');
-          }
-
-          const newUser = await response.json();
-          console.log('User profile created in PostgreSQL:', newUser.id);
-        } catch (profileError: any) {
-          console.error('Profile creation error:', profileError);
-          // If profile creation fails, delete the Supabase auth account
-          await supabase.auth.admin.deleteUser(authData.user.id);
-          throw new Error(`Failed to create profile: ${profileError.message}`);
-        }
+      if (!profileResponse.ok) {
+        const errorData = await profileResponse.json();
+        // Rollback: delete Supabase auth account
+        await supabase.auth.admin.deleteUser(authData.user.id);
+        throw new Error(errorData.message || 'Failed to create user profile');
       }
 
-      return authData;
+      const newUser = await profileResponse.json();
+      console.log('✅ PostgreSQL profile created:', newUser.id);
+      
+      // STEP 4: Now manually sign in - this will trigger AuthContext with complete user data
+      console.log('Step 3: Signing in...');
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (loginError) {
+        console.error('Auto-login error:', loginError);
+        throw new Error('Account created but login failed. Please try logging in manually.');
+      }
+      
+      console.log('✅ Auto-login successful');
+      return loginData;
     },
     onSuccess: (data) => {
       let description = "Welcome to Jits Journal. Your account has been created successfully.";
