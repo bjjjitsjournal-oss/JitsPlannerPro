@@ -1,11 +1,30 @@
 import { QueryClient } from '@tanstack/react-query';
 import { Capacitor } from '@capacitor/core';
-import { getAccessToken, refreshSession } from './sessionProvider';
 
 // Get API base URL - use Render for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
+
+// Helper to get token from localStorage with retry (fixes race condition on mobile)
+async function getTokenWithRetry(maxRetries = 3, delayMs = 100): Promise<string | null> {
+  for (let i = 0; i < maxRetries; i++) {
+    const token = localStorage.getItem('bjj_auth_token');
+    if (token) {
+      console.log('✅ Token found in localStorage');
+      return token;
+    }
+    
+    // If no token and this is the first try, wait a bit for AuthContext to save it
+    if (i < maxRetries - 1) {
+      console.log(`⏳ Waiting for token (attempt ${i + 1}/${maxRetries})...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+  
+  console.warn('⚠️ No token found after retries');
+  return null;
+}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,7 +32,7 @@ export const queryClient = new QueryClient({
       retry: 1,
       refetchOnWindowFocus: false,
       queryFn: async ({ queryKey }) => {
-        const token = await getAccessToken();
+        const token = await getTokenWithRetry();
         
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
@@ -31,18 +50,7 @@ export const queryClient = new QueryClient({
         
         if (!response.ok) {
           if (response.status === 401 || response.status === 403) {
-            console.log('🔄 Auth failed - attempting token refresh');
-            const newToken = await refreshSession();
-            
-            if (newToken) {
-              // Retry with new token
-              headers['Authorization'] = `Bearer ${newToken}`;
-              const retryResponse = await fetch(url, { headers });
-              if (retryResponse.ok) {
-                return retryResponse.json();
-              }
-            }
-            
+            console.log('🔄 Auth failed - may need to refresh');
             sessionStorage.setItem('auth_failure', 'true');
           }
           throw new Error(`${response.status}: ${response.statusText}`);
@@ -54,7 +62,7 @@ export const queryClient = new QueryClient({
 });
 
 export async function apiRequest(method: string, url: string, data?: any) {
-  const token = await getAccessToken();
+  const token = await getTokenWithRetry();
   
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -81,19 +89,7 @@ export async function apiRequest(method: string, url: string, data?: any) {
   
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) {
-      console.log('🔄 Auth failed in API request - attempting token refresh');
-      const newToken = await refreshSession();
-      
-      if (newToken) {
-        // Retry with new token
-        headers['Authorization'] = `Bearer ${newToken}`;
-        options.headers = headers;
-        const retryResponse = await fetch(fullUrl, options);
-        if (retryResponse.ok) {
-          return retryResponse;
-        }
-      }
-      
+      console.log('🔄 Auth failed in API request');
       throw new Error('Authentication required. Please refresh the page and try again.');
     }
     
