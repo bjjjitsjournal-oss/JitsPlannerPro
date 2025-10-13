@@ -35,6 +35,8 @@ const config: CapacitorConfig = {
     }
   },
   android: {
+    versionCode: 32,
+    versionName: "1.0.32",
     buildOptions: {
       keystorePath: undefined,
       keystorePassword: undefined,
