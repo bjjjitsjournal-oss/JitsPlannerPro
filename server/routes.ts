@@ -209,10 +209,10 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     }
   }
 
-  // Fallback: Check for supabaseId in body (mobile workaround)
-  const { supabaseId } = req.body;
+  // Fallback: Check for supabaseId in body or query params (mobile workaround)
+  const supabaseId = req.body?.supabaseId || req.query?.supabaseId;
   if (supabaseId) {
-    console.log('📱 Mobile auth: Using supabaseId from body:', supabaseId);
+    console.log('📱 Mobile auth: Using supabaseId from', req.body?.supabaseId ? 'body' : 'query', ':', supabaseId);
     
     try {
       // Look up user by Supabase UID
@@ -1679,7 +1679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Gym Management Routes
   
   // Get all gyms (admin only)
-  app.get("/api/gyms", authenticateToken, async (req, res) => {
+  app.get("/api/gyms", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       
@@ -1924,7 +1924,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get all gyms (admin only)
-  app.get("/api/gyms", authenticateToken, async (req, res) => {
+  app.get("/api/gyms", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       
