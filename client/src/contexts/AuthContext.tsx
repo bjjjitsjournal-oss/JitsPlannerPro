@@ -29,6 +29,7 @@ interface AuthContextType {
   login: (userData: User) => void;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  setSignupInProgress: (inProgress: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,6 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
+  const isSigningUpRef = React.useRef(false);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -133,6 +135,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔔 Auth state change:', event, 'isSigningUp:', isSigningUpRef.current);
+      
+      // Ignore auth state changes during signup process
+      if (isSigningUpRef.current) {
+        console.log('⏭️ Ignoring auth state change during signup');
+        return;
+      }
+      
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
@@ -186,6 +196,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     queryClient.clear();
   };
 
+  const setSignupInProgress = (inProgress: boolean) => {
+    console.log('🚦 Setting signup in progress:', inProgress);
+    isSigningUpRef.current = inProgress;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -196,6 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         logout,
         isAuthenticated: !!user,
+        setSignupInProgress,
       }}
     >
       {children}
