@@ -47,11 +47,15 @@ interface AuthProviderProps {
 
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
+    console.log('🔍 Loading user data for supabaseId:', supabaseId);
     // Get user from server via supabaseId using the correct endpoint
     const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
+    console.log('📡 User endpoint response status:', response.status);
+    
     if (response.ok) {
       const data = await response.json();
+      console.log('✅ User data loaded successfully:', { id: data.id, email: data.email });
       // The endpoint returns the user object directly, not wrapped
       return {
         id: data.id.toString(),
@@ -67,10 +71,11 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     }
     
     // If user not found, they need to complete signup process
-    console.log('User not found in database for supabaseId:', supabaseId);
+    const errorText = await response.text();
+    console.error('❌ User not found in database for supabaseId:', supabaseId, 'Response:', errorText);
     return null;
   } catch (error) {
-    console.error('Error in getUserFromSupabaseId:', error);
+    console.error('❌ Error in getUserFromSupabaseId:', error);
     return null;
   }
 }
