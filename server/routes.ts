@@ -1775,7 +1775,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user's gym membership
-  app.get("/api/my-gym", authenticateToken, async (req, res) => {
+  app.get("/api/my-gym", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       
@@ -1802,7 +1802,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get gym notes (only for gym members)
-  app.get("/api/gym-notes", authenticateToken, async (req, res) => {
+  app.get("/api/gym-notes", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       
@@ -1825,7 +1825,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Share note to gym (admin only)
-  app.post("/api/notes/:id/share-to-gym", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/share-to-gym", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const noteId = req.params.id;
