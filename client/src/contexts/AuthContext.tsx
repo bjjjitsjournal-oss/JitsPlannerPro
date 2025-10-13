@@ -2,9 +2,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
+import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 
-// Get API base URL from environment variable or use relative path for development
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+// Get API base URL - use Render for mobile, env var for web
+const API_BASE_URL = Capacitor.isNativePlatform() 
+  ? 'https://bjj-jits-journal.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 interface User {
   id: string; // UUID varchar to match production database
@@ -153,10 +157,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Save token to localStorage for API requests
-      if (session?.access_token) {
-        localStorage.setItem('bjj_auth_token', session.access_token);
-        console.log('✅ Saved token to localStorage');
+      // Exchange Supabase token for server JWT (mobile fix)
+      if (session?.user) {
+        // CRITICAL FIX: Mobile PKCE flow doesn't provide access_token, so refresh first
+        let accessToken = session.access_token;
+        
+        if (!accessToken) {
+          console.log('📱 No access_token - refreshing session to get one...');
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshData.session?.access_token) {
+            accessToken = refreshData.session.access_token;
+            console.log('✅ Got access_token from refresh');
+          } else {
+            console.error('❌ Failed to get access_token even after refresh:', refreshError?.message);
+          }
+        }
+        
+        if (accessToken) {
+          console.log('📱 Exchanging Supabase token for server JWT...');
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/auth/supabase-exchange`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ supabaseAccessToken: accessToken }),
+            });
+            
+            if (response.ok) {
+              const { token } = await response.json();
+              await Preferences.set({ key: 'bjj_jwt_token', value: token });
+              console.log('✅ Server JWT saved to Capacitor Preferences');
+              // Invalidate queries to refetch with new auth
+              queryClient.invalidateQueries();
+            } else {
+              console.error('❌ Failed to exchange token:', response.status);
+            }
+          } catch (error) {
+            console.error('❌ Token exchange error:', error);
+          }
+        } else {
+          console.error('❌ NO TOKEN AVAILABLE - Cannot exchange for server JWT');
+        }
       }
       
       if (session?.user) {
@@ -212,10 +253,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Save token to localStorage for API requests
-      if (session?.access_token) {
-        localStorage.setItem('bjj_auth_token', session.access_token);
-        console.log('✅ Saved token to localStorage on auth change');
+      // Exchange Supabase token for server JWT (mobile fix)
+      if (session?.user) {
+        // CRITICAL FIX: Mobile PKCE flow doesn't provide access_token, so refresh first
+        let accessToken = session.access_token;
+        
+        if (!accessToken && event !== 'TOKEN_REFRESHED') {
+          console.log('📱 No access_token on auth change - refreshing session...');
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshData.session?.access_token) {
+            accessToken = refreshData.session.access_token;
+            console.log('✅ Got access_token from refresh on auth change');
+          } else {
+            console.error('❌ Failed to get access_token on auth change:', refreshError?.message);
+          }
+        }
+        
+        if (accessToken) {
+          console.log('📱 Exchanging Supabase token for server JWT on auth change...');
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/auth/supabase-exchange`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ supabaseAccessToken: accessToken }),
+            });
+            
+            if (response.ok) {
+              const { token } = await response.json();
+              await Preferences.set({ key: 'bjj_jwt_token', value: token });
+              console.log('✅ Server JWT saved to Capacitor Preferences on auth change');
+              // Invalidate queries to refetch with new auth
+              queryClient.invalidateQueries();
+            } else {
+              console.error('❌ Failed to exchange token on auth change:', response.status);
+            }
+          } catch (error) {
+            console.error('❌ Token exchange error on auth change:', error);
+          }
+        } else {
+          console.error('❌ NO TOKEN AVAILABLE on auth change - Cannot exchange');
+        }
       }
       
       if (session?.user) {
@@ -262,9 +340,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
-        // Clear token from localStorage
-        localStorage.removeItem('bjj_auth_token');
-        console.log('✅ Cleared token from localStorage');
+        // Clear JWT from Capacitor Preferences
+        await Preferences.remove({ key: 'bjj_jwt_token' });
+        console.log('✅ Cleared JWT from Capacitor Preferences');
         setUser(null);
         loadedSupabaseIdRef.current = null; // Clear ref on logout
         setIsLoading(false);
@@ -281,9 +359,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
-    // Clear token from localStorage
-    localStorage.removeItem('bjj_auth_token');
-    console.log('✅ Cleared token on logout');
+    // Clear JWT from Capacitor Preferences
+    await Preferences.remove({ key: 'bjj_jwt_token' });
+    console.log('✅ Cleared JWT on logout');
     setUser(null);
     setSupabaseUser(null);
     setSession(null);
