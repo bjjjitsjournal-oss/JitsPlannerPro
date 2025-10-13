@@ -45,9 +45,9 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
+async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, retries = 3): Promise<User | null> {
   try {
-    console.log('🔍 Loading user data for supabaseId:', supabaseId);
+    console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${4 - retries}/3)`);
     // Get user from server via supabaseId using the correct endpoint
     const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
@@ -70,7 +70,14 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       };
     }
     
-    // If user not found, they need to complete signup process
+    // If 404 and we have retries left, wait and try again (handles race condition during signup)
+    if (response.status === 404 && retries > 0) {
+      console.log('⏳ User not found yet, retrying in 500ms...');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+    }
+    
+    // If user not found after retries, they need to complete signup process
     const errorText = await response.text();
     console.error('❌ User not found in database for supabaseId:', supabaseId, 'Response:', errorText);
     return null;
