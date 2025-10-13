@@ -36,7 +36,7 @@ export default function Admin() {
     mutationFn: async (name: string) => {
       return await apiRequest('POST', '/api/gyms', { name, supabaseId: supabaseUser?.id });
     },
-    onSuccess: (newGym) => {
+    onSuccess: (newGym: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
       toast({
         title: "Gym created!",
