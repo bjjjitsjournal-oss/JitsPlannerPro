@@ -1,28 +1,29 @@
 import { QueryClient } from '@tanstack/react-query';
 import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 
 // Get API base URL - use Render for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
-// Helper to get token from localStorage with retry (fixes race condition on mobile)
+// Helper to get JWT from Capacitor Preferences with retry (fixes race condition on mobile)
 async function getTokenWithRetry(maxRetries = 3, delayMs = 100): Promise<string | null> {
   for (let i = 0; i < maxRetries; i++) {
-    const token = localStorage.getItem('bjj_auth_token');
+    const { value: token } = await Preferences.get({ key: 'bjj_jwt_token' });
     if (token) {
-      console.log('✅ Token found in localStorage');
+      console.log('✅ JWT found in Capacitor Preferences');
       return token;
     }
     
     // If no token and this is the first try, wait a bit for AuthContext to save it
     if (i < maxRetries - 1) {
-      console.log(`⏳ Waiting for token (attempt ${i + 1}/${maxRetries})...`);
+      console.log(`⏳ Waiting for JWT (attempt ${i + 1}/${maxRetries})...`);
       await new Promise(resolve => setTimeout(resolve, delayMs));
     }
   }
   
-  console.warn('⚠️ No token found after retries');
+  console.warn('⚠️ No JWT found after retries');
   return null;
 }
 
