@@ -9,7 +9,7 @@ import { useToast } from '../hooks/use-toast';
 import { Building2, Users, Copy, Check } from 'lucide-react';
 
 export default function Admin() {
-  const { user } = useAuth();
+  const { user, supabaseUser } = useAuth();
   const { toast } = useToast();
   const [gymName, setGymName] = useState('');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export default function Admin() {
   // Create gym mutation
   const createGymMutation = useMutation({
     mutationFn: async (name: string) => {
-      return await apiRequest('POST', '/api/gyms', { name });
+      return await apiRequest('POST', '/api/gyms', { name, supabaseId: supabaseUser?.id });
     },
     onSuccess: (newGym) => {
       queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
