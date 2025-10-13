@@ -395,6 +395,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/auth/supabase-exchange", async (req, res) => {
+    try {
+      const { supabaseAccessToken } = req.body;
+      
+      if (!supabaseAccessToken) {
+        return res.status(400).json({ message: "Supabase access token required" });
+      }
+      
+      if (!supabaseAdmin) {
+        return res.status(500).json({ message: "Supabase admin client not configured" });
+      }
+      
+      // Verify Supabase token and get user
+      const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(supabaseAccessToken);
+      
+      if (error || !supabaseUser) {
+        console.error('Invalid Supabase token:', error?.message);
+        return res.status(401).json({ message: "Invalid Supabase token" });
+      }
+      
+      console.log('✅ Supabase token verified for:', supabaseUser.email);
+      
+      // Find or create user in database
+      let user = await storage.getUserByEmail(supabaseUser.email!);
+      
+      if (!user) {
+        console.log('Creating new user for Supabase ID:', supabaseUser.id);
+        
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isPremiumUser = premiumEmails.includes(supabaseUser.email!);
+        const isAdmin = adminEmails.includes(supabaseUser.email!);
+        
+        const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
+        user = await storage.createUser({
+          email: supabaseUser.email!,
+          password: tempPassword,
+          firstName: supabaseUser.user_metadata?.firstName || supabaseUser.email!.split('@')[0],
+          lastName: supabaseUser.user_metadata?.lastName || '',
+          subscriptionStatus: isPremiumUser ? 'premium' : 'free',
+          subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
+          supabaseUid: supabaseUser.id,
+          role: isAdmin ? 'admin' : 'user',
+        });
+        
+        console.log('✅ Created user account for Supabase user:', supabaseUser.email);
+      }
+      
+      // Create server-signed JWT (30 days)
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, supabaseId: supabaseUser.id },
+        JWT_SECRET,
+        { expiresIn: '30d' }
+      );
+      
+      console.log('🔐 Issued server JWT for:', user.email);
+      
+      res.json({ token });
+    } catch (error) {
+      console.error('JWT exchange error:', error);
+      res.status(500).json({ message: "Failed to exchange token" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
