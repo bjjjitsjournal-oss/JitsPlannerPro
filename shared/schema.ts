@@ -251,6 +251,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
   lastName: z.string().optional(),
   subscriptionStatus: z.enum(["free", "premium", "active", "paused"]).optional(),
   subscriptionExpiresAt: z.date().optional(),
+  supabaseId: z.string().optional(), // Accept Supabase UUID
 });
 
 export const insertProfileSchema = createInsertSchema(profiles);

@@ -271,8 +271,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
       const isAdmin = adminEmails.includes(userData.email);
       
+      console.log('Creating user with supabaseId:', userData.supabaseId);
       const newUser = await storage.createUser({
         ...userData,
+        supabaseUid: userData.supabaseId, // Map supabaseId to supabaseUid for database
         password: hashedPassword,
         subscriptionStatus: isPremiumUser ? 'premium' : 'free',
         subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,

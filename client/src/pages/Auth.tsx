@@ -123,62 +123,36 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         confirmed: authData.user?.confirmed_at,
       });
       
-      // Create or update user profile in database
+      // Create user profile in PostgreSQL database via backend API
       if (authData.user) {
-        console.log('Creating/updating user profile in database...');
+        console.log('Creating user profile in PostgreSQL database...');
         
-        // Check if user profile already exists
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('id')
-          .eq('email', authData.user.email)
-          .single();
+        try {
+          const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+          const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              supabaseId: authData.user.id, // Link Supabase Auth to PostgreSQL user
+            }),
+          });
 
-        let userId: number;
-
-        if (existingUser) {
-          // Update existing profile with supabase_uid
-          console.log('Existing user found, updating profile with supabase_uid...');
-          const { data: updatedUser, error: updateError } = await supabase
-            .from('users')
-            .update({
-              first_name: data.firstName,
-              last_name: data.lastName,
-              supabase_uid: authData.user.id, // CRITICAL: Link Supabase Auth to user
-            })
-            .eq('email', authData.user.email)
-            .select()
-            .single();
-
-          if (updateError) {
-            console.error('Profile update error:', updateError);
-            throw new Error(`Failed to update profile: ${updateError.message}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create user profile');
           }
-          
-          userId = updatedUser.id;
-          console.log('User profile updated with supabase_uid:', userId);
-        } else {
-          // Create new profile with supabase_uid
-          console.log('Creating new user profile with Supabase UID...');
-          const { data: newUser, error: profileError } = await supabase
-            .from('users')
-            .insert({
-              email: authData.user.email,
-              first_name: data.firstName,
-              last_name: data.lastName,
-              subscription_status: 'free',
-              supabase_uid: authData.user.id, // Store Supabase UUID
-            })
-            .select()
-            .single();
 
-          if (profileError) {
-            console.error('Profile creation error:', profileError);
-            throw new Error(`Failed to create profile: ${profileError.message}`);
-          }
-          
-          userId = newUser.id;
-          console.log('User profile created with supabase_uid:', userId);
+          const newUser = await response.json();
+          console.log('User profile created in PostgreSQL:', newUser.id);
+        } catch (profileError: any) {
+          console.error('Profile creation error:', profileError);
+          // If profile creation fails, delete the Supabase auth account
+          await supabase.auth.admin.deleteUser(authData.user.id);
+          throw new Error(`Failed to create profile: ${profileError.message}`);
         }
       }
 
