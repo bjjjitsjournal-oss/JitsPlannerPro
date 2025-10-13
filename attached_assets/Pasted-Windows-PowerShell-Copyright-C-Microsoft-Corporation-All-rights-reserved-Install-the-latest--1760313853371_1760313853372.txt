@@ -1,0 +1,220 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\joe> cd C:\Projects\JitsPlannerPro
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Stop any running processes
+PS C:\Projects\JitsPlannerPro> Get-Process -Name node -ErrorAction SilentlyContinue | Stop-Process -Force
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Clear all caches
+PS C:\Projects\JitsPlannerPro> Remove-Item -Path dist -Recurse -Force -ErrorAction SilentlyContinue
+PS C:\Projects\JitsPlannerPro> Remove-Item -Path node_modules\.vite -Recurse -Force -ErrorAction SilentlyContinue
+PS C:\Projects\JitsPlannerPro> Remove-Item -Path .cache -Recurse -Force -ErrorAction SilentlyContinue
+PS C:\Projects\JitsPlannerPro> Remove-Item -Path android\app\build -Recurse -Force -ErrorAction SilentlyContinue
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Clear npm cache
+PS C:\Projects\JitsPlannerPro> npm cache clean --force
+npm warn using --force Recommended protections disabled.
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Reinstall node modules
+PS C:\Projects\JitsPlannerPro> Remove-Item -Path node_modules -Recurse -Force
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\cordova\
+MockCordovaWebViewImpl$CapacitorEvalBridgeMode.dex: Could not
+find a part of the path
+'MockCordovaWebViewImpl$CapacitorEvalBridgeMode.dex'.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (MockCordovaWebV...l
+   BridgeMode.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\cordova:
+ The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (cordova:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\plugin\u
+til\HttpRequestHandler$HttpURLConnectionBuilder.dex: Could not
+find a part of the path
+'HttpRequestHandler$HttpURLConnectionBuilder.dex'.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HttpRequestHand...t
+   ionBuilder.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\plugin\u
+til\HttpRequestHandler$ProgressEmitter.dex: Could not find a
+part of the path 'HttpRequestHandler$ProgressEmitter.dex'.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HttpRequestHandler$
+   ProgressEmitter.dex:FileInfo) [Remove-Item], DirectoryNotF
+  oundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\plugin\u
+til: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (util:DirectoryInfo)
+    [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor\plugin:
+The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (plugin:DirectoryInf
+   o) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com\getcapacitor: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (getcapacitor:Direct
+   oryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex\com: The directory is
+not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (com:DirectoryInfo)
+   [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease\bundleLibRuntimeToDirRelease_dex: The directory is not
+empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease_dex:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed\bundleLibRuntimeToDirRel
+ease: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6\transformed: The directory is not
+empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (transformed:Directo
+   ryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms\1db79b
+f6b9389f55c28f8ef1a4f686b6: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (1db79bf6b9389f55c28
+   f8ef1a4f686b6:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build\.transforms: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (.transforms:Directo
+   ryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor\build: The directory is
+not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (build:DirectoryInfo
+   ) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Projects\JitsPlannerPro\nod
+e_modules\@capacitor\android\capacitor: The directory is not
+empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (capacitor:Directory
+   Info) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item
+C:\Projects\JitsPlannerPro\node_modules\@capacitor\android:
+The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (android:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item
+C:\Projects\JitsPlannerPro\node_modules\@capacitor: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path node_modules -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (@capacitor:Director
+   yInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
