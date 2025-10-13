@@ -1,18 +1,31 @@
 ﻿import { QueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import { Capacitor } from '@capacitor/core';
+import { waitForAuthToken } from './authTokenStore';
 
-// Get API base URL - use Render for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
+// Helper to get Supabase user ID for mobile workaround
+async function getSupabaseUserId(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.user?.id || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function getSupabaseToken(): Promise<string | null> {
   try {
+    const token = await waitForAuthToken(3000);
+    if (token) {
+      return token;
+    }
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token || null;
   } catch (e) {
-    console.error('Failed to get Supabase token:', e);
     return null;
   }
 }
@@ -34,7 +47,6 @@ export const queryClient = new QueryClient({
         
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
-          console.log('📱 Sending Authorization header with token');
         }
         
         const url = `${API_BASE_URL}${queryKey[0] as string}`;
@@ -54,24 +66,31 @@ export const queryClient = new QueryClient({
 });
 
 export async function apiRequest(method: string, url: string, data?: any) {
+  const options: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
   let token = await getSupabaseToken();
   if (!token) {
     token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
   }
   
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-    console.log('📱 Sending Authorization header with token in apiRequest');
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`,
+    };
+  } else if (Capacitor.isNativePlatform()) {
+    // MOBILE WORKAROUND: If no token, add supabaseId to body
+    const supabaseId = await getSupabaseUserId();
+    if (supabaseId && data) {
+      data = { ...data, supabaseId };
+      console.log('📱 Adding supabaseId to request body for mobile');
+    }
   }
-
-  const options: RequestInit = {
-    method,
-    headers,
-  };
 
   if (data) {
     options.body = JSON.stringify(data);
@@ -92,11 +111,25 @@ export async function apiRequest(method: string, url: string, data?: any) {
       errorMessage = errorData.message || errorMessage;
     } catch {
       const errorText = await response.text();
-      errorMessage = `${response.status}: ${errorText}`;
+      if (errorText.includes('<!DOCTYPE') || errorText.includes('<html')) {
+        console.error('🚨 Service Worker returned HTML');
+        if ('caches' in window) {
+          caches.keys().then(cacheNames => {
+            cacheNames.forEach(cacheName => caches.delete(cacheName));
+          });
+        }
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => registration.unregister());
+          });
+        }
+        errorMessage = `${response.status}: App cache issue detected. Please try again.`;
+      } else {
+        errorMessage = `${response.status}: ${errorText}`;
+      }
     }
     throw new Error(errorMessage);
   }
 
   return response;
 }
-
