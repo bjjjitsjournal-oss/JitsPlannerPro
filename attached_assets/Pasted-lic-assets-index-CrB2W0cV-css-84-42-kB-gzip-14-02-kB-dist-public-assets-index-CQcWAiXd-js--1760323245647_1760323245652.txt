@@ -1,0 +1,66 @@
+lic/assets/index-CrB2W0cV.css   84.42 kB │ gzip:  14.02 kB
+../dist/public/assets/index-CQcWAiXd.js   800.07 kB │ gzip: 228.59 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 10.51s
+
+  dist\index.js  99.1kb
+
+⚡ Done in 33ms
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Sync to Android
+PS C:\Projects\JitsPlannerPro> npx cap sync android
+\ Copying web assets from public to android\app\src\main\assets\| Copying web assets from public to android\app\src\main\assets\√ Copying web assets from public to android\app\src\main\assets\public in 66.66ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 5.48ms
+√ copy android in 218.12ms
+√ Updating Android plugins in 40.81ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 335.26ms
+[info] Sync finished in 0.763s
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Build AAB
+PS C:\Projects\JitsPlannerPro> cd android
+PS C:\Projects\JitsPlannerPro\android> .\gradlew.bat clean bundleRelease
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Task :capacitor-android:compileReleaseJavaWithJavac
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 44s
+199 actionable tasks: 177 executed, 22 up-to-date
+PS C:\Projects\JitsPlannerPro\android> cd ..
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> Write-Host "`n✅ VERSION 30 COMPLETE - Navigation Fix!"
+
+✅ VERSION 30 COMPLETE - Navigation Fix!
+PS C:\Projects\JitsPlannerPro> Write-Host "Upload: android\app\build\outputs\bundle\release\app-release.aab"
+Upload: android\app\build\outputs\bundle\release\app-release.aab
+PS C:\Projects\JitsPlannerPro> Write-Host "`nKEY CHANGES:"
+
+KEY CHANGES:
+PS C:\Projects\JitsPlannerPro> Write-Host "- Fixed page reload bug: Uses wouter routing instead of window.location"
+- Fixed page reload bug: Uses wouter routing instead of window.location
+PS C:\Projects\JitsPlannerPro> Write-Host "- Session now preserved when navigating to Admin page"
+- Session now preserved when navigating to Admin page
+PS C:\Projects\JitsPlannerPro> Write-Host "- JWT exchange system ready (from v29)"
+- JWT exchange system ready (from v29)
+PS C:\Projects\JitsPlannerPro> Write-Host "`n🎯 NO MORE SESSION LOSS - Should work now!"
