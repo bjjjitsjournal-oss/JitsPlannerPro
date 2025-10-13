@@ -47,36 +47,27 @@ interface AuthProviderProps {
 
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any): Promise<User | null> {
   try {
-    // Try to get user from server via supabaseId
-    const response = await fetch(`${API_BASE_URL}/api/user?supabaseId=${supabaseId}`);
+    // Get user from server via supabaseId using the correct endpoint
+    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
     if (response.ok) {
-      const { user } = await response.json();
-      return user;
+      const data = await response.json();
+      // The endpoint returns the user object directly, not wrapped
+      return {
+        id: data.id.toString(),
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        subscriptionStatus: data.subscription_status || 'free',
+        subscriptionPlan: data.subscription_plan,
+        role: data.role || 'user',
+        createdAt: data.created_at,
+        supabaseId: data.supabase_uid,
+      };
     }
     
-    // If user doesn't exist in our DB, create them
-    if (response.status === 404) {
-      const createResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password: Math.random().toString(36),
-          firstName: metadata.first_name || '',
-          lastName: metadata.last_name || '',
-          supabaseId,
-        }),
-      });
-      
-      if (!createResponse.ok) {
-        throw new Error('Failed to create user');
-      }
-      
-      const { user: newUser } = await createResponse.json();
-      return newUser;
-    }
-    
+    // If user not found, they need to complete signup process
+    console.log('User not found in database for supabaseId:', supabaseId);
     return null;
   } catch (error) {
     console.error('Error in getUserFromSupabaseId:', error);
