@@ -45,9 +45,9 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, retries = 3): Promise<User | null> {
+async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, retries = 10): Promise<User | null> {
   try {
-    console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${4 - retries}/3)`);
+    console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${11 - retries}/10)`);
     // Get user from server via supabaseId using the correct endpoint
     const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
     
