@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
+import { updateCachedToken, ensureSession } from '@/lib/sessionProvider';
 
 // Get API base URL from environment variable or use relative path for development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -147,16 +148,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Ensure session is loaded before rendering
+    ensureSession().then(async () => {
+      // Get initial session
+      const { data: { session } } = await supabase.auth.getSession();
       console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Save access token to localStorage for API requests
+      // Update cached token in memory (NO localStorage)
       if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-        console.log('✅ Saved Supabase token to localStorage');
+        updateCachedToken(session.access_token);
       }
       
       if (session?.user) {
@@ -212,10 +214,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Save access token to localStorage for API requests
+      // Update cached token in memory (NO localStorage)
       if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-        console.log('✅ Saved Supabase token to localStorage on auth change');
+        updateCachedToken(session.access_token);
       }
       
       if (session?.user) {
@@ -262,9 +263,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
-        // Clear token when no session
-        localStorage.removeItem('supabase_access_token');
-        console.log('✅ Cleared Supabase token (no session)');
+        // Clear cached token (NO localStorage)
+        updateCachedToken(null);
         setUser(null);
         loadedSupabaseIdRef.current = null; // Clear ref on logout
         setIsLoading(false);
@@ -281,9 +281,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
-    // Clear stored token on logout
-    localStorage.removeItem('supabase_access_token');
-    console.log('✅ Cleared Supabase token from localStorage');
+    // Clear cached token (NO localStorage)
+    updateCachedToken(null);
     setUser(null);
     setSupabaseUser(null);
     setSession(null);
