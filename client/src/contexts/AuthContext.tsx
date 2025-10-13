@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { queryClient } from '@/lib/queryClient';
-import { updateCachedToken, ensureSession } from '@/lib/sessionProvider';
 
 // Get API base URL from environment variable or use relative path for development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -148,17 +147,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
 
   useEffect(() => {
-    // Ensure session is loaded before rendering
-    ensureSession().then(async () => {
-      // Get initial session
-      const { data: { session } } = await supabase.auth.getSession();
+    // Get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Update cached token in memory (NO localStorage)
+      // Save token to localStorage for API requests
       if (session?.access_token) {
-        updateCachedToken(session.access_token);
+        localStorage.setItem('bjj_auth_token', session.access_token);
+        console.log('✅ Saved token to localStorage');
       }
       
       if (session?.user) {
@@ -214,9 +212,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
-      // Update cached token in memory (NO localStorage)
+      // Save token to localStorage for API requests
       if (session?.access_token) {
-        updateCachedToken(session.access_token);
+        localStorage.setItem('bjj_auth_token', session.access_token);
+        console.log('✅ Saved token to localStorage on auth change');
       }
       
       if (session?.user) {
@@ -263,8 +262,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
-        // Clear cached token (NO localStorage)
-        updateCachedToken(null);
+        // Clear token from localStorage
+        localStorage.removeItem('bjj_auth_token');
+        console.log('✅ Cleared token from localStorage');
         setUser(null);
         loadedSupabaseIdRef.current = null; // Clear ref on logout
         setIsLoading(false);
@@ -281,8 +281,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
-    // Clear cached token (NO localStorage)
-    updateCachedToken(null);
+    // Clear token from localStorage
+    localStorage.removeItem('bjj_auth_token');
+    console.log('✅ Cleared token on logout');
     setUser(null);
     setSupabaseUser(null);
     setSession(null);
