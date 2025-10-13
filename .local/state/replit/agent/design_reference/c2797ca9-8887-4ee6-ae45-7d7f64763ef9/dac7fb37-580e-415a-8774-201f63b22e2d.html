@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jits Sketch - BJJ Training Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bjj-navy': '#1E3A8A',
+                        'bjj-charcoal': '#374151',
+                        'bjj-gold': '#F59E0B',
+                        'bjj-light': '#F9FAFB',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-bjj-light font-inter">
+    <!-- @COMPONENT: AppContainer [main app wrapper] -->
+    <div class="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-lg">
+        
+        <!-- @COMPONENT: Header [top navigation with user profile] -->
+        <header class="bg-bjj-navy text-white p-4 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-bjj-gold rounded-full flex items-center justify-center">
+                        <i class="fas fa-fist-raised text-bjj-navy text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold">Jits Sketch</h1>
+                        <p class="text-xs text-blue-200">Your BJJ companion</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="text-right">
+                        <p class="text-xs text-blue-200">Current Belt</p>
+                        <div class="flex items-center space-x-1">
+                            <div class="w-4 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-xs font-semibold" data-bind="user.beltLevel">Blue</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-300 rounded-full" data-mock-image="true">
+                        <!-- Profile image placeholder -->
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- @END_COMPONENT: Header -->
+
+        <!-- @COMPONENT: MainContent [scrollable content area] -->
+        <main class="flex-1 overflow-y-auto pb-20" data-state="activeTab">
+            
+            <!-- @COMPONENT: DashboardTab [default active tab] -->
+            <div id="dashboard" class="p-4 space-y-6">
+                
+                <!-- Quick Stats Card -->
+                <div class="bg-gradient-to-r from-bjj-navy to-blue-600 rounded-xl p-4 text-white">
+                    <h2 class="text-lg font-semibold mb-3">Training Overview</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="stats.thisWeek">4</div>
+                            <div class="text-xs text-blue-200">This Week</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="stats.thisMonth">16</div>
+                            <div class="text-xs text-blue-200">This Month</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold" data-bind="stats.streak">8</div>
+                            <div class="text-xs text-blue-200">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="bg-bjj-gold text-bjj-navy p-4 rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow" data-event="click:logNewClass">
+                        <i class="fas fa-plus mb-2 text-lg"></i>
+                        <div>Log Class</div>
+                    </button>
+                    <button class="bg-green-500 text-white p-4 rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow" data-event="click:openDrawing">
+                        <i class="fas fa-pencil-alt mb-2 text-lg"></i>
+                        <div>Quick Draw</div>
+                    </button>
+                </div>
+
+                <!-- Recent Classes -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="text-lg font-semibold mb-3 text-bjj-charcoal">Recent Classes</h3>
+                    <!-- @MAP: recentClasses.map(class => ( -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-mock="true">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-bjj-navy rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user-friends text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-bjj-charcoal">Gi Training</p>
+                                    <p class="text-sm text-gray-600">With John & Sarah • 1h 30m</p>
+                                    <p class="text-xs text-gray-500">Today, 7:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-1">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">#guard</span>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">#sweep</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-mock="true">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-fire text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-bjj-charcoal">No-Gi Rolling</p>
+                                    <p class="text-sm text-gray-600">With Mike • 1h 15m</p>
+                                    <p class="text-xs text-gray-500">Yesterday, 6:30 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-1">
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">#armbar</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+
+                <!-- Progress Chart -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="text-lg font-semibold mb-3 text-bjj-charcoal">Weekly Progress</h3>
+                    <div class="h-32 bg-gray-50 rounded-lg flex items-end justify-center space-x-2 p-4">
+                        <!-- @FUNCTIONALITY: This should implement a chart showing weekly attendance -->
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 60%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 80%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 40%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 100%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 70%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 90%"></div>
+                        <div class="w-6 bg-bjj-gold rounded-t" style="height: 85%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: DashboardTab -->
+
+            <!-- @COMPONENT: ClassLogTab [class tracking interface] -->
+            <div id="classes" class="p-4 space-y-4 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-bjj-charcoal">Class Log</h2>
+                    <button class="bg-bjj-gold text-bjj-navy px-4 py-2 rounded-lg font-semibold shadow-md" data-event="click:addNewClass">
+                        <i class="fas fa-plus mr-2"></i>Add Class
+                    </button>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex space-x-2 mb-4">
+                    <button class="px-4 py-2 bg-bjj-navy text-white rounded-lg text-sm font-medium">All</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium">Gi</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium">No-Gi</button>
+                </div>
+
+                <!-- Class List -->
+                <div class="space-y-3">
+                    <!-- @MAP: classes.map(class => ( -->
+                    <div class="bg-white rounded-lg shadow-md p-4" data-mock="true">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-bjj-navy rounded-full flex items-center justify-center">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-bjj-charcoal">Gi Training Session</h3>
+                                    <p class="text-sm text-gray-600">March 15, 2024 • 90 minutes</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-user-friends w-4 mr-2"></i>
+                                <span>Partners: John, Sarah, Mike</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-chalkboard-teacher w-4 mr-2"></i>
+                                <span>Instructor: Professor Silva</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">#guard</span>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">#sweep</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">#armbar</span>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: ClassLogTab -->
+
+            <!-- @COMPONENT: VideosTab [tutorial library] -->
+            <div id="videos" class="p-4 space-y-4 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-bjj-charcoal">Video Library</h2>
+                    <button class="text-bjj-navy">
+                        <i class="fas fa-search text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="flex space-x-2 mb-4 overflow-x-auto">
+                    <button class="px-4 py-2 bg-bjj-navy text-white rounded-lg text-sm font-medium whitespace-nowrap">All</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium whitespace-nowrap">Guard</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium whitespace-nowrap">Mount</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium whitespace-nowrap">Back</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium whitespace-nowrap">Submissions</button>
+                </div>
+
+                <!-- Video Grid -->
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- @MAP: videos.map(video => ( -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden" data-mock="true">
+                        <!-- BJJ training video thumbnail showing guard pass technique -->
+                        <div class="aspect-video bg-gray-200 relative">
+                            <img src="https://images.unsplash.com/photo-1544919982-b61976f0ba43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=450" 
+                                 alt="BJJ training session" 
+                                 class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <div class="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-bjj-navy text-lg ml-1"></i>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                8:42
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-bjj-charcoal mb-2">Guard Pass Fundamentals</h3>
+                            <p class="text-sm text-gray-600 mb-3">Master the basic guard pass with proper pressure and timing</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">#guard</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">#fundamental</span>
+                                </div>
+                                <button class="text-gray-400 hover:text-bjj-gold">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden" data-mock="true">
+                        <!-- BJJ submission technique demonstration -->
+                        <div class="aspect-video bg-gray-200 relative">
+                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=450" 
+                                 alt="BJJ submission technique" 
+                                 class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <div class="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-bjj-navy text-lg ml-1"></i>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                12:15
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-bjj-charcoal mb-2">Armbar from Mount</h3>
+                            <p class="text-sm text-gray-600 mb-3">Step-by-step breakdown of the classic armbar submission</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">#submission</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">#mount</span>
+                                </div>
+                                <button class="text-bjj-gold">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: VideosTab -->
+
+            <!-- @COMPONENT: NotesTab [note-taking interface] -->
+            <div id="notes" class="p-4 space-y-4 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-bjj-charcoal">Notes</h2>
+                    <button class="bg-bjj-gold text-bjj-navy px-4 py-2 rounded-lg font-semibold shadow-md" data-event="click:addNewNote">
+                        <i class="fas fa-plus mr-2"></i>New Note
+                    </button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative">
+                    <input type="text" placeholder="Search notes or tags..." 
+                           class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-bjj-navy focus:border-transparent"
+                           data-implementation="Should implement real-time search filtering">
+                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                </div>
+
+                <!-- Notes List -->
+                <div class="space-y-4">
+                    <!-- @MAP: notes.map(note => ( -->
+                    <div class="bg-white rounded-lg shadow-md p-4" data-mock="true">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-bjj-charcoal mb-1">Guard Retention Tips</h3>
+                                <p class="text-sm text-gray-500">March 15, 2024 • 2:30 PM</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        
+                        <p class="text-gray-700 mb-3">Remember to keep frames and create angles. Don't let them settle their weight...</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">#guard</span>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">#defense</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">#frames</span>
+                        </div>
+                        
+                        <!-- Drawing thumbnail if attached -->
+                        <div class="w-16 h-16 bg-gray-100 rounded border-2 border-dashed border-gray-300 flex items-center justify-center">
+                            <i class="fas fa-pencil-alt text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-4" data-mock="true">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-bjj-charcoal mb-1">Sweep from Half Guard</h3>
+                                <p class="text-sm text-gray-500">March 12, 2024 • 7:45 PM</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        
+                        <p class="text-gray-700 mb-3">Key detail: get the underhook first, then work the knee shield...</p>
+                        
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">#sweep</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">#halfguard</span>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: NotesTab -->
+
+            <!-- @COMPONENT: DrawingTab [finger drawing canvas] -->
+            <div id="drawing" class="p-4 space-y-4 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-bjj-charcoal">Drawing Board</h2>
+                    <div class="flex space-x-2">
+                        <button class="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium" data-event="click:clearCanvas">
+                            <i class="fas fa-trash mr-1"></i>Clear
+                        </button>
+                        <button class="bg-bjj-gold text-bjj-navy px-3 py-2 rounded-lg text-sm font-medium" data-event="click:saveDrawing">
+                            <i class="fas fa-save mr-1"></i>Save
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drawing Tools -->
+                <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                    <h3 class="font-semibold text-bjj-charcoal mb-3">Tools</h3>
+                    
+                    <!-- Color Picker -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                        <div class="flex space-x-2">
+                            <button class="w-8 h-8 bg-black rounded-full border-2 border-gray-300 shadow-sm"></button>
+                            <button class="w-8 h-8 bg-red-500 rounded-full border-2 border-gray-300 shadow-sm"></button>
+                            <button class="w-8 h-8 bg-blue-500 rounded-full border-2 border-gray-300 shadow-sm"></button>
+                            <button class="w-8 h-8 bg-green-500 rounded-full border-2 border-gray-300 shadow-sm"></button>
+                            <button class="w-8 h-8 bg-bjj-gold rounded-full border-2 border-gray-300 shadow-sm"></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Brush Size -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Brush Size</label>
+                        <div class="flex items-center space-x-4">
+                            <button class="w-2 h-2 bg-black rounded-full"></button>
+                            <button class="w-3 h-3 bg-black rounded-full"></button>
+                            <button class="w-4 h-4 bg-black rounded-full"></button>
+                            <button class="w-6 h-6 bg-black rounded-full"></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex space-x-2">
+                        <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm" data-event="click:undo">
+                            <i class="fas fa-undo mr-1"></i>Undo
+                        </button>
+                        <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm" data-event="click:redo">
+                            <i class="fas fa-redo mr-1"></i>Redo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drawing Canvas -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <div class="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center touch-none" 
+                         data-implementation="Should implement HTML5 Canvas with touch drawing support">
+                        <!-- @FUNCTIONALITY: This drawing tool should implement free-hand drawing using canvas API -->
+                        <div class="text-center text-gray-500">
+                            <i class="fas fa-pencil-alt text-2xl mb-2"></i>
+                            <p class="text-sm">Tap and drag to draw</p>
+                            <p class="text-xs">Perfect for diagramming techniques</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Options -->
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="font-semibold text-bjj-charcoal mb-3">Templates</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-200" data-event="click:loadTemplate">
+                            <i class="fas fa-square text-xl"></i>
+                        </button>
+                        <button class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-200" data-event="click:loadTemplate">
+                            <i class="fas fa-user text-xl"></i>
+                        </button>
+                        <button class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-200" data-event="click:loadTemplate">
+                            <i class="fas fa-users text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: DrawingTab -->
+
+        </main>
+        <!-- @END_COMPONENT: MainContent -->
+
+        <!-- @COMPONENT: BottomNavigation [main tab navigation] -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto">
+            <div class="flex">
+                <button class="flex-1 py-3 px-4 text-center tab-button active" data-tab="dashboard" data-event="click:switchTab">
+                    <i class="fas fa-home text-lg mb-1 block"></i>
+                    <span class="text-xs">Dashboard</span>
+                </button>
+                <button class="flex-1 py-3 px-4 text-center tab-button" data-tab="classes" data-event="click:switchTab">
+                    <i class="fas fa-calendar-alt text-lg mb-1 block"></i>
+                    <span class="text-xs">Classes</span>
+                </button>
+                <button class="flex-1 py-3 px-4 text-center tab-button" data-tab="videos" data-event="click:switchTab">
+                    <i class="fas fa-play-circle text-lg mb-1 block"></i>
+                    <span class="text-xs">Videos</span>
+                </button>
+                <button class="flex-1 py-3 px-4 text-center tab-button" data-tab="notes" data-event="click:switchTab">
+                    <i class="fas fa-sticky-note text-lg mb-1 block"></i>
+                    <span class="text-xs">Notes</span>
+                </button>
+                <button class="flex-1 py-3 px-4 text-center tab-button" data-tab="drawing" data-event="click:switchTab">
+                    <i class="fas fa-pencil-alt text-lg mb-1 block"></i>
+                    <span class="text-xs">Draw</span>
+                </button>
+            </div>
+        </nav>
+        <!-- @END_COMPONENT: BottomNavigation -->
+    </div>
+    <!-- @END_COMPONENT: AppContainer -->
+
+    <script>
+        // Tab switching functionality
+        (function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('[id]');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // Update active tab button
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target content, hide others
+                    tabContents.forEach(content => {
+                        if (content.id === targetTab) {
+                            content.classList.remove('hidden');
+                        } else if (['dashboard', 'classes', 'videos', 'notes', 'drawing'].includes(content.id)) {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        })();
+
+        // TODO: Implement business logic, API calls, and state management
+        // TODO: Add canvas drawing functionality with touch support
+        // TODO: Implement video embedding and playback
+        // TODO: Add local storage for data persistence
+        // TODO: Implement tag-based search and filtering
+        // TODO: Add form validation and submission handling
+        // TODO: Implement progress tracking and analytics
+    </script>
+
+    <style>
+        .tab-button {
+            color: #6B7280;
+            transition: color 0.2s ease;
+        }
+        
+        .tab-button.active {
+            color: #1E3A8A;
+        }
+        
+        .tab-button:hover {
+            color: #374151;
+        }
+        
+        .tab-button.active:hover {
+            color: #1E3A8A;
+        }
+        
+        /* Ensure mobile-friendly touch targets */
+        .tab-button {
+            min-height: 48px;
+        }
+        
+        /* Smooth scrolling for content areas */
+        main {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar for webkit browsers */
+        main::-webkit-scrollbar {
+            width: 2px;
+        }
+        
+        main::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        main::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+    </style>
+</body>
+</html>

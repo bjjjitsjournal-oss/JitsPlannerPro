@@ -7,3 +7,4 @@ vite.config.ts.*
 
 # Data backup files containing user information
 data/bjj_backup/
+.vercel

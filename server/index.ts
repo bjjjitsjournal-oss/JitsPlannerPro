@@ -1,9 +1,7 @@
-import express, { type Request, Response, NextFunction } from "express";
+﻿import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-
 const app = express();
-
 // CORS configuration - allow requests from Vercel frontend
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Allow all origins in production
@@ -17,21 +15,17 @@ app.use((req, res, next) => {
   
   next();
 });
-
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
-
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
-
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
@@ -39,25 +33,19 @@ app.use((req, res, next) => {
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
-
       log(logLine);
     }
   });
-
   next();
 });
-
 (async () => {
   const server = await registerRoutes(app);
-
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     
     // Only log server errors (5xx), don't exit on client errors (4xx)
@@ -65,7 +53,6 @@ app.use((req, res, next) => {
       console.error("Server error:", err);
     }
   });
-
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
@@ -74,7 +61,6 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-
   // Use PORT from environment for deployment compatibility, fallback to 5000 for local development
   const port = Number(process.env.PORT) || 5000;
   

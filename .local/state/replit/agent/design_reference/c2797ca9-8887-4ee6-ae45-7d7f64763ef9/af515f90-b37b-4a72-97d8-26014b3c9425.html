@@ -1,0 +1,617 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jits Journal - Your Ultimate BJJ Training Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'bjj-navy': '#1E293B',
+                    'bjj-red': '#DC2626',
+                    'bjj-gray': '#64748B',
+                    'bjj-light': '#F8FAFC'
+                },
+                fontFamily: {
+                    'sans': ['Inter', 'system-ui', 'sans-serif']
+                }
+            }
+        }
+    };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-bjj-light font-sans">
+    <!-- @COMPONENT: MobileApp [main container] -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl">
+        
+        <!-- @COMPONENT: Header [app header with title and profile] -->
+        <header class="bg-bjj-navy text-white p-4 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-bjj-red rounded-full flex items-center justify-center">
+                        <i class="fas fa-fist-raised text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Jits Journal</h1>
+                        <p class="text-sm text-slate-300">Your BJJ Training Companion</p>
+                    </div>
+                </div>
+                <div class="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+            </div>
+        </header>
+        <!-- @END_COMPONENT: Header -->
+
+        <!-- @COMPONENT: TabNavigation [bottom navigation] -->
+        <nav class="fixed bottom-0 left-1/2 transform -translate-x-1/2 max-w-md w-full bg-white border-t border-gray-200 z-50">
+            <div class="flex justify-around py-2">
+                <button data-tab="dashboard" class="tab-btn flex flex-col items-center py-2 px-4 text-bjj-navy bg-bjj-light rounded-lg">
+                    <i class="fas fa-home text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Dashboard</span>
+                </button>
+                <button data-tab="classes" class="tab-btn flex flex-col items-center py-2 px-4 text-bjj-gray hover:text-bjj-navy">
+                    <i class="fas fa-calendar-alt text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Classes</span>
+                </button>
+                <button data-tab="videos" class="tab-btn flex flex-col items-center py-2 px-4 text-bjj-gray hover:text-bjj-navy">
+                    <i class="fas fa-play-circle text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Videos</span>
+                </button>
+                <button data-tab="notes" class="tab-btn flex flex-col items-center py-2 px-4 text-bjj-gray hover:text-bjj-navy">
+                    <i class="fas fa-sticky-note text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Notes</span>
+                </button>
+                <button data-tab="drawing" class="tab-btn flex flex-col items-center py-2 px-4 text-bjj-gray hover:text-bjj-navy">
+                    <i class="fas fa-pencil-alt text-lg mb-1"></i>
+                    <span class="text-xs font-medium">Draw</span>
+                </button>
+            </div>
+        </nav>
+        <!-- @END_COMPONENT: TabNavigation -->
+
+        <!-- @COMPONENT: MainContent [tab content container] -->
+        <main class="pb-20 px-4">
+            
+            <!-- @COMPONENT: DashboardTab [home dashboard] -->
+            <div id="dashboard" class="tab-content">
+                <!-- Welcome Section -->
+                <div class="mt-6 mb-6">
+                    <div class="bg-gradient-to-r from-bjj-navy to-bjj-red text-white p-6 rounded-xl shadow-lg">
+                        <h2 class="text-lg font-bold mb-2">Welcome back, Fighter!</h2>
+                        <p class="text-sm opacity-90">Ready for another day of training?</p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-bjj-red">
+                        <h3 class="text-sm font-semibold text-bjj-gray">This Week</h3>
+                        <p class="text-2xl font-bold text-bjj-navy" data-bind="weeklyClasses">4</p>
+                        <p class="text-xs text-bjj-gray">Classes</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-bjj-navy">
+                        <h3 class="text-sm font-semibold text-bjj-gray">Total Hours</h3>
+                        <p class="text-2xl font-bold text-bjj-navy" data-bind="totalHours">87</p>
+                        <p class="text-xs text-bjj-gray">This Month</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-bjj-navy mb-3">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="bg-bjj-red text-white p-4 rounded-lg shadow-md hover:bg-red-700 transition-colors">
+                            <i class="fas fa-plus text-xl mb-2"></i>
+                            <p class="text-sm font-medium">Log Class</p>
+                        </button>
+                        <button class="bg-bjj-navy text-white p-4 rounded-lg shadow-md hover:bg-slate-700 transition-colors">
+                            <i class="fas fa-pencil-alt text-xl mb-2"></i>
+                            <p class="text-sm font-medium">New Note</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-bjj-navy mb-3">Recent Activity</h3>
+                    <div class="space-y-3">
+                        <!-- @MAP: recentActivities.map(activity => ( -->
+                        <div class="bg-white p-4 rounded-lg shadow-md" data-mock="true">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-bjj-red/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-dumbbell text-bjj-red"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-bjj-navy">Fundamentals Class</p>
+                                        <p class="text-sm text-bjj-gray">90 minutes • Guard techniques</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-bjj-gray">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md" data-mock="true">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-bjj-navy/10 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-sticky-note text-bjj-navy"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-bjj-navy">Note: Armbar Details</p>
+                                        <p class="text-sm text-bjj-gray">Added drawing and technique notes</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-bjj-gray">Yesterday</span>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+
+                <!-- Progress Chart -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-bjj-navy mb-3">Progress This Month</h3>
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <div class="h-32 bg-gradient-to-r from-bjj-navy/20 to-bjj-red/20 rounded-lg flex items-end justify-center">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-bjj-red rounded-full flex items-center justify-center mb-2">
+                                    <span class="text-white font-bold text-lg">18</span>
+                                </div>
+                                <p class="text-sm font-medium text-bjj-gray">Classes This Month</p>
+                            </div>
+                        </div>
+                        <!-- @FUNCTIONALITY: This should implement a proper chart using Chart.js or similar -->
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: DashboardTab -->
+
+            <!-- @COMPONENT: ClassesTab [class tracking interface] -->
+            <div id="classes" class="tab-content hidden">
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-bjj-navy">Class Tracking</h2>
+                        <button class="bg-bjj-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Log Class
+                        </button>
+                    </div>
+
+                    <!-- Class Form -->
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h3 class="text-lg font-semibold text-bjj-navy mb-4">New Class Entry</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Date & Time</label>
+                                <input type="datetime-local" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Duration (minutes)</label>
+                                <input type="number" placeholder="90" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Class Type</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                                    <option>Fundamentals</option>
+                                    <option>Advanced</option>
+                                    <option>Competition</option>
+                                    <option>Open Mat</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Instructor</label>
+                                <input type="text" placeholder="Prof. Silva" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Training Partners</label>
+                                <input type="text" placeholder="Tag partners (separate with commas)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-1">Techniques Focused</label>
+                                <textarea placeholder="Describe techniques covered..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent h-24"></textarea>
+                            </div>
+                            <button class="w-full bg-bjj-red text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                                Save Class
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Classes -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-bjj-navy mb-4">Recent Classes</h3>
+                        <div class="space-y-3">
+                            <!-- @MAP: recentClasses.map(class => ( -->
+                            <div class="bg-white p-4 rounded-lg shadow-md" data-mock="true">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-bjj-navy">Fundamentals Class</h4>
+                                    <span class="text-sm text-bjj-gray">Dec 15, 2024</span>
+                                </div>
+                                <div class="flex items-center space-x-4 text-sm text-bjj-gray mb-2">
+                                    <span><i class="fas fa-clock mr-1"></i>90 min</span>
+                                    <span><i class="fas fa-user mr-1"></i>Prof. Silva</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-bjj-red/10 text-bjj-red px-2 py-1 rounded text-xs">#guard</span>
+                                    <span class="bg-bjj-navy/10 text-bjj-navy px-2 py-1 rounded text-xs">#submissions</span>
+                                    <span class="bg-bjj-gray/10 text-bjj-gray px-2 py-1 rounded text-xs">#drilling</span>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: ClassesTab -->
+
+            <!-- @COMPONENT: VideosTab [tutorial video library] -->
+            <div id="videos" class="tab-content hidden">
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-bjj-navy">Video Library</h2>
+                        <button class="bg-bjj-navy text-white px-4 py-2 rounded-lg shadow-md hover:bg-slate-700 transition-colors">
+                            <i class="fas fa-heart mr-2"></i>Favorites
+                        </button>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+                        <div class="relative mb-4">
+                            <input type="text" placeholder="Search techniques..." class="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-bjj-gray"></i>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="bg-bjj-red text-white px-3 py-1 rounded-full text-sm">All</button>
+                            <button class="bg-gray-200 text-bjj-gray px-3 py-1 rounded-full text-sm">Guard</button>
+                            <button class="bg-gray-200 text-bjj-gray px-3 py-1 rounded-full text-sm">Mount</button>
+                            <button class="bg-gray-200 text-bjj-gray px-3 py-1 rounded-full text-sm">Submissions</button>
+                            <button class="bg-gray-200 text-bjj-gray px-3 py-1 rounded-full text-sm">Escapes</button>
+                        </div>
+                    </div>
+
+                    <!-- Video Categories -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-bjj-navy mb-3">Popular Techniques</h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <!-- @MAP: popularVideos.map(video => ( -->
+                                <div class="bg-white rounded-lg shadow-md overflow-hidden" data-mock="true">
+                                    <!-- High-quality Brazilian Jiu-Jitsu training session in a traditional dojo -->
+                                    <img src="https://images.unsplash.com/photo-1544717302-de2939b7ef71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" alt="BJJ Training Session" class="w-full h-32 object-cover">
+                                    <div class="p-4">
+                                        <h4 class="font-semibold text-bjj-navy mb-1">Triangle Choke from Guard</h4>
+                                        <p class="text-sm text-bjj-gray mb-2">Master the fundamentals of this classic submission</p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="bg-bjj-red/10 text-bjj-red px-2 py-1 rounded text-xs">#guard</span>
+                                                <span class="bg-bjj-navy/10 text-bjj-navy px-2 py-1 rounded text-xs">#submissions</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <button class="text-bjj-red hover:text-red-700"><i class="fas fa-heart"></i></button>
+                                                <span class="text-xs text-bjj-gray">12:45</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-bjj-navy mb-3">Recently Added</h3>
+                            <div class="space-y-3">
+                                <!-- @MAP: recentVideos.map(video => ( -->
+                                <div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4" data-mock="true">
+                                    <!-- Brazilian Jiu-Jitsu practitioners demonstrating advanced techniques -->
+                                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=300" alt="BJJ Techniques" class="w-16 h-16 rounded-lg object-cover">
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-bjj-navy">Armbar from Mount</h4>
+                                        <p class="text-sm text-bjj-gray">Step-by-step breakdown</p>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <span class="bg-bjj-red/10 text-bjj-red px-2 py-1 rounded text-xs">#mount</span>
+                                            <span class="text-xs text-bjj-gray">8:30</span>
+                                        </div>
+                                    </div>
+                                    <button class="text-bjj-navy hover:text-slate-700"><i class="fas fa-play-circle text-2xl"></i></button>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: VideosTab -->
+
+            <!-- @COMPONENT: NotesTab [note-taking interface] -->
+            <div id="notes" class="tab-content hidden">
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-bjj-navy">Training Notes</h2>
+                        <button class="bg-bjj-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>New Note
+                        </button>
+                    </div>
+
+                    <!-- Note Editor -->
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h3 class="text-lg font-semibold text-bjj-navy mb-4">Create New Note</h3>
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Note title..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent font-semibold">
+                            <textarea placeholder="Write your notes here..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent h-32"></textarea>
+                            <div>
+                                <label class="block text-sm font-medium text-bjj-gray mb-2">Tags</label>
+                                <input type="text" placeholder="Add tags (e.g., #armbar #guard #sweep)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="flex-1 bg-bjj-red text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                                    Save Note
+                                </button>
+                                <button class="px-4 py-3 border border-bjj-navy text-bjj-navy rounded-lg hover:bg-bjj-navy hover:text-white transition-colors">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Notes -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+                        <div class="relative">
+                            <input type="text" placeholder="Search notes by title or tags..." class="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-bjj-red focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-bjj-gray"></i>
+                        </div>
+                    </div>
+
+                    <!-- Notes List -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-bjj-navy">Recent Notes</h3>
+                        <!-- @MAP: recentNotes.map(note => ( -->
+                        <div class="bg-white p-4 rounded-lg shadow-md" data-mock="true">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-bjj-navy">Triangle Choke Setup</h4>
+                                <span class="text-xs text-bjj-gray">2 days ago</span>
+                            </div>
+                            <p class="text-sm text-bjj-gray mb-3">Remember to control the arm and hip escape before attempting the triangle. Key points: angle, squeeze, and finish...</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-bjj-red/10 text-bjj-red px-2 py-1 rounded text-xs">#trianglechoke</span>
+                                    <span class="bg-bjj-navy/10 text-bjj-navy px-2 py-1 rounded text-xs">#guard</span>
+                                    <span class="bg-bjj-gray/10 text-bjj-gray px-2 py-1 rounded text-xs">#submissions</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-bjj-gray hover:text-bjj-navy"><i class="fas fa-edit"></i></button>
+                                    <button class="text-bjj-gray hover:text-bjj-red"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg shadow-md" data-mock="true">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-bjj-navy">Side Control Escapes</h4>
+                                <span class="text-xs text-bjj-gray">1 week ago</span>
+                            </div>
+                            <p class="text-sm text-bjj-gray mb-3">Practiced elbow escape and ghost escape today. Need to work on timing and creating space...</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-bjj-red/10 text-bjj-red px-2 py-1 rounded text-xs">#sidecontrol</span>
+                                    <span class="bg-bjj-navy/10 text-bjj-navy px-2 py-1 rounded text-xs">#escapes</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-paperclip text-bjj-gray"></i>
+                                    <button class="text-bjj-gray hover:text-bjj-navy"><i class="fas fa-edit"></i></button>
+                                    <button class="text-bjj-gray hover:text-bjj-red"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: NotesTab -->
+
+            <!-- @COMPONENT: DrawingTab [finger drawing canvas] -->
+            <div id="drawing" class="tab-content hidden">
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-bjj-navy">Technique Diagrams</h2>
+                        <button class="bg-bjj-navy text-white px-4 py-2 rounded-lg shadow-md hover:bg-slate-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save
+                        </button>
+                    </div>
+
+                    <!-- Drawing Tools -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                        <h3 class="text-sm font-semibold text-bjj-navy mb-3">Drawing Tools</h3>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-2">
+                                    <label class="text-sm text-bjj-gray">Brush:</label>
+                                    <input type="range" min="1" max="10" value="3" class="w-16">
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="w-8 h-8 bg-black rounded-full border-2 border-gray-300 drawing-color active" data-color="#000000"></button>
+                                    <button class="w-8 h-8 bg-bjj-red rounded-full border-2 border-gray-300 drawing-color" data-color="#DC2626"></button>
+                                    <button class="w-8 h-8 bg-bjj-navy rounded-full border-2 border-gray-300 drawing-color" data-color="#1E293B"></button>
+                                    <button class="w-8 h-8 bg-blue-500 rounded-full border-2 border-gray-300 drawing-color" data-color="#3B82F6"></button>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="px-3 py-1 bg-bjj-gray text-white rounded text-sm hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-undo mr-1"></i>Undo
+                                </button>
+                                <button class="px-3 py-1 bg-bjj-gray text-white rounded text-sm hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-redo mr-1"></i>Redo
+                                </button>
+                                <button class="px-3 py-1 bg-bjj-red text-white rounded text-sm hover:bg-red-700 transition-colors">
+                                    <i class="fas fa-trash mr-1"></i>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drawing Canvas -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+                            <canvas id="drawingCanvas" class="w-full h-64 bg-white rounded cursor-crosshair" width="400" height="300"></canvas>
+                            <!-- @FUNCTIONALITY: This drawing canvas should implement free-hand drawing using HTML5 Canvas API with touch support -->
+                        </div>
+                    </div>
+
+                    <!-- Templates -->
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                        <h3 class="text-sm font-semibold text-bjj-navy mb-3">Templates</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-user text-2xl text-bjj-gray mb-2"></i>
+                                <p class="text-xs text-bjj-gray">Stick Figure</p>
+                            </button>
+                            <button class="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-square text-2xl text-bjj-gray mb-2"></i>
+                                <p class="text-xs text-bjj-gray">Mat Outline</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Saved Diagrams -->
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-sm font-semibold text-bjj-navy mb-3">Saved Diagrams</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- @MAP: savedDiagrams.map(diagram => ( -->
+                            <div class="border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition-colors" data-mock="true">
+                                <div class="w-full h-20 bg-gray-100 rounded mb-2 flex items-center justify-center">
+                                    <i class="fas fa-image text-bjj-gray"></i>
+                                </div>
+                                <p class="text-xs text-bjj-gray truncate">Triangle Setup</p>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: DrawingTab -->
+
+        </main>
+        <!-- @END_COMPONENT: MainContent -->
+
+    </div>
+    <!-- @END_COMPONENT: MobileApp -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        // Tab Navigation
+        (function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.dataset.tab;
+                    
+                    // Remove active states
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-bjj-navy', 'bg-bjj-light');
+                        btn.classList.add('text-bjj-gray');
+                    });
+                    
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // Add active state
+                    button.classList.remove('text-bjj-gray');
+                    button.classList.add('text-bjj-navy', 'bg-bjj-light');
+                    
+                    // Show selected tab
+                    document.getElementById(tabName).classList.remove('hidden');
+                });
+            });
+        })();
+
+        // Drawing Canvas Functionality
+        (function() {
+            const canvas = document.getElementById('drawingCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let currentColor = '#000000';
+            let currentLineWidth = 3;
+            
+            // Set up canvas
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Drawing color selection
+            document.querySelectorAll('.drawing-color').forEach(colorBtn => {
+                colorBtn.addEventListener('click', () => {
+                    document.querySelectorAll('.drawing-color').forEach(btn => btn.classList.remove('active'));
+                    colorBtn.classList.add('active');
+                    currentColor = colorBtn.dataset.color;
+                });
+            });
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            function startDrawing(e) {
+                isDrawing = true;
+                draw(e);
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.lineWidth = currentLineWidth;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = currentColor;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+            
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                ctx.beginPath();
+            }
+            
+            function handleTouch(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                                   e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }
+            
+            // Clear canvas
+            document.querySelector('.fa-trash').parentElement.addEventListener('click', () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+            
+            // TODO: Implement undo/redo functionality
+            // TODO: Implement save functionality
+            // TODO: Implement template loading
+        })();
+    </script>
+</body>
+</html>

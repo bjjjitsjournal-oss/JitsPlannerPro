@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Jits Journal',
   webDir: 'dist/public',
   server: {
+    url: 'https://bjj-jits-journal.onrender.com',
     androidScheme: 'https'
   },
   plugins: {
