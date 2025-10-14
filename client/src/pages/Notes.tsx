@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { useToast } from '../hooks/use-toast';
 import VideoUpload from '../components/VideoUpload';
 import SocialShareButton from '../components/SocialShareButton';
@@ -28,6 +29,7 @@ export default function Notes() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
