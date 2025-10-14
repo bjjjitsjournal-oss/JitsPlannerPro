@@ -19,11 +19,10 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
-  const handleSubscribe = async (priceId: string, tier: string) => {
+  const handleSubscribe = async (tier: string) => {
     try {
       setLoadingTier(tier);
       const response = await apiRequest('POST', '/api/stripe/create-checkout-session', {
-        priceId,
         tier,
       });
       const data = await response.json();
@@ -169,7 +168,7 @@ export default function Subscribe() {
                     <Button
                       className="w-full"
                       variant={tier.popular ? 'default' : 'outline'}
-                      onClick={() => handleSubscribe(tier.priceId!, tier.tier)}
+                      onClick={() => handleSubscribe(tier.tier)}
                       disabled={loadingTier === tier.tier}
                       data-testid={`button-subscribe-${tier.tier}`}
                     >

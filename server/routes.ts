@@ -1948,10 +1948,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/stripe/create-checkout-session", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
-      const { priceId, tier } = req.body;
+      const { tier } = req.body;
       
-      if (!priceId || !tier) {
-        return res.status(400).json({ message: "priceId and tier are required" });
+      if (!tier) {
+        return res.status(400).json({ message: "tier is required" });
+      }
+      
+      // Server-side whitelist: map tier to priceId (NEVER trust client)
+      const enthusiastPriceId = process.env.STRIPE_ENTHUSIAST_PRICE_ID || process.env.VITE_STRIPE_ENTHUSIAST_PRICE_ID;
+      const gymProPriceId = process.env.STRIPE_GYM_PRO_PRICE_ID || process.env.VITE_STRIPE_GYM_PRO_PRICE_ID;
+      
+      if (!enthusiastPriceId || !gymProPriceId) {
+        console.error('Missing price IDs:', { enthusiastPriceId, gymProPriceId });
+        return res.status(500).json({ message: "Server configuration error: price IDs not set" });
+      }
+      
+      const TIER_PRICE_MAP: Record<string, { priceId: string; name: string }> = {
+        'enthusiast': {
+          priceId: enthusiastPriceId,
+          name: 'BJJ Enthusiast'
+        },
+        'gym_pro': {
+          priceId: gymProPriceId,
+          name: 'Gym Pro'
+        }
+      };
+      
+      const tierConfig = TIER_PRICE_MAP[tier];
+      if (!tierConfig) {
+        return res.status(400).json({ message: "Invalid tier" });
       }
       
       const user = await storage.getUser(userId);
@@ -1976,14 +2001,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUserStripeCustomer(userId, customerId);
       }
       
-      // Create checkout session
+      // Create checkout session with server-validated priceId
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         mode: 'subscription',
         payment_method_types: ['card'],
         line_items: [
           {
-            price: priceId,
+            price: tierConfig.priceId,
             quantity: 1,
           },
         ],
