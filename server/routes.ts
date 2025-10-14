@@ -1955,6 +1955,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Server-side whitelist: map tier to priceId (NEVER trust client)
+      console.log('[Stripe Checkout] Checking price IDs...', {
+        STRIPE_ENTHUSIAST_PRICE_ID: process.env.STRIPE_ENTHUSIAST_PRICE_ID,
+        VITE_STRIPE_ENTHUSIAST_PRICE_ID: process.env.VITE_STRIPE_ENTHUSIAST_PRICE_ID,
+        STRIPE_GYM_PRO_PRICE_ID: process.env.STRIPE_GYM_PRO_PRICE_ID,
+        VITE_STRIPE_GYM_PRO_PRICE_ID: process.env.VITE_STRIPE_GYM_PRO_PRICE_ID,
+      });
+      
       const enthusiastPriceId = process.env.STRIPE_ENTHUSIAST_PRICE_ID || process.env.VITE_STRIPE_ENTHUSIAST_PRICE_ID;
       const gymProPriceId = process.env.STRIPE_GYM_PRO_PRICE_ID || process.env.VITE_STRIPE_GYM_PRO_PRICE_ID;
       

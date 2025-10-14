@@ -408,7 +408,10 @@ export default function Notes() {
           <p className="text-sm text-yellow-700">
             You have {Array.isArray(notes) ? notes.length : 0} out of {FREE_TIER_LIMITS.notes} free notes. Upgrade to Premium for unlimited notes and sharing!
           </p>
-          <button className="mt-2 text-sm text-yellow-800 font-medium hover:text-yellow-900">
+          <button 
+            onClick={() => setLocation('/subscribe')}
+            className="mt-2 text-sm text-yellow-800 font-medium hover:text-yellow-900"
+          >
             Upgrade Now →
           </button>
         </div>
