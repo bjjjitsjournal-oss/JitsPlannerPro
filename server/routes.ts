@@ -17,6 +17,7 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
+import Stripe from "stripe";
 
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
@@ -1991,8 +1992,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      const Stripe = require('stripe');
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
       
       // Create or retrieve Stripe customer
       let customerId = user.stripeCustomerId;
@@ -2047,8 +2047,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     let event;
     
     try {
-      const Stripe = require('stripe');
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err: any) {
       console.error('⚠️ Webhook signature verification failed:', err.message);
