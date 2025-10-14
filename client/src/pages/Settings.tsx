@@ -206,7 +206,7 @@ export default function Settings() {
           </div>
           {!isPremium && (
             <button 
-              onClick={() => setShowSubscription(true)}
+              onClick={() => setLocation('/subscribe')}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Upgrade to Premium
@@ -366,13 +366,13 @@ export default function Settings() {
           {!isPremium && (
             <>
               <button 
-                onClick={() => setShowSubscription(true)}
+                onClick={() => setLocation('/subscribe')}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors"
               >
-                Upgrade to Premium
+                View Plans & Subscribe
               </button>
-              <div className="text-xs text-gray-500 text-center">
-                Subscriptions managed through your app store
+              <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                Secure payments via Stripe
               </div>
             </>
           )}
