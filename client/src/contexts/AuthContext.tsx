@@ -73,8 +73,8 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     
     // If 404 and we have retries left, wait and try again (handles race condition during signup)
     if (response.status === 404 && retries > 0) {
-      console.log('⏳ User not found yet, retrying in 500ms...');
-      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('⏳ User not found yet, retrying in 1000ms...');
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
     }
     
@@ -161,17 +161,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             loadedSupabaseIdRef.current = session.user.id;
             setIsLoading(false);
           } else {
+            // Only sign out if this is NOT a fresh sign-in event
+            // Fresh sign-ins (SIGNED_IN) might not have user data ready yet
+            if (event !== 'SIGNED_IN') {
+              console.log('⚠️ User data not found, signing out (event:', event, ')');
+              await supabase.auth.signOut();
+              setUser(null);
+              setSession(null);
+              setSupabaseUser(null);
+            } else {
+              console.log('⏳ Fresh sign-in detected, user data not ready yet. Keeping session active.');
+            }
+            setIsLoading(false);
+          }
+        } catch (error) {
+          // Only sign out on errors for non-SIGNED_IN events
+          if (event !== 'SIGNED_IN') {
             await supabase.auth.signOut();
             setUser(null);
             setSession(null);
             setSupabaseUser(null);
-            setIsLoading(false);
           }
-        } catch (error) {
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setSupabaseUser(null);
           setIsLoading(false);
         }
       } else {
