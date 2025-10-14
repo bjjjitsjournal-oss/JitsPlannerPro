@@ -16,6 +16,8 @@ import Drawing from './pages/Drawing';
 import Contact from './pages/Contact';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Subscribe from './pages/Subscribe';
+import SubscribeSuccess from './pages/SubscribeSuccess';
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
 import BottomNav from './components/BottomNav';
@@ -45,6 +47,8 @@ function AuthenticatedApp() {
           <Route path="/admin" component={Admin} />
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/reset-password" component={ResetPassword} />
+          <Route path="/subscribe" component={Subscribe} />
+          <Route path="/subscribe/success" component={SubscribeSuccess} />
           <Route>
             <div className="p-6 text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Page Not Found</h2>
