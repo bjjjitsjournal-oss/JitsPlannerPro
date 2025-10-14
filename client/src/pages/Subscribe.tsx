@@ -193,43 +193,46 @@ export default function Subscribe() {
           })}
         </div>
 
-        {/* Download Instructions */}
+        {/* How It Works */}
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
-            <CardTitle>Get the App</CardTitle>
-            <CardDescription>Download Jits Journal on your device</CardDescription>
+            <CardTitle>How It Works</CardTitle>
+            <CardDescription>Start training smarter in 3 easy steps</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold mb-2">📱 Android</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  1. Scan the QR code below or visit our download page
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  2. Download the APK file
-                </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">1</span>
+                </div>
+                <h3 className="font-semibold mb-2">Choose Your Plan</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  3. Enable "Install from unknown sources" and install
+                  Click "Get Started" on any plan above
                 </p>
               </div>
-              <div>
-                <h3 className="font-semibold mb-2">🍎 iOS</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  1. Open Safari and visit our download page
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  2. Tap the share button
-                </p>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">2</span>
+                </div>
+                <h3 className="font-semibold mb-2">Complete Payment</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  3. Select "Add to Home Screen"
+                  Secure checkout via Stripe - all major cards accepted
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">3</span>
+                </div>
+                <h3 className="font-semibold mb-2">Start Training</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Access all premium features instantly!
                 </p>
               </div>
             </div>
             
             <div className="pt-4 border-t">
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                💡 <strong>Pro Tip:</strong> Subscribe on the web, then download the app to use your premium features!
+                💡 <strong>Pro Tip:</strong> After subscribing, you can add this web app to your home screen for a native app experience!
               </p>
             </div>
           </CardContent>
