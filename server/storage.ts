@@ -126,6 +126,10 @@ export interface IStorage {
   // Gym Memberships
   createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership>;
   getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined>;
+  
+  // Stripe subscription methods
+  updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined>;
+  updateUserSubscription(userId: number, data: { subscriptionTier?: string; stripeSubscriptionId?: string | null; subscriptionStatus?: string; }): Promise<User | undefined>;
 }
 
 // Database storage implementation
@@ -675,6 +679,22 @@ export class DatabaseStorage implements IStorage {
         eq(gymMemberships.gymId, gymId)
       ));
     return membership || undefined;
+  }
+  
+  async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set({ stripeCustomerId })
+      .where(eq(users.id, userId))
+      .returning();
+    return user || undefined;
+  }
+  
+  async updateUserSubscription(userId: number, data: { subscriptionTier?: string; stripeSubscriptionId?: string | null; subscriptionStatus?: string; }): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set(data)
+      .where(eq(users.id, userId))
+      .returning();
+    return user || undefined;
   }
 }
 
@@ -1348,6 +1368,14 @@ class MemStoragePrimary implements IStorage {
 
   async getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined> {
     return undefined;
+  }
+  
+  async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
+    throw new Error("Stripe not implemented in memory storage mode");
+  }
+  
+  async updateUserSubscription(userId: number, data: { subscriptionTier?: string; stripeSubscriptionId?: string | null; subscriptionStatus?: string; }): Promise<User | undefined> {
+    throw new Error("Stripe not implemented in memory storage mode");
   }
 }
 
