@@ -81,10 +81,18 @@ export const users = pgTable("users", {
   password: text("password"), // Nullable - Supabase Auth handles passwords
   firstName: text("first_name"),
   lastName: text("last_name"),
+  subscriptionTier: text("subscription_tier").default("free"), // free, enthusiast, gym_pro
+  stripeCustomerId: text("stripe_customer_id"), // Stripe customer ID
+  stripeSubscriptionId: text("stripe_subscription_id"), // Stripe subscription ID
   subscriptionStatus: text("subscription_status").default("free"), // free, premium, active
   subscriptionPlan: text("subscription_plan"), // Added for RevenueCat subscription plans
   revenuecatCustomerId: text("revenuecat_customer_id"), // Added for RevenueCat integration
   subscriptionExpiresAt: timestamp("subscription_expires_at"),
+  gymApprovalStatus: text("gym_approval_status").default("none"), // none, pending, approved, rejected
+  classCount: integer("class_count").default(0), // Track classes logged for free tier limit
+  noteCount: integer("note_count").default(0), // Track notes created for free tier limit
+  weeklyShareCount: integer("weekly_share_count").default(0), // Track community shares this week
+  shareResetDate: timestamp("share_reset_date"), // When to reset weekly share count
   role: text("role").default("user"), // user, admin
   createdAt: timestamp("created_at").defaultNow(),
   supabaseUid: varchar("supabase_uid").unique(), // Link to Supabase Auth
