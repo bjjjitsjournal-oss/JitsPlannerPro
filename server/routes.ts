@@ -16,7 +16,7 @@ import * as nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { sendWelcomeEmail, sendPasswordResetEmail } from "./emailService";
+import { sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail } from "./emailService";
 import Stripe from "stripe";
 
 // JWT secret - in production, use a secure environment variable
@@ -980,11 +980,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
-  // Friend invitation route with SendGrid email
-  app.post("/api/invite-friend", authenticateToken, async (req, res) => {
+  // Friend invitation route with Gmail (same as welcome emails)
+  app.post("/api/invite-friend", async (req, res) => {
     try {
+      // Support both mobile auth (supabaseId) and web auth (token)
+      let userId = null;
+      
+      // Try mobile auth first (supabaseId from query)
+      const supabaseId = req.query.supabaseId as string;
+      if (supabaseId) {
+        console.log('📱 Mobile auth: Using supabaseId from query :', supabaseId);
+        const user = await storage.getUserBySupabaseId(supabaseId);
+        if (user) {
+          userId = user.id;
+          console.log('✅ Mobile auth successful for user:', userId);
+        }
+      }
+      
+      // If no mobile auth, try token auth
+      if (!userId && (req as any).user) {
+        userId = (req as any).user.userId;
+        console.log('🔐 Web auth successful for user:', userId);
+      }
+
+      if (!userId) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+
       const { email } = req.body;
-      const userId = (req as any).user.userId;
       
       if (!email) {
         return res.status(400).json({ message: "Email is required" });
@@ -997,71 +1020,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .limit(1);
       
       const senderName = sender[0] ? `${sender[0].firstName} ${sender[0].lastName}` : 'Your training partner';
-      const appUrl = process.env.VITE_APP_URL || 'https://bjj-jits-journal.onrender.com';
 
-      // Send email via SendGrid
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-      const msg = {
-        to: email,
-        from: 'Bjjjitsjournal@gmail.com',
-        subject: `${senderName} invited you to BJJ Jits Journal`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: white; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px; }
-              .cta-button { display: inline-block; background: #dc2626; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
-              .features { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
-              .feature-item { margin: 10px 0; }
-              .footer { text-align: center; color: #6b7280; font-size: 14px; margin-top: 20px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1>🥋 BJJ Jits Journal</h1>
-              </div>
-              <div class="content">
-                <h2>You've been invited!</h2>
-                <p><strong>${senderName}</strong> has invited you to join BJJ Jits Journal - the ultimate training companion for Brazilian Jiu-Jitsu practitioners.</p>
-                
-                <div class="features">
-                  <h3>What you can do:</h3>
-                  <div class="feature-item">✅ Track your training sessions and techniques</div>
-                  <div class="feature-item">✅ Take detailed notes and attach videos</div>
-                  <div class="feature-item">✅ Share insights with your gym community</div>
-                  <div class="feature-item">✅ Monitor your belt progression</div>
-                  <div class="feature-item">✅ Create competition game plans</div>
-                </div>
-
-                <p style="text-align: center;">
-                  <a href="${appUrl}" class="cta-button">Join BJJ Jits Journal</a>
-                </p>
-
-                <p style="color: #6b7280; font-size: 14px;">Click the button above or visit: <a href="${appUrl}">${appUrl}</a></p>
-              </div>
-              <div class="footer">
-                <p>This invitation was sent by ${senderName} via BJJ Jits Journal</p>
-              </div>
-            </div>
-          </body>
-          </html>
-        `,
-      };
-
-      await sgMail.send(msg);
-      console.log(`User ${userId} (${senderName}) invited ${email} to join BJJ Jits Journal`);
+      // Send invitation email using Gmail (same as welcome emails)
+      const success = await sendInvitationEmail(email, senderName);
       
-      res.json({ 
-        message: "Invitation sent successfully",
-        invitedEmail: email 
-      });
+      if (success) {
+        console.log(`✅ Invitation email sent to ${email} from ${senderName}`);
+        res.json({ 
+          message: "Invitation sent successfully",
+          invitedEmail: email 
+        });
+      } else {
+        console.error(`❌ Failed to send invitation email to ${email}`);
+        res.status(500).json({ message: "Failed to send invitation" });
+      }
     } catch (error) {
       console.error("Error sending invitation:", error);
       res.status(500).json({ message: "Failed to send invitation" });

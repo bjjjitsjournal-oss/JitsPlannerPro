@@ -216,6 +216,161 @@ export const sendWelcomeEmail = async (userEmail: string, firstName: string): Pr
   });
 };
 
+export const sendInvitationEmail = async (
+  recipientEmail: string,
+  senderName: string
+): Promise<boolean> => {
+  const signupUrl = `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'https://jitsjournal.com'}/signup`;
+  const subject = `${senderName} invited you to BJJ Jits Journal`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>You're Invited to Jits Journal</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+          color: white;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px;
+          margin-bottom: 30px;
+        }
+        .belt-icon {
+          width: 60px;
+          height: 20px;
+          background: white;
+          margin: 0 auto 20px;
+          border-radius: 10px;
+        }
+        .content {
+          background: #f8fafc;
+          padding: 30px;
+          border-radius: 10px;
+          border-left: 4px solid #dc2626;
+        }
+        .features {
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          border: 2px solid #e5e7eb;
+          margin: 20px 0;
+        }
+        .feature-item {
+          margin: 10px 0;
+          padding-left: 25px;
+          position: relative;
+        }
+        .feature-item::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: #dc2626;
+          font-weight: bold;
+        }
+        .cta-button {
+          display: inline-block;
+          background: #dc2626;
+          color: white;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 25px;
+          font-weight: bold;
+          margin: 20px 0;
+        }
+        .footer {
+          text-align: center;
+          margin-top: 30px;
+          padding-top: 20px;
+          border-top: 1px solid #e5e7eb;
+          color: #6b7280;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="belt-icon"></div>
+        <h1>You're Invited! 🥋</h1>
+        <p>${senderName} wants you to join Jits Journal</p>
+      </div>
+      
+      <div class="content">
+        <h2>Your BJJ Training Companion Awaits</h2>
+        
+        <p><strong>${senderName}</strong> is using Jits Journal to track their Brazilian Jiu-Jitsu progress and thinks you'd love it too!</p>
+        
+        <div class="features">
+          <h3>What You'll Get:</h3>
+          <div class="feature-item">Track every class, roll, and technique</div>
+          <div class="feature-item">Set weekly training goals and monitor progress</div>
+          <div class="feature-item">Create detailed technique notes with video links</div>
+          <div class="feature-item">Monitor belt and stripe progression</div>
+          <div class="feature-item">Search 1000s of BJJ instructional videos</div>
+          <div class="feature-item">Build competition game plans</div>
+        </div>
+        
+        <p>Join thousands of BJJ practitioners who are already improving their game with Jits Journal!</p>
+        
+        <div style="text-align: center;">
+          <a href="${signupUrl}" class="cta-button">Accept Invitation & Sign Up Free</a>
+        </div>
+        
+        <p style="margin-top: 30px; font-style: italic; color: #6b7280;">
+          "The journey of a thousand miles begins with a single step. Start tracking your BJJ journey today!"
+        </p>
+        
+        <p>Best regards,<br>
+        The Jits Journal Team</p>
+      </div>
+      
+      <div class="footer">
+        <p>© 2025 Jits Journal. All rights reserved.</p>
+        <p>You received this email because ${senderName} invited you to join Jits Journal.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+    You're Invited to Jits Journal!
+    
+    ${senderName} wants you to join Jits Journal - the ultimate BJJ training companion.
+    
+    What You'll Get:
+    - Track every class, roll, and technique
+    - Set weekly training goals and monitor progress
+    - Create detailed technique notes with video links
+    - Monitor belt and stripe progression
+    - Search 1000s of BJJ instructional videos
+    - Build competition game plans
+    
+    Join thousands of BJJ practitioners improving their game!
+    
+    Sign up here: ${signupUrl}
+    
+    Best regards,
+    The Jits Journal Team
+  `;
+
+  return await sendEmail({
+    to: recipientEmail,
+    subject,
+    html,
+    text,
+  });
+};
+
 export const sendPasswordResetEmail = async (
   userEmail: string,
   firstName: string,
