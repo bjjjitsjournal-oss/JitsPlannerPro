@@ -986,10 +986,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Support both mobile auth (supabaseId) and web auth (token)
       let userId = null;
       
-      // Try mobile auth first (supabaseId from query)
-      const supabaseId = req.query.supabaseId as string;
+      // Try mobile auth first (supabaseId from query or body)
+      const supabaseId = (req.query.supabaseId || req.body.supabaseId) as string;
       if (supabaseId) {
-        console.log('📱 Mobile auth: Using supabaseId from query :', supabaseId);
+        console.log('📱 Mobile auth: Using supabaseId:', supabaseId);
         const user = await storage.getUserBySupabaseId(supabaseId);
         if (user) {
           userId = user.id;
