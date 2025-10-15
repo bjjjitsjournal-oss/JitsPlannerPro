@@ -1005,7 +1005,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const msg = {
         to: email,
-        from: 'noreply@bjj-jits-journal.onrender.com', // Update this to your verified sender
+        from: 'Bjjjitsjournal@gmail.com',
         subject: `${senderName} invited you to BJJ Jits Journal`,
         html: `
           <!DOCTYPE html>
