@@ -1279,7 +1279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete user account and all data
-  app.delete("/api/user/delete-account", authenticateToken, async (req, res) => {
+  app.delete("/api/user/delete-account", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId;
       
