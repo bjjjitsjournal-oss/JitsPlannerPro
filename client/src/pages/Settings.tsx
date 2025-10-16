@@ -359,25 +359,10 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* Data Management */}
-      <div className="bg-white rounded-xl p-6 shadow-md mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Data Management</h3>
-        <div className="space-y-3">
-          <button className="w-full text-left text-blue-600 hover:text-blue-800 py-2">
-            Export My Data
-          </button>
-          <button className="w-full text-left text-blue-600 hover:text-blue-800 py-2">
-            Backup to Cloud
-          </button>
-          <button className="w-full text-left text-red-600 hover:text-red-800 py-2">
-            Delete All Data
-          </button>
-        </div>
-      </div>
 
       {/* Subscription Management */}
-      <div className="bg-white rounded-xl p-6 shadow-md mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Subscription</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Subscription</h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-700">Current Plan</span>
@@ -430,7 +415,7 @@ export default function Settings() {
 
       {/* Premium Features */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 shadow-md mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Premium Features</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Premium Features</h3>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <span className="text-green-600">âœ“</span>
@@ -460,57 +445,78 @@ export default function Settings() {
       </div>
 
       {/* Legal & Privacy */}
-      <div className="bg-white rounded-xl p-6 shadow-md mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Legal & Privacy</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Legal & Privacy</h3>
         <div className="space-y-3">
           <Link href="/privacy"><button data-testid="button-privacy-policy" className="w-full text-left text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white py-2 flex items-center justify-between">
             <span>Privacy Policy</span>
             <span className="text-gray-400">â†’</span>
           </button></Link>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
+          <Link href="/terms"><button data-testid="button-terms-of-service" className="w-full text-left text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white py-2 flex items-center justify-between">
             <span>Terms of Service</span>
             <span className="text-gray-400">â†’</span>
-          </button>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
-            <span>Data Processing Agreement</span>
-            <span className="text-gray-400">â†’</span>
-          </button>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
-            <span>Cookie Policy</span>
-            <span className="text-gray-400">â†’</span>
-          </button>
+          </button></Link>
         </div>
       </div>
 
+
+      {/* Account Deletion */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Danger Zone</h3>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button 
+              data-testid="button-delete-account"
+              className="w-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 py-3 px-4 rounded-lg flex items-center justify-center gap-2 font-medium transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete Account & All Data
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-white dark:bg-gray-800">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-gray-900 dark:text-white">Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including:
+                <ul className="mt-2 list-disc list-inside space-y-1">
+                  <li>All training classes and sessions</li>
+                  <li>All notes and technique breakdowns</li>
+                  <li>Belt progression history</li>
+                  <li>Competition game plans</li>
+                  <li>Gym memberships</li>
+                </ul>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deleteAccountMutation.mutate()}
+                disabled={deleteAccountMutation.isPending}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, delete everything'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
       {/* Support & Feedback */}
-      <div className="bg-white rounded-xl p-6 shadow-md mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Support & Feedback</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Support & Feedback</h3>
         <div className="space-y-3">
           <button 
             onClick={() => window.location.href = '/contact'}
-            className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between"
+            className="w-full text-left text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white py-2 flex items-center justify-between"
           >
             <span>Contact Support</span>
-            <span className="text-gray-400">â†’</span>
-          </button>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
-            <span>Send Feedback</span>
-            <span className="text-gray-400">â†’</span>
-          </button>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
-            <span>Rate This App</span>
-            <span className="text-gray-400">â†’</span>
-          </button>
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
-            <span>Share with Friends</span>
             <span className="text-gray-400">â†’</span>
           </button>
         </div>
       </div>
 
       {/* App Info */}
-      <div className="bg-white rounded-xl p-6 shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">App Info</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">App Info</h3>
         <div className="space-y-2 text-sm text-gray-600">
           <div className="flex justify-between">
             <span>Version</span>
