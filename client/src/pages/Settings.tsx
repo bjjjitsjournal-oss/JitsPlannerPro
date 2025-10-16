@@ -1,12 +1,23 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/subscription';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users } from 'lucide-react';
+import { Building2, Users, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Settings() {
   const [showSubscription, setShowSubscription] = useState(false);
@@ -106,6 +117,33 @@ export default function Settings() {
     }
     joinGymMutation.mutate(gymCode.trim().toUpperCase());
   };
+
+  // Delete account mutation
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('DELETE', '/api/user/delete-account');
+    },
+    onSuccess: () => {
+      toast({
+        title: "Account Deleted",
+        description: "Your account and all data have been permanently deleted.",
+      });
+      // Clear local storage
+      localStorage.clear();
+      sessionStorage.clear();
+      // Redirect to login
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete account",
+        variant: "destructive",
+      });
+    }
+  });
 
   return (
     <div className="p-6 max-w-md mx-auto dark:bg-gray-900 min-h-screen">
@@ -425,10 +463,10 @@ export default function Settings() {
       <div className="bg-white rounded-xl p-6 shadow-md mb-6">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Legal & Privacy</h3>
         <div className="space-y-3">
-          <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
+          <Link href="/privacy"><button data-testid="button-privacy-policy" className="w-full text-left text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white py-2 flex items-center justify-between">
             <span>Privacy Policy</span>
             <span className="text-gray-400">â†’</span>
-          </button>
+          </button></Link>
           <button className="w-full text-left text-gray-600 hover:text-gray-800 py-2 flex items-center justify-between">
             <span>Terms of Service</span>
             <span className="text-gray-400">â†’</span>
