@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/subscription';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users, Trash2, Check, Infinity } from 'lucide-react';
+import { Building2, Users, Trash2, Check, Infinity, ChevronRight } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
