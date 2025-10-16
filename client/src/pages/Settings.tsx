@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/subscription';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users, Trash2 } from 'lucide-react';
+import { Building2, Users, Trash2, Check, Infinity } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -377,13 +377,13 @@ export default function Settings() {
           <div className="flex items-center justify-between">
             <span className="text-gray-700 dark:text-gray-300">Classes Limit</span>
             <span className="text-gray-600 dark:text-gray-400">
-              {Array.isArray(userClasses) ? userClasses.length : 0} / {isPremium ? 'âˆž' : FREE_TIER_LIMITS.classes}
+              {Array.isArray(userClasses) ? userClasses.length : 0} / {isPremium ? "Unlimited" : FREE_TIER_LIMITS.classes}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-700 dark:text-gray-300">Notes Limit</span>
             <span className="text-gray-600 dark:text-gray-400">
-              {Array.isArray(userNotes) ? userNotes.length : 0} / {isPremium ? 'âˆž' : FREE_TIER_LIMITS.notes}
+              {Array.isArray(userNotes) ? userNotes.length : 0} / {isPremium ? "Unlimited" : FREE_TIER_LIMITS.notes}
             </span>
           </div>
           {!isPremium && (
@@ -402,7 +402,7 @@ export default function Settings() {
           {isPremium && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
               <div className="flex items-center gap-2">
-                <span className="text-green-600">âœ“</span>
+                <Check className="w-4 h-4 text-green-600" />
                 <span className="text-sm font-medium text-green-800">Premium Active</span>
               </div>
               <p className="text-xs text-green-700 mt-1">
@@ -418,27 +418,27 @@ export default function Settings() {
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Premium Features</h3>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Unlimited class logging</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Unlimited notes with sharing</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Advanced video library</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Cloud backup & sync</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Advanced progress analytics</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-green-600">âœ“</span>
+            <Check className="w-4 h-4 text-green-600" />
             <span className="text-gray-700">Priority support</span>
           </div>
         </div>
