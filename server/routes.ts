@@ -990,9 +990,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const supabaseId = (req.query.supabaseId || req.body.supabaseId) as string;
       if (supabaseId) {
         console.log('📱 Mobile auth: Using supabaseId:', supabaseId);
-        const user = await storage.getUserBySupabaseId(supabaseId);
-        if (user) {
-          userId = user.id;
+        
+        // Use direct database query (same as /api/user/by-supabase-id endpoint)
+        const result = await pool.query(
+          'SELECT * FROM users WHERE supabase_uid = $1',
+          [supabaseId]
+        );
+        
+        if (result.rows.length > 0) {
+          userId = result.rows[0].id;
           console.log('✅ Mobile auth successful for user:', userId);
         }
       }
