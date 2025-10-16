@@ -1278,7 +1278,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-
+  // Delete user account and all data
+  app.delete("/api/user/delete-account", authenticateToken, async (req, res) => {
+    try {
+      const userId = (req as any).user.userId;
+      
+      console.log(`🗑️ Deleting account for user ID: ${userId}`);
+      
+      // Delete all user data from database
+      await pool.query('DELETE FROM classes WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM notes WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM belts WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM weekly_goals WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM drawings WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM game_plans WHERE user_id = $1', [userId]);
+      await pool.query('DELETE FROM gym_memberships WHERE user_id = $1', [userId]);
+      
+      // Finally delete the user
+      await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+      
+      console.log(`✅ Successfully deleted account for user ID: ${userId}`);
+      
+      res.json({ message: "Account and all data successfully deleted" });
+    } catch (error: any) {
+      console.error("Error deleting account:", error);
+      res.status(500).json({ message: "Failed to delete account: " + error.message });
+    }
+  });
 
   // Drawings routes - with proper authentication 
   app.get("/api/drawings", authenticateToken, async (req: any, res) => {

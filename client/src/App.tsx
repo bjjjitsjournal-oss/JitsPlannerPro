@@ -20,6 +20,8 @@ import Subscribe from './pages/Subscribe';
 import SubscribeSuccess from './pages/SubscribeSuccess';
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
@@ -49,6 +51,8 @@ function AuthenticatedApp() {
           <Route path="/reset-password" component={ResetPassword} />
           <Route path="/subscribe" component={Subscribe} />
           <Route path="/subscribe/success" component={SubscribeSuccess} />
+          <Route path="/privacy" component={PrivacyPolicy} />
+          <Route path="/terms" component={TermsOfService} />
           <Route>
             <div className="p-6 text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Page Not Found</h2>
