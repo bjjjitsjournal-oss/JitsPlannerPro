@@ -89,52 +89,6 @@ export default function Social() {
   // Check if current user is admin from database role
   const isAdmin = user?.role === 'admin';
 
-  // Sample friend invitations functionality
-  const [inviteEmail, setInviteEmail] = useState('');
-
-  const sendInviteMutation = useMutation({
-    mutationFn: async (email: string) => {
-      // This would typically send an email invitation
-      return await apiRequest("POST", "/api/invite-friend", { email });
-    },
-    onSuccess: () => {
-      setInviteEmail('');
-      toast({
-        title: "Invitation Sent!",
-        description: "Your friend will receive an invitation to join BJJ Jits Journal",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: "Failed to send invitation",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSendInvite = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inviteEmail.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-    sendInviteMutation.mutate(inviteEmail);
-  };
-
-  const copyInviteLink = () => {
-    const inviteLink = `${window.location.origin}/invite?ref=user`;
-    navigator.clipboard.writeText(inviteLink);
-    toast({
-      title: "Link Copied!",
-      description: "Share this link with your training partners",
-    });
-  };
-
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -181,17 +135,6 @@ export default function Social() {
           data-testid="tab-friends"
         >
           Friends
-        </button>
-        <button
-          onClick={() => setActiveTab('invite')}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'invite'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-          data-testid="tab-invite"
-        >
-          Invite Friends
         </button>
       </div>
 
@@ -426,78 +369,6 @@ export default function Social() {
               <p>Feature coming soon!</p>
               <p className="text-sm">Soon you'll be able to find training partners near you.</p>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Invite Friends Tab */}
-      {activeTab === 'invite' && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-blue-600" />
-              Invite Training Partners
-            </h2>
-            
-            <p className="text-gray-600 mb-6">
-              Invite your training partners to join BJJ Jits Journal and share your martial arts journey together!
-            </p>
-
-            <form onSubmit={handleSendInvite} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                  Email Address
-                </label>
-                <div className="flex gap-3">
-                  <input
-                    type="email"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="Enter your friend's email"
-                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                  <button
-                    type="submit"
-                    disabled={sendInviteMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg disabled:opacity-50"
-                  >
-                    {sendInviteMutation.isPending ? 'Sending...' : 'Send Invite'}
-                  </button>
-                </div>
-              </div>
-            </form>
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-black mb-3">Share Invite Link</h3>
-              <p className="text-gray-600 mb-4 text-sm">
-                Or share this link directly with your training partners
-              </p>
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  value={`${window.location.origin}/invite?ref=user`}
-                  readOnly
-                  className="flex-1 p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
-                />
-                <button
-                  onClick={copyInviteLink}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Copy Link
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
-            <h3 className="text-lg font-semibold text-black mb-2">Why invite friends?</h3>
-            <ul className="text-gray-700 space-y-2 text-sm">
-              <li>• Share technique notes and training insights</li>
-              <li>• Track progress together and stay motivated</li>
-              <li>• Build a supportive BJJ community</li>
-              <li>• Compare training schedules and find training partners</li>
-            </ul>
           </div>
         </div>
       )}
