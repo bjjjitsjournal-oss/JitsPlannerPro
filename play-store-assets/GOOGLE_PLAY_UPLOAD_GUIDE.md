@@ -16,6 +16,7 @@
 - Recommended: 4-8 screenshots showing key features
 
 ### 3. Feature Graphic (Optional but Recommended)
+✅ **Location**: `play-store-assets/feature-graphic.png`
 🎨 **Dimensions**: 1024 x 500 px
 - Format: JPEG or 24-bit PNG
 
@@ -118,7 +119,8 @@
 
 All files for upload are in: `C:\Projects\JitsPlannerPro\play-store-assets\`
 
-- **App Icon**: `app-icon-original.png`
+- **App Icon**: `app-icon-original.png` ✅
+- **Feature Graphic**: `feature-graphic.png` ✅
 - **Screenshots**: (You need to take these yourself - see guide above)
 - **AAB File**: `C:\Projects\JitsPlannerPro\android\app\build\outputs\bundle\release\app-release.aab`
 
