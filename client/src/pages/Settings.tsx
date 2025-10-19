@@ -24,15 +24,15 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.33'; // Will be auto-updated by build process
+  const appVersion = '1.0.34'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   
   // Check if user has premium access
-  const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus, user?.subscriptionExpiresAt);
-  const subscriptionPlan = getSubscriptionPlan(user?.email, user?.subscriptionStatus, user?.subscriptionExpiresAt);
+  const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus, (user as any)?.subscriptionExpiresAt);
+  const subscriptionPlan = getSubscriptionPlan(user?.email, user?.subscriptionStatus, (user as any)?.subscriptionExpiresAt);
 
   // Load settings from localStorage on component mount with defaults
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Settings() {
   });
 
   // Fetch user's gym membership
-  const { data: gymMembership } = useQuery({
+  const { data: gymMembership } = useQuery<{ id: number; name: string; code: string } | null>({
     queryKey: ['/api/my-gym'],
   });
 
