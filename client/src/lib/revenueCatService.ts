@@ -1,38 +1,39 @@
-import Purchases, { PurchasesPackage, CustomerInfo } from '@revenuecat/purchases-js';
+import Purchases from '@revenuecat/purchases-js';
+import type { CustomerInfo } from '@revenuecat/purchases-js';
 import { getPlatform } from './platform';
 
 /**
  * RevenueCat service for handling multi-platform subscriptions
- * - Web: Uses Stripe via RevenueCat
- * - Android: Uses Google Play Billing
- * - iOS: Uses Apple In-App Purchase
+ * - Web: Uses Stripe via RevenueCat Web Billing
+ * - Android/iOS: Use native SDKs (@revenuecat/purchases-capacitor)
+ * 
+ * Note: This is the WEB SDK only. For native platforms, use Capacitor plugin.
  */
 class RevenueCatService {
-  private initialized = false;
+  private purchasesInstance: any = null;
 
   /**
-   * Initialize RevenueCat SDK
+   * Initialize RevenueCat SDK (Web only)
    * Call this once when the app starts
    */
   async initialize(userId: string) {
-    if (this.initialized) {
+    if (this.purchasesInstance) {
       return;
     }
 
     const apiKey = import.meta.env.VITE_REVENUECAT_PUBLIC_SDK_KEY;
     
     if (!apiKey) {
-      console.warn('RevenueCat SDK key not found. App store payments will not work.');
+      console.warn('RevenueCat SDK key not found. Subscriptions will not work.');
       return;
     }
 
     try {
-      await Purchases.configure({
+      this.purchasesInstance = Purchases.configure({
         apiKey,
-        appUserID: userId,
+        appUserId: userId,
       });
       
-      this.initialized = true;
       console.log('✅ RevenueCat initialized for user:', userId);
     } catch (error) {
       console.error('❌ Failed to initialize RevenueCat:', error);
@@ -42,57 +43,38 @@ class RevenueCatService {
   /**
    * Get available subscription offerings
    */
-  async getOfferings(): Promise<PurchasesPackage[]> {
-    if (!this.initialized) {
+  async getOfferings() {
+    if (!this.purchasesInstance) {
       throw new Error('RevenueCat not initialized');
     }
 
     try {
-      const offerings = await Purchases.getOfferings();
-      
-      if (!offerings.current) {
-        return [];
-      }
-
-      return offerings.current.availablePackages;
+      const offerings = await this.purchasesInstance.getOfferings();
+      return offerings;
     } catch (error) {
       console.error('Error fetching offerings:', error);
-      return [];
+      return null;
     }
   }
 
   /**
    * Purchase a subscription package
    */
-  async purchasePackage(pkg: PurchasesPackage): Promise<CustomerInfo> {
-    if (!this.initialized) {
+  async purchasePackage(pkg: any, email?: string): Promise<CustomerInfo> {
+    if (!this.purchasesInstance) {
       throw new Error('RevenueCat not initialized');
     }
 
     try {
-      const { customerInfo } = await Purchases.purchasePackage(pkg);
+      const customerInfo = await this.purchasesInstance.purchase({
+        packageToPurchase: pkg,
+        email,
+      });
       return customerInfo;
     } catch (error: any) {
-      if (error.userCancelled) {
+      if (error.errorCode === 'UserCancelledError') {
         throw new Error('Purchase cancelled');
       }
-      throw error;
-    }
-  }
-
-  /**
-   * Restore previous purchases
-   */
-  async restorePurchases(): Promise<CustomerInfo> {
-    if (!this.initialized) {
-      throw new Error('RevenueCat not initialized');
-    }
-
-    try {
-      const customerInfo = await Purchases.restorePurchases();
-      return customerInfo;
-    } catch (error) {
-      console.error('Error restoring purchases:', error);
       throw error;
     }
   }
@@ -101,12 +83,12 @@ class RevenueCatService {
    * Get current customer info (subscription status)
    */
   async getCustomerInfo(): Promise<CustomerInfo | null> {
-    if (!this.initialized) {
+    if (!this.purchasesInstance) {
       return null;
     }
 
     try {
-      const customerInfo = await Purchases.getCustomerInfo();
+      const customerInfo = await this.purchasesInstance.getCustomerInfo();
       return customerInfo;
     } catch (error) {
       console.error('Error getting customer info:', error);
@@ -124,7 +106,6 @@ class RevenueCatService {
       return false;
     }
 
-    // Check if user has any active entitlements
     return Object.keys(customerInfo.entitlements.active).length > 0;
   }
 
@@ -152,18 +133,17 @@ class RevenueCatService {
   }
 
   /**
-   * Logout (clear user identity)
+   * Switch to a different user ID
    */
-  async logout() {
-    if (!this.initialized) {
+  async changeUser(newUserId: string) {
+    if (!this.purchasesInstance) {
       return;
     }
 
     try {
-      await Purchases.logOut();
-      this.initialized = false;
+      await this.purchasesInstance.changeAppUserId(newUserId);
     } catch (error) {
-      console.error('Error logging out from RevenueCat:', error);
+      console.error('Error changing user:', error);
     }
   }
 }
