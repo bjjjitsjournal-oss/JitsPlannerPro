@@ -7,6 +7,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { getPlatform, isWebPlatform } from '@/lib/platform';
+import { revenueCatService } from '@/lib/revenueCatService';
 
 export default function Subscribe() {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export default function Subscribe() {
   const currentTier = subscriptionStatus?.tier || 'free';
 
   const handleSubscribe = async (tier: string) => {
-    // On Android/iOS, show app store instructions instead of Stripe
+    // On Android/iOS, show app store instructions
     if (!isWeb) {
       toast({
         title: 'Subscribe via App Store',
@@ -32,17 +33,50 @@ export default function Subscribe() {
       return;
     }
 
-    // Web platform: use Stripe
+    // Web platform: use RevenueCat (Stripe checkout)
     try {
       setLoadingTier(tier);
-      const response = await apiRequest('POST', '/api/stripe/create-checkout-session', {
-        tier,
-      });
-      const data = await response.json();
       
-      if (data.url) {
-        window.location.href = data.url;
+      // Initialize RevenueCat if needed
+      if (user?.id) {
+        await revenueCatService.initialize(user.id);
       }
+      
+      // Get offerings
+      const offerings = await revenueCatService.getOfferings();
+      
+      if (!offerings || !offerings.current) {
+        throw new Error('No subscription offerings available');
+      }
+
+      // Find the right package based on tier
+      let packageToPurchase = null;
+      
+      if (tier === 'enthusiast') {
+        packageToPurchase = offerings.current.monthly || offerings.current.availablePackages.find((p: any) => 
+          p.identifier.toLowerCase().includes('enthusiast') || p.identifier.toLowerCase().includes('premium')
+        );
+      } else if (tier === 'gym_pro') {
+        packageToPurchase = offerings.current.annual || offerings.current.availablePackages.find((p: any) => 
+          p.identifier.toLowerCase().includes('gym') || p.identifier.toLowerCase().includes('pro')
+        );
+      }
+
+      if (!packageToPurchase) {
+        throw new Error('Selected plan not available');
+      }
+
+      // Trigger purchase (shows Stripe checkout modal)
+      await revenueCatService.purchasePackage(packageToPurchase, user?.email);
+      
+      toast({
+        title: 'Success!',
+        description: 'Subscription activated successfully',
+      });
+      
+      // Refresh subscription status
+      window.location.reload();
+      
     } catch (error: any) {
       toast({
         title: 'Error',
