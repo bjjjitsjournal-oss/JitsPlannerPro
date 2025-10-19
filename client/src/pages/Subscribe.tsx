@@ -2,24 +2,37 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Crown, Zap, Shield } from 'lucide-react';
+import { Check, Crown, Zap, Shield, Smartphone } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { getPlatform, isWebPlatform } from '@/lib/platform';
 
 export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const platform = getPlatform();
+  const isWeb = isWebPlatform();
 
   const { data: subscriptionStatus } = useQuery({
     queryKey: ['/api/stripe/subscription-status'],
-    enabled: !!user,
+    enabled: !!user && isWeb, // Only fetch Stripe status on web
   });
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
   const handleSubscribe = async (tier: string) => {
+    // On Android/iOS, show app store instructions instead of Stripe
+    if (!isWeb) {
+      toast({
+        title: 'Subscribe via App Store',
+        description: `To subscribe on ${platform}, please use your device's app store (Google Play or Apple App Store).`,
+      });
+      return;
+    }
+
+    // Web platform: use Stripe
     try {
       setLoadingTier(tier);
       const response = await apiRequest('POST', '/api/stripe/create-checkout-session', {
@@ -104,6 +117,29 @@ export default function Subscribe() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* App Store Notice for Mobile */}
+        {!isWeb && (
+          <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <Smartphone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                  Subscribe via {platform === 'android' ? 'Google Play Store' : 'Apple App Store'}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  To manage subscriptions on {platform}, please use your device's app store:
+                </p>
+                <ol className="text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
+                  <li>Open {platform === 'android' ? 'Google Play Store' : 'Apple App Store'}</li>
+                  <li>Search for "Jits Journal"</li>
+                  <li>View subscription options and purchase</li>
+                  <li>Subscription will sync automatically</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
