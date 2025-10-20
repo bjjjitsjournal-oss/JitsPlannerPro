@@ -1,19 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Crown, Zap, Shield } from 'lucide-react';
+import { Check, Crown, Zap, Shield, Smartphone } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { getPlatform, isWebPlatform } from '@/lib/platform';
-import { revenueCatService } from '@/lib/revenueCatService';
 
 export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [isRevenueCatReady, setIsRevenueCatReady] = useState(false);
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
@@ -24,20 +22,8 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
-  // Initialize RevenueCat on mount (web only)
-  useEffect(() => {
-    if (isWeb && user?.id) {
-      revenueCatService.initialize(user.id).then(() => {
-        setIsRevenueCatReady(true);
-        console.log('✅ RevenueCat initialized for Subscribe page');
-      }).catch(err => {
-        console.error('❌ Failed to initialize RevenueCat:', err);
-      });
-    }
-  }, [isWeb, user?.id]);
-
   const handleSubscribe = async (tier: string) => {
-    // For now, all subscriptions are handled via app stores
+    // All subscriptions are handled via app stores
     toast({
       title: 'Subscribe via App Store',
       description: 'Download the app from Google Play Store or Apple App Store to unlock premium features.',
