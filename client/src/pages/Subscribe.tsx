@@ -18,7 +18,7 @@ export default function Subscribe() {
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
-  const { data: subscriptionStatus } = useQuery({
+  const { data: subscriptionStatus } = useQuery<{ tier: string; status: string }>({
     queryKey: ['/api/stripe/subscription-status'],
     enabled: !!user && isWeb, // Only fetch Stripe status on web
   });
