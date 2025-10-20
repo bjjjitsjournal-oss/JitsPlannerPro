@@ -3,6 +3,30 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
+## Mobile App Status (v1.0.43)
+### Android
+- ✅ Build configured and tested
+- ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
+- ✅ RevenueCat integration configured
+- ✅ Simplified subscription flow (opens Play Store for subscription purchase)
+- 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
+- 📱 App ID: com.jitsjournal.app
+
+### iOS
+- ✅ Xcode project configured (v1.0.43)
+- ✅ App icons and splash screens ready
+- ✅ Capacitor synced with latest web build
+- 📖 Full build guide: IOS_BUILD_GUIDE.md
+- 🛠️ Build script: build-ios.sh
+- 📱 Bundle ID: com.jitsjournal.app
+- ⏳ Status: Ready for Mac build and App Store submission
+
+### Subscription Architecture
+- **Design:** Users subscribe via native app store UI (not in-app SDK)
+- **Sync:** RevenueCat automatically syncs subscription status via webhooks
+- **Backend:** Server checks RevenueCat API for entitlements
+- **Benefits:** Simpler codebase, higher user trust, consistent cross-platform experience
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
