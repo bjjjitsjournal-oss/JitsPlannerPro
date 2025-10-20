@@ -1,0 +1,39 @@
+PS C:\Projects\JitsPlannerPro\android> # Return to project root
+PS C:\Projects\JitsPlannerPro\android> git add codemagic.yaml
+fatal: pathspec 'codemagic.yaml' did not match any files
+PS C:\Projects\JitsPlannerPro\android> git commit -m "Enable automatic iOS code signing"
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+  (commit or discard the untracked or modified content in submodules)
+        modified:   ../JitsPlannerPro-NEW/JitsPlannerPro (modified content, untracked content)
+        modified:   app/capacitor.build.gradle
+        modified:   capacitor.settings.gradle
+        modified:   gradlew
+        modified:   ../ios/App/Podfile
+        modified:   ../package-lock.json
+        modified:   ../package.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        ../play-store-assets/Jits Journal - Your Ultimate BJJ Training Companion.html
+        ../play-store-assets/Jits Journal - Your Ultimate BJJ Training Companion_files/
+        ../play-store-assets/Jits1920x1080.html
+        ../play-store-assets/Jits1920x1080_files/
+        ../play-store-assets/Screenshot_20251019_110311_Jits Journal.jpg
+        ../play-store-assets/Screenshot_20251019_110318_Jits Journal.jpg
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\Projects\JitsPlannerPro\android> git push origin main
+To https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+PS C:\Projects\JitsPlannerPro\android>
