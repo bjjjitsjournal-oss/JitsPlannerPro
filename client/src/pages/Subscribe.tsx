@@ -1,20 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Crown, Zap, Shield, Smartphone } from 'lucide-react';
+import { Check, Crown, Zap, Shield, Smartphone, ExternalLink } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { getPlatform, isWebPlatform } from '@/lib/platform';
-import { revenueCatNative } from '@/lib/revenueCatNative';
 
 export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [isRevenueCatReady, setIsRevenueCatReady] = useState(false);
-  const [offerings, setOfferings] = useState<any>(null);
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
@@ -25,30 +22,28 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
-  useEffect(() => {
-    if (!isWeb && user?.id) {
-      initializeRevenueCat();
-    }
-  }, [isWeb, user?.id]);
-
-  const initializeRevenueCat = async () => {
-    try {
-      await revenueCatNative.initialize(user!.id.toString());
-      const offers = await revenueCatNative.getOfferings();
-      setOfferings(offers);
-      setIsRevenueCatReady(true);
-      console.log('✅ RevenueCat ready with offerings');
-    } catch (error) {
-      console.error('❌ Failed to initialize RevenueCat:', error);
+  const openAppStore = () => {
+    const appId = 'com.jitsjournal.app';
+    
+    if (platform === 'android') {
+      // Open Play Store app or web page
+      window.location.href = `market://details?id=${appId}`;
+      
+      // Fallback to web if Play Store app not available
+      setTimeout(() => {
+        window.location.href = `https://play.google.com/store/apps/details?id=${appId}`;
+      }, 500);
+    } else if (platform === 'ios') {
+      // When iOS app is published, we'll add the App Store ID
+      // window.location.href = `itms-apps://apps.apple.com/app/id<YOUR_APP_ID>`;
       toast({
-        title: 'Error',
-        description: 'Failed to load subscription options. Please try again.',
-        variant: 'destructive',
+        title: 'Coming Soon',
+        description: 'iOS App Store version coming soon!',
       });
     }
   };
 
-  const handleSubscribe = async (tier: string) => {
+  const handleSubscribe = (tier: string) => {
     if (isWeb) {
       toast({
         title: 'Subscribe via App Store',
@@ -58,72 +53,18 @@ export default function Subscribe() {
       return;
     }
 
-    if (!isRevenueCatReady || !offerings) {
-      toast({
-        title: 'Please wait',
-        description: 'Loading subscription options...',
-      });
-      return;
-    }
+    // Open the app store subscription page
+    setLoadingTier(tier);
+    
+    toast({
+      title: 'Opening Store...',
+      description: `Subscribe to ${tier === 'enthusiast' ? 'BJJ Enthusiast' : 'Gym Pro'} in the ${platform === 'android' ? 'Play' : 'App'} Store`,
+    });
 
-    try {
-      setLoadingTier(tier);
-
-      const currentOffering = offerings.current;
-      if (!currentOffering) {
-        throw new Error('No subscription plans available');
-      }
-
-      let packageToPurchase = null;
-      const packages = currentOffering.availablePackages;
-
-      if (tier === 'enthusiast') {
-        packageToPurchase = packages.find((p: any) => 
-          p.identifier.toLowerCase().includes('enthusiast') || 
-          p.identifier.toLowerCase().includes('monthly')
-        );
-      } else if (tier === 'gym_pro') {
-        packageToPurchase = packages.find((p: any) => 
-          p.identifier.toLowerCase().includes('gym') || 
-          p.identifier.toLowerCase().includes('pro')
-        );
-      }
-
-      if (!packageToPurchase) {
-        throw new Error('Subscription plan not found');
-      }
-
-      console.log('💳 Purchasing:', packageToPurchase.identifier);
-      
-      await revenueCatNative.purchasePackage(packageToPurchase);
-
-      toast({
-        title: 'Success!',
-        description: 'Subscription activated successfully',
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-
-    } catch (error: any) {
-      console.error('Purchase error:', error);
-      
-      if (error.message === 'Purchase cancelled') {
-        toast({
-          title: 'Purchase Cancelled',
-          description: 'No worries, you can subscribe anytime!',
-        });
-      } else {
-        toast({
-          title: 'Error',
-          description: error.message || 'Failed to complete purchase',
-          variant: 'destructive',
-        });
-      }
-    } finally {
+    setTimeout(() => {
+      openAppStore();
       setLoadingTier(null);
-    }
+    }, 500);
   };
 
   const tiers = [
@@ -193,20 +134,17 @@ export default function Subscribe() {
         {!isWeb && (
           <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
             <div className="flex items-start gap-3">
-              <Smartphone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+              <ExternalLink className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                   Subscribe via {platform === 'android' ? 'Google Play Store' : 'Apple App Store'}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  To manage subscriptions on {platform}, please use your device's app store:
+                  Click "Get Started" on any plan below to open the {platform === 'android' ? 'Play' : 'App'} Store where you can complete your subscription.
                 </p>
-                <ol className="text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
-                  <li>Open {platform === 'android' ? 'Google Play Store' : 'Apple App Store'}</li>
-                  <li>Search for "Jits Journal"</li>
-                  <li>View subscription options and purchase</li>
-                  <li>Subscription will sync automatically</li>
-                </ol>
+                <p className="text-sm text-gray-500 dark:text-gray-500 italic">
+                  💡 Your subscription will sync automatically after purchase!
+                </p>
               </div>
             </div>
           </div>
