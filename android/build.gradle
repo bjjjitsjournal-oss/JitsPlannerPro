@@ -33,5 +33,12 @@ subprojects {
                 }
             }
         }
+        
+        // Force Kotlin to use Java 17 target for all modules
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
     }
 }
