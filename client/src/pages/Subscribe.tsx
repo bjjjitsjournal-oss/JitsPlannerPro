@@ -37,80 +37,12 @@ export default function Subscribe() {
   }, [isWeb, user?.id]);
 
   const handleSubscribe = async (tier: string) => {
-    // On Android/iOS, direct users to app stores
-    // (In the native app, this will trigger native store billing via RevenueCat Capacitor plugin)
-    if (!isWeb) {
-      toast({
-        title: 'Use Your App Store',
-        description: `Please subscribe through ${platform === 'Android' ? 'Google Play' : 'the App'} Store to unlock premium features.`,
-        duration: 5000,
-      });
-      return;
-    }
-
-    // Web platform: use RevenueCat (Stripe checkout)
-    try {
-      setLoadingTier(tier);
-      
-      if (!isRevenueCatReady) {
-        throw new Error('Payment system is loading, please try again');
-      }
-      
-      // Get offerings
-      const offerings = await revenueCatService.getOfferings();
-      
-      if (!offerings || !offerings.current) {
-        throw new Error('No subscription plans available at this time');
-      }
-
-      // Find the right package based on tier
-      let packageToPurchase = null;
-      const packages = offerings.current.availablePackages;
-      
-      console.log('📦 Available packages:', packages);
-      
-      if (tier === 'enthusiast') {
-        packageToPurchase = packages.find((p: any) => 
-          p.identifier.toLowerCase().includes('enthusiast') || 
-          p.identifier.toLowerCase().includes('premium') ||
-          p.identifier.toLowerCase().includes('monthly_enthusiast')
-        );
-      } else if (tier === 'gym_pro') {
-        packageToPurchase = packages.find((p: any) => 
-          p.identifier.toLowerCase().includes('gym') || 
-          p.identifier.toLowerCase().includes('pro') ||
-          p.identifier.toLowerCase().includes('monthly_gym_pro')
-        );
-      }
-
-      if (!packageToPurchase) {
-        console.error('Could not find package for tier:', tier, 'Available:', packages);
-        throw new Error('This subscription plan is not available yet. Please try again later.');
-      }
-
-      console.log('💳 Purchasing package:', packageToPurchase.identifier);
-
-      // Trigger purchase (shows Stripe checkout modal)
-      await revenueCatService.purchasePackage(packageToPurchase, user?.email);
-      
-      toast({
-        title: 'Success!',
-        description: 'Subscription activated successfully',
-      });
-      
-      // Refresh subscription status
-      window.location.reload();
-      
-    } catch (error: any) {
-      console.error('Purchase error:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to start checkout',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoadingTier(null);
-    }
+    // For now, all subscriptions are handled via app stores
+    toast({
+      title: 'Subscribe via App Store',
+      description: 'Download the app from Google Play Store or Apple App Store to unlock premium features.',
+      duration: 5000,
+    });
   };
 
   const tiers = [
@@ -292,7 +224,7 @@ export default function Subscribe() {
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
             <CardTitle>How It Works</CardTitle>
-            <CardDescription>Start training smarter in 3 easy steps</CardDescription>
+            <CardDescription>Download and subscribe in 3 easy steps</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-3 gap-6">
@@ -300,18 +232,18 @@ export default function Subscribe() {
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl font-bold text-blue-600 dark:text-blue-400">1</span>
                 </div>
-                <h3 className="font-semibold mb-2">Choose Your Plan</h3>
+                <h3 className="font-semibold mb-2">Download the App</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Click "Get Started" on any plan above
+                  Get Jits Journal from Google Play Store or Apple App Store
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl font-bold text-blue-600 dark:text-blue-400">2</span>
                 </div>
-                <h3 className="font-semibold mb-2">Complete Payment</h3>
+                <h3 className="font-semibold mb-2">Choose Your Plan</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Secure checkout via Stripe - all major cards accepted
+                  Subscribe directly through your app store
                 </p>
               </div>
               <div className="text-center">
@@ -327,7 +259,7 @@ export default function Subscribe() {
             
             <div className="pt-4 border-t">
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                💡 <strong>Pro Tip:</strong> After subscribing, you can add this web app to your home screen for a native app experience!
+                📱 <strong>Coming Soon:</strong> Jits Journal will be available on Google Play Store and Apple App Store!
               </p>
             </div>
           </CardContent>
@@ -365,7 +297,7 @@ export default function Subscribe() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-400">
-                  We accept all major credit and debit cards through Stripe, our secure payment processor.
+                  All payments are processed securely through Google Play Store or Apple App Store, using your preferred payment method on file.
                 </p>
               </CardContent>
             </Card>
