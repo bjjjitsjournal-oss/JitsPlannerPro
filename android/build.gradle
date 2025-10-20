@@ -34,10 +34,10 @@ subprojects {
             }
         }
         
-        // Force Kotlin to use Java 17 target for all modules
-        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-            kotlinOptions {
-                jvmTarget = "17"
+        // Configure JVM toolchain for Java and Kotlin consistency
+        if (project.hasProperty("kotlin")) {
+            kotlin {
+                jvmToolchain(17)
             }
         }
     }
