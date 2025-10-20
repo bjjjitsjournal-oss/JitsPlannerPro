@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,11 +7,14 @@ import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { getPlatform, isWebPlatform } from '@/lib/platform';
+import { revenueCatNative } from '@/lib/revenueCatNative';
 
 export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [isRevenueCatReady, setIsRevenueCatReady] = useState(false);
+  const [offerings, setOfferings] = useState<any>(null);
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
@@ -22,13 +25,105 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
+  useEffect(() => {
+    if (!isWeb && user?.id) {
+      initializeRevenueCat();
+    }
+  }, [isWeb, user?.id]);
+
+  const initializeRevenueCat = async () => {
+    try {
+      await revenueCatNative.initialize(user!.id.toString());
+      const offers = await revenueCatNative.getOfferings();
+      setOfferings(offers);
+      setIsRevenueCatReady(true);
+      console.log('✅ RevenueCat ready with offerings');
+    } catch (error) {
+      console.error('❌ Failed to initialize RevenueCat:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load subscription options. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleSubscribe = async (tier: string) => {
-    // All subscriptions are handled via app stores
-    toast({
-      title: 'Subscribe via App Store',
-      description: 'Download the app from Google Play Store or Apple App Store to unlock premium features.',
-      duration: 5000,
-    });
+    if (isWeb) {
+      toast({
+        title: 'Subscribe via App Store',
+        description: 'Download the app from Google Play Store or Apple App Store to unlock premium features.',
+        duration: 5000,
+      });
+      return;
+    }
+
+    if (!isRevenueCatReady || !offerings) {
+      toast({
+        title: 'Please wait',
+        description: 'Loading subscription options...',
+      });
+      return;
+    }
+
+    try {
+      setLoadingTier(tier);
+
+      const currentOffering = offerings.current;
+      if (!currentOffering) {
+        throw new Error('No subscription plans available');
+      }
+
+      let packageToPurchase = null;
+      const packages = currentOffering.availablePackages;
+
+      if (tier === 'enthusiast') {
+        packageToPurchase = packages.find((p: any) => 
+          p.identifier.toLowerCase().includes('enthusiast') || 
+          p.identifier.toLowerCase().includes('monthly')
+        );
+      } else if (tier === 'gym_pro') {
+        packageToPurchase = packages.find((p: any) => 
+          p.identifier.toLowerCase().includes('gym') || 
+          p.identifier.toLowerCase().includes('pro')
+        );
+      }
+
+      if (!packageToPurchase) {
+        throw new Error('Subscription plan not found');
+      }
+
+      console.log('💳 Purchasing:', packageToPurchase.identifier);
+      
+      await revenueCatNative.purchasePackage(packageToPurchase);
+
+      toast({
+        title: 'Success!',
+        description: 'Subscription activated successfully',
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+
+    } catch (error: any) {
+      console.error('Purchase error:', error);
+      
+      if (error.message === 'Purchase cancelled') {
+        toast({
+          title: 'Purchase Cancelled',
+          description: 'No worries, you can subscribe anytime!',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to complete purchase',
+          variant: 'destructive',
+        });
+      }
+    } finally {
+      setLoadingTier(null);
+    }
   };
 
   const tiers = [
