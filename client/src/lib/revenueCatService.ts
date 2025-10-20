@@ -1,4 +1,4 @@
-import Purchases from '@revenuecat/purchases-js';
+import { Purchases } from '@revenuecat/purchases-js';
 import type { CustomerInfo } from '@revenuecat/purchases-js';
 import { getPlatform } from './platform';
 
