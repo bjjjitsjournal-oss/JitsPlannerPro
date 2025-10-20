@@ -16,10 +16,13 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Xcode project configured (v1.0.43)
 - ✅ App icons and splash screens ready
 - ✅ Capacitor synced with latest web build
-- 📖 Full build guide: IOS_BUILD_GUIDE.md
-- 🛠️ Build script: build-ios.sh
+- ✅ Codemagic CI/CD configured (builds iOS without Mac!)
+- 📖 Codemagic setup guide: CODEMAGIC_SETUP_GUIDE.md
+- 📖 Manual build guide (requires Mac): IOS_BUILD_GUIDE.md
+- 🛠️ Build script: build-ios.sh (for Mac users)
 - 📱 Bundle ID: com.jitsjournal.app
-- ⏳ Status: Ready for Mac build and App Store submission
+- 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
+- ⏳ Status: Ready for Codemagic setup and App Store submission
 
 ### Subscription Architecture
 - **Design:** Users subscribe via native app store UI (not in-app SDK)
