@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Crown, Zap, Shield, Smartphone } from 'lucide-react';
+import { Check, Crown, Zap, Shield } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,7 @@ export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [isRevenueCatReady, setIsRevenueCatReady] = useState(false);
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
@@ -23,12 +24,26 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
+  // Initialize RevenueCat on mount (web only)
+  useEffect(() => {
+    if (isWeb && user?.id) {
+      revenueCatService.initialize(user.id).then(() => {
+        setIsRevenueCatReady(true);
+        console.log('✅ RevenueCat initialized for Subscribe page');
+      }).catch(err => {
+        console.error('❌ Failed to initialize RevenueCat:', err);
+      });
+    }
+  }, [isWeb, user?.id]);
+
   const handleSubscribe = async (tier: string) => {
-    // On Android/iOS, show app store instructions
+    // On Android/iOS, direct users to app stores
+    // (In the native app, this will trigger native store billing via RevenueCat Capacitor plugin)
     if (!isWeb) {
       toast({
-        title: 'Subscribe via App Store',
-        description: `To subscribe on ${platform}, please use your device's app store (Google Play or Apple App Store).`,
+        title: 'Use Your App Store',
+        description: `Please subscribe through ${platform === 'Android' ? 'Google Play' : 'the App'} Store to unlock premium features.`,
+        duration: 5000,
       });
       return;
     }
@@ -37,34 +52,43 @@ export default function Subscribe() {
     try {
       setLoadingTier(tier);
       
-      // Initialize RevenueCat if needed
-      if (user?.id) {
-        await revenueCatService.initialize(user.id);
+      if (!isRevenueCatReady) {
+        throw new Error('Payment system is loading, please try again');
       }
       
       // Get offerings
       const offerings = await revenueCatService.getOfferings();
       
       if (!offerings || !offerings.current) {
-        throw new Error('No subscription offerings available');
+        throw new Error('No subscription plans available at this time');
       }
 
       // Find the right package based on tier
       let packageToPurchase = null;
+      const packages = offerings.current.availablePackages;
+      
+      console.log('📦 Available packages:', packages);
       
       if (tier === 'enthusiast') {
-        packageToPurchase = offerings.current.monthly || offerings.current.availablePackages.find((p: any) => 
-          p.identifier.toLowerCase().includes('enthusiast') || p.identifier.toLowerCase().includes('premium')
+        packageToPurchase = packages.find((p: any) => 
+          p.identifier.toLowerCase().includes('enthusiast') || 
+          p.identifier.toLowerCase().includes('premium') ||
+          p.identifier.toLowerCase().includes('monthly_enthusiast')
         );
       } else if (tier === 'gym_pro') {
-        packageToPurchase = offerings.current.annual || offerings.current.availablePackages.find((p: any) => 
-          p.identifier.toLowerCase().includes('gym') || p.identifier.toLowerCase().includes('pro')
+        packageToPurchase = packages.find((p: any) => 
+          p.identifier.toLowerCase().includes('gym') || 
+          p.identifier.toLowerCase().includes('pro') ||
+          p.identifier.toLowerCase().includes('monthly_gym_pro')
         );
       }
 
       if (!packageToPurchase) {
-        throw new Error('Selected plan not available');
+        console.error('Could not find package for tier:', tier, 'Available:', packages);
+        throw new Error('This subscription plan is not available yet. Please try again later.');
       }
+
+      console.log('💳 Purchasing package:', packageToPurchase.identifier);
 
       // Trigger purchase (shows Stripe checkout modal)
       await revenueCatService.purchasePackage(packageToPurchase, user?.email);
@@ -78,6 +102,7 @@ export default function Subscribe() {
       window.location.reload();
       
     } catch (error: any) {
+      console.error('Purchase error:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to start checkout',
