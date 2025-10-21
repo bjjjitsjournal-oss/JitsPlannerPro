@@ -2285,6 +2285,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get storage usage and quota
+  app.get("/api/storage/usage", flexibleAuth, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { 
+        getStorageQuota, 
+        getRemainingStorage, 
+        getStoragePercentage, 
+        formatBytes,
+        getStorageTierInfo 
+      } = await import('./storageUtils');
+      
+      const subscriptionTier = user.subscriptionTier || 'free';
+      const storageUsed = user.storageUsed || 0;
+      const quota = getStorageQuota(subscriptionTier);
+      const remaining = getRemainingStorage(storageUsed, subscriptionTier);
+      const percentage = getStoragePercentage(storageUsed, subscriptionTier);
+      const tierInfo = getStorageTierInfo(subscriptionTier);
+      
+      res.json({
+        storageUsed,
+        storageUsedFormatted: formatBytes(storageUsed),
+        quota,
+        quotaFormatted: tierInfo.quotaFormatted,
+        remaining,
+        remainingFormatted: formatBytes(remaining),
+        percentage,
+        tier: subscriptionTier,
+        tierName: tierInfo.tierName,
+      });
+    } catch (error) {
+      console.error("Error fetching storage usage:", error);
+      res.status(500).json({ message: "Failed to fetch storage usage" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
