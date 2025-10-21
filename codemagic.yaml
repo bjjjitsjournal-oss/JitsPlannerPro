@@ -93,15 +93,10 @@ workflows:
           failure: true
       
       app_store_connect:
-        # Credentials from Codemagic environment
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        # Credentials automatically from integration "Codemagic"
         
         # Submit to TestFlight
         submit_to_testflight: true
-        beta_groups:
-          - Internal Testers
         
         # Submit to App Store (change to true when ready)
         submit_to_app_store: false
