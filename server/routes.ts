@@ -1093,6 +1093,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .set({
           videoUrl: videoUrl,
           videoFileName: fileName,
+          videoFileSize: fileSize,
           videoThumbnail: thumbnail || null,
           updatedAt: new Date()
         })
@@ -1126,7 +1127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Remove video from note (video file stays in Supabase Storage for now)
+  // Remove video from note - deletes from Supabase Storage and updates storage quota
   app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
@@ -1136,14 +1137,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: 'User ID required' });
       }
 
-      // Note: We don't delete the video file from Supabase Storage here
-      // The file remains in storage but is unlinked from the note
-      // You can add cleanup logic later if needed
+      // First, get the note to retrieve video info
+      const [note] = await db.select()
+        .from(notes)
+        .where(and(
+          eq(notes.id, noteId),
+          eq(notes.userId, userId)
+        ))
+        .limit(1);
+
+      if (!note) {
+        return res.status(404).json({ message: "Note not found or access denied" });
+      }
+
+      const videoFileSize = note.videoFileSize || 0;
+      const videoUrl = note.videoUrl;
+
+      // Delete video file from Supabase Storage if it exists
+      if (videoUrl && supabaseAdmin) {
+        try {
+          // Extract file path from URL
+          // URL format: https://{project}.supabase.co/storage/v1/object/public/videos/{path}
+          const urlParts = videoUrl.split('/storage/v1/object/public/');
+          if (urlParts.length === 2) {
+            const fullPath = urlParts[1]; // e.g., "videos/note-videos/uuid-timestamp.mp4"
+            const pathParts = fullPath.split('/');
+            const bucket = pathParts[0]; // "videos"
+            const filePath = pathParts.slice(1).join('/'); // "note-videos/uuid-timestamp.mp4"
+
+            console.log(`Deleting file from Supabase Storage: ${bucket}/${filePath}`);
+            
+            const { error: deleteError } = await supabaseAdmin.storage
+              .from(bucket)
+              .remove([filePath]);
+
+            if (deleteError) {
+              console.error('Error deleting from Supabase Storage:', deleteError);
+            } else {
+              console.log('✅ File deleted from Supabase Storage');
+            }
+          }
+        } catch (storageError) {
+          console.error('Error processing Supabase Storage deletion:', storageError);
+        }
+      }
       
+      // Update note to remove video references
       const [updatedNote] = await db.update(notes)
         .set({
           videoUrl: null,
           videoFileName: null,
+          videoFileSize: null,
           videoThumbnail: null,
           updatedAt: new Date()
         })
@@ -1153,13 +1197,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ))
         .returning();
 
-      if (!updatedNote) {
-        return res.status(404).json({ message: "Note not found or access denied" });
+      // Decrease user's storage usage
+      if (videoFileSize > 0) {
+        await db.update(users)
+          .set({
+            storageUsed: sql`GREATEST(0, ${users.storageUsed} - ${videoFileSize})`
+          })
+          .where(eq(users.id, userId));
+
+        const { formatBytes } = await import('./storageUtils');
+        console.log(`Storage usage decreased by ${formatBytes(videoFileSize)}`);
       }
 
       res.json({ 
         message: "Video removed successfully",
-        note: updatedNote 
+        note: updatedNote,
+        freedStorage: videoFileSize
       });
     } catch (error) {
       console.error("Error removing video from note:", error);
