@@ -93,6 +93,7 @@ export const users = pgTable("users", {
   noteCount: integer("note_count").default(0), // Track notes created for free tier limit
   weeklyShareCount: integer("weekly_share_count").default(0), // Track community shares this week
   shareResetDate: timestamp("share_reset_date"), // When to reset weekly share count
+  storageUsed: integer("storage_used").default(0), // Total video storage used in bytes
   role: text("role").default("user"), // user, admin
   createdAt: timestamp("created_at").defaultNow(),
   supabaseUid: varchar("supabase_uid").unique(), // Link to Supabase Auth
