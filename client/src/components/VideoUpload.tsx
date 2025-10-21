@@ -1,10 +1,23 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Video, Trash2 } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Upload, Video, Trash2, AlertTriangle } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+interface StorageUsageData {
+  storageUsed: number;
+  storageUsedFormatted: string;
+  quota: number;
+  quotaFormatted: string;
+  remaining: number;
+  remainingFormatted: string;
+  percentage: number;
+  tier: string;
+  tierName: string;
+}
 
 interface VideoUploadProps {
   noteId: string;
@@ -24,6 +37,11 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+
+  // Fetch storage usage
+  const { data: storageData } = useQuery<StorageUsageData>({
+    queryKey: ["/api/storage/usage"],
+  });
 
   const uploadMutation = useMutation({
     mutationFn: async ({ file, thumbnail }: {
@@ -73,6 +91,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       }, 500);
       
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/storage/usage'] });
       toast({
         title: "Video uploaded successfully!",
         description: "Your video has been attached to the note",
@@ -97,6 +116,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/storage/usage'] });
       toast({
         title: "Video removed",
         description: "Video has been removed from the note",
@@ -135,6 +155,22 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
         variant: "destructive",
       });
       return;
+    }
+
+    // Check storage quota
+    if (storageData) {
+      const fileSizeInBytes = file.size;
+      const remainingBytes = storageData.remaining;
+
+      if (fileSizeInBytes > remainingBytes) {
+        const fileSizeMB = (fileSizeInBytes / (1024 * 1024)).toFixed(1);
+        toast({
+          title: "Storage quota exceeded",
+          description: `This video (${fileSizeMB} MB) exceeds your remaining storage (${storageData.remainingFormatted}). Delete videos or upgrade your plan.`,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     uploadVideo(file);
@@ -232,8 +268,30 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
     );
   }
 
+  const isNearLimit = storageData && storageData.percentage >= 80;
+  const isFull = storageData && storageData.percentage >= 100;
+
   return (
     <div className="mt-4">
+      {isNearLimit && !isFull && (
+        <Alert className="mb-4" data-testid="alert-storage-warning-upload">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            You're using {storageData?.percentage.toFixed(0)}% of your storage ({storageData?.remainingFormatted} remaining). 
+            Consider deleting old videos or upgrading your plan.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isFull && (
+        <Alert variant="destructive" className="mb-4" data-testid="alert-storage-full-upload">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Storage limit reached. Delete videos or upgrade to continue uploading.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <input
         ref={fileInputRef}
         type="file"
