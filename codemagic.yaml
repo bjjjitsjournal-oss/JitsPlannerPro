@@ -15,6 +15,8 @@ workflows:
       groups:
         - app_store_credentials
       
+      xcode: 15.0
+      
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
@@ -65,11 +67,9 @@ workflows:
       - name: Fetch signing files from Apple
         script: |
           echo "📝 Fetching certificates and profiles from Apple..."
-          echo "Note: This will auto-create certificate and profile if they don't exist"
+          echo "Note: Using manually created provisioning profile"
           app-store-connect fetch-signing-files "com.jitsjournal.app" \
-            --type IOS_APP_STORE \
-            --create \
-            --verbose
+            --type IOS_APP_STORE
       
       - name: Add certificates to keychain
         script: |
