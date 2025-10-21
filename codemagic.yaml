@@ -68,9 +68,11 @@ workflows:
       
       - name: Increment build number
         script: |
-          echo "🔢 Setting build number to 43..."
+          echo "🔢 Auto-incrementing build number..."
           cd $CM_BUILD_DIR/ios/App
-          agvtool new-version -all 43
+          BUILD_NUM=$((BUILD_NUMBER + 43))
+          echo "Setting build number to $BUILD_NUM"
+          agvtool new-version -all $BUILD_NUM
       
       - name: Build IPA
         script: |
