@@ -4,12 +4,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users } from "@shared/schema";
 import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { createClient } from "@supabase/supabase-js";
 
 import * as nodemailer from "nodemailer";
