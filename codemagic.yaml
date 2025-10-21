@@ -9,8 +9,10 @@ workflows:
     
     environment:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.jitsjournal.app
+        provisioning_profiles:
+          - jits_journal_appstore_profile
+        certificates:
+          - jits_journal_dist_cert
       
       groups:
         - app_store_credentials
@@ -58,23 +60,6 @@ workflows:
         script: |
           echo "📱 Installing CocoaPods..."
           cd ios/App && pod install
-      
-      - name: Set up keychain
-        script: |
-          echo "🔐 Initializing keychain..."
-          keychain initialize
-      
-      - name: Fetch signing files from Apple
-        script: |
-          echo "📝 Fetching certificates and profiles from Apple..."
-          echo "Note: Using manually created provisioning profile"
-          app-store-connect fetch-signing-files "com.jitsjournal.app" \
-            --type IOS_APP_STORE
-      
-      - name: Add certificates to keychain
-        script: |
-          echo "✍️  Adding certificates to keychain..."
-          keychain add-certificates
       
       - name: Set up code signing
         script: |
