@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { StorageUsageTracker } from '@/components/StorageUsageTracker';
 
 export default function Settings() {
   const [showSubscription, setShowSubscription] = useState(false);
@@ -251,6 +252,11 @@ export default function Settings() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Storage Usage */}
+      <div className="mb-6">
+        <StorageUsageTracker />
       </div>
 
       {/* Gym Community */}
