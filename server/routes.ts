@@ -1050,7 +1050,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes/:id/upload-video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const { videoUrl, fileName, thumbnail, userId } = req.body;
+      const { videoUrl, fileName, thumbnail, userId, fileSize } = req.body;
       
       if (!userId) {
         return res.status(401).json({ message: 'User ID required' });
@@ -1058,10 +1058,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Video upload request for note ${noteId} by user ${userId}`);
       console.log(`File name: ${fileName}`);
+      console.log(`File size: ${fileSize} bytes`);
       console.log(`Video URL: ${videoUrl}`);
       
-      if (!videoUrl || !fileName) {
-        return res.status(400).json({ message: "Video URL and filename are required" });
+      if (!videoUrl || !fileName || !fileSize) {
+        return res.status(400).json({ message: "Video URL, filename, and file size are required" });
+      }
+
+      // Get user's subscription tier and current storage usage
+      const [user] = await db.select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check storage quota
+      const { hasStorageQuota, formatBytes, getStorageTierInfo } = await import('./storageUtils');
+      
+      if (!hasStorageQuota(user.storageUsed || 0, fileSize, user.subscriptionTier || 'free')) {
+        const tierInfo = getStorageTierInfo(user.subscriptionTier || 'free');
+        return res.status(413).json({ 
+          message: `Storage quota exceeded. ${tierInfo.tierName} plan allows ${tierInfo.quotaFormatted}.`,
+          currentUsage: formatBytes(user.storageUsed || 0),
+          quota: tierInfo.quotaFormatted,
+          exceeded: true
+        });
       }
 
       // Update note in database with video URL from Supabase Storage
@@ -1083,10 +1107,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
-      console.log('Video URL saved successfully');
+      // Update user's storage usage
+      await db.update(users)
+        .set({
+          storageUsed: (user.storageUsed || 0) + fileSize
+        })
+        .where(eq(users.id, userId));
+
+      console.log(`Video URL saved successfully. New storage usage: ${formatBytes((user.storageUsed || 0) + fileSize)}`);
       res.json({ 
         message: "Video uploaded successfully",
-        note: updatedNote 
+        note: updatedNote,
+        storageUsed: (user.storageUsed || 0) + fileSize
       });
     } catch (error) {
       console.error("Error uploading video to note:", error);
