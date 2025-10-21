@@ -50,6 +50,7 @@ Preferred communication style: Simple, everyday language.
 - **API Design**: RESTful API with JSON responses.
 - **Authentication**: JWT token-based authentication with secure password hashing and secure session management.
 - **Data Isolation**: Ensures each user sees only their own data.
+- **Video Storage**: Cloudflare R2 (S3-compatible) for scalable, cost-efficient video storage with zero egress fees. Legacy videos remain on Supabase Storage with automatic fallback.
 
 ### Core Features
 - **Class Tracking System**: Log training sessions, track instructors/partners, record techniques, and generate attendance statistics, including rolling partner tracking and submission details.
