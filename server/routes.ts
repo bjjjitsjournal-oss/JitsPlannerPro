@@ -18,6 +18,7 @@ import path from "path";
 import crypto from "crypto";
 import { sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail } from "./emailService";
 import Stripe from "stripe";
+import multer from "multer";
 
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
@@ -34,8 +35,13 @@ const supabaseAdmin = supabaseUrl && supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null;
 
-
-
+// Configure multer for file uploads (using memory storage for R2 upload)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 * 1024, // 5GB limit
+  },
+});
 
 
 // Authentication middleware
@@ -1046,29 +1052,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Video upload route for notes - saves Supabase Storage URL
-  app.post("/api/notes/:id/upload-video", async (req, res) => {
+  // Video upload route for notes - uploads to R2 storage
+  app.post("/api/notes/:id/upload-video", upload.single('video'), async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const { videoUrl, fileName, thumbnail, userId, fileSize } = req.body;
+      const file = req.file;
+      const { fileName, fileSize, userId, thumbnail } = req.body;
       
       if (!userId) {
         return res.status(401).json({ message: 'User ID required' });
       }
-      
-      console.log(`Video upload request for note ${noteId} by user ${userId}`);
-      console.log(`File name: ${fileName}`);
-      console.log(`File size: ${fileSize} bytes`);
-      console.log(`Video URL: ${videoUrl}`);
-      
-      if (!videoUrl || !fileName || !fileSize) {
-        return res.status(400).json({ message: "Video URL, filename, and file size are required" });
+
+      if (!file) {
+        return res.status(400).json({ message: "No video file provided" });
       }
+      
+      const parsedUserId = parseInt(userId);
+      const parsedFileSize = parseInt(fileSize) || file.size;
+      
+      console.log(`Video upload request for note ${noteId} by user ${parsedUserId}`);
+      console.log(`File name: ${fileName || file.originalname}`);
+      console.log(`File size: ${parsedFileSize} bytes`);
 
       // Get user's subscription tier and current storage usage
       const [user] = await db.select()
         .from(users)
-        .where(eq(users.id, userId))
+        .where(eq(users.id, parsedUserId))
         .limit(1);
 
       if (!user) {
@@ -1078,7 +1087,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check storage quota
       const { hasStorageQuota, formatBytes, getStorageTierInfo } = await import('./storageUtils');
       
-      if (!hasStorageQuota(user.storageUsed || 0, fileSize, user.subscriptionTier || 'free')) {
+      if (!hasStorageQuota(user.storageUsed || 0, parsedFileSize, user.subscriptionTier || 'free')) {
         const tierInfo = getStorageTierInfo(user.subscriptionTier || 'free');
         return res.status(413).json({ 
           message: `Storage quota exceeded. ${tierInfo.tierName} plan allows ${tierInfo.quotaFormatted}.`,
@@ -1088,18 +1097,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Update note in database with video URL from Supabase Storage
+      // Upload to R2
+      const { uploadToR2 } = await import('./r2Storage');
+      const { url, key } = await uploadToR2(
+        file.buffer,
+        fileName || file.originalname,
+        file.mimetype
+      );
+
+      // Update note in database with video URL from R2
       const [updatedNote] = await db.update(notes)
         .set({
-          videoUrl: videoUrl,
-          videoFileName: fileName,
-          videoFileSize: fileSize,
+          videoUrl: url,
+          videoFileName: fileName || file.originalname,
+          videoFileSize: parsedFileSize,
           videoThumbnail: thumbnail || null,
           updatedAt: new Date()
         })
         .where(and(
           eq(notes.id, noteId),
-          eq(notes.userId, userId)
+          eq(notes.userId, parsedUserId)
         ))
         .returning();
 
@@ -1111,15 +1128,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update user's storage usage
       await db.update(users)
         .set({
-          storageUsed: (user.storageUsed || 0) + fileSize
+          storageUsed: (user.storageUsed || 0) + parsedFileSize
         })
-        .where(eq(users.id, userId));
+        .where(eq(users.id, parsedUserId));
 
-      console.log(`Video URL saved successfully. New storage usage: ${formatBytes((user.storageUsed || 0) + fileSize)}`);
+      console.log(`Video uploaded to R2 successfully. New storage usage: ${formatBytes((user.storageUsed || 0) + parsedFileSize)}`);
       res.json({ 
         message: "Video uploaded successfully",
         note: updatedNote,
-        storageUsed: (user.storageUsed || 0) + fileSize
+        storageUsed: (user.storageUsed || 0) + parsedFileSize
       });
     } catch (error) {
       console.error("Error uploading video to note:", error);
@@ -1127,7 +1144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Remove video from note - deletes from Supabase Storage and updates storage quota
+  // Remove video from note - deletes from R2 or Supabase Storage and updates storage quota
   app.delete("/api/notes/:id/video", async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
@@ -1153,32 +1170,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const videoFileSize = note.videoFileSize || 0;
       const videoUrl = note.videoUrl;
 
-      // Delete video file from Supabase Storage if it exists
-      if (videoUrl && supabaseAdmin) {
+      // Delete video file from storage (R2 or Supabase)
+      if (videoUrl) {
         try {
-          // Extract file path from URL
-          // URL format: https://{project}.supabase.co/storage/v1/object/public/videos/{path}
-          const urlParts = videoUrl.split('/storage/v1/object/public/');
-          if (urlParts.length === 2) {
-            const fullPath = urlParts[1]; // e.g., "videos/note-videos/uuid-timestamp.mp4"
-            const pathParts = fullPath.split('/');
-            const bucket = pathParts[0]; // "videos"
-            const filePath = pathParts.slice(1).join('/'); // "note-videos/uuid-timestamp.mp4"
+          // Check if it's an R2 URL (from our endpoint domain) or Supabase URL
+          if (videoUrl.includes(process.env.R2_ENDPOINT || '') || !videoUrl.includes('supabase.co')) {
+            // Delete from R2
+            const { deleteFromR2 } = await import('./r2Storage');
+            // Extract key from URL - format: https://{endpoint}/{bucket}/{key}
+            const urlObj = new URL(videoUrl);
+            const pathParts = urlObj.pathname.substring(1).split('/'); // Remove leading slash and split
+            const key = pathParts.slice(1).join('/'); // Skip bucket name, get the rest as key
+            await deleteFromR2(key);
+            console.log('✅ File deleted from R2');
+          } else if (videoUrl.includes('supabase.co') && supabaseAdmin) {
+            // Delete from Supabase Storage (legacy videos)
+            // URL format: https://{project}.supabase.co/storage/v1/object/public/videos/{path}
+            const urlParts = videoUrl.split('/storage/v1/object/public/');
+            if (urlParts.length === 2) {
+              const fullPath = urlParts[1]; // e.g., "videos/note-videos/uuid-timestamp.mp4"
+              const pathParts = fullPath.split('/');
+              const bucket = pathParts[0]; // "videos"
+              const filePath = pathParts.slice(1).join('/'); // "note-videos/uuid-timestamp.mp4"
 
-            console.log(`Deleting file from Supabase Storage: ${bucket}/${filePath}`);
-            
-            const { error: deleteError } = await supabaseAdmin.storage
-              .from(bucket)
-              .remove([filePath]);
+              console.log(`Deleting file from Supabase Storage: ${bucket}/${filePath}`);
+              
+              const { error: deleteError } = await supabaseAdmin.storage
+                .from(bucket)
+                .remove([filePath]);
 
-            if (deleteError) {
-              console.error('Error deleting from Supabase Storage:', deleteError);
-            } else {
-              console.log('✅ File deleted from Supabase Storage');
+              if (deleteError) {
+                console.error('Error deleting from Supabase Storage:', deleteError);
+              } else {
+                console.log('✅ File deleted from Supabase Storage');
+              }
             }
           }
         } catch (storageError) {
-          console.error('Error processing Supabase Storage deletion:', storageError);
+          console.error('Error processing storage deletion:', storageError);
         }
       }
       

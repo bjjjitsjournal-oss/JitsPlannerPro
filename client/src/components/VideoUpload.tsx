@@ -48,41 +48,32 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       file: File;
       thumbnail?: string;
     }) => {
-      // Generate unique file path
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${noteId}-${Date.now()}.${fileExt}`;
-      const filePath = `note-videos/${fileName}`;
-      
-      // Upload to Supabase Storage
-      setUploadProgress(30);
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('videos')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-      
-      if (uploadError) {
-        throw new Error(uploadError.message);
+      // Create FormData to send file to backend
+      const formData = new FormData();
+      formData.append('video', file);
+      formData.append('fileName', file.name);
+      formData.append('fileSize', file.size.toString());
+      formData.append('userId', user?.id?.toString() || '');
+      if (thumbnail) {
+        formData.append('thumbnail', thumbnail);
       }
       
-      // Get public URL
-      setUploadProgress(60);
-      const { data: { publicUrl } } = supabase.storage
-        .from('videos')
-        .getPublicUrl(filePath);
-      
-      // Save URL to database via backend
-      setUploadProgress(80);
-      const response = await apiRequest("POST", `/api/notes/${noteId}/upload-video`, {
-        videoUrl: publicUrl,
-        fileName: file.name,
-        thumbnail,
-        userId: user?.id
+      // Upload to backend (which will use R2)
+      setUploadProgress(30);
+      const response = await fetch(`/api/notes/${noteId}/upload-video`, {
+        method: 'POST',
+        body: formData,
       });
       
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Upload failed');
+      }
+      
+      setUploadProgress(80);
+      const result = await response.json();
       setUploadProgress(100);
-      return response;
+      return result;
     },
     onSuccess: () => {
       setTimeout(() => {
