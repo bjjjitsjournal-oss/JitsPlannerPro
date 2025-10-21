@@ -93,7 +93,8 @@ workflows:
           failure: true
       
       app_store_connect:
-        # Credentials automatically from integration "Codemagic"
+        # Use credentials from integration "Codemagic"
+        auth: integration
         
         # Submit to TestFlight
         submit_to_testflight: true
