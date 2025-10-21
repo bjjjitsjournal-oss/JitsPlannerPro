@@ -65,9 +65,11 @@ workflows:
       - name: Fetch signing files from Apple
         script: |
           echo "📝 Fetching certificates and profiles from Apple..."
+          echo "Note: This will auto-create certificate and profile if they don't exist"
           app-store-connect fetch-signing-files "com.jitsjournal.app" \
             --type IOS_APP_STORE \
-            --create
+            --create \
+            --verbose
       
       - name: Add certificates to keychain
         script: |
