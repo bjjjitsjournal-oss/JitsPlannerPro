@@ -47,6 +47,7 @@ export const notes = pgTable("notes", {
   sharedWithUsers: text("shared_with_users").array(), // array of user IDs
   videoUrl: text("video_url"), // URL to uploaded video file
   videoFileName: text("video_file_name"), // Original filename
+  videoFileSize: integer("video_file_size"), // File size in bytes
   videoThumbnail: text("video_thumbnail"), // Thumbnail URL
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -122,6 +123,7 @@ export const appNotes = pgTable("app_notes", {
   sharedWithUsers: text("shared_with_users").array(), // array of user IDs
   videoUrl: text("video_url"), // URL to uploaded video file
   videoFileName: text("video_file_name"), // Original filename
+  videoFileSize: integer("video_file_size"), // File size in bytes
   videoThumbnail: text("video_thumbnail"), // Thumbnail URL
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
