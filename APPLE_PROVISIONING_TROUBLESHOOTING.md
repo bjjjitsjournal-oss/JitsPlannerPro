@@ -4,6 +4,11 @@
 
 This error occurs when Codemagic cannot find or create a provisioning profile for your app.
 
+## ✅ RESOLVED
+- Distribution certificate created via Codemagic UI
+- Provisioning profile created in Apple Developer Portal and fetched in Codemagic
+- Ready for iOS build
+
 ## Root Causes & Solutions
 
 ### Issue 1: Bundle ID Not Registered ⚠️
