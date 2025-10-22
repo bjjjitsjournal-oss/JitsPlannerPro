@@ -145,8 +145,7 @@ export default function Notes() {
       return await notesQueries.create(user.id, noteData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
-      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
       refetchNotes(); // Force immediate refresh
       toast({
         title: 'Note Saved!',
@@ -176,8 +175,7 @@ export default function Notes() {
       return await notesQueries.update(noteId.toString(), user.id, noteData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
-      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
       refetchNotes();
       toast({
         title: 'Note Updated!',
@@ -207,8 +205,7 @@ export default function Notes() {
       return await notesQueries.delete(noteId.toString(), user.id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
-      queryClient.refetchQueries({ queryKey: ['notes', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
       refetchNotes();
       toast({
         title: 'Note Deleted!',
