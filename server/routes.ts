@@ -820,7 +820,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notes routes - using existing notes table with UUID mapping
-  app.get("/api/notes", authenticateToken, async (req, res) => {
+  app.get("/api/notes", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
       const { search } = req.query;
@@ -838,7 +838,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/notes", authenticateToken, async (req, res) => {
+  app.post("/api/notes", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
       console.log("Creating note with data:", req.body, "for user:", userId);
@@ -863,7 +863,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/notes/:id", authenticateToken, async (req, res) => {
+  app.put("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.userId; // Integer user ID
@@ -887,7 +887,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/notes/:id", authenticateToken, async (req, res) => {
+  app.delete("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.userId; // Integer user ID
@@ -964,7 +964,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/notes/:id/toggle-sharing", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/toggle-sharing", flexibleAuth, async (req, res) => {
     try {
       const noteId = req.params.id; // Keep as string (UUID)
       const userId = (req as any).user.userId;
