@@ -4,10 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.jitsjournal.app',
   appName: 'Jits Journal',
   webDir: 'dist/public',
-  server: {
-    url: 'https://bjj-jits-journal.onrender.com',
-    androidScheme: 'https'
-  },
+  // IMPORTANT: server.url should be commented out for production builds
+  // Uncomment only for development/testing
+  // server: {
+  //   url: 'https://bjj-jits-journal.onrender.com',
+  //   androidScheme: 'https'
+  // },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
