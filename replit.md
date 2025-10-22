@@ -27,8 +27,10 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ⏳ Status: v1.0.47 ready for Codemagic build and App Store submission
 
 ### Recent Updates (v1.0.47 - October 2025)
-- 🚀 **CRITICAL PERFORMANCE FIX**: Eliminated 8-9 second delay on mobile by caching Supabase ID instead of reading from disk on every API call
-- ⚡ **Instant API Calls**: Mobile app now makes API requests instantly without waiting for Capacitor storage bridge
+- 🚀 **CRITICAL PERFORMANCE FIX**: Eliminated 8-9 second delay on mobile by persisting Supabase ID in Capacitor Preferences
+- ⚡ **Instant API Calls**: Notes load instantly on mobile (<1 second) by avoiding `supabase.auth.getSession()` calls
+- 🔧 **Root Cause**: Mobile app was calling slow `getSession()` on every cold start through Capacitor bridge
+- ✅ **Solution**: Persistent caching in Capacitor Preferences survives app restarts and provides instant access
 
 ### Previous Updates (v1.0.46 - October 2025)
 - 🐛 **Critical Bug Fixes**: Fixed notes loading performance issue (reduced from 9 seconds to under 1 second)
