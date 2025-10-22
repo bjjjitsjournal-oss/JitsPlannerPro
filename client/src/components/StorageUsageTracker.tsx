@@ -128,7 +128,7 @@ export function StorageUsageTracker() {
                 className="w-full"
                 data-testid="button-upgrade-storage"
               >
-                Upgrade to Gym Pro (3GB)
+                Upgrade to Gym Pro
               </Button>
             </Link>
           </div>
