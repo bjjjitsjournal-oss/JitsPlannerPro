@@ -1,0 +1,71 @@
+fileDropdown - Fetching belt for user ID: 34
+index-7AQbkEna.js:90 WeeklyGoals user object: {id: '34', type: 'string', email: 'dsfdsfd@gmail.com'}
+index-7AQbkEna.js:90 getCurrent - Looking for week: 2025-10-19
+index-7AQbkEna.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.34&week_start_date=gte.2025-10-19&week_start_date=lt.2025-10-20&order=created_at.desc&limit=1 406 (Not Acceptable)
+(anonymous) @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+l @ index-7AQbkEna.js:70
+Promise.then
+u @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+c4 @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+then @ index-7AQbkEna.js:48Understand this error
+index-7AQbkEna.js:90 getCurrent - Found: null Error: {code: 'PGRST116', details: 'The result contains 0 rows', hint: null, message: 'Cannot coerce the result to a single JSON object'}
+index-7AQbkEna.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.34&order=promotion_date.desc&limit=1 406 (Not Acceptable)
+(anonymous) @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+l @ index-7AQbkEna.js:70
+Promise.then
+u @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+c4 @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+then @ index-7AQbkEna.js:48Understand this error
+index-7AQbkEna.js:335 ProfileDropdown - Belt data received: null
+index-7AQbkEna.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.34&order=promotion_date.desc&limit=1 406 (Not Acceptable)
+(anonymous) @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+l @ index-7AQbkEna.js:70
+Promise.then
+u @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+c4 @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+then @ index-7AQbkEna.js:48Understand this error
+index-7AQbkEna.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.34&order=promotion_date.desc&limit=1 406 (Not Acceptable)
+(anonymous) @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+l @ index-7AQbkEna.js:70
+Promise.then
+u @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+c4 @ index-7AQbkEna.js:70
+(anonymous) @ index-7AQbkEna.js:70
+then @ index-7AQbkEna.js:48Understand this error
+4index-7AQbkEna.js:87 📱 Query with supabaseId
+index-7AQbkEna.js:335  POST https://bjj-jits-journal.onrender.com/api/notes/34686d3f-2eef-4a6f-8b9d-01848fb49298/upload-video 500 (Internal Server Error)
+mutationFn @ index-7AQbkEna.js:335
+fn @ index-7AQbkEna.js:48
+v @ index-7AQbkEna.js:48
+start @ index-7AQbkEna.js:48
+execute @ index-7AQbkEna.js:48
+await in execute
+mutate @ index-7AQbkEna.js:48
+(anonymous) @ index-7AQbkEna.js:48
+b @ index-7AQbkEna.js:335
+await in b
+g @ index-7AQbkEna.js:335
+QO @ index-7AQbkEna.js:37
+JO @ index-7AQbkEna.js:37
+ZO @ index-7AQbkEna.js:37
+Yv @ index-7AQbkEna.js:37
+Aj @ index-7AQbkEna.js:37
+(anonymous) @ index-7AQbkEna.js:37
+Qg @ index-7AQbkEna.js:40
+tj @ index-7AQbkEna.js:37
+jh @ index-7AQbkEna.js:37
+Sg @ index-7AQbkEna.js:37
+mR @ index-7AQbkEna.js:37Understand this error
+index-7AQbkEna.js:335 Video upload error: Error: Failed to upload video
+    at Object.mutationFn (index-7AQbkEna.js:335:48310)
