@@ -38,7 +38,7 @@ export default function Notes() {
   const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
     queryKey: ['/api/notes'],
     enabled: !!user?.id,
-    staleTime: 30000, // Cache for 30 seconds
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: true,
     refetchOnMount: true,
   });
