@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { useAuth } from '../contexts/AuthContext';
-import { notesQueries } from '../lib/supabaseQueries';
 import { Users, UserPlus, Share2, MessageCircle, Heart, Eye, Trash2 } from 'lucide-react';
 
 export default function Social() {
@@ -19,23 +18,7 @@ export default function Social() {
 
   // Fetch shared notes from the community
   const { data: sharedNotes = [], isLoading: notesLoading } = useQuery<any[]>({
-    queryKey: ['shared-notes'],
-    queryFn: async () => {
-      const notes = await notesQueries.getShared();
-      // Map the joined user data to author field and fix date format
-      return notes.map((note: any) => ({
-        ...note,
-        author: note.users ? {
-          firstName: note.users.first_name,
-          lastName: note.users.last_name,
-          email: note.users.email
-        } : null,
-        createdAt: note.created_at, // Map snake_case to camelCase
-        videoUrl: note.video_url, // Map video fields
-        videoFileName: note.video_file_name,
-        videoThumbnail: note.video_thumbnail,
-      }));
-    },
+    queryKey: ['/api/notes/shared'],
   });
 
   // Fetch gym notes
@@ -54,7 +37,7 @@ export default function Social() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shared-notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
     },
     onError: (error: any) => {
       toast({
@@ -68,10 +51,10 @@ export default function Social() {
   // Admin delete mutation for moderation
   const adminDeleteMutation = useMutation({
     mutationFn: async (noteId: string) => {
-      return await notesQueries.adminDelete(noteId);
+      return await apiRequest("DELETE", `/api/notes/${noteId}/admin`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shared-notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
       toast({
         title: "Note Removed",
         description: "The inappropriate note has been removed from the community.",

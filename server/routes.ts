@@ -936,7 +936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Shared notes routes
-  app.get("/api/notes/shared", authenticateToken, async (req, res) => {
+  app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId;
       const sharedNotes = await storage.getSharedNotes();
