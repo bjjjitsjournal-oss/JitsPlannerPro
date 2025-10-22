@@ -1,9 +1,15 @@
 // Storage quota utilities for video uploads
 
 export const STORAGE_QUOTAS = {
-  free: 100 * 1024 * 1024, // 100 MB in bytes
-  enthusiast: 1 * 1024 * 1024 * 1024, // 1 GB in bytes
-  gym_pro: 3 * 1024 * 1024 * 1024, // 3 GB in bytes
+  free: 5 * 1024 * 1024 * 1024, // 5 GB total storage
+  enthusiast: 50 * 1024 * 1024 * 1024, // 50 GB total storage
+  gym_pro: 50 * 1024 * 1024 * 1024, // 50 GB total storage
+} as const;
+
+export const PER_VIDEO_LIMITS = {
+  free: 100 * 1024 * 1024, // 100 MB per video
+  enthusiast: 500 * 1024 * 1024, // 500 MB per video
+  gym_pro: 500 * 1024 * 1024, // 500 MB per video
 } as const;
 
 export type SubscriptionTier = keyof typeof STORAGE_QUOTAS;
@@ -14,6 +20,14 @@ export type SubscriptionTier = keyof typeof STORAGE_QUOTAS;
 export function getStorageQuota(tier: string): number {
   const normalizedTier = tier?.toLowerCase() as SubscriptionTier;
   return STORAGE_QUOTAS[normalizedTier] || STORAGE_QUOTAS.free;
+}
+
+/**
+ * Get per-video file size limit in bytes for a subscription tier
+ */
+export function getPerVideoLimit(tier: string): number {
+  const normalizedTier = tier?.toLowerCase() as SubscriptionTier;
+  return PER_VIDEO_LIMITS[normalizedTier] || PER_VIDEO_LIMITS.free;
 }
 
 /**
