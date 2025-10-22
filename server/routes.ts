@@ -1055,40 +1055,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Video upload route for notes - uploads to R2 storage
   app.post("/api/notes/:id/upload-video", upload.single('video'), async (req, res) => {
     try {
+      console.log('📹 Video upload started');
+      console.log('Request body keys:', Object.keys(req.body));
+      console.log('File present:', !!req.file);
+      
       const noteId = req.params.id; // UUID string
       const file = req.file;
       const { fileName, fileSize, userId, thumbnail } = req.body;
       
       if (!userId) {
+        console.error('❌ No userId in request');
         return res.status(401).json({ message: 'User ID required' });
       }
 
       if (!file) {
+        console.error('❌ No video file in request');
         return res.status(400).json({ message: "No video file provided" });
       }
       
       const parsedUserId = parseInt(userId);
       const parsedFileSize = parseInt(fileSize) || file.size;
       
-      console.log(`Video upload request for note ${noteId} by user ${parsedUserId}`);
-      console.log(`File name: ${fileName || file.originalname}`);
-      console.log(`File size: ${parsedFileSize} bytes`);
+      console.log(`📹 Video upload request for note ${noteId} by user ${parsedUserId}`);
+      console.log(`📹 File name: ${fileName || file.originalname}`);
+      console.log(`📹 File size: ${parsedFileSize} bytes (${(parsedFileSize / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`📹 MIME type: ${file.mimetype}`);
 
       // Get user's subscription tier and current storage usage
+      console.log('📹 Checking user and storage quota...');
       const [user] = await db.select()
         .from(users)
         .where(eq(users.id, parsedUserId))
         .limit(1);
 
       if (!user) {
+        console.error('❌ User not found in database');
         return res.status(404).json({ message: "User not found" });
       }
+
+      console.log(`📹 User subscription tier: ${user.subscriptionTier || 'free'}`);
+      console.log(`📹 Current storage used: ${user.storageUsed || 0} bytes`);
 
       // Check storage quota
       const { hasStorageQuota, formatBytes, getStorageTierInfo } = await import('./storageUtils');
       
       if (!hasStorageQuota(user.storageUsed || 0, parsedFileSize, user.subscriptionTier || 'free')) {
         const tierInfo = getStorageTierInfo(user.subscriptionTier || 'free');
+        console.error('❌ Storage quota exceeded');
         return res.status(413).json({ 
           message: `Storage quota exceeded. ${tierInfo.tierName} plan allows ${tierInfo.quotaFormatted}.`,
           currentUsage: formatBytes(user.storageUsed || 0),
@@ -1098,14 +1111,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Upload to R2
+      console.log('📹 Starting upload to R2...');
       const { uploadToR2 } = await import('./r2Storage');
       const { url, key } = await uploadToR2(
         file.buffer,
         fileName || file.originalname,
         file.mimetype
       );
+      console.log('✅ Upload to R2 successful');
+      console.log(`📹 R2 URL: ${url}`);
+      console.log(`📹 R2 Key: ${key}`);
 
       // Update note in database with video URL from R2
+      console.log('📹 Updating note in database...');
       const [updatedNote] = await db.update(notes)
         .set({
           videoUrl: url,
@@ -1121,26 +1139,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .returning();
 
       if (!updatedNote) {
-        console.error('Note not found or access denied');
+        console.error('❌ Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       // Update user's storage usage
+      console.log('📹 Updating storage usage...');
       await db.update(users)
         .set({
           storageUsed: (user.storageUsed || 0) + parsedFileSize
         })
         .where(eq(users.id, parsedUserId));
 
-      console.log(`Video uploaded to R2 successfully. New storage usage: ${formatBytes((user.storageUsed || 0) + parsedFileSize)}`);
+      const newStorageUsed = (user.storageUsed || 0) + parsedFileSize;
+      console.log(`✅ Video uploaded successfully! New storage usage: ${formatBytes(newStorageUsed)}`);
       res.json({ 
         message: "Video uploaded successfully",
         note: updatedNote,
-        storageUsed: (user.storageUsed || 0) + parsedFileSize
+        storageUsed: newStorageUsed
       });
-    } catch (error) {
-      console.error("Error uploading video to note:", error);
-      res.status(500).json({ message: "Failed to upload video" });
+    } catch (error: any) {
+      console.error("❌ Error uploading video to note:", error);
+      console.error("❌ Error stack:", error.stack);
+      console.error("❌ Error message:", error.message);
+      res.status(500).json({ message: "Failed to upload video", error: error.message });
     }
   });
 
