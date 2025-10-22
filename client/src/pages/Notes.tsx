@@ -200,7 +200,7 @@ export default function Notes() {
 
   // Delete note mutation  
   const deleteNoteMutation = useMutation({
-    mutationFn: async (noteId: number) => {
+    mutationFn: async (noteId: string) => {
       if (!user?.id) throw new Error('User not authenticated');
       return await apiRequest('DELETE', `/api/notes/${noteId}`, {});
     },
@@ -281,7 +281,7 @@ export default function Notes() {
   };
 
   // Handle deleting a note
-  const handleDeleteNote = (noteId: number) => {
+  const handleDeleteNote = (noteId: string) => {
     if (window.confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
       deleteNoteMutation.mutate(noteId);
     }
