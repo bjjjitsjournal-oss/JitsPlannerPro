@@ -5,12 +5,14 @@ import { classesQueries } from '../lib/supabaseQueries';
 import WeeklyGoals from '../components/WeeklyGoals';
 import { useAuth } from '../contexts/AuthContext';
 import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
+import { ChevronDown, ChevronUp, Edit, Trash2 } from 'lucide-react';
 
 export default function Classes() {
   const [showForm, setShowForm] = useState(false);
   const [editingClassId, setEditingClassId] = useState<number | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [classToDelete, setClassToDelete] = useState<number | null>(null);
+  const [expandedClassId, setExpandedClassId] = useState<number | null>(null);
   
   // Helper function to get current date in Sydney, Australia timezone
   const getSydneyDate = () => {
@@ -455,79 +457,108 @@ export default function Classes() {
 
       {/* Classes List */}
       <div className="space-y-3">
-        {classesArray.map((classItem: any, index: number) => (
-          <div key={classItem.id} className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800/50 dark:to-gray-800/50 border border-slate-200 dark:border-slate-700 p-4 rounded-lg shadow-sm hover-scale transition-all duration-200">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-blue-600 dark:text-blue-400 font-semibold">{classItem.classType}</span>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-600 dark:text-gray-400">{classItem.duration}min</span>
+        {classesArray.map((classItem: any, index: number) => {
+          const isExpanded = expandedClassId === classItem.id;
+          
+          return (
+            <div key={classItem.id} className="bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800/50 dark:to-gray-800/50 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover-scale transition-all duration-200">
+              {/* Clickable Header */}
+              <div
+                onClick={() => setExpandedClassId(isExpanded ? null : classItem.id)}
+                className="cursor-pointer p-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2 flex-1">
+                  <span className="text-blue-600 dark:text-blue-400 font-semibold">{classItem.classType}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-600 dark:text-gray-400">{classItem.duration}min</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {new Date(classItem.date).toLocaleDateString()}
+                    {classItem.time && ` @ ${classItem.time}`}
+                  </span>
+                </div>
+                {isExpanded ? (
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {new Date(classItem.date).toLocaleDateString()}
-                  {classItem.time && ` • ${classItem.time}`}
-                </span>
-                <button
-                  onClick={() => handleEdit(classItem)}
-                  className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded transition-colors"
-                  data-testid={`button-edit-class-${classItem.id}`}
-                >
-                  ✎
-                </button>
-                <button
-                  onClick={() => handleDelete(classItem.id)}
-                  className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
-                  data-testid={`button-delete-class-${classItem.id}`}
-                >
-                  🗑
-                </button>
-              </div>
+              
+              {/* Expandable Details */}
+              {isExpanded && (
+                <div className="px-4 pb-4 space-y-3 border-t border-slate-200 dark:border-slate-700 pt-3">
+                  {/* Instructor Information */}
+                  {classItem.instructor && (
+                    <div className="text-sm text-gray-700 dark:text-gray-300">
+                      <strong>Instructor:</strong> {classItem.instructor}
+                    </div>
+                  )}
+                  
+                  {/* Notes/Techniques Focused */}
+                  {classItem.techniquesFocused && (
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>Notes:</strong> {classItem.techniquesFocused}
+                    </div>
+                  )}
+                  
+                  {/* Rolling Partners */}
+                  {classItem.rollingPartners && classItem.rollingPartners.length > 0 && (
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>Rolling Partners:</strong> {classItem.rollingPartners.join(', ')}
+                    </div>
+                  )}
+                  
+                  {/* Submissions and Cardio */}
+                  {(classItem.yourSubmissions > 0 || classItem.partnerSubmissions > 0 || classItem.cardioRating) && (
+                    <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
+                      {(classItem.yourSubmissions > 0 || classItem.partnerSubmissions > 0) && (
+                        <span>
+                          <strong>Submissions:</strong> You {classItem.yourSubmissions || 0} - {classItem.partnerSubmissions || 0} Partners
+                        </span>
+                      )}
+                      {classItem.cardioRating && (
+                        <span>
+                          <strong>Cardio:</strong> {classItem.cardioRating}/5 
+                          {classItem.cardioRating === 1 && ' 😵'}
+                          {classItem.cardioRating === 2 && ' 😓'}
+                          {classItem.cardioRating === 3 && ' 😐'}
+                          {classItem.cardioRating === 4 && ' 😊'}
+                          {classItem.cardioRating === 5 && ' 💪'}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Edit and Delete Buttons */}
+                  <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(classItem);
+                      }}
+                      className="flex items-center gap-2 flex-1 justify-center px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors font-medium"
+                      data-testid={`button-edit-class-${classItem.id}`}
+                    >
+                      <Edit className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(classItem.id);
+                      }}
+                      className="flex items-center gap-2 flex-1 justify-center px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors font-medium"
+                      data-testid={`button-delete-class-${classItem.id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-            
-            {/* Instructor Information */}
-            {classItem.instructor && (
-              <div className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                <strong>Instructor:</strong> {classItem.instructor}
-              </div>
-            )}
-            
-            {/* Notes/Techniques Focused */}
-            {classItem.techniquesFocused && (
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                <strong>Notes:</strong> {classItem.techniquesFocused}
-              </div>
-            )}
-            
-            {/* Rolling Partners */}
-            {classItem.rollingPartners && classItem.rollingPartners.length > 0 && (
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                <strong>Rolling Partners:</strong> {classItem.rollingPartners.join(', ')}
-              </div>
-            )}
-            
-            {/* Submissions and Cardio */}
-            {(classItem.yourSubmissions > 0 || classItem.partnerSubmissions > 0 || classItem.cardioRating) && (
-              <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
-                {(classItem.yourSubmissions > 0 || classItem.partnerSubmissions > 0) && (
-                  <span>
-                    <strong>Subs:</strong> You {classItem.yourSubmissions || 0} - {classItem.partnerSubmissions || 0} Partners
-                  </span>
-                )}
-                {classItem.cardioRating && (
-                  <span>
-                    <strong>Cardio:</strong> {classItem.cardioRating}/5 
-                    {classItem.cardioRating === 1 && ' 😵'}
-                    {classItem.cardioRating === 2 && ' 😓'}
-                    {classItem.cardioRating === 3 && ' 😐'}
-                    {classItem.cardioRating === 4 && ' 😊'}
-                    {classItem.cardioRating === 5 && ' 💪'}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Delete Confirmation Dialog */}
