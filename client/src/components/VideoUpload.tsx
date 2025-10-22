@@ -59,13 +59,22 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       
       // Upload to backend (which will use R2)
       setUploadProgress(30);
+      console.log('🎥 Starting video upload to:', `/api/notes/${noteId}/upload-video`);
+      console.log('📦 File size:', file.size, 'bytes');
+      
       const response = await fetch(`/api/notes/${noteId}/upload-video`, {
         method: 'POST',
         body: formData,
+      }).catch((fetchError) => {
+        console.error('❌ Fetch error:', fetchError);
+        throw new Error(`Network error: ${fetchError.message}`);
       });
+      
+      console.log('📡 Response status:', response.status);
       
       if (!response.ok) {
         const error = await response.json();
+        console.error('❌ Server error:', error);
         throw new Error(error.message || 'Upload failed');
       }
       
