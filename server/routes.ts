@@ -1096,8 +1096,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`📹 User subscription tier: ${user.subscriptionTier || 'free'}`);
       console.log(`📹 Current storage used: ${user.storageUsed || 0} bytes`);
 
-      // Check storage quota
-      const { hasStorageQuota, formatBytes, getStorageTierInfo } = await import('./storageUtils');
+      // Check storage quota and per-video limits
+      const { hasStorageQuota, formatBytes, getStorageTierInfo, getPerVideoLimit } = await import('./storageUtils');
+      
+      // Check per-video file size limit
+      const perVideoLimit = getPerVideoLimit(user.subscriptionTier || 'free');
+      if (parsedFileSize > perVideoLimit) {
+        console.error(`❌ Video file too large: ${formatBytes(parsedFileSize)} exceeds limit of ${formatBytes(perVideoLimit)}`);
+        return res.status(413).json({
+          message: `Video file too large. Maximum ${formatBytes(perVideoLimit)} per video for your plan.`,
+          fileSize: formatBytes(parsedFileSize),
+          limit: formatBytes(perVideoLimit),
+          exceeded: true
+        });
+      }
       
       if (!hasStorageQuota(user.storageUsed || 0, parsedFileSize, user.subscriptionTier || 'free')) {
         const tierInfo = getStorageTierInfo(user.subscriptionTier || 'free');
