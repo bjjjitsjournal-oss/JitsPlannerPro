@@ -142,7 +142,7 @@ export default function Notes() {
   const createNoteMutation = useMutation({
     mutationFn: async (noteData: any) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await notesQueries.create(user.id, noteData);
+      return await apiRequest('POST', '/api/notes', noteData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -172,7 +172,7 @@ export default function Notes() {
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, noteData }: { noteId: number, noteData: any }) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await notesQueries.update(noteId.toString(), user.id, noteData);
+      return await apiRequest('PUT', `/api/notes/${noteId}`, noteData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -202,7 +202,7 @@ export default function Notes() {
   const deleteNoteMutation = useMutation({
     mutationFn: async (noteId: number) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await notesQueries.delete(noteId.toString(), user.id);
+      return await apiRequest('DELETE', `/api/notes/${noteId}`, {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -550,7 +550,8 @@ export default function Notes() {
                   } : null}
                   onVideoUploaded={() => {
                     // Refresh the notes list when video is uploaded/removed
-                    queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
+                    queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+                    refetchNotes();
                   }}
                 />
                 
