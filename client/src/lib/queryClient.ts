@@ -7,10 +7,27 @@ const API_BASE_URL = Capacitor.isNativePlatform()
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
+// Cache the Supabase ID to avoid slow getSession() calls on mobile
+let cachedSupabaseId: string | null = null;
+
+export function setCachedSupabaseId(id: string | null) {
+  cachedSupabaseId = id;
+}
+
 async function getSupabaseId(): Promise<string | null> {
+  // Use cached ID if available (instant)
+  if (cachedSupabaseId) {
+    return cachedSupabaseId;
+  }
+  
+  // Fallback to fetching from Supabase (slow on mobile)
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.user?.id || null;
+    const id = session?.user?.id || null;
+    if (id) {
+      cachedSupabaseId = id; // Cache it for next time
+    }
+    return id;
   } catch (e) {
     console.error('Failed to get Supabase user:', e);
     return null;

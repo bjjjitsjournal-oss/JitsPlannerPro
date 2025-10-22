@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { queryClient } from '@/lib/queryClient';
+import { queryClient, setCachedSupabaseId } from '@/lib/queryClient';
 import { Capacitor } from '@capacitor/core';
 
 // Get API base URL - use Render for mobile, env var for web
@@ -104,6 +104,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       if (session?.user) {
         try {
+          // Cache the Supabase ID immediately for fast API calls
+          setCachedSupabaseId(session.user.id);
+          
           const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
             queryClient.clear();
@@ -112,6 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setIsLoading(false);
           } else {
             await supabase.auth.signOut();
+            setCachedSupabaseId(null);
             setUser(null);
             setSession(null);
             setSupabaseUser(null);
@@ -119,12 +123,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } catch (error) {
           await supabase.auth.signOut();
+          setCachedSupabaseId(null);
           setUser(null);
           setSession(null);
           setSupabaseUser(null);
           setIsLoading(false);
         }
       } else {
+        setCachedSupabaseId(null);
         setIsLoading(false);
       }
     };
@@ -147,6 +153,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
+        // Cache the Supabase ID immediately for fast API calls
+        setCachedSupabaseId(session.user.id);
+        
         if (event === 'TOKEN_REFRESHED' || loadedSupabaseIdRef.current === session.user.id) {
           setIsLoading(false);
           return;
@@ -166,6 +175,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (event !== 'SIGNED_IN') {
               console.log('⚠️ User data not found, signing out (event:', event, ')');
               await supabase.auth.signOut();
+              setCachedSupabaseId(null);
               setUser(null);
               setSession(null);
               setSupabaseUser(null);
@@ -178,6 +188,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Only sign out on errors for non-SIGNED_IN events
           if (event !== 'SIGNED_IN') {
             await supabase.auth.signOut();
+            setCachedSupabaseId(null);
             setUser(null);
             setSession(null);
             setSupabaseUser(null);
@@ -185,6 +196,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
+        setCachedSupabaseId(null);
         setUser(null);
         loadedSupabaseIdRef.current = null;
         setIsLoading(false);
@@ -200,6 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
+    setCachedSupabaseId(null);
     setUser(null);
     setSession(null);
     setSupabaseUser(null);
