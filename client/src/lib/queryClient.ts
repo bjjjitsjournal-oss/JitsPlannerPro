@@ -1,31 +1,58 @@
 import { QueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 
 // Get API base URL - use Render for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
   ? 'https://bjj-jits-journal.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
-// Cache the Supabase ID to avoid slow getSession() calls on mobile
+// In-memory cache for fast access (but cleared on app restart)
 let cachedSupabaseId: string | null = null;
 
-export function setCachedSupabaseId(id: string | null) {
+// Persist to Capacitor Preferences for mobile (survives app restarts)
+export async function setCachedSupabaseId(id: string | null) {
   cachedSupabaseId = id;
+  
+  if (Capacitor.isNativePlatform()) {
+    if (id) {
+      await Preferences.set({ key: 'supabase_user_id', value: id });
+      console.log('💾 Persisted Supabase ID to Preferences');
+    } else {
+      await Preferences.remove({ key: 'supabase_user_id' });
+      console.log('🗑️ Cleared Supabase ID from Preferences');
+    }
+  }
 }
 
 async function getSupabaseId(): Promise<string | null> {
-  // Use cached ID if available (instant)
+  // 1. Check in-memory cache (fastest)
   if (cachedSupabaseId) {
     return cachedSupabaseId;
   }
   
-  // Fallback to fetching from Supabase (slow on mobile)
+  // 2. On mobile, check Capacitor Preferences (fast, persistent)
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const { value } = await Preferences.get({ key: 'supabase_user_id' });
+      if (value) {
+        cachedSupabaseId = value; // Hydrate in-memory cache
+        console.log('📱 Loaded Supabase ID from Preferences (instant!)');
+        return value;
+      }
+    } catch (e) {
+      console.error('Failed to read from Preferences:', e);
+    }
+  }
+  
+  // 3. Fallback to fetching from Supabase (slow on mobile, only happens once)
   try {
+    console.log('⚠️ Falling back to getSession() - this should only happen once');
     const { data: { session } } = await supabase.auth.getSession();
     const id = session?.user?.id || null;
     if (id) {
-      cachedSupabaseId = id; // Cache it for next time
+      await setCachedSupabaseId(id); // Cache for next time
     }
     return id;
   } catch (e) {

@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (session?.user) {
         try {
           // Cache the Supabase ID immediately for fast API calls
-          setCachedSupabaseId(session.user.id);
+          await setCachedSupabaseId(session.user.id);
           
           const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setIsLoading(false);
           } else {
             await supabase.auth.signOut();
-            setCachedSupabaseId(null);
+            await setCachedSupabaseId(null);
             setUser(null);
             setSession(null);
             setSupabaseUser(null);
@@ -123,14 +123,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } catch (error) {
           await supabase.auth.signOut();
-          setCachedSupabaseId(null);
+          await setCachedSupabaseId(null);
           setUser(null);
           setSession(null);
           setSupabaseUser(null);
           setIsLoading(false);
         }
       } else {
-        setCachedSupabaseId(null);
+        await setCachedSupabaseId(null);
         setIsLoading(false);
       }
     };
@@ -154,7 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       if (session?.user) {
         // Cache the Supabase ID immediately for fast API calls
-        setCachedSupabaseId(session.user.id);
+        await setCachedSupabaseId(session.user.id);
         
         if (event === 'TOKEN_REFRESHED' || loadedSupabaseIdRef.current === session.user.id) {
           setIsLoading(false);
@@ -175,7 +175,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (event !== 'SIGNED_IN') {
               console.log('⚠️ User data not found, signing out (event:', event, ')');
               await supabase.auth.signOut();
-              setCachedSupabaseId(null);
+              await setCachedSupabaseId(null);
               setUser(null);
               setSession(null);
               setSupabaseUser(null);
@@ -188,7 +188,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Only sign out on errors for non-SIGNED_IN events
           if (event !== 'SIGNED_IN') {
             await supabase.auth.signOut();
-            setCachedSupabaseId(null);
+            await setCachedSupabaseId(null);
             setUser(null);
             setSession(null);
             setSupabaseUser(null);
@@ -196,7 +196,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsLoading(false);
         }
       } else {
-        setCachedSupabaseId(null);
+        await setCachedSupabaseId(null);
         setUser(null);
         loadedSupabaseIdRef.current = null;
         setIsLoading(false);
@@ -212,7 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     await supabase.auth.signOut();
-    setCachedSupabaseId(null);
+    await setCachedSupabaseId(null);
     setUser(null);
     setSession(null);
     setSupabaseUser(null);
