@@ -3,7 +3,7 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
-## Mobile App Status (v1.0.48)
+## Mobile App Status (v1.0.49)
 ### Android
 - ✅ Build configured and tested
 - ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
@@ -11,22 +11,30 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.48 ready for build and submission
+- ⏳ Status: v1.0.49 ready for build and submission
 
 ### iOS
-- ✅ Xcode project configured (v1.0.48)
+- ✅ Xcode project configured (v1.0.49)
 - ✅ App icons and splash screens ready
+- ✅ **CRITICAL FIX**: Removed server.url from capacitor.config.ts to fix sign-in issue
 - ✅ Capacitor synced with latest web build
 - ✅ Codemagic CI/CD configured (builds iOS without Mac!)
+- 📖 **iOS Fix Guide**: IOS_PRODUCTION_BUILD_FIX.md (MUST READ before submitting!)
 - 📖 Codemagic setup guide: CODEMAGIC_SETUP_GUIDE.md
 - 📖 Manual build guide (requires Mac): IOS_BUILD_GUIDE.md
 - 📖 Deployment guide: DEPLOYMENT_GUIDE_v1.0.44.md
 - 🛠️ Build script: build-ios.sh (for Mac users)
 - 📱 Bundle ID: com.jitsjournal.app
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
-- ⏳ Status: v1.0.48 ready for Codemagic build and App Store submission
+- ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.48 - October 2025)
+### Recent Updates (v1.0.49 - October 2025)
+- 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables
+- 🔧 **Storage Limits Updated**: Free (100MB/video, 5GB total), Premium (500MB/video, 50GB total)
+- 🐛 **Bug Fix**: Fixed delete notes functionality (UUID type mismatch)
+- 📋 **Storage Display**: Storage usage tracker already implemented in Settings page
+
+### Previous Updates (v1.0.48 - October 2025)
 - 🚀 **CRITICAL PERFORMANCE FIX**: Eliminated 8-9 second delay on mobile by persisting Supabase ID in Capacitor Preferences
 - ⚡ **Instant API Calls**: Notes load instantly on mobile (<1 second) by avoiding `supabase.auth.getSession()` calls
 - 🔧 **Root Cause**: Mobile app was calling slow `getSession()` on every cold start through Capacitor bridge
