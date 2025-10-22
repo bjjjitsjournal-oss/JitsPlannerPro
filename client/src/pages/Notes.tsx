@@ -34,9 +34,10 @@ export default function Notes() {
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
-  // Fetch notes from backend API (much faster than Supabase)
+  // Fetch notes from Supabase
   const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
-    queryKey: ['/api/notes'],
+    queryKey: ['notes', user?.id],
+    queryFn: () => notesQueries.getAll(user!.id),
     enabled: !!user?.id,
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: true,
@@ -63,11 +64,12 @@ export default function Notes() {
 
   // Toggle note sharing mutation (public community)
   const toggleSharingMutation = useMutation({
-    mutationFn: async ({ noteId }: { noteId: string }) => {
-      return await apiRequest('POST', `/api/notes/${noteId}/toggle-sharing`, {});
+    mutationFn: async ({ noteId, isShared }: { noteId: number, isShared: boolean }) => {
+      if (!user?.id) throw new Error('User not authenticated');
+      return await notesQueries.toggleShare(noteId.toString(), user.id, !isShared);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
       toast({
         title: "Success",
         description: "Note sharing updated successfully",
@@ -88,7 +90,7 @@ export default function Notes() {
       return await apiRequest('POST', `/api/notes/${noteId}/share-to-gym`, {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
       toast({
         title: "Success",
@@ -110,7 +112,7 @@ export default function Notes() {
       return await apiRequest('POST', `/api/notes/${noteId}/unshare-from-gym`, {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
+      queryClient.invalidateQueries({ queryKey: ['notes', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
       toast({
         title: "Success",
@@ -264,9 +266,9 @@ export default function Notes() {
   };
 
   // Handle toggling note sharing
-  const handleToggleSharing = async (noteId: string) => {
+  const handleToggleSharing = async (noteId: number, isShared: number) => {
     try {
-      await toggleSharingMutation.mutateAsync({ noteId });
+      await toggleSharingMutation.mutateAsync({ noteId, isShared: isShared === 1 });
     } catch (error) {
       // Error handling is done in the mutation
     }
@@ -505,7 +507,7 @@ export default function Notes() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          onClick={() => handleToggleSharing(note.id)}
+                          onClick={() => handleToggleSharing(note.id, note.isShared || 0)}
                           data-testid={`button-share-community-${note.id}`}
                         >
                           <Globe className="w-4 h-4 mr-2" />
