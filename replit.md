@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.52 ready for build and submission
+- ⏳ Status: v1.0.55 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured (v1.0.49)
