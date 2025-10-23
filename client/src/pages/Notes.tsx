@@ -534,14 +534,31 @@ export default function Notes() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => handleToggleSharing(note.id)}
-                          data-testid={`button-share-community-${note.id}`}
-                        >
-                          <Globe className="w-4 h-4 mr-2" />
-                          {note.isShared === 1 ? 'Remove from Community' : 'Share to Community'}
-                        </DropdownMenuItem>
+                        {/* Community sharing - Premium and Gym only */}
+                        {isPremium ? (
+                          <DropdownMenuItem
+                            onClick={() => handleToggleSharing(note.id)}
+                            data-testid={`button-share-community-${note.id}`}
+                          >
+                            <Globe className="w-4 h-4 mr-2" />
+                            {note.isShared === 1 ? 'Remove from Community' : 'Share to Community'}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={() => toast({
+                              title: "Premium Feature",
+                              description: "Community sharing is available with Premium. Upgrade to share with the community!",
+                              variant: "destructive"
+                            })}
+                            className="opacity-50"
+                            data-testid={`button-share-community-locked-${note.id}`}
+                          >
+                            <Globe className="w-4 h-4 mr-2" />
+                            Share to Community 🔒
+                          </DropdownMenuItem>
+                        )}
                         
+                        {/* Gym sharing - Gym admin only */}
                         {gymMembership && gymMembership.role === 'admin' && (
                           <DropdownMenuItem
                             onClick={() => note.gymId ? unshareFromGymMutation.mutate(note.id) : shareToGymMutation.mutate(note.id)}

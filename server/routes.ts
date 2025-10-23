@@ -971,6 +971,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const noteId = req.params.id; // Keep as string (UUID)
       const userId = (req as any).user.userId;
       
+      // Get user details to check subscription tier
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if trying to share (not unshare)
+      const note = await storage.getNote(noteId);
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      
+      // If note is currently not shared (user is trying to share it)
+      if (note.isShared === 0) {
+        // FREE TIER: Cannot share to community at all
+        if (user.subscriptionStatus === 'free' || !user.subscriptionStatus) {
+          return res.status(403).json({ 
+            message: "Community sharing is a Premium feature. Upgrade to share notes with the community!" 
+          });
+        }
+        
+        // PREMIUM/GYM TIER: Check weekly share limit
+        // Calculate current week start (Monday)
+        const today = new Date();
+        const dayOfWeek = today.getUTCDay();
+        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const weekStart = new Date(Date.UTC(
+          today.getUTCFullYear(), 
+          today.getUTCMonth(), 
+          today.getUTCDate() - daysToMonday, 
+          0, 0, 0, 0
+        ));
+        
+        // Count community shares this week
+        const allUserNotes = await storage.getNotes(userId);
+        const sharesThisWeek = allUserNotes.filter((n: any) => {
+          if (n.isShared !== 1 || !n.createdAt) return false;
+          const shareDate = new Date(n.createdAt);
+          return shareDate >= weekStart;
+        }).length;
+        
+        // Check limits based on subscription tier
+        let weeklyLimit = 0;
+        if (user.subscriptionStatus === 'premium' || user.subscriptionStatus === 'active') {
+          weeklyLimit = 1; // Premium: 1 per week
+        } else if (user.subscriptionTier === 'gym_pro') {
+          weeklyLimit = 3; // Gym: 3 per week
+        }
+        
+        if (sharesThisWeek >= weeklyLimit) {
+          return res.status(403).json({ 
+            message: `You've reached your weekly limit of ${weeklyLimit} community ${weeklyLimit === 1 ? 'share' : 'shares'}. Try again next week!` 
+          });
+        }
+      }
+      
       const updatedNote = await storage.toggleNoteSharing(noteId, userId);
       
       if (!updatedNote) {
