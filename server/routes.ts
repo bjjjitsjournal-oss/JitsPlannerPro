@@ -841,7 +841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId; // Integer user ID
-      console.log("Creating note with data:", req.body, "for user:", userId);
+      console.log("📝 POST /api/notes - Creating note with data:", req.body, "for user:", userId);
       
       const noteData = {
         title: req.body.title,
@@ -868,6 +868,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.userId; // Integer user ID
       const noteData = req.body; // Parse as partial appNote data
+      console.log("✏️ PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -891,6 +892,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.userId; // Integer user ID
+      console.log("🗑️ DELETE /api/notes/:id - Deleting note:", id, "for user:", userId, "body:", req.body);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
