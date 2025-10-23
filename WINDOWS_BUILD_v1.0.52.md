@@ -1,8 +1,8 @@
-# Windows Build Guide - v1.0.52
+# Windows Build Guide - v1.0.55
 
-## What's New in v1.0.52
+## What's New in v1.0.55
 
-### 🚨 CRITICAL FIXES for iOS & Android
+### 🚨 CRITICAL FIXES for iOS & Android (from v1.0.52)
 
 ✅ **Fixed registration completely broken on mobile**
 - Registration API calls now work on iOS/Android (was calling wrong URL)
