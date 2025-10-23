@@ -1,10 +1,22 @@
 # Windows Build Guide - v1.0.52
 
 ## What's New in v1.0.52
-✅ **FIXED: Error messages now visible on mobile**
-- Login errors now display in a red box on the screen
+
+### 🎯 MAJOR FIX: Login Now Works Reliably
+✅ **Fixed "works every other time" issue**
+- Smart retry logic handles Render backend cold starts automatically
+- Login now succeeds on first attempt even when server is asleep
+- Exponential backoff retries up to 10 times
+
+✅ **Error messages now visible on mobile**
+- Login errors display in a red box on the screen
 - No more invisible toast notifications
 - You'll know exactly why login failed
+
+✅ **Better loading feedback**
+- Shows "Signing you in..." during authentication
+- Tells you when server is starting up
+- No more wondering if the app is working
 
 ---
 

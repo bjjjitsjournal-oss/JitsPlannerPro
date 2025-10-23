@@ -70,16 +70,17 @@ function AuthenticatedApp() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading, login } = useAuth();
+  const { isAuthenticated, isLoading, loadingMessage, login } = useAuth();
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-red-600 flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-red-600 flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
           <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
             <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <p className="text-white text-lg">Loading...</p>
+          <p className="text-white text-lg font-medium">{loadingMessage}</p>
+          <p className="text-white/70 text-sm mt-2">This may take a moment if the server is starting up...</p>
         </div>
       </div>
     );

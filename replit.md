@@ -29,10 +29,14 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
 ### Recent Updates (v1.0.52 - October 2025)
-- 🎯 **MOBILE UX FIX**: Login errors now visible on mobile devices
+- 🎯 **CRITICAL FIX**: Solved "works every other time" login issue for production users
+- ⚡ **Smart Retry Logic**: Automatic exponential backoff retry for Render backend cold starts (up to 10 attempts)
 - 📱 **On-Screen Error Messages**: Replaced invisible toast notifications with prominent red error boxes
-- ✅ **User Feedback**: Users can now see exactly why login failed (invalid credentials, email not confirmed, etc.)
-- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK with visible error messages
+- ⏱️ **Better Loading States**: Shows "Signing you in..." and explains when server is starting up
+- ✅ **Reliable First-Time Login**: Users no longer need to try 2-3 times to log in
+- 🔧 **Better Error Handling**: Distinguishes between network errors (retry), server errors (retry), and genuine failures (show error)
+- 📖 **Documentation**: PRODUCTION_LOGIN_FIX_v1.0.52.md details the root cause and solution
+- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK with all fixes
 
 ### Previous Updates (v1.0.49 - October 2025)
 - 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables

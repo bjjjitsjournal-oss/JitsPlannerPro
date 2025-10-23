@@ -26,6 +26,7 @@ interface AuthContextType {
   supabaseUser: SupabaseUser | null;
   session: any;
   isLoading: boolean;
+  loadingMessage: string;
   login: (userData: User) => void;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
@@ -47,17 +48,24 @@ interface AuthProviderProps {
 }
 
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, retries = 10): Promise<User | null> {
+  const attemptNumber = 11 - retries;
+  console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${attemptNumber}/10)`);
+  
   try {
-    console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${11 - retries}/10)`);
-    // Get user from server via supabaseId using the correct endpoint
-    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
+    // Add timeout to fetch (60 seconds for cold starts)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
     
+    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`, {
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
     console.log('📡 User endpoint response status:', response.status);
     
     if (response.ok) {
       const data = await response.json();
       console.log('✅ User data loaded successfully:', { id: data.id, email: data.email });
-      // The endpoint returns the user object directly, not wrapped
       return {
         id: data.id.toString(),
         email: data.email,
@@ -71,19 +79,42 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       };
     }
     
-    // If 404 and we have retries left, wait and try again (handles race condition during signup)
-    if (response.status === 404 && retries > 0) {
-      console.log('⏳ User not found yet, retrying in 1000ms...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    // Handle different error scenarios
+    if (response.status === 404) {
+      // User genuinely doesn't exist in database - only retry a few times for signup race condition
+      if (retries > 7) {
+        console.log('⏳ User not found yet (signup race condition), retrying in 1000ms...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+      }
+      // After 3 attempts, user really doesn't exist
+      console.error('❌ User not found in database for supabaseId:', supabaseId);
+      return null;
+    }
+    
+    // Handle server errors (500, 502, 503, 504) - likely cold start or server issues
+    if (response.status >= 500 && retries > 0) {
+      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 10000); // Exponential backoff, max 10s
+      console.log(`⚠️ Server error ${response.status} (likely cold start), retrying in ${backoffMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, backoffMs));
       return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
     }
     
-    // If user not found after retries, they need to complete signup process
+    // Other errors (401, 403, etc.)
     const errorText = await response.text();
-    console.error('❌ User not found in database for supabaseId:', supabaseId, 'Response:', errorText);
+    console.error('❌ Unexpected error from backend:', response.status, errorText);
     return null;
-  } catch (error) {
-    console.error('❌ Error in getUserFromSupabaseId:', error);
+    
+  } catch (error: any) {
+    // Network errors, timeouts, etc. - retry with backoff
+    if (retries > 0 && (error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('network'))) {
+      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 10000);
+      console.log(`⚠️ Network error (${error.message}), retrying in ${backoffMs}ms...`);
+      await new Promise(resolve => setTimeout(resolve, backoffMs));
+      return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+    }
+    
+    console.error('❌ Fatal error in getUserFromSupabaseId:', error);
     return null;
   }
 }
@@ -93,11 +124,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState('Loading...');
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
   const isSigningUpRef = React.useRef(false);
 
   useEffect(() => {
     const initAuth = async () => {
+      setLoadingMessage('Checking session...');
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setSupabaseUser(session?.user ?? null);
@@ -107,6 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Cache the Supabase ID immediately for fast API calls
           await setCachedSupabaseId(session.user.id);
           
+          setLoadingMessage('Loading your data...');
           const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
             queryClient.clear();
@@ -162,6 +196,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         
         setIsLoading(true);
+        setLoadingMessage('Signing you in...');
         try {
           const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
           if (userData) {
@@ -231,6 +266,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         supabaseUser,
         session,
         isLoading,
+        loadingMessage,
         login,
         logout,
         isAuthenticated: !!user,
