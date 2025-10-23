@@ -1,4 +1,15 @@
-# Windows Build Guide - v1.0.56
+# Windows Build Guide - v1.0.57
+
+## What's New in v1.0.57
+
+### 🐛 DEBUGGING BUILD for Samsung Notes Issue
+- **Network Timeout Detection**: 30-second timeout alerts if save/delete hangs
+- **Detailed Logging**: Console shows exactly where the operation fails
+- **Server Logging**: Backend logs all note requests to identify issues
+- **Better Error Messages**: Shows exact error details instead of generic messages
+
+**Why this build:**
+User reported notes can't be saved or deleted on Samsung app. This build adds comprehensive logging to identify the root cause.
 
 ## What's New in v1.0.56
 

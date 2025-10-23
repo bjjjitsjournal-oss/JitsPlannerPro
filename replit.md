@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.56 ready for build and submission
+- ⏳ Status: v1.0.57 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured (v1.0.49)
@@ -28,7 +28,13 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.56 - October 2025)
+### Recent Updates (v1.0.57 - October 2025)
+- 🐛 **DEBUG BUILD**: Added detailed logging to diagnose Samsung app notes issue
+- 🔍 **Network Timeout Detection**: 30-second timeout for save/delete operations
+- 📊 **Server Logging**: Backend now logs all note CRUD operations for debugging
+- 🎯 **Error Messages**: Shows exact error details when save/delete fails
+
+### Previous Updates (v1.0.56 - October 2025)
 - 🚨 **CRITICAL FIX**: Fixed registration completely broken on mobile (API URL issue)
 - 🚨 **CRITICAL FIX**: Fixed email verification redirect (capacitor:// → HTTPS)
 - 🎯 **CRITICAL FIX**: Solved "works every other time" login issue (missing auth token)
