@@ -47,17 +47,24 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, retries = 10): Promise<User | null> {
-  const attemptNumber = 11 - retries;
-  console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${attemptNumber}/10)`);
+async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, accessToken?: string, retries = 3): Promise<User | null> {
+  const attemptNumber = 4 - retries;
+  console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${attemptNumber}/3)`);
   
   try {
-    // Add timeout to fetch (60 seconds for cold starts)
+    // Add timeout to fetch (10 seconds should be plenty)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    const headers: HeadersInit = {};
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+      console.log('🔑 Including Supabase access token in request');
+    }
     
     const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`, {
       signal: controller.signal,
+      headers,
     });
     
     clearTimeout(timeoutId);
@@ -82,22 +89,22 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     // Handle different error scenarios
     if (response.status === 404) {
       // User genuinely doesn't exist in database - only retry a few times for signup race condition
-      if (retries > 7) {
+      if (retries > 1) {
         console.log('⏳ User not found yet (signup race condition), retrying in 1000ms...');
         await new Promise(resolve => setTimeout(resolve, 1000));
-        return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+        return getUserFromSupabaseId(supabaseId, email, metadata, accessToken, retries - 1);
       }
       // After 3 attempts, user really doesn't exist
       console.error('❌ User not found in database for supabaseId:', supabaseId);
       return null;
     }
     
-    // Handle server errors (500, 502, 503, 504) - likely cold start or server issues
+    // Handle server errors (500, 502, 503, 504) - retry briefly
     if (response.status >= 500 && retries > 0) {
-      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 10000); // Exponential backoff, max 10s
-      console.log(`⚠️ Server error ${response.status} (likely cold start), retrying in ${backoffMs}ms...`);
+      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 5000); // Exponential backoff, max 5s
+      console.log(`⚠️ Server error ${response.status}, retrying in ${backoffMs}ms...`);
       await new Promise(resolve => setTimeout(resolve, backoffMs));
-      return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+      return getUserFromSupabaseId(supabaseId, email, metadata, accessToken, retries - 1);
     }
     
     // Other errors (401, 403, etc.)
@@ -106,12 +113,12 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
     return null;
     
   } catch (error: any) {
-    // Network errors, timeouts, etc. - retry with backoff
+    // Network errors, timeouts, etc. - retry briefly
     if (retries > 0 && (error.name === 'AbortError' || error.message?.includes('fetch') || error.message?.includes('network'))) {
-      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 10000);
+      const backoffMs = Math.min(1000 * Math.pow(2, attemptNumber - 1), 5000);
       console.log(`⚠️ Network error (${error.message}), retrying in ${backoffMs}ms...`);
       await new Promise(resolve => setTimeout(resolve, backoffMs));
-      return getUserFromSupabaseId(supabaseId, email, metadata, retries - 1);
+      return getUserFromSupabaseId(supabaseId, email, metadata, accessToken, retries - 1);
     }
     
     console.error('❌ Fatal error in getUserFromSupabaseId:', error);
@@ -141,7 +148,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await setCachedSupabaseId(session.user.id);
           
           setLoadingMessage('Loading your data...');
-          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
+          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata, session.access_token);
           if (userData) {
             queryClient.clear();
             setUser(userData);
@@ -198,7 +205,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(true);
         setLoadingMessage('Signing you in...');
         try {
-          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata);
+          const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata, session.access_token);
           if (userData) {
             queryClient.clear();
             setUser(userData);
