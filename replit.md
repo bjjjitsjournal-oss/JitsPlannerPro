@@ -3,7 +3,7 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
-## Mobile App Status (v1.0.49)
+## Mobile App Status (v1.0.52)
 ### Android
 - ✅ Build configured and tested
 - ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.49 ready for build and submission
+- ⏳ Status: v1.0.52 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured (v1.0.49)
@@ -28,7 +28,13 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.49 - October 2025)
+### Recent Updates (v1.0.52 - October 2025)
+- 🎯 **MOBILE UX FIX**: Login errors now visible on mobile devices
+- 📱 **On-Screen Error Messages**: Replaced invisible toast notifications with prominent red error boxes
+- ✅ **User Feedback**: Users can now see exactly why login failed (invalid credentials, email not confirmed, etc.)
+- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK with visible error messages
+
+### Previous Updates (v1.0.49 - October 2025)
 - 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables
 - 🔧 **Storage Limits Updated**: Free (100MB/video, 5GB total), Premium (500MB/video, 50GB total)
 - 🐛 **Bug Fix**: Fixed delete notes functionality (UUID type mismatch)
