@@ -29,14 +29,16 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
 ### Recent Updates (v1.0.52 - October 2025)
-- 🎯 **CRITICAL FIX**: Solved "works every other time" login issue for production users
-- 🔐 **Proper Authentication**: Mobile app now sends Supabase access token with API requests
+- 🚨 **CRITICAL FIX**: Fixed registration completely broken on mobile (API URL issue)
+- 🚨 **CRITICAL FIX**: Fixed email verification redirect (capacitor:// → HTTPS)
+- 🎯 **CRITICAL FIX**: Solved "works every other time" login issue (missing auth token)
+- 📱 **MEDIUM FIX**: Fixed social sharing URLs (capacitor:// → production URL)
+- 🔐 **Proper Authentication**: Mobile app now sends Supabase access token with all API requests
 - 📱 **On-Screen Error Messages**: Replaced invisible toast notifications with prominent red error boxes
 - ⏱️ **Better Loading States**: Shows "Signing you in..." with clear progress indicators
-- ✅ **Reliable First-Time Login**: Login succeeds on first attempt (<1 second)
-- 🔧 **Root Cause**: App was calling backend without auth headers, causing intermittent 401/403 errors
-- 📖 **Documentation**: PRODUCTION_LOGIN_FIX_v1.0.52.md details the technical fix
-- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK with authentication fix
+- ✅ **Production Ready**: All mobile-specific issues resolved for iOS and Android
+- 📖 **Documentation**: MOBILE_ISSUES_FIXED_v1.0.52.md details all 4 critical mobile fixes
+- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK/AAB with all fixes
 
 ### Previous Updates (v1.0.49 - October 2025)
 - 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables

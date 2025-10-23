@@ -2,24 +2,35 @@
 
 ## What's New in v1.0.52
 
-### 🎯 MAJOR FIX: Login Now Works Reliably
-✅ **Fixed "works every other time" issue**
+### 🚨 CRITICAL FIXES for iOS & Android
+
+✅ **Fixed registration completely broken on mobile**
+- Registration API calls now work on iOS/Android (was calling wrong URL)
+- Email verification redirects use proper HTTPS URL (not capacitor://)
+- Users can now successfully create accounts on mobile
+
+✅ **Fixed "works every other time" login issue**
 - Mobile app now sends proper authentication credentials (Supabase access token)
 - Login succeeds on first attempt every time
 - Fast and reliable (<1 second)
 
-✅ **Error messages now visible on mobile**
-- Login errors display in a red box on the screen
-- No more invisible toast notifications
-- You'll know exactly why login failed
+✅ **Fixed social sharing URLs**
+- Twitter/Facebook share buttons now use production URL
+- No more broken "capacitor://localhost" links
 
-✅ **Better loading feedback**
-- Shows "Signing you in..." during authentication
-- Clear progress indicators
+✅ **Better error messages & loading states**
+- Login errors display in a red box on the screen (not invisible toasts)
+- Shows "Signing you in..." with clear progress indicators
 - Professional user experience
 
-### 🔧 Technical Fix
-The app was calling the backend without authentication headers, causing intermittent failures. Now properly sends Supabase access token with every request for reliable authentication.
+### 🔧 Technical Summary
+Fixed 4 critical mobile issues:
+1. Registration API calls (capacitor URL → production URL)
+2. Email verification redirect (capacitor URL → HTTPS URL)
+3. Login authentication (missing auth token → included)
+4. Social sharing URLs (capacitor URL → production URL)
+
+See **MOBILE_ISSUES_FIXED_v1.0.52.md** for complete technical details.
 
 ---
 
