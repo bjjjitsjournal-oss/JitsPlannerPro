@@ -12,6 +12,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, UserPlus, LogIn } from 'lucide-react';
 import { Link } from 'wouter';
+import { Capacitor } from '@capacitor/core';
+
+// Get API base URL - use Render for mobile, env var for web
+const API_BASE_URL = Capacitor.isNativePlatform() 
+  ? 'https://bjj-jits-journal.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -112,6 +118,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // STEP 1: Create Supabase auth account
         console.log('Step 1: Creating Supabase auth account...');
+        
+        // Use production URL for email verification redirect (works on mobile)
+        const redirectUrl = Capacitor.isNativePlatform()
+          ? 'https://bjj-jits-journal.onrender.com/'
+          : `${window.location.origin}/`;
+        
         const { data: authData, error: signupError } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
@@ -120,7 +132,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
               firstName: data.firstName,
               lastName: data.lastName,
             },
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: redirectUrl,
           },
         });
 
@@ -137,7 +149,6 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // STEP 3: Create PostgreSQL user profile with Supabase ID
         console.log('Step 2: Creating user profile in PostgreSQL database...');
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
         const profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
