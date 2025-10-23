@@ -35,6 +35,7 @@ interface AuthProps {
 export default function Auth({ onAuthSuccess }: AuthProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { toast } = useToast();
   const { setSignupInProgress } = useAuth();
 
@@ -59,6 +60,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
       console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
+      setErrorMessage(''); // Clear any previous errors
+      
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -72,6 +75,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       return authData;
     },
     onSuccess: (data) => {
+      setErrorMessage('');
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
@@ -87,6 +91,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       } else if (error.message?.includes('Email not confirmed')) {
         description = "Please check your email and confirm your account before logging in.";
       }
+      
+      setErrorMessage(description);
       
       toast({
         title: "Login failed",
@@ -194,9 +200,11 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     },
     onError: (error: any) => {
       console.error('Registration mutation error:', error);
+      const description = error.message || "Please try again.";
+      setErrorMessage(description);
       toast({
         title: "Registration failed",
-        description: error.message || "Please try again.",
+        description: description,
         variant: "destructive",
         duration: 6000,
       });
@@ -205,10 +213,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const handleLogin = (data: LoginFormData) => {
     console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
+    setErrorMessage('');
     loginMutation.mutate(data);
   };
 
   const handleRegister = (data: RegisterFormData) => {
+    setErrorMessage('');
     registerMutation.mutate(data);
   };
 
@@ -270,6 +280,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                     <p className="text-red-300 text-sm">{loginForm.formState.errors.password.message}</p>
                   )}
                 </div>
+                
+                {errorMessage && (
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
+                    <p className="text-red-200 text-sm font-medium">{errorMessage}</p>
+                  </div>
+                )}
                 
                 <Button 
                   type="submit" 
@@ -367,6 +383,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                   )}
                 </div>
                 
+                {errorMessage && (
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
+                    <p className="text-red-200 text-sm font-medium">{errorMessage}</p>
+                  </div>
+                )}
+                
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 text-white font-medium"
@@ -390,7 +412,10 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             
             <div className="text-center">
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErrorMessage('');
+                }}
                 className="text-white/80 hover:text-white text-sm underline"
               >
                 {isLogin 
