@@ -1,6 +1,6 @@
-# Windows Build Guide - v1.0.58
+# Windows Build Guide - v1.0.59
 
-## What's New in v1.0.58
+## What's New in v1.0.59
 
 ### 🐛 DEBUGGING BUILD for Samsung Notes Issue
 - **Network Timeout Detection**: 30-second timeout alerts if save/delete hangs
