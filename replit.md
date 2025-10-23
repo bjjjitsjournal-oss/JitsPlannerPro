@@ -28,11 +28,13 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.52 - October 2025)
+### Recent Updates (v1.0.55 - October 2025)
 - 🚨 **CRITICAL FIX**: Fixed registration completely broken on mobile (API URL issue)
 - 🚨 **CRITICAL FIX**: Fixed email verification redirect (capacitor:// → HTTPS)
 - 🎯 **CRITICAL FIX**: Solved "works every other time" login issue (missing auth token)
 - 📱 **MEDIUM FIX**: Fixed social sharing URLs (capacitor:// → production URL)
+- 🍎 **iOS FIX**: Added export compliance declaration (ITSAppUsesNonExemptEncryption) to Info.plist
+- 🔍 **UX FIX**: Added network timeout detection and ultra-visible error messages for mobile signup
 - 🔐 **Proper Authentication**: Mobile app now sends Supabase access token with all API requests
 - 📱 **On-Screen Error Messages**: Replaced invisible toast notifications with prominent red error boxes
 - ⏱️ **Better Loading States**: Shows "Signing you in..." with clear progress indicators
