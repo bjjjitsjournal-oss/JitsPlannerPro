@@ -149,17 +149,34 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // STEP 3: Create PostgreSQL user profile with Supabase ID
         console.log('Step 2: Creating user profile in PostgreSQL database...');
-        const profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            supabaseId: authData.user.id,
-          }),
-        });
+        console.log('API URL:', `${API_BASE_URL}/api/auth/register`);
+        
+        // Add timeout to detect network issues
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        let profileResponse;
+        try {
+          profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              supabaseId: authData.user.id,
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+        } catch (fetchError: any) {
+          clearTimeout(timeoutId);
+          if (fetchError.name === 'AbortError') {
+            throw new Error('Network timeout. Please check your internet connection and try again.');
+          }
+          throw new Error(`Network error: ${fetchError.message || 'Could not connect to server'}`);
+        }
 
         if (!profileResponse.ok) {
           const errorData = await profileResponse.json();
@@ -293,8 +310,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                 </div>
                 
                 {errorMessage && (
-                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
-                    <p className="text-red-200 text-sm font-medium">{errorMessage}</p>
+                  <div className="bg-red-600 border-2 border-red-400 rounded-lg p-4 shadow-lg">
+                    <p className="text-white text-sm font-bold">⚠️ {errorMessage}</p>
                   </div>
                 )}
                 
@@ -395,8 +412,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                 </div>
                 
                 {errorMessage && (
-                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3">
-                    <p className="text-red-200 text-sm font-medium">{errorMessage}</p>
+                  <div className="bg-red-600 border-2 border-red-400 rounded-lg p-4 shadow-lg">
+                    <p className="text-white text-sm font-bold">⚠️ {errorMessage}</p>
                   </div>
                 )}
                 
