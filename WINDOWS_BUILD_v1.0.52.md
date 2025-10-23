@@ -8,8 +8,38 @@
 - **Server Logging**: Backend logs all note requests to identify issues
 - **Better Error Messages**: Shows exact error details instead of generic messages
 
-**Why this build:**
-User reported notes can't be saved or deleted on Samsung app. This build adds comprehensive logging to identify the root cause.
+### 💎 NEW SUBSCRIPTION TIERS
+**Free Tier ($0):**
+- 3 notes maximum
+- 3 classes maximum
+- Can join a gym
+- Can only share notes via social media (no community sharing)
+
+**Premium Tier ($9.99/month):**
+- Unlimited notes
+- Unlimited classes
+- 50GB data usage limit
+- 1 community share per week
+
+**Gym Tier ($100/month):**
+- Unlimited notes
+- Unlimited classes
+- 100GB data usage limit
+- Unlimited gym sharing (for admins)
+- 3 community shares per week
+- Charged $5 per gym member per month
+
+### 📊 DASHBOARD IMPROVEMENTS
+- Replaced "Classes This Week" tile with detailed user stats
+- Shows breakdown of class types (Gi, No-Gi, Open Mat, etc.)
+- Displays highest submissions per training session
+- Displays highest submissions per week
+
+### 🔒 SHARING RESTRICTIONS
+- Free users: Community sharing button shows "Premium Feature" message
+- Premium users: Limited to 1 community share per week
+- Gym users: Unlimited gym sharing + 3 community shares per week
+- Backend enforces these limits with clear error messages
 
 ## What's New in v1.0.56
 

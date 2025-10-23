@@ -33,6 +33,9 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🔍 **Network Timeout Detection**: 30-second timeout for save/delete operations
 - 📊 **Server Logging**: Backend now logs all note CRUD operations for debugging
 - 🎯 **Error Messages**: Shows exact error details when save/delete fails
+- 💎 **NEW SUBSCRIPTION TIERS**: Free (3 notes, 3 classes), Premium $9.99 (unlimited, 50GB, 1 community share/week), Gym $100 (unlimited, 100GB, 3 community shares/week, $5/member/month)
+- 📊 **NEW DASHBOARD STATS**: Replaced "Classes This Week" with detailed user stats (class type breakdown, best session/week submissions)
+- 🔒 **SHARING RESTRICTIONS**: Free users can only share via socials; Premium/Gym can share to community with weekly limits
 
 ### Previous Updates (v1.0.56 - October 2025)
 - 🚨 **CRITICAL FIX**: Fixed registration completely broken on mobile (API URL issue)
