@@ -1,6 +1,6 @@
-# Windows Build Guide - v1.0.55
+# Windows Build Guide - v1.0.56
 
-## What's New in v1.0.55
+## What's New in v1.0.56
 
 ### 🚨 CRITICAL FIXES for iOS & Android (from v1.0.52)
 
