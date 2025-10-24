@@ -95,7 +95,7 @@ export default function Dashboard() {
 
   // Calculate class type breakdown
   const classTypeBreakdown = Array.isArray(classes) ? classes.reduce((acc: any, cls: any) => {
-    const type = cls.classType || 'Unknown';
+    const type = cls.classType || cls.class_type || 'Unknown';
     acc[type] = (acc[type] || 0) + 1;
     return acc;
   }, {}) : {};
@@ -259,8 +259,8 @@ export default function Dashboard() {
           <div className="mt-2 text-2xl">🥋</div>
         </Link>
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200">
-          <div className="text-3xl font-bold mb-2">{stats.totalMinutes}min</div>
-          <div className="text-sm opacity-90">Total Minutes</div>
+          <div className="text-3xl font-bold mb-2">{(stats.totalMinutes / 60).toFixed(1)}hrs</div>
+          <div className="text-sm opacity-90">Total Hours</div>
           <div className="mt-2 text-2xl">⏱️</div>
         </div>
       </div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
                   <span className="text-blue-600 dark:text-blue-400 text-sm">📅</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-white">{cls.classType} Class</div>
+                  <div className="font-medium text-gray-800 dark:text-white">{cls.classType || cls.class_type || 'Unknown'} Class</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     {new Date(cls.date).toLocaleDateString()} • {cls.duration}min
                   </div>
