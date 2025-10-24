@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users, Copy, Check } from 'lucide-react';
+import { Building2, Users, Copy, Check, Trash2 } from 'lucide-react';
 
 export default function Admin() {
   const { user, supabaseUser } = useAuth();
@@ -15,7 +15,7 @@ export default function Admin() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Fetch all gyms
-  const { data: gyms = [], isLoading } = useQuery({
+  const { data: gyms = [], isLoading, refetch } = useQuery({
     queryKey: ['/api/gyms', { supabaseId: supabaseUser?.id }],
     queryFn: async () => {
       const url = `/api/gyms${supabaseUser?.id ? `?supabaseId=${supabaseUser.id}` : ''}`;
@@ -38,6 +38,7 @@ export default function Admin() {
     },
     onSuccess: (newGym: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
+      refetch(); // Force immediate refetch
       toast({
         title: "Gym created!",
         description: `${newGym.name} has been created with code: ${newGym.code}`,
@@ -50,6 +51,28 @@ export default function Admin() {
       toast({
         title: "Error",
         description: error.message || "Failed to create gym",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Delete gym mutation
+  const deleteGymMutation = useMutation({
+    mutationFn: async (gymId: number) => {
+      return await apiRequest('DELETE', `/api/gyms/${gymId}`, { supabaseId: supabaseUser?.id });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
+      refetch(); // Force immediate refetch
+      toast({
+        title: "Gym deleted!",
+        description: "The gym has been successfully deleted",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete gym",
         variant: "destructive",
       });
     }
@@ -165,6 +188,19 @@ export default function Admin() {
                         ) : (
                           <Copy className="w-4 h-4" />
                         )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to delete ${gym.name}? This action cannot be undone.`)) {
+                            deleteGymMutation.mutate(gym.id);
+                          }
+                        }}
+                        disabled={deleteGymMutation.isPending}
+                        data-testid={`button-delete-${gym.id}`}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
                       </Button>
                     </div>
                   </div>

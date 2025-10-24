@@ -2015,6 +2015,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delete a gym (admin only)
+  app.delete("/api/gyms/:id", flexibleAuth, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gymId = parseInt(req.params.id);
+      
+      // Check if user is admin
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      // Delete the gym (this should cascade delete memberships and gym notes)
+      await storage.deleteGym(gymId);
+      
+      res.json({ message: "Gym deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting gym:", error);
+      res.status(500).json({ message: "Failed to delete gym" });
+    }
+  });
+  
   // Join a gym with code
   app.post("/api/gyms/join", flexibleAuth, async (req, res) => {
     try {
