@@ -1,4 +1,10 @@
-# Windows Build Guide - v1.0.59
+# Windows Build Guide - v1.0.60
+
+## What's New in v1.0.60
+
+### 🐛 CRITICAL BUG FIX
+- **Fixed notes add/delete on Vercel and mobile**: Changed `req.user.userId` → `req.user.id` in flexibleAuth endpoints
+- **Backend deployed to Render**: All note operations now work correctly
 
 ## What's New in v1.0.59
 
