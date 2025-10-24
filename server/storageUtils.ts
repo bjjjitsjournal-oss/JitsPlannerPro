@@ -1,9 +1,9 @@
 // Storage quota utilities for video uploads
 
 export const STORAGE_QUOTAS = {
-  free: 5 * 1024 * 1024 * 1024, // 5 GB total storage
-  enthusiast: 50 * 1024 * 1024 * 1024, // 50 GB total storage
-  gym_pro: 50 * 1024 * 1024 * 1024, // 50 GB total storage
+  free: 10 * 1024 * 1024 * 1024, // 10 GB total storage
+  enthusiast: 75 * 1024 * 1024 * 1024, // 75 GB total storage
+  gym_pro: 150 * 1024 * 1024 * 1024, // 150 GB total storage
 } as const;
 
 export const PER_VIDEO_LIMITS = {
