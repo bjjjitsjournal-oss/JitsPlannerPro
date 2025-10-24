@@ -37,7 +37,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🔍 **Network Timeout Detection**: 30-second timeout for save/delete operations
 - 📊 **Server Logging**: Backend now logs all note CRUD operations for debugging
 - 🎯 **Error Messages**: Shows exact error details when save/delete fails
-- 💎 **NEW SUBSCRIPTION TIERS**: Free (3 notes, 3 classes), Premium $9.99 (unlimited, 50GB, 1 community share/week), Gym $100 (unlimited, 100GB, 3 community shares/week, $5/member/month)
+- 💎 **NEW SUBSCRIPTION TIERS**: Free (3 notes, 3 classes, 10GB storage), Premium $9.99 (unlimited, 75GB storage, 1 community share/week), Gym $100 (unlimited, 150GB storage, 3 community shares/week, $5/member/month)
 - 📊 **NEW DASHBOARD STATS**: Replaced "Classes This Week" with detailed user stats (class type breakdown, best session/week submissions)
 - 🔒 **SHARING RESTRICTIONS**: Free users can only share via socials; Premium/Gym can share to community with weekly limits
 
@@ -57,7 +57,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 
 ### Previous Updates (v1.0.49 - October 2025)
 - 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables
-- 🔧 **Storage Limits Updated**: Free (100MB/video, 5GB total), Premium (500MB/video, 50GB total)
+- 🔧 **Storage Limits Updated**: Free (100MB/video, 10GB total), Premium (500MB/video, 75GB total), Gym (500MB/video, 150GB total)
 - 🐛 **Bug Fix**: Fixed delete notes functionality (UUID type mismatch)
 - 📋 **Storage Display**: Storage usage tracker already implemented in Settings page
 
