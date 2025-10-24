@@ -93,10 +93,39 @@ export default function Dashboard() {
     return total + (cls.duration || 0);
   }, 0) : 0;
 
+  // Calculate class type breakdown
+  const classTypeBreakdown = Array.isArray(classes) ? classes.reduce((acc: any, cls: any) => {
+    const type = cls.classType || 'Unknown';
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {}) : {};
+
+  // Calculate highest submissions per session
+  const highestSubsPerSession = Array.isArray(classes) ? Math.max(
+    0,
+    ...classes.map((cls: any) => cls.yourSubmissions || 0)
+  ) : 0;
+
+  // Calculate highest submissions per week
+  const submissionsByWeek: { [key: string]: number } = {};
+  if (Array.isArray(classes)) {
+    classes.forEach((cls: any) => {
+      const classDate = new Date(cls.date);
+      const weekStart = new Date(classDate.getUTCFullYear(), classDate.getUTCMonth(), classDate.getUTCDate() - classDate.getUTCDay() + 1);
+      weekStart.setUTCHours(0, 0, 0, 0);
+      const weekKey = weekStart.toISOString().split('T')[0];
+      submissionsByWeek[weekKey] = (submissionsByWeek[weekKey] || 0) + (cls.yourSubmissions || 0);
+    });
+  }
+  const highestSubsPerWeek = Math.max(0, ...Object.values(submissionsByWeek));
+
   const stats = {
     classesThisWeek,
     totalClasses,
-    totalMinutes
+    totalMinutes,
+    classTypeBreakdown,
+    highestSubsPerSession,
+    highestSubsPerWeek
   };
 
   // Belt visual component (simplified version from belts page)
@@ -193,9 +222,22 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-6 mb-8">
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200">
-          <div className="text-3xl font-bold mb-2">{stats.classesThisWeek}</div>
-          <div className="text-sm opacity-90">Classes This Week</div>
-          <div className="mt-2 text-2xl">🔥</div>
+          <div className="text-lg font-bold mb-2">Your Stats 📊</div>
+          <div className="space-y-1 text-sm opacity-90">
+            {Object.entries(stats.classTypeBreakdown).length > 0 ? (
+              Object.entries(stats.classTypeBreakdown).map(([type, count]) => (
+                <div key={type}>
+                  {type}: {count as number}
+                </div>
+              ))
+            ) : (
+              <div>No classes yet</div>
+            )}
+            <div className="border-t border-white/20 mt-2 pt-2">
+              <div>Best Session: {stats.highestSubsPerSession} subs</div>
+              <div>Best Week: {stats.highestSubsPerWeek} subs</div>
+            </div>
+          </div>
         </div>
         <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200">
           <div className="text-3xl font-bold mb-2">{stats.totalClasses}</div>

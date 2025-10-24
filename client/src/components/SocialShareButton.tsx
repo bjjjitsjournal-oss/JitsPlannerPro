@@ -235,13 +235,15 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
 
   const handleTwitterShare = () => {
     const text = `${note.title}\n\nTracking my BJJ journey with Jits Journal! 🥋`;
-    const url = window.location.origin;
+    // Always use production URL for social sharing (works on mobile too)
+    const url = 'https://bjj-jits-journal.onrender.com';
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank', 'width=600,height=400');
   };
 
   const handleFacebookShare = () => {
-    const url = window.location.origin;
+    // Always use production URL for social sharing (works on mobile too)
+    const url = 'https://bjj-jits-journal.onrender.com';
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     window.open(facebookUrl, '_blank', 'width=600,height=400');
   };

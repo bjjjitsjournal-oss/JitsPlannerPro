@@ -37,8 +37,26 @@ export const getSubscriptionPlan = (email?: string, subscriptionStatus?: string,
   return 'Free Tier';
 };
 
-// Limits for free tier
+// Subscription tier limits
 export const FREE_TIER_LIMITS = {
-  classes: 10,
-  notes: 5
+  classes: 3,
+  notes: 3,
+  dataLimitGB: 0, // Free tier has no video uploads
+  communitySharesPerWeek: 0 // Can only share via socials, not to community
+};
+
+export const PREMIUM_TIER_LIMITS = {
+  classes: Infinity, // Unlimited
+  notes: Infinity, // Unlimited
+  dataLimitGB: 50,
+  communitySharesPerWeek: 1
+};
+
+export const GYM_TIER_LIMITS = {
+  classes: Infinity, // Unlimited
+  notes: Infinity, // Unlimited
+  dataLimitGB: 100,
+  communitySharesPerWeek: 3,
+  gymSharesPerWeek: Infinity, // Unlimited gym sharing
+  costPerMember: 5 // $5 per gym member per month
 };

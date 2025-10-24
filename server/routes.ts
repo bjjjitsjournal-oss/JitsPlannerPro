@@ -840,8 +840,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notes", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId; // Integer user ID
-      console.log("Creating note with data:", req.body, "for user:", userId);
+      const userId = (req as any).user.id; // Integer user ID
+      console.log("📝 POST /api/notes - Creating note with data:", req.body, "for user:", userId);
       
       const noteData = {
         title: req.body.title,
@@ -866,8 +866,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
       const noteData = req.body; // Parse as partial appNote data
+      console.log("✏️ PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -890,7 +891,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
+      console.log("🗑️ DELETE /api/notes/:id - Deleting note:", id, "for user:", userId, "body:", req.body);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -938,7 +940,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Shared notes routes
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = (req as any).user.id;
       const sharedNotes = await storage.getSharedNotes();
       
       // Include user info for shared notes (temporarily skip likes due to schema mismatch)
@@ -967,7 +969,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes/:id/toggle-sharing", flexibleAuth, async (req, res) => {
     try {
       const noteId = req.params.id; // Keep as string (UUID)
-      const userId = (req as any).user.userId;
+      const userId = (req as any).user.id;
+      
+      // Get user details to check subscription tier
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if trying to share (not unshare)
+      const note = await storage.getNote(noteId);
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      
+      // If note is currently not shared (user is trying to share it)
+      if (note.isShared === 0) {
+        // FREE TIER: Cannot share to community at all
+        if (user.subscriptionStatus === 'free' || !user.subscriptionStatus) {
+          return res.status(403).json({ 
+            message: "Community sharing is a Premium feature. Upgrade to share notes with the community!" 
+          });
+        }
+        
+        // PREMIUM/GYM TIER: Check weekly share limit
+        // Calculate current week start (Monday)
+        const today = new Date();
+        const dayOfWeek = today.getUTCDay();
+        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const weekStart = new Date(Date.UTC(
+          today.getUTCFullYear(), 
+          today.getUTCMonth(), 
+          today.getUTCDate() - daysToMonday, 
+          0, 0, 0, 0
+        ));
+        
+        // Count community shares this week
+        const allUserNotes = await storage.getNotes(userId);
+        const sharesThisWeek = allUserNotes.filter((n: any) => {
+          if (n.isShared !== 1 || !n.createdAt) return false;
+          const shareDate = new Date(n.createdAt);
+          return shareDate >= weekStart;
+        }).length;
+        
+        // Check limits based on subscription tier
+        let weeklyLimit = 0;
+        if (user.subscriptionStatus === 'premium' || user.subscriptionStatus === 'active') {
+          weeklyLimit = 1; // Premium: 1 per week
+        } else if (user.subscriptionTier === 'gym_pro') {
+          weeklyLimit = 3; // Gym: 3 per week
+        }
+        
+        if (sharesThisWeek >= weeklyLimit) {
+          return res.status(403).json({ 
+            message: `You've reached your weekly limit of ${weeklyLimit} community ${weeklyLimit === 1 ? 'share' : 'shares'}. Try again next week!` 
+          });
+        }
+      }
       
       const updatedNote = await storage.toggleNoteSharing(noteId, userId);
       

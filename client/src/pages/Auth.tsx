@@ -12,6 +12,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, UserPlus, LogIn } from 'lucide-react';
 import { Link } from 'wouter';
+import { Capacitor } from '@capacitor/core';
+
+// Get API base URL - use Render for mobile, env var for web
+const API_BASE_URL = Capacitor.isNativePlatform() 
+  ? 'https://bjj-jits-journal.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -35,6 +41,7 @@ interface AuthProps {
 export default function Auth({ onAuthSuccess }: AuthProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { toast } = useToast();
   const { setSignupInProgress } = useAuth();
 
@@ -59,6 +66,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
       console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
+      setErrorMessage(''); // Clear any previous errors
+      
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
@@ -72,6 +81,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       return authData;
     },
     onSuccess: (data) => {
+      setErrorMessage('');
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
@@ -87,6 +97,8 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
       } else if (error.message?.includes('Email not confirmed')) {
         description = "Please check your email and confirm your account before logging in.";
       }
+      
+      setErrorMessage(description);
       
       toast({
         title: "Login failed",
@@ -106,6 +118,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // STEP 1: Create Supabase auth account
         console.log('Step 1: Creating Supabase auth account...');
+        
+        // Use production URL for email verification redirect (works on mobile)
+        const redirectUrl = Capacitor.isNativePlatform()
+          ? 'https://bjj-jits-journal.onrender.com/'
+          : `${window.location.origin}/`;
+        
         const { data: authData, error: signupError } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
@@ -114,7 +132,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
               firstName: data.firstName,
               lastName: data.lastName,
             },
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: redirectUrl,
           },
         });
 
@@ -131,18 +149,34 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // STEP 3: Create PostgreSQL user profile with Supabase ID
         console.log('Step 2: Creating user profile in PostgreSQL database...');
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-        const profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            supabaseId: authData.user.id,
-          }),
-        });
+        console.log('API URL:', `${API_BASE_URL}/api/auth/register`);
+        
+        // Add timeout to detect network issues
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        let profileResponse;
+        try {
+          profileResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              supabaseId: authData.user.id,
+            }),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+        } catch (fetchError: any) {
+          clearTimeout(timeoutId);
+          if (fetchError.name === 'AbortError') {
+            throw new Error('Network timeout. Please check your internet connection and try again.');
+          }
+          throw new Error(`Network error: ${fetchError.message || 'Could not connect to server'}`);
+        }
 
         if (!profileResponse.ok) {
           const errorData = await profileResponse.json();
@@ -194,9 +228,11 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     },
     onError: (error: any) => {
       console.error('Registration mutation error:', error);
+      const description = error.message || "Please try again.";
+      setErrorMessage(description);
       toast({
         title: "Registration failed",
-        description: error.message || "Please try again.",
+        description: description,
         variant: "destructive",
         duration: 6000,
       });
@@ -205,10 +241,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
   const handleLogin = (data: LoginFormData) => {
     console.log('Login attempt with:', { email: data.email, hasPassword: !!data.password });
+    setErrorMessage('');
     loginMutation.mutate(data);
   };
 
   const handleRegister = (data: RegisterFormData) => {
+    setErrorMessage('');
     registerMutation.mutate(data);
   };
 
@@ -270,6 +308,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                     <p className="text-red-300 text-sm">{loginForm.formState.errors.password.message}</p>
                   )}
                 </div>
+                
+                {errorMessage && (
+                  <div className="bg-red-600 border-2 border-red-400 rounded-lg p-4 shadow-lg">
+                    <p className="text-white text-sm font-bold">⚠️ {errorMessage}</p>
+                  </div>
+                )}
                 
                 <Button 
                   type="submit" 
@@ -367,6 +411,12 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                   )}
                 </div>
                 
+                {errorMessage && (
+                  <div className="bg-red-600 border-2 border-red-400 rounded-lg p-4 shadow-lg">
+                    <p className="text-white text-sm font-bold">⚠️ {errorMessage}</p>
+                  </div>
+                )}
+                
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 text-white font-medium"
@@ -390,7 +440,10 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
             
             <div className="text-center">
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErrorMessage('');
+                }}
                 className="text-white/80 hover:text-white text-sm underline"
               >
                 {isLogin 

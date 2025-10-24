@@ -3,7 +3,7 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
-## Mobile App Status (v1.0.49)
+## Mobile App Status (v1.0.52)
 ### Android
 - ✅ Build configured and tested
 - ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.49 ready for build and submission
+- ⏳ Status: v1.0.57 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured (v1.0.49)
@@ -28,7 +28,34 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.49 - October 2025)
+### Recent Updates (v1.0.60 - October 2025)
+- 🐛 **CRITICAL FIX**: Fixed notes add/delete broken on Vercel/mobile (user.userId → user.id in flexibleAuth)
+- ✅ **Verified Working**: Vercel site now successfully adds/deletes notes
+
+### Previous Updates (v1.0.59 - October 2025)
+- 🐛 **DEBUG BUILD**: Added detailed logging to diagnose Samsung app notes issue
+- 🔍 **Network Timeout Detection**: 30-second timeout for save/delete operations
+- 📊 **Server Logging**: Backend now logs all note CRUD operations for debugging
+- 🎯 **Error Messages**: Shows exact error details when save/delete fails
+- 💎 **NEW SUBSCRIPTION TIERS**: Free (3 notes, 3 classes), Premium $9.99 (unlimited, 50GB, 1 community share/week), Gym $100 (unlimited, 100GB, 3 community shares/week, $5/member/month)
+- 📊 **NEW DASHBOARD STATS**: Replaced "Classes This Week" with detailed user stats (class type breakdown, best session/week submissions)
+- 🔒 **SHARING RESTRICTIONS**: Free users can only share via socials; Premium/Gym can share to community with weekly limits
+
+### Previous Updates (v1.0.56 - October 2025)
+- 🚨 **CRITICAL FIX**: Fixed registration completely broken on mobile (API URL issue)
+- 🚨 **CRITICAL FIX**: Fixed email verification redirect (capacitor:// → HTTPS)
+- 🎯 **CRITICAL FIX**: Solved "works every other time" login issue (missing auth token)
+- 📱 **MEDIUM FIX**: Fixed social sharing URLs (capacitor:// → production URL)
+- 🍎 **iOS FIX**: Added export compliance declaration (ITSAppUsesNonExemptEncryption) to Info.plist
+- 🔍 **UX FIX**: Added network timeout detection and ultra-visible error messages for mobile signup
+- 🔐 **Proper Authentication**: Mobile app now sends Supabase access token with all API requests
+- 📱 **On-Screen Error Messages**: Replaced invisible toast notifications with prominent red error boxes
+- ⏱️ **Better Loading States**: Shows "Signing you in..." with clear progress indicators
+- ✅ **Production Ready**: All mobile-specific issues resolved for iOS and Android
+- 📖 **Documentation**: MOBILE_ISSUES_FIXED_v1.0.52.md details all 4 critical mobile fixes
+- 📖 **Build Guide**: WINDOWS_BUILD_v1.0.52.md for rebuilding APK/AAB with all fixes
+
+### Previous Updates (v1.0.49 - October 2025)
 - 🚨 **CRITICAL iOS FIX**: Fixed Apple rejection - sign-in button now works! Removed server.url from capacitor config so app uses locally bundled files with environment variables
 - 🔧 **Storage Limits Updated**: Free (100MB/video, 5GB total), Premium (500MB/video, 50GB total)
 - 🐛 **Bug Fix**: Fixed delete notes functionality (UUID type mismatch)

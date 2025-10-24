@@ -142,7 +142,17 @@ export default function Notes() {
   const createNoteMutation = useMutation({
     mutationFn: async (noteData: any) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await apiRequest('POST', '/api/notes', noteData);
+      console.log('🚀 Creating note with data:', noteData);
+      
+      // Network timeout detection (30 seconds)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Network timeout after 30 seconds')), 30000)
+      );
+      
+      const apiPromise = apiRequest('POST', '/api/notes', noteData);
+      const response = await Promise.race([apiPromise, timeoutPromise]);
+      console.log('✅ Note created successfully');
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -160,9 +170,10 @@ export default function Notes() {
       });
     },
     onError: (error: any) => {
+      console.error('❌ Note creation failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to save note. Please try again.',
+        description: error.message || 'Failed to save note. Please try again.',
         variant: 'destructive',
       });
     },
@@ -172,7 +183,17 @@ export default function Notes() {
   const updateNoteMutation = useMutation({
     mutationFn: async ({ noteId, noteData }: { noteId: number, noteData: any }) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await apiRequest('PUT', `/api/notes/${noteId}`, noteData);
+      console.log('🚀 Updating note:', noteId, 'with data:', noteData);
+      
+      // Network timeout detection (30 seconds)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Network timeout after 30 seconds')), 30000)
+      );
+      
+      const apiPromise = apiRequest('PUT', `/api/notes/${noteId}`, noteData);
+      const response = await Promise.race([apiPromise, timeoutPromise]);
+      console.log('✅ Note updated successfully');
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -190,9 +211,10 @@ export default function Notes() {
       });
     },
     onError: (error: any) => {
+      console.error('❌ Note update failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update note. Please try again.',
+        description: error.message || 'Failed to update note. Please try again.',
         variant: 'destructive',
       });
     },
@@ -202,7 +224,17 @@ export default function Notes() {
   const deleteNoteMutation = useMutation({
     mutationFn: async (noteId: string) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await apiRequest('DELETE', `/api/notes/${noteId}`, {});
+      console.log('🗑️ Deleting note:', noteId);
+      
+      // Network timeout detection (30 seconds)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Network timeout after 30 seconds')), 30000)
+      );
+      
+      const apiPromise = apiRequest('DELETE', `/api/notes/${noteId}`, {});
+      const response = await Promise.race([apiPromise, timeoutPromise]);
+      console.log('✅ Note deleted successfully');
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
@@ -213,9 +245,10 @@ export default function Notes() {
       });
     },
     onError: (error: any) => {
+      console.error('❌ Note deletion failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete note. Please try again.',
+        description: error.message || 'Failed to delete note. Please try again.',
         variant: 'destructive',
       });
     },
@@ -501,14 +534,31 @@ export default function Notes() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => handleToggleSharing(note.id)}
-                          data-testid={`button-share-community-${note.id}`}
-                        >
-                          <Globe className="w-4 h-4 mr-2" />
-                          {note.isShared === 1 ? 'Remove from Community' : 'Share to Community'}
-                        </DropdownMenuItem>
+                        {/* Community sharing - Premium and Gym only */}
+                        {isPremium ? (
+                          <DropdownMenuItem
+                            onClick={() => handleToggleSharing(note.id)}
+                            data-testid={`button-share-community-${note.id}`}
+                          >
+                            <Globe className="w-4 h-4 mr-2" />
+                            {note.isShared === 1 ? 'Remove from Community' : 'Share to Community'}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={() => toast({
+                              title: "Premium Feature",
+                              description: "Community sharing is available with Premium. Upgrade to share with the community!",
+                              variant: "destructive"
+                            })}
+                            className="opacity-50"
+                            data-testid={`button-share-community-locked-${note.id}`}
+                          >
+                            <Globe className="w-4 h-4 mr-2" />
+                            Share to Community 🔒
+                          </DropdownMenuItem>
+                        )}
                         
+                        {/* Gym sharing - Gym admin only */}
                         {gymMembership && gymMembership.role === 'admin' && (
                           <DropdownMenuItem
                             onClick={() => note.gymId ? unshareFromGymMutation.mutate(note.id) : shareToGymMutation.mutate(note.id)}
