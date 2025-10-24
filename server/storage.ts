@@ -119,6 +119,7 @@ export interface IStorage {
   getGymByCode(code: string): Promise<Gym | undefined>;
   getAllGyms(): Promise<Gym[]>;
   getUserGyms(userId: number): Promise<Gym[]>;
+  deleteGym(gymId: number): Promise<boolean>;
   getGymNotes(gymId: number): Promise<Note[]>;
   shareNoteToGym(noteId: string, gymId: number): Promise<void>;
   unshareNoteFromGym(noteId: string): Promise<void>;
@@ -632,6 +633,20 @@ export class DatabaseStorage implements IStorage {
       .where(eq(gymMemberships.userId, userId));
     
     return memberships.map(m => ({ ...m.gym, userRole: m.role })) as any;
+  }
+
+  async deleteGym(gymId: number): Promise<boolean> {
+    // Delete gym memberships first
+    await db.delete(gymMemberships).where(eq(gymMemberships.gymId, gymId));
+    
+    // Unshare all notes from this gym
+    await db.update(notes)
+      .set({ gymId: null })
+      .where(eq(notes.gymId, gymId));
+    
+    // Delete the gym
+    const result = await db.delete(gyms).where(eq(gyms.id, gymId));
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 
   async getGymNotes(gymId: number): Promise<Note[]> {
