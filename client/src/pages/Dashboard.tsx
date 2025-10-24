@@ -276,9 +276,9 @@ export default function Dashboard() {
                   <span className="text-blue-600 dark:text-blue-400 text-sm">📅</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-white">{cls.classType || cls.class_type || 'Unknown'} Class</div>
+                  <div className="font-medium text-gray-800 dark:text-white">Training Session</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {new Date(cls.date).toLocaleDateString()} • {cls.duration}min
+                    {new Date(cls.date).toLocaleDateString()} • {cls.classType || cls.class_type || 'Unknown'}
                   </div>
                 </div>
               </div>
