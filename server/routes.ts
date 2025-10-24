@@ -840,7 +840,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/notes", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
       console.log("📝 POST /api/notes - Creating note with data:", req.body, "for user:", userId);
       
       const noteData = {
@@ -866,7 +866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
       const noteData = req.body; // Parse as partial appNote data
       console.log("✏️ PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
       
@@ -891,7 +891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/notes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
       console.log("🗑️ DELETE /api/notes/:id - Deleting note:", id, "for user:", userId, "body:", req.body);
       
       // Check if note belongs to the user
@@ -940,7 +940,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Shared notes routes
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = (req as any).user.id;
       const sharedNotes = await storage.getSharedNotes();
       
       // Include user info for shared notes (temporarily skip likes due to schema mismatch)
@@ -969,7 +969,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes/:id/toggle-sharing", flexibleAuth, async (req, res) => {
     try {
       const noteId = req.params.id; // Keep as string (UUID)
-      const userId = (req as any).user.userId;
+      const userId = (req as any).user.id;
       
       // Get user details to check subscription tier
       const user = await storage.getUser(userId);
