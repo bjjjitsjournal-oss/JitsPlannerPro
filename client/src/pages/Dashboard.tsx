@@ -103,7 +103,7 @@ export default function Dashboard() {
   // Calculate highest submissions per session
   const highestSubsPerSession = Array.isArray(classes) ? Math.max(
     0,
-    ...classes.map((cls: any) => cls.yourSubmissions || 0)
+    ...classes.map((cls: any) => cls.yourSubmissions || cls.your_submissions || 0)
   ) : 0;
 
   // Calculate highest submissions per week
@@ -114,7 +114,7 @@ export default function Dashboard() {
       const weekStart = new Date(classDate.getUTCFullYear(), classDate.getUTCMonth(), classDate.getUTCDate() - classDate.getUTCDay() + 1);
       weekStart.setUTCHours(0, 0, 0, 0);
       const weekKey = weekStart.toISOString().split('T')[0];
-      submissionsByWeek[weekKey] = (submissionsByWeek[weekKey] || 0) + (cls.yourSubmissions || 0);
+      submissionsByWeek[weekKey] = (submissionsByWeek[weekKey] || 0) + (cls.yourSubmissions || cls.your_submissions || 0);
     });
   }
   const highestSubsPerWeek = Math.max(0, ...Object.values(submissionsByWeek));
