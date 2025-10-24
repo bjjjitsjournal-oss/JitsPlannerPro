@@ -28,7 +28,11 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.49 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.59 - October 2025)
+### Recent Updates (v1.0.60 - October 2025)
+- 🐛 **CRITICAL FIX**: Fixed notes add/delete broken on Vercel/mobile (user.userId → user.id in flexibleAuth)
+- ✅ **Verified Working**: Vercel site now successfully adds/deletes notes
+
+### Previous Updates (v1.0.59 - October 2025)
 - 🐛 **DEBUG BUILD**: Added detailed logging to diagnose Samsung app notes issue
 - 🔍 **Network Timeout Detection**: 30-second timeout for save/delete operations
 - 📊 **Server Logging**: Backend now logs all note CRUD operations for debugging
