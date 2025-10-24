@@ -37,6 +37,8 @@ export default function Admin() {
       return await apiRequest('POST', '/api/gyms', { name, supabaseId: supabaseUser?.id });
     },
     onSuccess: (newGym: any) => {
+      console.log('Gym created response:', newGym);
+      console.log('Gym code:', newGym.code);
       queryClient.invalidateQueries({ queryKey: ['/api/gyms'] });
       refetch(); // Force immediate refetch
       toast({
