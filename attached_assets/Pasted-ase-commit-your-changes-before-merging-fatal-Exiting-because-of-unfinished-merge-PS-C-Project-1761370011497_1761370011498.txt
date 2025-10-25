@@ -1,0 +1,34 @@
+ase, commit your changes before merging.
+fatal: Exiting because of unfinished merge.
+PS C:\Projects\JitsPlannerPro> git merge --abort
+PS C:\Projects\JitsPlannerPro> git pull origin main
+remote: Enumerating objects: 31, done.
+remote: Counting objects: 100% (31/31), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 24 (delta 7), reused 24 (delta 7), pack-reused 0 (from 0)
+Unpacking objects: 100% (24/24), 325.37 KiB | 2.85 MiB/s, done.
+From https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal
+Merge made by the 'ort' strategy.
+ .local/state/replit/agent/.agent_state_main.bin    |  Bin 131476 -> 98865 bytesur editor to close the file...
+ .../replit/agent/filesystem/filesystem_state.json  |    2 +-
+ .local/state/replit/agent/repl_state.bin           |  Bin 11589 -> 11589 bytes
+ MASTER_BUILD_DEPLOY_GUIDE.md                       |  547 +++++
+ ...termine-if-they-1761368188952_1761368188958.txt | 2225 ++++++++++++++++++++
+ client/.env.production                             |    3 +
+ client/src/pages/Admin.tsx                         |   42 +-
+ client/src/pages/Dashboard.tsx                     |   14 +-
+ replit.md                                          |    4 +-
+ server/routes.ts                                   |   22 +
+ server/storage.ts                                  |   15 +
+ server/storageUtils.ts                             |    6 +-
+ 12 files changed, 2865 insertions(+), 15 deletions(-)
+ create mode 100644 MASTER_BUILD_DEPLOY_GUIDE.md
+ create mode 100644 attached_assets/Pasted--You-can-use-warning-mode-all-to-show-the-individual-deprecation-warnings-and-determine-if-they-1761368188952_1761368188958.txt
+ create mode 100644 client/.env.production
+PS C:\Projects\JitsPlannerPro> git merge --abort
+fatal: There is no merge to abort (MERGE_HEAD missing).
+PS C:\Projects\JitsPlannerPro> git pull origin main
+From https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+PS C:\Projects\JitsPlannerPro>
