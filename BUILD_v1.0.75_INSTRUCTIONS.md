@@ -1,15 +1,16 @@
-# Build Instructions for v1.0.73 - Mobile Performance Fix
+# Build Instructions for v1.0.75 - Mobile Performance Fix (REAL FIX)
 
-## What's Fixed in v1.0.73
+## What's Fixed in v1.0.75
 
-### The Problem (v1.0.72 and earlier)
+### The Problem (v1.0.72 and earlier - PLUS v1.0.73 incomplete fix)
 - Mobile app had severe performance issues with 5-10 second delays on Notes/Social pages
 - Add/delete note and video operations showed errors before eventually working
 - Root cause: Every API request called `supabase.auth.getSession()` which crosses the slow Capacitor bridge
 - Multiple parallel queries (notes, gym, social) all hit this slow path on cold start
 - Backend couldn't use fast local JWT verification without Authorization header
+- **v1.0.73 ISSUE**: Fixed frontend to send auth headers, but backend `flexibleAuth` middleware still used SLOW Supabase API calls
 
-### The Solution (v1.0.73)
+### The Solution (v1.0.75 - COMPLETE FIX)
 **Authorization Header Caching**
 1. ✅ Cache Supabase access token in Capacitor Preferences on login (survives app restarts)
 2. ✅ Send `Authorization: Bearer <token>` header with ALL API requests
@@ -24,8 +25,8 @@
 ## Build Process
 
 ### Version Numbers
-- Android: versionCode **73**, versionName **1.0.73**
-- iOS: MARKETING_VERSION **1.0.73**
+- Android: versionCode **75**, versionName **1.0.75**
+- iOS: MARKETING_VERSION **1.0.75**
 
 ### Android Build (PowerShell on Windows)
 
@@ -53,7 +54,7 @@ android/app/build/outputs/bundle/release/app-release.aab
 
 **Upload to:**
 - Google Play Console → Production track
-- Version code 73 will auto-increment from v72
+- Version code 75 will auto-increment from v72/73
 
 ### iOS Build (Codemagic Cloud)
 
