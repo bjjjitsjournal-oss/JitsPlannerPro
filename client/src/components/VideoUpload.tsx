@@ -53,9 +53,17 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       formData.append('fileName', file.name);
       formData.append('fileSize', file.size.toString());
       formData.append('userId', user?.id?.toString() || '');
+      formData.append('supabaseId', user?.supabaseId || '');
       if (thumbnail) {
         formData.append('thumbnail', thumbnail);
       }
+      
+      // Debug logging for mobile
+      console.log('📤 FormData being sent:');
+      console.log('  - userId:', user?.id);
+      console.log('  - supabaseId:', user?.supabaseId);
+      console.log('  - fileName:', file.name);
+      console.log('  - fileSize:', file.size);
       
       // Upload to backend (which will use R2)
       setUploadProgress(30);
