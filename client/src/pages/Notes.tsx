@@ -35,11 +35,14 @@ export default function Notes() {
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
   // Fetch notes from backend API
-  const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
+  const notesQuery = useQuery<any[]>({
     queryKey: ['/api/notes'],
     enabled: !!user?.id,
     staleTime: 60000, // Cache for 1 minute
   });
+  
+  const notes = notesQuery.data || [];
+  const isLoading = notesQuery.isLoading;
 
   // Fetch current belt for social sharing
   const { data: currentBelt } = useQuery<any>({
@@ -150,7 +153,7 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      refetchNotes(); // Force immediate refresh
+      notesQuery.refetch(); // Force immediate refresh
       toast({
         title: 'Note Saved!',
         description: 'Your technique note has been saved.',
@@ -191,7 +194,7 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      refetchNotes();
+      notesQuery.refetch();
       toast({
         title: 'Note Updated!',
         description: 'Your note has been updated successfully.',
@@ -232,7 +235,7 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      refetchNotes();
+      notesQuery.refetch();
       toast({
         title: 'Note Deleted!',
         description: 'Your note has been deleted successfully.',
@@ -595,7 +598,7 @@ export default function Notes() {
                   onVideoUploaded={() => {
                     // Refresh the notes list when video is uploaded/removed
                     queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-                    refetchNotes();
+                    notesQuery.refetch();
                   }}
                 />
                 

@@ -1139,7 +1139,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Video upload route for notes - uploads to R2 storage
-  app.post("/api/notes/:id/upload-video", upload.single('video'), async (req, res) => {
+  app.post("/api/notes/:id/upload-video", (req, res, next) => {
+    // Wrap multer middleware to catch errors and return JSON
+    upload.single('video')(req, res, (err) => {
+      if (err) {
+        console.error('❌ Multer error:', err.message);
+        return res.status(400).json({ 
+          message: err.message || 'File upload failed',
+          error: 'UPLOAD_ERROR'
+        });
+      }
+      next();
+    });
+  }, async (req, res) => {
     try {
       console.log('📹 Video upload started');
       console.log('Request body keys:', Object.keys(req.body));
@@ -2486,6 +2498,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching storage usage:", error);
       res.status(500).json({ message: "Failed to fetch storage usage" });
     }
+  });
+
+  // Global error handler - ensures all errors return JSON instead of HTML
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('❌ Global error handler caught:', err.message);
+    console.error('❌ Error stack:', err.stack);
+    
+    // If headers already sent, delegate to Express default error handler
+    if (res.headersSent) {
+      return next(err);
+    }
+    
+    // Return JSON error response
+    res.status(err.status || 500).json({
+      message: err.message || 'Internal server error',
+      error: err.name || 'SERVER_ERROR'
+    });
   });
 
   const httpServer = createServer(app);
