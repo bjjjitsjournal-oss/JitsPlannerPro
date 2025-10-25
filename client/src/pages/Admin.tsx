@@ -16,19 +16,9 @@ export default function Admin() {
 
   // Fetch all gyms
   const { data: gyms = [], isLoading, refetch } = useQuery({
-    queryKey: ['/api/gyms', { supabaseId: supabaseUser?.id }],
-    queryFn: async () => {
-      const url = `/api/gyms${supabaseUser?.id ? `?supabaseId=${supabaseUser.id}` : ''}`;
-      const res = await fetch(url, {
-        credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-        }
-      });
-      if (!res.ok) throw new Error('Failed to fetch gyms');
-      return res.json();
-    },
-    enabled: user?.role === 'admin' && !!supabaseUser
+    queryKey: ['/api/gyms'],
+    enabled: user?.role === 'admin',
+    staleTime: 30000, // Cache for 30 seconds
   });
 
   // Create gym mutation
