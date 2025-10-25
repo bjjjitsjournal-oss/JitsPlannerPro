@@ -1,0 +1,31 @@
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:58
+        throw new Error('supabaseUrl is required.');
+              ^
+Error: supabaseUrl is required.
+    at validateSupabaseUrl (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:58:15)
+    at new SupabaseClient (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/SupabaseClient.js:43:59)
+    at createClient (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/index.js:38:12)
+    at file:///opt/render/project/src/dist/index.js:25:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+Node.js v22.16.0
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'npm start'
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:58
+        throw new Error('supabaseUrl is required.');
+              ^
+Error: supabaseUrl is required.
+    at validateSupabaseUrl (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/lib/helpers.js:58:15)
+    at new SupabaseClient (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/SupabaseClient.js:43:59)
+    at createClient (/opt/render/project/src/node_modules/@supabase/supabase-js/dist/main/index.js:38:12)
+    at file:///opt/render/project/src/dist/index.js:25:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+Node.js v22.16.0
