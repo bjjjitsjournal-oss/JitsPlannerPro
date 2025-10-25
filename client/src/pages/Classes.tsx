@@ -470,8 +470,6 @@ export default function Classes() {
                 <div className="flex items-center gap-2 flex-1">
                   <span className="text-blue-600 dark:text-blue-400 font-semibold">{classItem.classType}</span>
                   <span className="text-gray-400">•</span>
-                  <span className="text-gray-600 dark:text-gray-400">{classItem.duration}min</span>
-                  <span className="text-gray-400">•</span>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(classItem.date).toLocaleDateString()}
                     {classItem.time && ` @ ${classItem.time}`}
