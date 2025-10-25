@@ -20,34 +20,20 @@ export default function WeeklyGoals() {
   }, [user]);
 
   // Fetch current week's commitment
-  const { data: currentCommitment, refetch: refetchCommitment } = useQuery({
+  const { data: currentCommitment } = useQuery({
     queryKey: ['weeklyCommitments', 'current', user?.id],
     queryFn: () => weeklyCommitmentsQueries.getCurrent(user!.id),
     enabled: !!user?.id,
-    staleTime: 0, // Always fetch fresh data
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 2000, // Refetch every 2 seconds for updates
-    gcTime: 0, // Don't cache results
-    retry: false, // Don't retry on failure
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch current week's classes for progress
-  const { data: classes = [], refetch: refetchClasses } = useQuery({
+  const { data: classes = [] } = useQuery({
     queryKey: ['classes', user?.id],
     queryFn: () => classesQueries.getAll(user!.id),
     enabled: !!user?.id,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 3000, // Refetch every 3 seconds
+    staleTime: 60000, // Cache for 1 minute
   });
-
-  // Force refresh data when component mounts
-  React.useEffect(() => {
-    refetchCommitment();
-    refetchClasses();
-  }, [refetchCommitment, refetchClasses]);
 
   // Calculate this week's progress (start of week in UTC) - Sunday start
   const today = new Date();
@@ -76,12 +62,6 @@ export default function WeeklyGoals() {
       // Invalidate queries with new keys
       queryClient.invalidateQueries({ queryKey: ['weeklyCommitments', 'current', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
-      
-      // Force immediate refetch to ensure UI updates
-      setTimeout(() => {
-        refetchCommitment();
-        refetchClasses();
-      }, 100);
       
       setShowForm(false);
       
