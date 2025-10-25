@@ -1,0 +1,84 @@
+services:
+  # Backend API Service
+  - type: web
+    name: jitsjournal-backend
+    runtime: node
+    region: oregon
+    plan: starter
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      # Node Environment
+      - key: NODE_ENV
+        value: production
+      
+      # Database (Neon PostgreSQL)
+      - key: DATABASE_URL
+        sync: false  # Set this in Render dashboard
+      
+      # JWT Authentication
+      - key: JWT_SECRET
+        generateValue: true  # Auto-generate secure secret
+      
+      # Supabase Configuration
+      - key: VITE_SUPABASE_URL
+        sync: false  # Set this in Render dashboard
+      
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false  # Set this in Render dashboard
+      
+      - key: SUPABASE_JWT_SECRET
+        sync: false  # Set this in Render dashboard
+      
+      # Email Configuration (Gmail SMTP)
+      - key: GMAIL_USER
+        sync: false  # Set this in Render dashboard
+      
+      - key: GMAIL_APP_PASSWORD
+        sync: false  # Set this in Render dashboard
+      
+      # Cloudflare R2 Storage
+      - key: R2_ENDPOINT
+        sync: false  # Set this in Render dashboard
+      
+      - key: R2_ACCESS_KEY_ID
+        sync: false  # Set this in Render dashboard
+      
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false  # Set this in Render dashboard
+      
+      - key: R2_BUCKET_NAME
+        value: jitsjournal-videos
+      
+      # Stripe Payment Configuration
+      - key: STRIPE_SECRET_KEY
+        sync: false  # Set this in Render dashboard
+      
+      - key: STRIPE_ENTHUSIAST_PRICE_ID
+        sync: false  # Set this in Render dashboard
+      
+      - key: VITE_STRIPE_ENTHUSIAST_PRICE_ID
+        sync: false  # Set this in Render dashboard
+      
+      - key: STRIPE_GYM_PRO_PRICE_ID
+        sync: false  # Set this in Render dashboard
+      
+      - key: VITE_STRIPE_GYM_PRO_PRICE_ID
+        sync: false  # Set this in Render dashboard
+      
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false  # Set this in Render dashboard
+      
+      # OpenAI API
+      - key: OPENAI_API_KEY
+        sync: false  # Set this in Render dashboard
+      
+      # App URL (will be auto-set by Render)
+      - key: VITE_APP_URL
+        value: https://jitsjournal.onrender.com  # Update with your actual domain
+      
+      # Port (Render automatically sets this)
+      - key: PORT
+        value: 10000
