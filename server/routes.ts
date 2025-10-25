@@ -185,12 +185,28 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     let decoded: any = null;
     let isSupabaseToken = false;
 
-    if (supabaseAdmin) {
+    // FAST PATH: Try local Supabase JWT verification first (< 1ms)
+    if (supabaseJwtSecret) {
+      try {
+        const supabaseDecoded = jwt.verify(token, supabaseJwtSecret) as any;
+        console.log('⚡ FAST: Local Supabase token verified for:', supabaseDecoded.email);
+        decoded = {
+          email: supabaseDecoded.email,
+          supabaseId: supabaseDecoded.sub,
+        };
+        isSupabaseToken = true;
+      } catch (supabaseError) {
+        // Not a Supabase token or verification failed
+      }
+    }
+
+    // SLOW PATH: Fallback to API-based Supabase verification (~1500ms)
+    if (!decoded && supabaseAdmin) {
       try {
         const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
         
         if (supabaseUser && !error) {
-          console.log('✅ Supabase token verified for:', supabaseUser.email);
+          console.log('🐌 SLOW: API Supabase token verified for:', supabaseUser.email);
           decoded = {
             email: supabaseUser.email,
             supabaseId: supabaseUser.id,
@@ -202,6 +218,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
       }
     }
 
+    // Legacy JWT fallback
     if (!decoded) {
       try {
         decoded = jwt.verify(token, JWT_SECRET) as any;
