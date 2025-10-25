@@ -28,7 +28,13 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
 - ⏳ Status: v1.0.75 ready for Codemagic build and App Store submission (COMPLETE PERFORMANCE FIX)
 
-### Recent Updates (v1.0.75 - October 2025)
+### Recent Updates (v1.0.76 - October 2025)
+- 🚀 **Render Deployment**: Added render.yaml for Infrastructure as Code deployment
+- 📝 **Health Endpoint**: Added /api/health endpoint for Render monitoring
+- 📖 **Documentation**: RENDER_DEPLOYMENT.md with complete setup guide
+- ✅ **Auto-deployment**: Git push triggers automatic deployment on Render
+
+### Previous Updates (v1.0.75 - October 2025)
 - 🚀 **COMPLETE PERFORMANCE FIX**: Fixed BOTH frontend AND backend for true fast performance
 - ⚡ **3-4x Faster**: Notes/Social pages load in <1 second (vs 5-10 seconds in v1.0.72)
 - 🔑 **Frontend Fix**: All API requests now send cached Supabase access token in Authorization header
@@ -118,6 +124,7 @@ Preferred communication style: Simple, everyday language.
 - **Authentication**: JWT token-based authentication with secure password hashing and secure session management.
 - **Data Isolation**: Ensures each user sees only their own data.
 - **Video Storage**: Cloudflare R2 (S3-compatible) for scalable, cost-efficient video storage with zero egress fees. Legacy videos remain on Supabase Storage with automatic fallback.
+- **Deployment**: Render.com with Infrastructure as Code (render.yaml) for automated deployments.
 
 ### Core Features
 - **Class Tracking System**: Log training sessions, track instructors/partners, record techniques, and generate attendance statistics, including rolling partner tracking and submission details.
