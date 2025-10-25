@@ -1110,6 +1110,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Health check endpoint for R2 configuration
+  app.get("/api/health/r2", (req, res) => {
+    const r2Status = {
+      endpoint: !!process.env.R2_ENDPOINT,
+      accessKeyId: !!process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: !!process.env.R2_SECRET_ACCESS_KEY,
+      bucketName: !!process.env.R2_BUCKET_NAME,
+      version: "v1.0.70",
+      deployedAt: new Date().toISOString()
+    };
+    res.json(r2Status);
+  });
+
   // Video upload route for notes - uploads to R2 storage
   app.post("/api/notes/:id/upload-video", upload.single('video'), async (req, res) => {
     try {
@@ -1182,15 +1195,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Upload to R2
       console.log('📹 Starting upload to R2...');
-      const { uploadToR2 } = await import('./r2Storage');
-      const { url, key } = await uploadToR2(
-        file.buffer,
-        fileName || file.originalname,
-        file.mimetype
-      );
-      console.log('✅ Upload to R2 successful');
-      console.log(`📹 R2 URL: ${url}`);
-      console.log(`📹 R2 Key: ${key}`);
+      let url, key;
+      try {
+        const { uploadToR2 } = await import('./r2Storage');
+        ({ url, key } = await uploadToR2(
+          file.buffer,
+          fileName || file.originalname,
+          file.mimetype
+        ));
+        console.log('✅ Upload to R2 successful');
+        console.log(`📹 R2 URL: ${url}`);
+        console.log(`📹 R2 Key: ${key}`);
+      } catch (r2Error: any) {
+        console.error('❌ R2 upload failed:', r2Error.message);
+        return res.status(500).json({ 
+          message: r2Error.message || 'R2 storage configuration error',
+          error: 'R2_CONFIG_ERROR'
+        });
+      }
 
       // Update note in database with video URL from R2
       console.log('📹 Updating note in database...');
