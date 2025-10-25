@@ -6,6 +6,7 @@ services:
     region: oregon
     plan: starter
     branch: main
+    rootDir: JitsPlannerPro
     buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
