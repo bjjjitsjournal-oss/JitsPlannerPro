@@ -26,6 +26,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-pro
 // Supabase admin client for token verification
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.warn('âš ï¸ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
@@ -57,12 +58,26 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   let isSupabaseToken = false;
 
   // Try Supabase token verification first (only if configured)
-  if (supabaseAdmin) {
+  if (supabaseJwtSecret) {
+    // FAST: Local JWT verification (< 1ms)
+    try {
+      const supabaseDecoded = jwt.verify(token, supabaseJwtSecret) as any;
+      console.log('Fast local Supabase token verified for:', supabaseDecoded.email);
+      decoded = {
+        email: supabaseDecoded.email,
+        supabaseId: supabaseDecoded.sub,
+      };
+      isSupabaseToken = true;
+    } catch (supabaseError) {
+      console.log('Not a Supabase token, trying legacy JWT...');
+    }
+  } else if (supabaseAdmin) {
+    // SLOW: API-based verification (~1500ms) - fallback only
     try {
       const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
       
       if (supabaseUser && !error) {
-        console.log('âœ… Supabase token verified for:', supabaseUser.email);
+        console.log('Slow API Supabase token verified for:', supabaseUser.email);
         decoded = {
           email: supabaseUser.email,
           supabaseId: supabaseUser.id,
