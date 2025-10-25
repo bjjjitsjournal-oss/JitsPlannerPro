@@ -14,17 +14,20 @@ export default function Social() {
   // Fetch user's gym membership
   const { data: gymMembership } = useQuery({
     queryKey: ['/api/my-gym'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch shared notes from the community
   const { data: sharedNotes = [], isLoading: notesLoading } = useQuery<any[]>({
     queryKey: ['/api/notes/shared'],
+    staleTime: 30000, // Cache for 30 seconds (more dynamic content)
   });
 
   // Fetch gym notes
   const { data: gymNotes = [], isLoading: gymNotesLoading } = useQuery<any[]>({
     queryKey: ['/api/gym-notes'],
     enabled: !!gymMembership,
+    staleTime: 30000, // Cache for 30 seconds
   });
 
   // Like/unlike mutation

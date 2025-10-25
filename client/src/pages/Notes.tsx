@@ -35,12 +35,10 @@ export default function Notes() {
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
   // Fetch notes from backend API
-  const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
+  const { data: notes = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/notes'],
     enabled: !!user?.id,
-    staleTime: 0, // Always fetch fresh data
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch current belt for social sharing
@@ -54,12 +52,8 @@ export default function Notes() {
   // Fetch user's gym membership
   const { data: gymMembership } = useQuery({
     queryKey: ['/api/my-gym'],
+    staleTime: 60000, // Cache for 1 minute
   });
-
-  // Force refresh data when component mounts
-  React.useEffect(() => {
-    refetchNotes();
-  }, [refetchNotes]);
 
   // Toggle note sharing mutation (public community)
   const toggleSharingMutation = useMutation({
