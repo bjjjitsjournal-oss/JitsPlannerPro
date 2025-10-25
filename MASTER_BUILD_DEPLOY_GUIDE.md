@@ -127,10 +127,12 @@ npm run build
 ### 3.6 Verify Environment Variables Were Bundled
 
 ```powershell
-Select-String -Path "dist/assets/*.js" -Pattern "umotigprfosrrjwpxlnp"
+Select-String -Path "dist/public/assets/*.js" -Pattern "umotigprfosrrjwpxlnp"
 ```
 
 **Expected:** Should find matches showing the Supabase URL is in the built files
+
+**Note:** Frontend builds to `dist/public/`, not `dist/assets/`
 
 ### 3.7 Sync to Android
 
@@ -482,7 +484,7 @@ npm run build
 
 # 6. Verify credentials bundled
 Write-Host "`n=== Verifying Supabase URL in build ===" -ForegroundColor Cyan
-Select-String -Path "dist/assets/*.js" -Pattern "umotigprfosrrjwpxlnp" | Select-Object -First 1
+Select-String -Path "dist/public/assets/*.js" -Pattern "umotigprfosrrjwpxlnp" | Select-Object -First 1
 
 # 7. Sync to Android
 npx cap sync android
