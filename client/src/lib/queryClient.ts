@@ -10,6 +10,7 @@ const API_BASE_URL = Capacitor.isNativePlatform()
 
 // In-memory cache for fast access (but cleared on app restart)
 let cachedSupabaseId: string | null = null;
+let cachedAccessToken: string | null = null;
 
 // Persist to Capacitor Preferences for mobile (survives app restarts)
 export async function setCachedSupabaseId(id: string | null) {
@@ -22,6 +23,21 @@ export async function setCachedSupabaseId(id: string | null) {
     } else {
       await Preferences.remove({ key: 'supabase_user_id' });
       console.log('🗑️ Cleared Supabase ID from Preferences');
+    }
+  }
+}
+
+// Cache and persist access token for Authorization headers
+export async function setCachedAccessToken(token: string | null) {
+  cachedAccessToken = token;
+  
+  if (Capacitor.isNativePlatform()) {
+    if (token) {
+      await Preferences.set({ key: 'supabase_access_token', value: token });
+      console.log('🔑 Persisted access token to Preferences');
+    } else {
+      await Preferences.remove({ key: 'supabase_access_token' });
+      console.log('🗑️ Cleared access token from Preferences');
     }
   }
 }
@@ -61,26 +77,71 @@ async function getSupabaseId(): Promise<string | null> {
   }
 }
 
+async function getAccessToken(): Promise<string | null> {
+  // 1. Check in-memory cache (fastest)
+  if (cachedAccessToken) {
+    return cachedAccessToken;
+  }
+  
+  // 2. On mobile, check Capacitor Preferences (fast, persistent)
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const { value } = await Preferences.get({ key: 'supabase_access_token' });
+      if (value) {
+        cachedAccessToken = value; // Hydrate in-memory cache
+        console.log('🔑 Loaded access token from Preferences (instant!)');
+        return value;
+      }
+    } catch (e) {
+      console.error('Failed to read access token from Preferences:', e);
+    }
+  }
+  
+  // 3. Fallback to fetching from Supabase (slow on mobile)
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token || null;
+    if (token) {
+      await setCachedAccessToken(token); // Cache for next time
+    }
+    return token;
+  } catch (e) {
+    console.error('Failed to get access token:', e);
+    return null;
+  }
+}
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
       queryFn: async ({ queryKey }) => {
-        const supabaseId = await getSupabaseId();
+        const [supabaseId, accessToken] = await Promise.all([
+          getSupabaseId(),
+          getAccessToken()
+        ]);
         
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
         };
         
-        // Add supabaseId as query param for GET requests (flexibleAuth support)
+        // Add Authorization header for fast backend JWT verification
+        if (accessToken) {
+          headers['Authorization'] = `Bearer ${accessToken}`;
+          console.log('🔑 Query with Authorization header (fast path!)');
+        } else if (supabaseId) {
+          // Fallback: use supabaseId query param for flexibleAuth
+          console.log('📱 Query with supabaseId (fallback path)');
+        } else {
+          console.warn('⚠️ No auth available for query');
+        }
+        
+        // Add supabaseId as query param for backward compatibility
         let url = `${API_BASE_URL}${queryKey[0] as string}`;
         if (supabaseId) {
           const separator = url.includes('?') ? '&' : '?';
           url += `${separator}supabaseId=${supabaseId}`;
-          console.log('📱 Query with supabaseId');
-        } else {
-          console.warn('⚠️ No supabaseId available for query');
         }
         
         const response = await fetch(url, { headers });
@@ -99,18 +160,29 @@ export const queryClient = new QueryClient({
 });
 
 export async function apiRequest(method: string, url: string, data?: any) {
-  const supabaseId = await getSupabaseId();
+  const [supabaseId, accessToken] = await Promise.all([
+    getSupabaseId(),
+    getAccessToken()
+  ]);
   
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
+  
+  // Add Authorization header for fast backend JWT verification
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+    console.log('🔑 Mutation with Authorization header (fast path!)');
+  } else {
+    console.log('📱 Mutation with supabaseId (fallback path)');
+  }
   
   const options: RequestInit = {
     method,
     headers,
   };
 
-  // Add supabaseId to request body for POST/PATCH/DELETE (flexibleAuth support)
+  // Add supabaseId to request body for backward compatibility
   if (data) {
     options.body = JSON.stringify({
       ...data,
