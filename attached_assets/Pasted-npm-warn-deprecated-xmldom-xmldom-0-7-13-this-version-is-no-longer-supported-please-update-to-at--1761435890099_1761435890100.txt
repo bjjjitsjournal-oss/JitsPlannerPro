@@ -1,0 +1,53 @@
+npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
+
+added 1398 packages, and audited 1399 packages in 1m
+
+145 packages are looking for funding
+  run `npm fund` for details
+
+8 moderate severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> npx cap sync android
+\ Copying web assets from public to android\app\src\main\assets\| Copying web assets from public to android\app\src\main\assets\/ Copying web assets from public to android\app\src\main\assets\√ Copying web assets from public to android\app\src\main\assets\public in 136.08ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 2.60ms
+√ copy android in 259.90ms
+√ Updating Android plugins in 29.41ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 241.32ms
+[info] Sync finished in 0.748s
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> cd android
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\android> .\gradlew assembleRelease
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Task :capacitor-android:compileReleaseJavaWithJavac
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+[Incubating] Problems report is available at: file:///C:/Users/joe/OneDrive/Documents/GitHub/JitsPlannerPro13/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 55s
+206 actionable tasks: 206 executed
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\android> explorer app\build\outputs\apk\release
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\android> explorer app\build\outputs\bundle\release
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\android>
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\android>
