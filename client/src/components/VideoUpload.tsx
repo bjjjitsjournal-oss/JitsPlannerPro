@@ -5,6 +5,12 @@ import { apiRequest } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Capacitor } from '@capacitor/core';
+
+// Get API base URL - use Render for mobile, env var for web
+const API_BASE_URL = Capacitor.isNativePlatform() 
+  ? 'https://bjj-jits-journal.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 interface StorageUsageData {
   storageUsed: number;
@@ -67,10 +73,11 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       
       // Upload to backend (which will use R2)
       setUploadProgress(30);
-      console.log('🎥 Starting video upload to:', `/api/notes/${noteId}/upload-video`);
+      const uploadUrl = `${API_BASE_URL}/api/notes/${noteId}/upload-video`;
+      console.log('🎥 Starting video upload to:', uploadUrl);
       console.log('📦 File size:', file.size, 'bytes');
       
-      const response = await fetch(`/api/notes/${noteId}/upload-video`, {
+      const response = await fetch(uploadUrl, {
         method: 'POST',
         body: formData,
       }).catch((fetchError) => {
