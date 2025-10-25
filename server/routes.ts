@@ -2221,25 +2221,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch gym notes" });
     }
   });
-  
-  // Get all gyms (admin only)
-  app.get("/api/gyms", flexibleAuth, async (req, res) => {
-    try {
-      const userId = req.userId;
-      
-      // Check if user is admin
-      const user = await storage.getUser(userId);
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
-      const gyms = await storage.getAllGyms();
-      res.json(gyms);
-    } catch (error) {
-      console.error("Error fetching gyms:", error);
-      res.status(500).json({ message: "Failed to fetch gyms" });
-    }
-  });
 
   // Stripe checkout routes
   app.post("/api/stripe/create-checkout-session", flexibleAuth, async (req, res) => {
