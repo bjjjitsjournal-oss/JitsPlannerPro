@@ -35,7 +35,7 @@ export default function Notes() {
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
   // Fetch notes from backend API
-  const { data: notes = [], isLoading } = useQuery<any[]>({
+  const { data: notes = [], isLoading, refetch: refetchNotes } = useQuery<any[]>({
     queryKey: ['/api/notes'],
     enabled: !!user?.id,
     staleTime: 60000, // Cache for 1 minute
