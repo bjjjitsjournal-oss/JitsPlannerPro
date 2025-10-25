@@ -6,8 +6,7 @@ services:
     region: oregon
     plan: starter
     branch: main
-    rootDir: JitsPlannerPro
-    buildCommand: git submodule update --init --recursive && npm install && npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
