@@ -1,0 +1,36 @@
+📱 Mobile auth: Using supabaseId from query : e9a4b718-0262-40ea-8d74-45897e85c88f
+✅ Mobile auth successful for user: 37
+12:49:40 AM [express] GET /api/storage/usage 200 in 398ms :: {"storageUsed":0,"storageUsedFormatted":…
+📱 Mobile auth: Using supabaseId from query : e9a4b718-0262-40ea-8d74-45897e85c88f
+📱 Mobile auth: Using supabaseId from query : e9a4b718-0262-40ea-8d74-45897e85c88f
+✅ Mobile auth successful for user: 37
+✅ Mobile auth successful for user: 37
+12:50:07 AM [express] GET /api/storage/usage 200 in 835ms :: {"storageUsed":0,"storageUsedFormatted":…
+12:50:07 AM [express] GET /api/my-gym 200 in 782ms
+📹 Video upload started
+Request body keys: [ 'fileName', 'fileSize', 'userId', 'supabaseId', 'thumbnail' ]
+File present: true
+📹 Video upload request for note d48f7046-9d54-4867-bf45-d7cca7b9611d by user 1
+📹 File name: 1000068968.mp4
+📹 File size: 21193325 bytes (20.21 MB)
+📹 MIME type: video/mp4
+📹 Checking user and storage quota...
+📹 User subscription tier: enthusiast
+📹 Current storage used: 8455770 bytes
+📹 Starting upload to R2...
+✅ Upload to R2 successful
+📹 R2 URL: https://fb9aee4678f24b4de7ef0af07671676f.r2.cloudflarestorage.com/itsjournal-videos/videos/1761440088040-1000068968.mp4
+📹 R2 Key: videos/1761440088040-1000068968.mp4
+📹 Updating note in database...
+📹 Updating storage usage...
+✅ Video uploaded successfully! New storage usage: 28.28 MB
+12:54:51 AM [express] POST /api/notes/d48f7046-9d54-4867-bf45-d7cca7b9611d/upload-video 200 in 6100ms…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+12:54:52 AM [express] GET /api/storage/usage 200 in 856ms :: {"storageUsed":29649095,"storageUsedForm…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+12:54:54 AM [express] GET /api/notes 200 in 2394ms :: [{"id":"d48f7046-9d54-4867-bf45-d7cca7b9611d","…
+12:54:54 AM [express] GET /api/notes 200 in 1119ms :: [{"id":"d48f7046-9d54-4867-bf45-d7cca7b9611d","…
