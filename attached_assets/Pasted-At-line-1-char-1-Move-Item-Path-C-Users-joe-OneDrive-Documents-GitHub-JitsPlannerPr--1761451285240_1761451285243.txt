@@ -1,0 +1,82 @@
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Any.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Nothing.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Parser.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Simple.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Util.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (InternalUtils.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PermissionHelper.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (MockCordovaWebV...ridgeMode.class:FileInfo) [Move-Item], DirectoryNotFoundE
+   xception
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HttpRequestHand...onBuilder.class:FileInfo) [Move-Item], DirectoryNotFoundE
+   xception
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (AppPlugin$1.dex:FileInfo) [Move-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : MoveFileInfoItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Could not find a part of the path 'C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13\node_modules\@ca
+pacitor\preferences\android\build\.transforms\ab148ed5241cc200320d60735fc2cfda\transformed\bundleLibRuntimeToDirRelease
+\bundleLibRuntimeToDirRelease_dex\com\capacitorjs\plugins\preferences'.
+At line:1 char:1
++ Move-Item -Path "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\joe\On...itsPlannerPro13:DirectoryInfo) [Move-Item], DirectoryNotF
+   oundException
+    + FullyQualifiedErrorId : MoveDirectoryItemIOError,Microsoft.PowerShell.Commands.MoveItemCommand
+
+PS C:\Users\joe>
