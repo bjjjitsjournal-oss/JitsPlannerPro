@@ -733,6 +733,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/classes", authenticateToken, async (req, res) => {
     try {
       const userId = (req as any).user.userId;
+      
+      // Load full user record to check subscription tier
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Debug: Log user subscription info
+      console.log('📊 Class creation - User subscription info:', {
+        userId: user.id,
+        subscriptionTier: user.subscriptionTier,
+        subscriptionStatus: user.subscriptionStatus,
+        email: user.email
+      });
+      
+      // Check tier limits for free users only
+      const userTier = user.subscriptionTier || 'free';
+      if (userTier === 'free') {
+        const existingClasses = await storage.getClasses(userId);
+        if (existingClasses.length >= 3) {
+          return res.status(403).json({ 
+            message: "Free tier limited to 3 classes. Upgrade to Premium for unlimited classes.",
+            limit: 3,
+            current: existingClasses.length
+          });
+        }
+      }
+      
       const classData = insertClassSchema.parse({ ...req.body, userId });
       const newClass = await storage.createClass(classData);
       res.status(201).json(newClass);
@@ -854,7 +882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notes routes - using existing notes table with UUID mapping
   app.get("/api/notes", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId; // Integer user ID
+      const userId = (req as any).user.id; // Integer user ID
       const { search } = req.query;
       
       let notes;
