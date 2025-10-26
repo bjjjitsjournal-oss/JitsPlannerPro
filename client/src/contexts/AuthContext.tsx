@@ -132,14 +132,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState('Loading...');
+  const [cacheReady, setCacheReady] = useState(false);
   const loadedSupabaseIdRef = React.useRef<string | null>(null);
   const isSigningUpRef = React.useRef(false);
 
+  // CRITICAL: Hydrate cache BEFORE rendering children (blocks app until ready)
   useEffect(() => {
-    const initAuth = async () => {
-      // CRITICAL: Preload auth cache from Preferences BEFORE any API calls
+    const bootstrapCache = async () => {
       await hydrateAuthCache();
-      
+      setCacheReady(true);
+      console.log('✅ Auth cache hydrated - app ready to render');
+    };
+    bootstrapCache();
+  }, []);
+
+  useEffect(() => {
+    if (!cacheReady) return; // Don't start auth flow until cache is ready
+    
+    const initAuth = async () => {
       setLoadingMessage('Checking session...');
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
@@ -273,7 +283,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [cacheReady]); // Re-run when cache is ready
 
   const login = (userData: User) => {
     setUser(userData);
@@ -295,6 +305,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('🚦 Setting signup in progress:', inProgress);
     isSigningUpRef.current = inProgress;
   };
+
+  // Don't render app until cache is ready (prevents race condition)
+  if (!cacheReady) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <p>Initializing...</p>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider
