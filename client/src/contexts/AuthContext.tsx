@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { queryClient, setCachedSupabaseId, setCachedAccessToken } from '@/lib/queryClient';
+import { queryClient, setCachedSupabaseId, setCachedAccessToken, hydrateAuthCache } from '@/lib/queryClient';
 import { Capacitor } from '@capacitor/core';
 
 // Get API base URL - use Render for mobile, env var for web
@@ -137,6 +137,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
+      // CRITICAL: Preload auth cache from Preferences BEFORE any API calls
+      await hydrateAuthCache();
+      
       setLoadingMessage('Checking session...');
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);

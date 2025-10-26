@@ -11,6 +11,39 @@ const API_BASE_URL = Capacitor.isNativePlatform()
 // In-memory cache for fast access (but cleared on app restart)
 let cachedSupabaseId: string | null = null;
 let cachedAccessToken: string | null = null;
+let cacheHydrated = false;
+
+// Bootstrap function to preload cache from Preferences (call ASAP on app start)
+export async function hydrateAuthCache() {
+  if (cacheHydrated) return; // Only run once
+  
+  if (Capacitor.isNativePlatform()) {
+    const startTime = performance.now();
+    try {
+      const [idResult, tokenResult] = await Promise.all([
+        Preferences.get({ key: 'supabase_user_id' }),
+        Preferences.get({ key: 'supabase_access_token' })
+      ]);
+      
+      if (idResult.value) {
+        cachedSupabaseId = idResult.value;
+      }
+      if (tokenResult.value) {
+        cachedAccessToken = tokenResult.value;
+      }
+      
+      const duration = performance.now() - startTime;
+      console.log(`⚡ BOOTSTRAP: Hydrated auth cache from Preferences in ${duration.toFixed(1)}ms`, {
+        hasId: !!cachedSupabaseId,
+        hasToken: !!cachedAccessToken
+      });
+    } catch (e) {
+      console.error('Failed to hydrate auth cache:', e);
+    }
+  }
+  
+  cacheHydrated = true;
+}
 
 // Persist to Capacitor Preferences for mobile (survives app restarts)
 export async function setCachedSupabaseId(id: string | null) {
@@ -43,18 +76,23 @@ export async function setCachedAccessToken(token: string | null) {
 }
 
 async function getSupabaseId(): Promise<string | null> {
+  const startTime = performance.now();
+  
   // 1. Check in-memory cache (fastest)
   if (cachedSupabaseId) {
+    const duration = performance.now() - startTime;
+    console.log(`⚡ getSupabaseId from cache in ${duration.toFixed(1)}ms`);
     return cachedSupabaseId;
   }
   
-  // 2. On mobile, check Capacitor Preferences (fast, persistent)
+  // 2. On mobile, check Capacitor Preferences (fast, persistent) - should be hydrated already
   if (Capacitor.isNativePlatform()) {
     try {
       const { value } = await Preferences.get({ key: 'supabase_user_id' });
       if (value) {
         cachedSupabaseId = value; // Hydrate in-memory cache
-        console.log('📱 Loaded Supabase ID from Preferences (instant!)');
+        const duration = performance.now() - startTime;
+        console.log(`📱 Loaded Supabase ID from Preferences in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
         return value;
       }
     } catch (e) {
@@ -64,12 +102,14 @@ async function getSupabaseId(): Promise<string | null> {
   
   // 3. Fallback to fetching from Supabase (slow on mobile, only happens once)
   try {
-    console.log('⚠️ Falling back to getSession() - this should only happen once');
+    console.log('🐌 SLOW PATH: Falling back to getSession() - this should only happen once after first login');
     const { data: { session } } = await supabase.auth.getSession();
     const id = session?.user?.id || null;
     if (id) {
       await setCachedSupabaseId(id); // Cache for next time
     }
+    const duration = performance.now() - startTime;
+    console.log(`⚠️ getSession() took ${duration.toFixed(1)}ms`);
     return id;
   } catch (e) {
     console.error('Failed to get Supabase user:', e);
@@ -78,18 +118,23 @@ async function getSupabaseId(): Promise<string | null> {
 }
 
 async function getAccessToken(): Promise<string | null> {
+  const startTime = performance.now();
+  
   // 1. Check in-memory cache (fastest)
   if (cachedAccessToken) {
+    const duration = performance.now() - startTime;
+    console.log(`⚡ getAccessToken from cache in ${duration.toFixed(1)}ms`);
     return cachedAccessToken;
   }
   
-  // 2. On mobile, check Capacitor Preferences (fast, persistent)
+  // 2. On mobile, check Capacitor Preferences (fast, persistent) - should be hydrated already
   if (Capacitor.isNativePlatform()) {
     try {
       const { value } = await Preferences.get({ key: 'supabase_access_token' });
       if (value) {
         cachedAccessToken = value; // Hydrate in-memory cache
-        console.log('🔑 Loaded access token from Preferences (instant!)');
+        const duration = performance.now() - startTime;
+        console.log(`🔑 Loaded access token from Preferences in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
         return value;
       }
     } catch (e) {
@@ -99,11 +144,14 @@ async function getAccessToken(): Promise<string | null> {
   
   // 3. Fallback to fetching from Supabase (slow on mobile)
   try {
+    console.log('🐌 SLOW PATH: Falling back to getSession() for token - this should only happen once after first login');
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token || null;
     if (token) {
       await setCachedAccessToken(token); // Cache for next time
     }
+    const duration = performance.now() - startTime;
+    console.log(`⚠️ getSession() for token took ${duration.toFixed(1)}ms`);
     return token;
   } catch (e) {
     console.error('Failed to get access token:', e);
