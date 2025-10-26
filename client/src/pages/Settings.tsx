@@ -266,7 +266,7 @@ export default function Settings() {
           Gym Community
         </h3>
         <div className="space-y-4">
-          {gymMembership ? (
+          {gymMembership && (
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-blue-600" />
@@ -279,32 +279,32 @@ export default function Settings() {
                 You're a member of this gym community
               </p>
             </div>
-          ) : (
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                Join a gym community to share notes with your training partners
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Enter gym code..."
-                  value={gymCode}
-                  onChange={(e) => setGymCode(e.target.value.toUpperCase())}
-                  onKeyPress={(e) => e.key === 'Enter' && handleJoinGym()}
-                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  data-testid="input-gym-code"
-                />
-                <button
-                  onClick={handleJoinGym}
-                  disabled={joinGymMutation.isPending || !gymCode.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  data-testid="button-join-gym"
-                >
-                  {joinGymMutation.isPending ? 'Joining...' : 'Join'}
-                </button>
-              </div>
-            </div>
           )}
+          
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              {gymMembership ? 'Join another gym community' : 'Join a gym community to share notes with your training partners'}
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter gym code..."
+                value={gymCode}
+                onChange={(e) => setGymCode(e.target.value.toUpperCase())}
+                onKeyPress={(e) => e.key === 'Enter' && handleJoinGym()}
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                data-testid="input-gym-code"
+              />
+              <button
+                onClick={handleJoinGym}
+                disabled={joinGymMutation.isPending || !gymCode.trim()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                data-testid="button-join-gym"
+              >
+                {joinGymMutation.isPending ? 'Joining...' : 'Join'}
+              </button>
+            </div>
+          </div>
           
           {user?.role === 'admin' && (
             <button 
