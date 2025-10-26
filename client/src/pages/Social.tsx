@@ -72,6 +72,27 @@ export default function Social() {
     },
   });
 
+  // Delete gym note mutation (admin only)
+  const deleteGymNoteMutation = useMutation({
+    mutationFn: async (noteId: string) => {
+      return await apiRequest("DELETE", `/api/gym-notes/${noteId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
+      toast({
+        title: "Note Deleted",
+        description: "The gym note has been deleted successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete gym note",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Check if current user is admin from database role
   const isAdmin = user?.role === 'admin';
 
@@ -312,11 +333,28 @@ export default function Social() {
                         </div>
                       )}
                       
-                      {/* Footer with date */}
+                      {/* Footer with date and admin actions */}
                       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                         <div className="text-xs text-gray-400">
                           Shared {new Date(note.createdAt).toLocaleDateString()}
                         </div>
+                        {/* Admin delete button for gym notes */}
+                        {(isAdmin || gymMembership?.role === 'admin') && (
+                          <button
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this gym note? This action cannot be undone.')) {
+                                deleteGymNoteMutation.mutate(note.id);
+                              }
+                            }}
+                            disabled={deleteGymNoteMutation.isPending}
+                            className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-colors"
+                            title="Delete gym note"
+                            data-testid={`button-delete-gym-note-${note.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span className="text-xs">Delete</span>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

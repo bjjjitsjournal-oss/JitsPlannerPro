@@ -2207,17 +2207,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/gym-notes", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
+      console.log('🔍 GET /api/gym-notes - userId:', userId);
       
       // Get user's gym memberships
       const userGyms = await storage.getUserGyms(userId);
+      console.log('🏋️ User gyms found:', userGyms.length, userGyms);
       
       if (userGyms.length === 0) {
+        console.log('⚠️ User not in any gym');
         return res.json([]);
       }
       
       // Get notes for the first gym (users can only be in one gym for now)
       const gymId = userGyms[0].id;
+      console.log('📝 Fetching notes for gym ID:', gymId);
       const gymNotes = await storage.getGymNotes(gymId);
+      console.log('✅ Gym notes found:', gymNotes.length);
       
       res.json(gymNotes);
     } catch (error) {
@@ -2290,6 +2295,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error unsharing note from gym:", error);
       res.status(500).json({ message: "Failed to remove note from gym" });
+    }
+  });
+
+  // Delete gym note (admin only)
+  app.delete("/api/gym-notes/:id", flexibleAuth, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const noteId = req.params.id;
+      
+      // Verify note exists
+      const note = await storage.getNote(noteId);
+      if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+      }
+      
+      // Get user's gym
+      const userGyms = await storage.getUserGyms(userId);
+      if (userGyms.length === 0) {
+        return res.status(400).json({ message: "You must be a member of a gym" });
+      }
+      
+      // Verify user is gym admin
+      const gymMembership = await storage.getGymMembership(userId, userGyms[0].id);
+      if (!gymMembership || gymMembership.role !== 'admin') {
+        return res.status(403).json({ message: "Only gym admins can delete gym notes" });
+      }
+      
+      // Verify note belongs to this gym
+      if (note.gymId !== userGyms[0].id) {
+        return res.status(403).json({ message: "This note does not belong to your gym" });
+      }
+      
+      // Delete the note
+      await storage.deleteNote(noteId);
+      
+      res.json({ message: "Gym note deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting gym note:", error);
+      res.status(500).json({ message: "Failed to delete gym note" });
     }
   });
   
