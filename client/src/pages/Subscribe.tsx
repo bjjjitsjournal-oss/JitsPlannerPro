@@ -108,10 +108,10 @@ export default function Subscribe() {
     },
     {
       name: 'Gym Pro',
-      price: '$19.99',
+      price: 'Contact Us',
       tier: 'gym_pro',
       description: 'For gym owners & coaches',
-      priceId: import.meta.env.VITE_STRIPE_GYM_PRO_PRICE_ID || import.meta.env.STRIPE_GYM_PRO_PRICE_ID,
+      contactEmail: 'bjjjitsjournal@gmail.com',
       features: [
         'Everything in Enthusiast',
         'Share to community: 10x/week',
@@ -194,10 +194,15 @@ export default function Subscribe() {
                     <span className="text-4xl font-bold text-gray-900 dark:text-white">
                       {tier.price}
                     </span>
-                    {tier.tier !== 'free' && (
+                    {tier.tier !== 'free' && tier.tier !== 'gym_pro' && (
                       <span className="text-gray-600 dark:text-gray-400">/month</span>
                     )}
                   </div>
+                  {tier.tier === 'gym_pro' && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                      Email: bjjjitsjournal@gmail.com
+                    </p>
+                  )}
                 </CardHeader>
 
                 <CardContent className="space-y-4">
@@ -211,15 +216,28 @@ export default function Subscribe() {
                   </ul>
 
                   {tier.tier !== 'free' && !tier.isCurrent && (
-                    <Button
-                      className="w-full"
-                      variant={tier.popular ? 'default' : 'outline'}
-                      onClick={() => handleSubscribe(tier.tier)}
-                      disabled={loadingTier === tier.tier}
-                      data-testid={`button-subscribe-${tier.tier}`}
-                    >
-                      {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
-                    </Button>
+                    <>
+                      {tier.tier === 'gym_pro' ? (
+                        <Button
+                          className="w-full"
+                          variant="outline"
+                          onClick={() => window.location.href = `mailto:${tier.contactEmail}?subject=Gym Pro Subscription Inquiry&body=Hi, I'm interested in the Gym Pro plan for my gym.`}
+                          data-testid={`button-subscribe-${tier.tier}`}
+                        >
+                          Contact Us
+                        </Button>
+                      ) : (
+                        <Button
+                          className="w-full"
+                          variant={tier.popular ? 'default' : 'outline'}
+                          onClick={() => handleSubscribe(tier.tier)}
+                          disabled={loadingTier === tier.tier}
+                          data-testid={`button-subscribe-${tier.tier}`}
+                        >
+                          {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
+                        </Button>
+                      )}
+                    </>
                   )}
 
                   {tier.isCurrent && (
