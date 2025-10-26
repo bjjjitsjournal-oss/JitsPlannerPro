@@ -47,5 +47,11 @@
         </array>
         <key>UIViewControllerBasedStatusBarAppearance</key>
         <true/>
+        <key>NSCameraUsageDescription</key>
+        <string>This app requires access to the camera to record training videos and techniques.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>This app needs access to your photo library to upload training videos.</string>
+        <key>NSPhotoLibraryAddUsageDescription</key>
+        <string>This app needs permission to save videos to your photo library.</string>
 </dict>
 </plist>
