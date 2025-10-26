@@ -3,7 +3,7 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
-## Mobile App Status (v1.0.78)
+## Mobile App Status (v1.0.79)
 ### Android
 - ✅ Build configured and tested
 - ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.78 ready for build and submission
+- ⏳ Status: v1.0.79 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured
@@ -26,9 +26,9 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🛠️ Build script: build-ios.sh (for Mac users)
 - 📱 Bundle ID: com.jitsjournal.app
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
-- ⏳ Status: v1.0.78 ready for Codemagic build and App Store submission
+- ⏳ Status: v1.0.79 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.78 - October 2025)
+### Recent Updates (v1.0.79 - October 2025)
 - 🔧 **Gym Pro Pricing**: Changed from "$19.99" to "Contact Us" with mailto:bjjjitsjournal@gmail.com
 - 🐛 **Data Isolation Fix**: Fixed GET /api/notes to use correct user ID field (req.user.id)
 - 📝 **Free Tier Limits**: Enforced 3-class maximum for free users with proper error messages
