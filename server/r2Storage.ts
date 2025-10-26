@@ -46,8 +46,9 @@ export async function uploadToR2(
     })
   );
 
-  // Generate public URL
-  const url = `${process.env.R2_ENDPOINT}/${R2_BUCKET}/${key}`;
+  // Generate public URL using R2.dev public endpoint
+  const publicUrl = process.env.R2_PUBLIC_URL || 'https://pub-d4f8dc9cccab4b579387a4fe9c0abf18.r2.dev';
+  const url = `${publicUrl}/${key}`;
 
   return { url, key };
 }
