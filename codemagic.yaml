@@ -113,9 +113,6 @@ workflows:
       android_signing:
         - jits-journal-final
       
-      groups:
-        - google_play_credentials
-      
       vars:
         PACKAGE_NAME: "com.jitsjournal.app"
       
@@ -163,12 +160,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - your-email@example.com  # TODO: Replace with your email
+          - bjjjitsjournal@gmail.com
         notify:
           success: true
           failure: true
-      
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: internal
-        submit_as_draft: true
