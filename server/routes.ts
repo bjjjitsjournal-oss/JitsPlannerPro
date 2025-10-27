@@ -916,7 +916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         linkedClassId: req.body.linkedClassId || null,
         linkedVideoId: req.body.linkedVideoId || null,
         userId: userId, // Use integer user ID directly
-        isShared: req.body.isShared || 0,
+        isShared: req.body.isShared ? Number(req.body.isShared) : 0, // Coerce to integer
         sharedWithUsers: req.body.sharedWithUsers || []
       };
       

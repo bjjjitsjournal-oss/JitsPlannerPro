@@ -376,8 +376,11 @@ export class DatabaseStorage implements IStorage {
     const note = await this.getNote(noteId);
     if (!note || note.userId !== userId) return undefined;
     
+    // Toggle between 0 and 1 (integers matching schema)
+    const newValue = note.isShared ? 0 : 1;
+    
     const [updatedNote] = await db.update(notes)
-      .set({ isShared: note.isShared ? 0 : 1 })
+      .set({ isShared: newValue })
       .where(eq(notes.id, noteId))
       .returning();
     return updatedNote || undefined;
