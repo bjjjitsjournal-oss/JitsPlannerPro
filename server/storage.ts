@@ -17,7 +17,17 @@ import {
   type GymMembership, type InsertGymMembership
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, ilike, and, or, lt } from "drizzle-orm";
+import { eq, desc, asc, ilike, and, or, lt, sql, count } from "drizzle-orm";
+
+// DTO for notes with enriched data
+export interface NoteWithAuthor extends Note {
+  author: {
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+  } | null;
+  likeCount: number;
+}
 
 export interface IStorage {
   // Users
@@ -89,7 +99,7 @@ export interface IStorage {
 
   // Enhanced Note Sharing
   toggleNoteSharing(noteId: string, userId: number): Promise<Note | undefined>;
-  getSharedNotes(): Promise<Note[]>; // Get all publicly shared notes
+  getSharedNotes(): Promise<NoteWithAuthor[]>; // Get all publicly shared notes with author info
   getDrawings(userId?: number): Promise<Drawing[]>;
 
   // Password Reset Tokens
@@ -187,9 +197,14 @@ export class DatabaseStorage implements IStorage {
   // Notes - using persistent Supabase database storage
   async getNotes(userId?: number): Promise<Note[]> {
     if (userId) {
-      return db.select().from(notes).where(eq(notes.userId, userId)).orderBy(desc(notes.createdAt));
+      return db.select().from(notes)
+        .where(eq(notes.userId, userId))
+        .orderBy(desc(notes.createdAt))
+        .limit(50); // Pagination: limit to 50 most recent notes
     }
-    return db.select().from(notes).orderBy(desc(notes.createdAt));
+    return db.select().from(notes)
+      .orderBy(desc(notes.createdAt))
+      .limit(50); // Pagination: limit to 50 most recent notes
   }
 
   async getNote(id: string): Promise<Note | undefined> {
@@ -368,8 +383,72 @@ export class DatabaseStorage implements IStorage {
     return updatedNote || undefined;
   }
 
-  async getSharedNotes(): Promise<Note[]> {
-    return db.select().from(notes).where(eq(notes.isShared, 1)).orderBy(desc(notes.createdAt));
+  async getSharedNotes(): Promise<NoteWithAuthor[]> {
+    // Optimized: Use JOIN to get notes with user info and like count in ONE query instead of N+1
+    const results = await db
+      .select({
+        // All note fields
+        id: notes.id,
+        title: notes.title,
+        content: notes.content,
+        tags: notes.tags,
+        linkedClassId: notes.linkedClassId,
+        linkedVideoId: notes.linkedVideoId,
+        userId: notes.userId,
+        isShared: notes.isShared,
+        gymId: notes.gymId,
+        sharedWithUsers: notes.sharedWithUsers,
+        videoUrl: notes.videoUrl,
+        videoFileName: notes.videoFileName,
+        videoFileSize: notes.videoFileSize,
+        videoThumbnail: notes.videoThumbnail,
+        createdAt: notes.createdAt,
+        updatedAt: notes.updatedAt,
+        // User info fields
+        authorFirstName: users.firstName,
+        authorLastName: users.lastName,
+        authorEmail: users.email,
+        // Like count (use COUNT with group by)
+        likeCount: count(noteLikes.id),
+      })
+      .from(notes)
+      .leftJoin(users, eq(notes.userId, users.id))
+      .leftJoin(noteLikes, eq(notes.id, noteLikes.noteId))
+      .where(eq(notes.isShared, 1))
+      .groupBy(
+        notes.id,
+        users.firstName,
+        users.lastName,
+        users.email
+      )
+      .orderBy(desc(notes.createdAt))
+      .limit(50); // Pagination: limit to 50 notes
+
+    // Transform to match NoteWithAuthor interface
+    return results.map(r => ({
+      id: r.id,
+      title: r.title,
+      content: r.content,
+      tags: r.tags,
+      linkedClassId: r.linkedClassId,
+      linkedVideoId: r.linkedVideoId,
+      userId: r.userId,
+      isShared: r.isShared,
+      gymId: r.gymId,
+      sharedWithUsers: r.sharedWithUsers,
+      videoUrl: r.videoUrl,
+      videoFileName: r.videoFileName,
+      videoFileSize: r.videoFileSize,
+      videoThumbnail: r.videoThumbnail,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      author: r.authorEmail ? {
+        firstName: r.authorFirstName,
+        lastName: r.authorLastName,
+        email: r.authorEmail,
+      } : null,
+      likeCount: Number(r.likeCount),
+    }));
   }
 
   // Password Reset Tokens

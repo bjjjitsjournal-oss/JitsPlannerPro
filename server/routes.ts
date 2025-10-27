@@ -881,6 +881,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Notes routes - using existing notes table with UUID mapping
   app.get("/api/notes", flexibleAuth, async (req, res) => {
+    const startTime = Date.now();
     try {
       const userId = (req as any).user.id; // Integer user ID
       const { search } = req.query;
@@ -892,8 +893,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notes = await storage.getNotes(userId);
       }
       
+      const duration = Date.now() - startTime;
+      console.log(`⏱️ GET /api/notes completed in ${duration}ms for user ${userId} (${notes.length} notes)`);
+      
       res.json(notes);
     } catch (error) {
+      const duration = Date.now() - startTime;
+      console.error(`❌ GET /api/notes failed after ${duration}ms:`, error);
       res.status(500).json({ message: "Failed to fetch notes" });
     }
   });
@@ -999,29 +1005,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Shared notes routes
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
+    const startTime = Date.now();
     try {
       const userId = (req as any).user.id;
+      
+      // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1
       const sharedNotes = await storage.getSharedNotes();
       
-      // Include user info for shared notes (temporarily skip likes due to schema mismatch)
-      const notesWithUserInfo = await Promise.all(
-        sharedNotes.map(async (note) => {
-          const user = await storage.getUser(note.userId);
-          return {
-            ...note,
-            author: user ? {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            } : null,
-            isLikedByUser: false // Temporarily disabled until schema update
-          };
-        })
-      );
+      const totalDuration = Date.now() - startTime;
+      console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
       
-      res.json(notesWithUserInfo);
+      // Notes already include author info and like count from the JOIN query
+      res.json(sharedNotes.map(note => ({
+        ...note,
+        isLikedByUser: false // TODO: Add user-specific like status in future optimization
+      })));
     } catch (error) {
-      console.error("Error fetching shared notes:", error);
+      const duration = Date.now() - startTime;
+      console.error(`❌ GET /api/notes/shared failed after ${duration}ms:`, error);
       res.status(500).json({ message: "Failed to fetch shared notes" });
     }
   });
