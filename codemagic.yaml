@@ -111,7 +111,7 @@ workflows:
     
     environment:
       android_signing:
-        - jits_journal_keystore
+        - jits-journal-final
       
       groups:
         - google_play_credentials
