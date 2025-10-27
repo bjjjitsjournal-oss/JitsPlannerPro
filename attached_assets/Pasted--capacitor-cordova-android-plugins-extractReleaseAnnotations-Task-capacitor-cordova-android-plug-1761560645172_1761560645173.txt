@@ -1,0 +1,47 @@
+:capacitor-cordova-android-plugins:extractReleaseAnnotations
+> Task :capacitor-cordova-android-plugins:mergeReleaseGeneratedProguardFiles
+> Task :capacitor-cordova-android-plugins:mergeReleaseConsumerProguardFiles
+> Task :capacitor-cordova-android-plugins:mergeReleaseJavaResource
+> Task :capacitor-cordova-android-plugins:syncReleaseLibJars
+> Task :capacitor-cordova-android-plugins:bundleReleaseLocalLintAar
+> Task :capacitor-android:writeReleaseLintModelMetadata
+> Task :capacitor-app:writeReleaseLintModelMetadata
+> Task :capacitor-cordova-android-plugins:writeReleaseLintModelMetadata
+> Task :capacitor-preferences:writeReleaseLintModelMetadata
+> Task :capacitor-android:generateReleaseLintVitalModel
+> Task :capacitor-app:generateReleaseLintVitalModel
+> Task :capacitor-cordova-android-plugins:generateReleaseLintVitalModel
+> Task :capacitor-preferences:generateReleaseLintVitalModel
+> Task :app:validateSigningRelease FAILED
+> Task :app:parseReleaseIntegrityConfig
+> Task :capacitor-preferences:lintVitalAnalyzeRelease
+> Task :capacitor-app:lintVitalAnalyzeRelease
+> Task :capacitor-cordova-android-plugins:lintVitalAnalyzeRelease
+> Task :capacitor-android:lintVitalAnalyzeRelease
+
+[Incubating] Problems report is available at: file:///Users/builder/clone/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:validateSigningRelease'.
+> Keystore file '/Users/builder/clone/android/app/C:/Users/joe/my-release-key.jks' not found for signing config 'release'.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 51s
+192 actionable tasks: 186 executed, 6 up-to-date
+
+
+Build failed :|
+Step 6 script `Build Android AAB` exited with status code 1
