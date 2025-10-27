@@ -21,10 +21,19 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'your_key_alias'
-            keyPassword 'romeodog'
-            storeFile file('C:/Users/joe/my-release-key.jks')
-            storePassword 'romeodog'
+            // Use Codemagic environment variables if available, otherwise use local keystore
+            if (System.getenv("CM_KEYSTORE_PATH")) {
+                storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("CM_KEY_ALIAS")
+                keyPassword System.getenv("CM_KEY_PASSWORD")
+            } else {
+                // Local PC build
+                keyAlias 'your_key_alias'
+                keyPassword 'romeodog'
+                storeFile file('C:/Users/joe/my-release-key.jks')
+                storePassword 'romeodog'
+            }
         }
     }
 
