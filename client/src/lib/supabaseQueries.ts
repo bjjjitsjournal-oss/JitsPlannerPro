@@ -26,7 +26,17 @@ export const classesQueries = {
       .order('date', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    
+    // Transform snake_case to camelCase for frontend
+    return (data || []).map(classItem => ({
+      ...classItem,
+      classType: classItem.class_type,
+      techniquesFocused: classItem.techniques_focused,
+      rollingPartners: classItem.rolling_partners,
+      yourSubmissions: classItem.your_submissions,
+      partnerSubmissions: classItem.partner_submissions,
+      cardioRating: classItem.cardio_rating,
+    }));
   },
 
   async create(userId: number, classData: any) {
@@ -59,7 +69,17 @@ export const classesQueries = {
       throw error;
     }
     console.log('Class created successfully:', data);
-    return data;
+    
+    // Transform snake_case to camelCase for frontend
+    return {
+      ...data,
+      classType: data.class_type,
+      techniquesFocused: data.techniques_focused,
+      rollingPartners: data.rolling_partners,
+      yourSubmissions: data.your_submissions,
+      partnerSubmissions: data.partner_submissions,
+      cardioRating: data.cardio_rating,
+    };
   },
 
   async update(classId: number, userId: number, classData: any) {
@@ -86,7 +106,17 @@ export const classesQueries = {
       .single();
 
     if (error) throw error;
-    return data;
+    
+    // Transform snake_case to camelCase for frontend
+    return {
+      ...data,
+      classType: data.class_type,
+      techniquesFocused: data.techniques_focused,
+      rollingPartners: data.rolling_partners,
+      yourSubmissions: data.your_submissions,
+      partnerSubmissions: data.partner_submissions,
+      cardioRating: data.cardio_rating,
+    };
   },
 
   async delete(classId: number, userId: number) {
