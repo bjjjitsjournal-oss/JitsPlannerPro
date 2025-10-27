@@ -150,8 +150,10 @@ workflows:
       - name: Build Android AAB
         script: |
           echo "🤖 Building Android AAB..."
-          chmod +x android/gradlew
-          cd android && ./gradlew clean bundleRelease
+          cd android
+          chmod +x ./gradlew
+          ./gradlew clean
+          ./gradlew bundleRelease --stacktrace
     
     artifacts:
       - android/app/build/outputs/**/*.aab
