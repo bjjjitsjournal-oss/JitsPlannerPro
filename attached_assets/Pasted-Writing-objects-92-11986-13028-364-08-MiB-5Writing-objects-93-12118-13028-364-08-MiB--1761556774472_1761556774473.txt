@@ -1,0 +1,37 @@
+Writing objects:  92% (11986/13028), 364.08 MiB | 5Writing objects:  93% (12118/13028), 364.08 MiB | 5Writing objects:  94% (12247/13028), 364.08 MiB | 5Writing objects:  95% (12377/13028), 364.08 MiB | 5Writing objects:  96% (12507/13028), 364.08 MiB | 5Writing objects:  97% (12638/13028), 364.08 MiB | 5Writing objects:  98% (12768/13028), 364.08 MiB | 5Writing objects:  99% (12898/13028), 364.08 MiB | 5Writing objects: 100% (13028/13028), 364.08 MiB | 5Writing objects: 100% (13028/13028), 365.97 MiB | 5.51 MiB/s, done.
+Total 13028 (delta 5298), reused 6639 (delta 2724), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (5298/5298), completed with 38 local objects.
+remote: error: GH013: Repository rule violations found for refs/heads/main.
+remote: 
+remote: - GITHUB PUSH PROTECTION
+remote:   —————————————————————————————————————————
+remote:     Resolve the following violations before pushing again
+remote: 
+remote:     - Push cannot contain secrets
+remote: 
+remote:     
+remote:      (?) Learn how to resolve a blocked push
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push
+remote:     
+remote:     
+remote:       —— Slack Incoming Webhook URL ————————————————————————
+remote:        locations:
+remote:          - blob id: 1c30c51a02789d175844e364cdb98985d767189d
+remote:     
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.
+remote:        https://github.com/bjjjitsjournal-oss/JitsPlannerPro/security/secret-scanning/unblock-secret/34dwG2MwBihQkBdsnWFPyhFRWux
+remote:     
+remote:     
+remote:     ——[ WARNING ]—————————————————————————————————————————
+remote:      Scan incomplete: This push was large and we didn't finish on time.
+remote:      It can still contain undetected secrets.
+remote:     
+remote:      (?) Use the following command to find the path of the detected secret(s):
+remote:          git rev-list --objects --all | grep blobid
+remote:     ——————————————————————————————————————————————————————
+remote: 
+remote: 
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git'
+~/workspace$ 
