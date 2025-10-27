@@ -13,12 +13,14 @@ let cachedSupabaseId: string | null = null;
 let cachedAccessToken: string | null = null;
 let cacheHydrated = false;
 
-// Bootstrap function to preload cache from Preferences (call ASAP on app start)
+// Bootstrap function to preload cache from Preferences/localStorage (call ASAP on app start)
 export async function hydrateAuthCache() {
   if (cacheHydrated) return; // Only run once
   
+  const startTime = performance.now();
+  
   if (Capacitor.isNativePlatform()) {
-    const startTime = performance.now();
+    // Mobile: Use Capacitor Preferences
     try {
       const [idResult, tokenResult] = await Promise.all([
         Preferences.get({ key: 'supabase_user_id' }),
@@ -40,22 +42,53 @@ export async function hydrateAuthCache() {
     } catch (e) {
       console.error('Failed to hydrate auth cache:', e);
     }
+  } else {
+    // Web: Use localStorage for persistence across page reloads
+    try {
+      const id = localStorage.getItem('supabase_user_id');
+      const token = localStorage.getItem('supabase_access_token');
+      
+      if (id) {
+        cachedSupabaseId = id;
+      }
+      if (token) {
+        cachedAccessToken = token;
+      }
+      
+      const duration = performance.now() - startTime;
+      console.log(`⚡ BOOTSTRAP: Hydrated auth cache from localStorage in ${duration.toFixed(1)}ms`, {
+        hasId: !!cachedSupabaseId,
+        hasToken: !!cachedAccessToken
+      });
+    } catch (e) {
+      console.error('Failed to hydrate auth cache from localStorage:', e);
+    }
   }
   
   cacheHydrated = true;
 }
 
-// Persist to Capacitor Preferences for mobile (survives app restarts)
+// Persist to Capacitor Preferences (mobile) or localStorage (web)
 export async function setCachedSupabaseId(id: string | null) {
   cachedSupabaseId = id;
   
   if (Capacitor.isNativePlatform()) {
+    // Mobile: Use Capacitor Preferences
     if (id) {
       await Preferences.set({ key: 'supabase_user_id', value: id });
       console.log('💾 Persisted Supabase ID to Preferences');
     } else {
       await Preferences.remove({ key: 'supabase_user_id' });
       console.log('🗑️ Cleared Supabase ID from Preferences');
+    }
+  } else {
+    // Web: Use localStorage
+    if (id) {
+      localStorage.setItem('supabase_user_id', id);
+      console.log('💾 Persisted Supabase ID to localStorage');
+    } else {
+      localStorage.removeItem('supabase_user_id');
+      console.log('🗑️ Cleared Supabase ID from localStorage');
     }
   }
 }
@@ -65,12 +98,22 @@ export async function setCachedAccessToken(token: string | null) {
   cachedAccessToken = token;
   
   if (Capacitor.isNativePlatform()) {
+    // Mobile: Use Capacitor Preferences
     if (token) {
       await Preferences.set({ key: 'supabase_access_token', value: token });
       console.log('🔑 Persisted access token to Preferences');
     } else {
       await Preferences.remove({ key: 'supabase_access_token' });
       console.log('🗑️ Cleared access token from Preferences');
+    }
+  } else {
+    // Web: Use localStorage
+    if (token) {
+      localStorage.setItem('supabase_access_token', token);
+      console.log('🔑 Persisted access token to localStorage');
+    } else {
+      localStorage.removeItem('supabase_access_token');
+      console.log('🗑️ Cleared access token from localStorage');
     }
   }
 }
@@ -85,12 +128,13 @@ async function getSupabaseId(): Promise<string | null> {
     return cachedSupabaseId;
   }
   
-  // 2. On mobile, check Capacitor Preferences (fast, persistent) - should be hydrated already
+  // 2. Check persistent storage (should be hydrated already, but fallback just in case)
   if (Capacitor.isNativePlatform()) {
+    // Mobile: Check Capacitor Preferences
     try {
       const { value } = await Preferences.get({ key: 'supabase_user_id' });
       if (value) {
-        cachedSupabaseId = value; // Hydrate in-memory cache
+        cachedSupabaseId = value;
         const duration = performance.now() - startTime;
         console.log(`📱 Loaded Supabase ID from Preferences in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
         return value;
@@ -98,9 +142,22 @@ async function getSupabaseId(): Promise<string | null> {
     } catch (e) {
       console.error('Failed to read from Preferences:', e);
     }
+  } else {
+    // Web: Check localStorage
+    try {
+      const value = localStorage.getItem('supabase_user_id');
+      if (value) {
+        cachedSupabaseId = value;
+        const duration = performance.now() - startTime;
+        console.log(`💻 Loaded Supabase ID from localStorage in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
+        return value;
+      }
+    } catch (e) {
+      console.error('Failed to read from localStorage:', e);
+    }
   }
   
-  // 3. Fallback to fetching from Supabase (slow on mobile, only happens once)
+  // 3. Fallback to fetching from Supabase (slow, only happens once after first login)
   try {
     console.log('🐌 SLOW PATH: Falling back to getSession() - this should only happen once after first login');
     const { data: { session } } = await supabase.auth.getSession();
@@ -127,12 +184,13 @@ async function getAccessToken(): Promise<string | null> {
     return cachedAccessToken;
   }
   
-  // 2. On mobile, check Capacitor Preferences (fast, persistent) - should be hydrated already
+  // 2. Check persistent storage (should be hydrated already, but fallback just in case)
   if (Capacitor.isNativePlatform()) {
+    // Mobile: Check Capacitor Preferences
     try {
       const { value } = await Preferences.get({ key: 'supabase_access_token' });
       if (value) {
-        cachedAccessToken = value; // Hydrate in-memory cache
+        cachedAccessToken = value;
         const duration = performance.now() - startTime;
         console.log(`🔑 Loaded access token from Preferences in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
         return value;
@@ -140,9 +198,22 @@ async function getAccessToken(): Promise<string | null> {
     } catch (e) {
       console.error('Failed to read access token from Preferences:', e);
     }
+  } else {
+    // Web: Check localStorage
+    try {
+      const value = localStorage.getItem('supabase_access_token');
+      if (value) {
+        cachedAccessToken = value;
+        const duration = performance.now() - startTime;
+        console.log(`🔑 Loaded access token from localStorage in ${duration.toFixed(1)}ms (cache miss - should have been preloaded!)`);
+        return value;
+      }
+    } catch (e) {
+      console.error('Failed to read access token from localStorage:', e);
+    }
   }
   
-  // 3. Fallback to fetching from Supabase (slow on mobile)
+  // 3. Fallback to fetching from Supabase (slow, only happens once after first login)
   try {
     console.log('🐌 SLOW PATH: Falling back to getSession() for token - this should only happen once after first login');
     const { data: { session } } = await supabase.auth.getSession();
