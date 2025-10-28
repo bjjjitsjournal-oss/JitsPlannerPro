@@ -1,0 +1,45 @@
+index-BF4h1tzN.js:87 🔧 Supabase Client Initialization
+index-BF4h1tzN.js:87 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-BF4h1tzN.js:87 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-BF4h1tzN.js:391 BJJ Journal - Full App Restored!
+index-BF4h1tzN.js:391 Open in new window if you see caching issues
+index-BF4h1tzN.js:87 🔔 Auth state change: INITIAL_SESSION isSigningUp: false
+manifest.json:1 Manifest: scope_extensions entry ignored, required properties 'type' and 'origin' are missing.
+index-BF4h1tzN.js:391 Login attempt with: Object
+index-BF4h1tzN.js:391 Login attempt with: Object
+index-BF4h1tzN.js:87 🔔 Auth state change: SIGNED_IN isSigningUp: false
+index-BF4h1tzN.js:87 🔍 Loading user data for supabaseId: 5727fda2-3783-4b36-b6f2-0a643f764f29 (attempt 1/3)
+index-BF4h1tzN.js:87 🔑 Including Supabase access token in request
+index-BF4h1tzN.js:87 📡 User endpoint response status: 200
+index-BF4h1tzN.js:87 ✅ User data loaded successfully: Object
+index-BF4h1tzN.js:391 Login successful: bjjjitsjournal@gmail.com
+index-BF4h1tzN.js:332 Current belt data: undefined
+index-BF4h1tzN.js:332 ProfileDropdown - Fetching belt for user ID: 1
+index-BF4h1tzN.js:87 WeeklyGoals user object: Object
+index-BF4h1tzN.js:87 getCurrent - Looking for week: 2025-10-19
+index-BF4h1tzN.js:332 ProfileDropdown - Belt data received: Object
+index-BF4h1tzN.js:87 getCurrent - Found: Object Error: null
+index-BF4h1tzN.js:332 Current belt data: undefined
+index-BF4h1tzN.js:332 Current belt data: Object
+index-BF4h1tzN.js:87 getCurrent - Looking for week: 2025-10-19
+index-BF4h1tzN.js:87 getCurrent - Found: Object Error: null
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:376 🗑️ Deleting note: 34686d3f-2eef-4a6f-8b9d-01848fb49298
+index-BF4h1tzN.js:376 ✅ Note deleted successfully
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:376 🚀 Creating note with data: Object
+index-BF4h1tzN.js:376 ✅ Note created successfully
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:87 📱 Query with supabaseId
+index-BF4h1tzN.js:332 🎥 Starting video upload to: /api/notes/11239f5f-0e8a-4609-b29a-8d41eb72ad55/upload-video
+index-BF4h1tzN.js:332 📦 File size: 490328 bytes
+api/notes/11239f5f-0e8a-4609-b29a-8d41eb72ad55/upload-video:1  Failed to load resource: the server responded with a status of 405 ()
+index-BF4h1tzN.js:332 📡 Response status: 405
+index-BF4h1tzN.js:332 Video upload error: SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at Object.mutationFn (index-BF4h1tzN.js:332:49437)
+onError @ index-BF4h1tzN.js:332

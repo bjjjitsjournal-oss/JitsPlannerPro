@@ -1,0 +1,156 @@
+
+📱 Mobile auth: Using supabaseId from body : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:09 AM [express] POST /api/notes/5953b76a-5d35-45b6-a954-593f458cb4fd/toggle-sharing 200 in 1516…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+⏱️ GET /api/notes completed in 420ms for user 1 (2 notes)
+4:15:10 AM [express] GET /api/notes 200 in 867ms :: [{"id":"5953b76a-5d35-45b6-a954-593f458cb4fd","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+❌ GET /api/notes/shared failed after 95ms: error: operator does not exist: character varying = integer
+    at /opt/render/project/src/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getSharedNotes (file:///opt/render/project/src/dist/index.js:789:21)
+    at async file:///opt/render/project/src/dist/index.js:2401:27 {
+  length: 213,
+  severity: 'ERROR',
+  code: '42883',
+  detail: undefined,
+  hint: 'No operator matches the given name and argument types. You might need to add explicit type casts.',
+  position: '552',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_oper.c',
+  line: '635',
+  routine: 'op_error'
+}
+4:15:11 AM [express] GET /api/notes/shared 500 in 209ms :: {"message":"Failed to fetch shared notes"}
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+❌ GET /api/notes/shared failed after 95ms: error: operator does not exist: character varying = integer
+    at /opt/render/project/src/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getSharedNotes (file:///opt/render/project/src/dist/index.js:789:21)
+    at async file:///opt/render/project/src/dist/index.js:2401:27 {
+  length: 213,
+  severity: 'ERROR',
+  code: '42883',
+  detail: undefined,
+  hint: 'No operator matches the given name and argument types. You might need to add explicit type casts.',
+  position: '552',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_oper.c',
+  line: '635',
+  routine: 'op_error'
+}
+4:15:13 AM [express] GET /api/notes/shared 500 in 793ms :: {"message":"Failed to fetch shared notes"}
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:16 AM [express] GET /api/storage/usage 200 in 777ms :: {"storageUsed":65673875,"storageUsedForm…
+📱 Mobile auth: Using supabaseId from body : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:19 AM [express] POST /api/notes/5953b76a-5d35-45b6-a954-593f458cb4fd/toggle-sharing 200 in 931m…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+⏱️ GET /api/notes completed in 701ms for user 1 (2 notes)
+4:15:20 AM [express] GET /api/notes 200 in 1072ms :: [{"id":"5953b76a-5d35-45b6-a954-593f458cb4fd","…
+📱 Mobile auth: Using supabaseId from body : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+📝 POST /api/notes - Creating note with data: {
+  title: 'G',
+  content: '',
+  tags: [],
+  supabaseId: '5727fda2-3783-4b36-b6f2-0a643f764f29'
+} for user: 1
+Note created successfully: {
+  id: 'b69e64db-7a6d-4213-8ed7-0c6d3956d7c1',
+  title: 'G',
+  content: '',
+  tags: [],
+  linkedClassId: null,
+  linkedVideoId: null,
+  userId: 1,
+  isShared: 0,
+  gymId: null,
+  sharedWithUsers: [],
+  videoUrl: null,
+  videoFileName: null,
+  videoFileSize: null,
+  videoThumbnail: null,
+  createdAt: 2025-10-27T04:15:41.789Z,
+  updatedAt: 2025-10-27T04:15:41.789Z
+}
+4:15:41 AM [express] POST /api/notes 201 in 857ms :: {"id":"b69e64db-7a6d-4213-8ed7-0c6d3956d7c1","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:42 AM [express] GET /api/storage/usage 200 in 224ms :: {"storageUsed":65673875,"storageUsedForm…
+✅ Mobile auth successful for user: 1
+⏱️ GET /api/notes completed in 952ms for user 1 (3 notes)
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:44 AM [express] GET /api/notes 200 in 2529ms :: [{"id":"b69e64db-7a6d-4213-8ed7-0c6d3956d7c1","…
+⏱️ GET /api/notes completed in 494ms for user 1 (3 notes)
+4:15:45 AM [express] GET /api/notes 200 in 1315ms :: [{"id":"b69e64db-7a6d-4213-8ed7-0c6d3956d7c1","…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:15:46 AM [express] GET /api/storage/usage 200 in 218ms :: {"storageUsed":65673875,"storageUsedForm…
+📹 Video upload started
+Request body keys: [ 'fileName', 'fileSize', 'userId', 'supabaseId', 'thumbnail' ]
+File present: true
+📹 Video upload request for note b69e64db-7a6d-4213-8ed7-0c6d3956d7c1 by user 1
+📹 File name: 1000069189.mp4
+📹 File size: 6004130 bytes (5.73 MB)
+📹 MIME type: video/mp4
+📹 Checking user and storage quota...
+📹 User subscription tier: enthusiast
+📹 Current storage used: 65673875 bytes
+📹 Starting upload to R2...
+✅ Upload to R2 successful
+📹 R2 URL: https://pub-d4f8dc9cccab4b579387a4fe9c0abf18.r2.dev/videos/1761538566336-1000069189.mp4
+📹 R2 Key: videos/1761538566336-1000069189.mp4
+📹 Updating note in database...
+📹 Updating storage usage...
+✅ Video uploaded successfully! New storage usage: 68.36 MB
+4:16:08 AM [express] POST /api/notes/b69e64db-7a6d-4213-8ed7-0c6d3956d7c1/upload-video 200 in 3325ms…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+4:16:09 AM [express] GET /api/storage/usage 200 in 815ms :: {"storageUsed":71678005,"storageUsedForm…
+⏱️ GET /api/notes completed in 964ms for user 1 (3 notes)
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+4:16:10 AM [express] GET /api/notes 200 in 1996ms :: [{"id":"b69e64db-7a6d-4213-8ed7-0c6d3956d7c1","…
+⏱️ GET /api/notes completed in 494ms for user 1 (3 notes)
+4:16:11 AM [express] GET /api/notes 200 in 1023ms :: [{"id":"b69e64db-7a6d-4213-8ed7-0c6d3956d7c1","…
+📱 Mobile auth: Using supabaseId from body : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+🗑️ DELETE /api/notes/:id - Deleting note: b69e64db-7a6d-4213-8ed7-0c6d3956d7c1 for user: 1 body: { supabaseId: '5727fda2-3783-4b36-b6f2-0a643f764f29' }
+4:16:20 AM [express] DELETE /api/notes/b69e64db-7a6d-4213-8ed7-0c6d3956d7c1 204 in 509ms
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+⏱️ GET /api/notes completed in 988ms for user 1 (2 notes)
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+4:16:22 AM [express] GET /api/notes 200 in 1475ms :: [{"id":"5953b76a-5d35-45b6-a954-593f458cb4fd","…
+✅ Mobile auth successful for user: 1
+⏱️ GET /api/notes completed in 406ms for user 1 (2 notes)
+4:16:23 AM [express] GET /api/notes 200 in 1416ms :: [{"id":"5953b76a-5d35-45b6-a954-593f458cb4fd","…
+     ==> Detected service running on port 10000
+     ==> Docs on specifying a port: https://render.c

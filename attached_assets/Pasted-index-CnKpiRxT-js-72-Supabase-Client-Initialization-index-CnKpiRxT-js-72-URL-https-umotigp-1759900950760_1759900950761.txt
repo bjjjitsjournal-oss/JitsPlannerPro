@@ -1,0 +1,83 @@
+index-CnKpiRxT.js:72 🔧 Supabase Client Initialization
+index-CnKpiRxT.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-CnKpiRxT.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-CnKpiRxT.js:314 BJJ Journal - Full App Restored!
+index-CnKpiRxT.js:314 Open in new window if you see caching issues
+index-CnKpiRxT.js:72 Initial session check: undefined
+index-CnKpiRxT.js:72 Auth state changed: INITIAL_SESSION undefined
+index-CnKpiRxT.js:314 Notification permission: denied
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+index-CnKpiRxT.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-CnKpiRxT.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:72 Query result: {existingUser: {…}, userError: null}
+index-CnKpiRxT.js:72 Found existing user: 1
+index-CnKpiRxT.js:72 User data loaded after auth change: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Setting user with ID: 1 type: number
+index-CnKpiRxT.js:314 Login successful: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:270 ProfileDropdown - Fetching belt for user ID: 1
+index-CnKpiRxT.js:75 WeeklyGoals user object: {id: 1, type: 'number', email: 'bjjjitsjournal@gmail.com'}
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:270 ProfileDropdown - Belt data received: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-CnKpiRxT.js:270 Current belt data: undefined
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:270 Current belt data: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 getCurrent - Looking for week: 2025-10-05
+index-CnKpiRxT.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-CnKpiRxT.js:75 Creating note with userId: 1 noteData: {title: 'de', content: '', tags: Array(0)}
+index-CnKpiRxT.js:75 Note created successfully: {id: '4388bdeb-e022-4bd9-af92-4b3dbf88d882', title: 'de', content: '', tags: Array(0), linked_class_id: null, …}
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+(anonymous) @ index-CnKpiRxT.js:72
+Promise.catch
+j0 @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71
+index-CnKpiRxT.js:72 Query result: {existingUser: null, userError: Error: Query timeout after 5s
+    at https://bjj-jits-journal-hwcuw8qvw-joes-projects-4f6e77c7.verc…}
+index-CnKpiRxT.js:72 Database query error: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+j0 @ index-CnKpiRxT.js:72
+await in j0
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71
+index-CnKpiRxT.js:72 getUserFromSupabaseId returned null after auth change - forcing logout
+(anonymous) @ index-CnKpiRxT.js:72
+await in (anonymous)
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71

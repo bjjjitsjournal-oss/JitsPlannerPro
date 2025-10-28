@@ -1,0 +1,94 @@
+87e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+WARNING: C:\Users\joe\.gradle\caches\modules-2\files-2.1\com.amazon.device\amazon-appstore-sdk\3.0.5\cb046867a6d127f404780c49287e63177e960304\amazon-appstore-sdk-3.0.5.jar: D8: Expected stack map table for method with non-linear control flow.
+
+> Task :revenuecat-purchases-capacitor:compileReleaseKotlin FAILED
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':revenuecat-purchases-capacitor:compileReleaseKotlin'.
+> 'compileReleaseJavaWithJavac' task (current target is 17) and 'compileReleaseKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.
+  Consider using JVM toolchain: https://kotl.in/gradle/jvm/toolchain
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 23s
+96 actionable tasks: 94 executed, 2 up-to-date
+PS C:\Projects\JitsPlannerPro\android>

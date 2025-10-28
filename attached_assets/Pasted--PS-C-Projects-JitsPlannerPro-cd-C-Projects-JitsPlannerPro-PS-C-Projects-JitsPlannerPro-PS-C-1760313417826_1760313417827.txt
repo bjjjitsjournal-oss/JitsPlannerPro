@@ -1,0 +1,116 @@
+
+PS C:\Projects\JitsPlannerPro> cd C:\Projects\JitsPlannerPro
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Update queryClient with correct import syntax
+PS C:\Projects\JitsPlannerPro> $queryClientFixed = @'
+>> import { QueryClient } from '@tanstack/react-query';
+>> import { supabase } from './supabase';
+>> import { Capacitor } from '@capacitor/core';
+>> import { Http } from '@capacitor-community/http';
+>>
+>> // Get API base URL - use Render for mobile app, env var for web, or relative path
+>> const API_BASE_URL = Capacitor.isNativePlatform()
+>>   ? 'https://bjj-jits-journal.onrender.com'
+>>   : (import.meta.env.VITE_API_BASE_URL || '');
+>>
+>> async function getSupabaseToken(): Promise<string | null> {
+>>   try {
+>>     const { data: { session } } = await supabase.auth.getSession();
+>>     return session?.access_token || null;
+>>   } catch (e) {
+>>     console.error('Failed to get Supabase token:', e);
+>>     return null;
+>>   }
+>> }
+>>
+>> export const queryClient = new QueryClient({
+>>   defaultOptions: {
+>>     queries: {
+>>       retry: 1,
+>>       refetchOnWindowFocus: false,
+>>       queryFn: async ({ queryKey }) => {
+>>         let token = await getSupabaseToken();
+>>         if (!token) {
+>>           token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+>>         }
+>>
+>>         const headers: Record<string, string> = {
+>>           'Content-Type': 'application/json',
+>>         };
+>>
+>>         if (token) {
+>>           headers['Authorization'] = `Bearer ${token}`;
+>>           console.log('📱 Sending Authorization header with token');
+>>         }
+>>
+>>         const url = `${API_BASE_URL}${queryKey[0] as string}`;
+>>         const response = await fetch(url, { headers });
+>>
+>>         if (!response.ok) {
+>>           if (response.status === 401 || response.status === 403) {
+>>             console.log('Authentication failed in query');
+>>             sessionStorage.setItem('auth_failure', 'true');
+>>           }
+>>           throw new Error(`${response.status}: ${response.statusText}`);
+>>         }
+>>         return response.json();
+>>       },
+>>     },
+>>   },
+>> });
+>>
+>> export async function apiRequest(method: string, url: string, data?: any) {
+>>   let token = await getSupabaseToken();
+>>   if (!token) {
+>>     token = sessionStorage.getItem('bjj_auth_token') || localStorage.getItem('bjj_auth_token');
+>>   }
+>>
+>>   const headers: Record<string, string> = {
+>>     'Content-Type': 'application/json',
+>>   };
+>>
+>>   if (token) {
+>>     headers['Authorization'] = `Bearer ${token}`;
+>>     console.log('📱 Sending Authorization header with token in apiRequest');
+>>   }
+>>
+>>   const options: RequestInit = {
+>>     method,
+>>     headers,
+>>   };
+>>
+>>   if (data) {
+>>     options.body = JSON.stringify(data);
+>>   }
+>>
+>>   const fullUrl = `${API_BASE_URL}${url}`;
+>>   const response = await fetch(fullUrl, options);
+>>
+>>   if (!response.ok) {
+>>     if (response.status === 401 || response.status === 403) {
+>>       console.log('Authentication failed in API request');
+>>       throw new Error('Authentication required. Please refresh the page and try again.');
+>>     }
+>>
+>>     let errorMessage = `${response.status}: ${response.statusText}`;
+>>     try {
+>>       const errorData = await response.json();
+>>       errorMessage = errorData.message || errorMessage;
+>>     } catch {
+>>       const errorText = await response.text();
+>>       errorMessage = `${response.status}: ${errorText}`;
+>>     }
+>>     throw new Error(errorMessage);
+>>   }
+>>
+>>   return response;
+>> }
+>> '@
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> $queryClientFixed | Set-Content client\src\lib\queryClient.ts -Encoding UTF8
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> Write-Host "✅ Fixed queryClient - removed Capacitor HTTP (not needed)"
+✅ Fixed queryClient - removed Capacitor HTTP (not needed)
+PS C:\Projects\JitsPlannerPro> Write-Host "The issue is simpler - we just need to ensure the token is being sent!"
+The issue is simpler - we just need to ensure the token is being sent!
+PS C:\Projects\JitsPlannerPro>

@@ -1,0 +1,137 @@
+===========================================
+GOOGLE PLAY STORE DESCRIPTIONS
+===========================================
+
+-------------------
+SHORT DESCRIPTION (80 characters max)
+-------------------
+
+Track your BJJ journey - classes, techniques, belts, and competition plans.
+
+
+-------------------
+FULL DESCRIPTION (4000 characters max)
+-------------------
+
+Jits Journal is the ultimate training companion for Brazilian Jiu-Jitsu practitioners. Whether you're a white belt just starting out or a black belt competitor, our app helps you track, analyze, and improve your BJJ journey.
+
+🥋 KEY FEATURES
+
+📊 CLASS TRACKING
+• Log every training session with detailed information
+• Track instructors, training partners, and rolling sessions
+• Record techniques learned and submissions practiced
+• View your training statistics and attendance patterns
+• Set weekly class goals and monitor your commitment
+
+📝 TECHNIQUE NOTES
+• Create detailed notes for techniques and positions
+• Tag and categorize your notes for easy searching
+• Link notes to specific classes or training sessions
+• Share knowledge with your gym community
+• Build your personal BJJ technique library
+
+🎯 BELT PROGRESSION
+• Track your current belt and stripe progress
+• Record promotion dates and milestones
+• Visualize your journey from white to black belt
+• Celebrate achievements along the way
+
+🎬 VIDEO LIBRARY
+• Search YouTube for BJJ techniques by category
+• Find instructionals for gi and no-gi techniques
+• Browse positions, submissions, and escapes
+• Save favorite videos for quick reference
+
+🏆 COMPETITION GAME PLANS
+• Create strategic game plans for tournaments
+• Build decision trees for different scenarios
+• Plan your attack strategies from each position
+• Visualize your path to victory
+
+🏠 GYM COMMUNITY
+• Join your gym's private community
+• Share techniques and notes with teammates
+• Learn from your training partners
+• Build a collaborative knowledge base
+
+💎 SUBSCRIPTION TIERS
+
+FREE TIER:
+• Track up to 10 classes per month
+• Create up to 5 notes
+• Basic belt tracking
+• Video search access
+
+ENTHUSIAST ($9.99 AUD/month):
+• Track up to 30 classes per month
+• Create up to 20 notes
+• Advanced analytics
+• Priority support
+
+GYM PRO ($14.99 AUD/month):
+• Unlimited class tracking
+• Unlimited notes with sharing
+• Advanced video library
+• Cloud backup and sync
+• Advanced progress analytics
+• Competition game plans
+• Priority support
+
+✨ WHY JITS JOURNAL?
+
+Designed by BJJ practitioners, for BJJ practitioners. We understand the importance of tracking your progress, remembering techniques, and staying motivated on the mats.
+
+🎨 BEAUTIFUL DESIGN
+Clean, intuitive interface optimized for mobile use. Focus on your training, not complicated apps.
+
+📱 WORKS EVERYWHERE
+Available as a mobile app and web application. Your data syncs across all devices.
+
+🔒 SECURE & PRIVATE
+Your training data is securely stored and backed up. We respect your privacy.
+
+💪 STAY MOTIVATED
+Visualize your progress, hit your training goals, and level up your game. From your first class to your black belt, Jits Journal is with you every step of the way.
+
+📈 TRACK YOUR GROWTH
+See your improvement over time with detailed statistics and analytics. Understand your training patterns and optimize your time on the mats.
+
+Join thousands of BJJ practitioners who use Jits Journal to track their training, improve their techniques, and achieve their martial arts goals.
+
+Download Jits Journal today and take your Brazilian Jiu-Jitsu to the next level!
+
+OSS! 🥋
+
+
+-------------------
+KEYWORDS/TAGS (Separate with commas)
+-------------------
+
+Brazilian Jiu Jitsu, BJJ, martial arts, training log, technique tracker, grappling, submission wrestling, judo, wrestling, MMA, mixed martial arts, fitness tracker, workout log, belt tracking, competition prep, training journal, BJJ techniques, jiu jitsu training
+
+
+-------------------
+CATEGORY
+-------------------
+
+Health & Fitness
+
+
+-------------------
+CONTENT RATING
+-------------------
+
+Everyone (E)
+
+
+-------------------
+PROMO TEXT (Optional - 80 characters)
+-------------------
+
+New: Competition game plans, gym communities, and advanced analytics!
+
+
+===========================================
+COPY AND PASTE THESE TO GOOGLE PLAY CONSOLE
+===========================================

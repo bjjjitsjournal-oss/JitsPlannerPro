@@ -1,0 +1,55 @@
+      main       -> FETCH_HEAD
+Already up to date.
+PS C:\Projects\JitsPlannerPro> # Sync Capacitor
+PS C:\Projects\JitsPlannerPro> npx cap sync
+√ Copying web assets from public to android\app\src\main\assets\public in 26.89ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 1.98ms
+√ copy android in 127.72ms
+√ Updating Android plugins in 26.88ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 176.75ms
+√ Copying web assets from public to ios\App\App\public in 29.00ms
+√ Creating capacitor.config.json in ios\App\App in 2.78ms
+√ copy ios in 152.43ms
+√ Updating iOS plugins in 26.24ms
+× Updating iOS native dependencies with pod install - failed!
+× update ios - failed!
+[error] Unable to find node_modules/@capacitor/ios.
+        Are you sure @capacitor/ios is installed?
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> # Navigate to Android and build
+PS C:\Projects\JitsPlannerPro> cd android
+PS C:\Projects\JitsPlannerPro\android> .\gradlew clean bundleRelease
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Task :capacitor-android:compileReleaseJavaWithJavac
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 28s
+199 actionable tasks: 177 executed, 22 up-to-date
+PS C:\Projects\JitsPlannerPro\android>
+PS C:\Projects\JitsPlannerPro\android> # Check the version
+PS C:\Projects\JitsPlannerPro\android> Get-Content android\app\build.gradle | Select-String "versionCode"
+Get-Content : Cannot find path 'C:\Projects\JitsPlannerPro\android\android\app\build.gradle' because it does not exist.
+At line:1 char:1
++ Get-Content android\app\build.gradle | Select-String "versionCode"
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Projects\Jit...pp\build.gradle:String) [Get-Content], ItemNotFoundEx
+   ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand

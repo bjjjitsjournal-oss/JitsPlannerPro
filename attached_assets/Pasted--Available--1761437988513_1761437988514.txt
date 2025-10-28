@@ -1,0 +1,47 @@
+     ==> ///////////////////////////////////////////////////////////
+     ==> 
+     ==> Available at your primary URL https://bjj-jits-journal.onrender.com
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+12:18:38 AM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 804ms …
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+12:18:38 AM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 98ms :…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+12:18:40 AM [express] GET /api/my-gym 200 in 306ms :: {"id":1,"name":"joes bjj","code":"737A2243","ow…
+✅ Mobile auth successful for user: 1
+12:18:42 AM [express] GET /api/notes 200 in 2247ms :: [{"id":"2a1b6558-a2fa-4b80-9e6e-9c0269d00e2f","…
+📱 Mobile auth: Using supabaseId from body : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+📝 POST /api/notes - Creating note with data: {
+  title: 'Dudud',
+  content: '',
+  tags: [],
+  supabaseId: '5727fda2-3783-4b36-b6f2-0a643f764f29'
+} for user: 1
+Note created successfully: {
+  id: 'd40e0142-97d3-4a4e-aed4-58dedfe42992',
+  title: 'Dudud',
+  content: '',
+  tags: [],
+  linkedClassId: null,
+  linkedVideoId: null,
+  userId: 1,
+  isShared: 0,
+  gymId: null,
+  sharedWithUsers: [],
+  videoUrl: null,
+  videoFileName: null,
+  videoFileSize: null,
+  videoThumbnail: null,
+  createdAt: 2025-10-26T00:18:46.477Z,
+  updatedAt: 2025-10-26T00:18:46.477Z
+}
+12:18:46 AM [express] POST /api/notes 201 in 204ms :: {"id":"d40e0142-97d3-4a4e-aed4-58dedfe42992","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+12:18:48 AM [express] GET /api/storage/usage 200 in 193ms :: {"storageUsed":2451640,"storageUsedForma…

@@ -1,0 +1,63 @@
+\OneDrive\Documents\GitHub\JitsPlannerPro13> git push -u origin main --force
+Enumerating objects: 11509, done.
+Counting objects: 100% (11509/11509), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (5837/5837), done.
+Writing objects: 100% (11509/11509), 412.11 MiB | 737.00 KiB/s, done.
+Total 11509 (delta 4307), reused 7064 (delta 2823), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (4307/4307), done.
+To https://github.com/bjjjitsjournal-oss/Bjj-Jits-Journal.git
+ + 0c5e894...ddd716f main -> main (forced update)
+branch 'main' set up to track 'origin/main'.
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> cd "C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13"
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13>
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> # Remove the wrong remote
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> git remote remove origin
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13>
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> # Add the CORRECT remote
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> git remote add origin https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13>
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> # Push to the correct repo
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13> git push -u origin main --force
+info: please complete authentication in your browser...
+Enumerating objects: 11162, done.
+Counting objects: 100% (11162/11162), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (5595/5595), done.
+Writing objects: 100% (11107/11107), 400.69 MiB | 729.00 KiB/s, done.
+Total 11107 (delta 4228), reused 6643 (delta 2724), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (4228/4228), completed with 38 local objects.
+remote: error: GH013: Repository rule violations found for refs/heads/main.
+remote:
+remote: - GITHUB PUSH PROTECTION
+remote:   —————————————————————————————————————————
+remote:     Resolve the following violations before pushing again
+remote:
+remote:     - Push cannot contain secrets
+remote:
+remote:
+remote:      (?) Learn how to resolve a blocked push
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push
+remote:
+remote:
+remote:       —— Slack Incoming Webhook URL ————————————————————————
+remote:        locations:
+remote:          - blob id: 1c30c51a02789d175844e364cdb98985d767189d
+remote:
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.
+remote:        https://github.com/bjjjitsjournal-oss/JitsPlannerPro/security/secret-scanning/unblock-secret/34ZmspbvQdPuP2qn75Ls8vLRc7Q
+remote:
+remote:
+remote:     ——[ WARNING ]—————————————————————————————————————————
+remote:      Scan incomplete: This push was large and we didn't finish on time.
+remote:      It can still contain undetected secrets.
+remote:
+remote:      (?) Use the following command to find the path of the detected secret(s):
+remote:          git rev-list --objects --all | grep blobid
+remote:     ——————————————————————————————————————————————————————
+remote:
+remote:
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git'
+PS C:\Users\joe\OneDrive\Documents\GitHub\JitsPlannerPro13>

@@ -1,0 +1,81 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect width="1080" height="120" fill="#1e3a8a"/>
+  <text x="40" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">Classes</text>
+  <circle cx="980" cy="60" r="30" fill="white" opacity="0.2"/>
+  <text x="965" y="70" font-family="Arial, sans-serif" font-size="24" fill="white">👤</text>
+  
+  <!-- Subscription Banner -->
+  <rect x="40" y="160" width="1000" height="80" rx="10" fill="#fbbf24" opacity="0.9"/>
+  <text x="60" y="185" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#92400e">Free Tier: 7 of 10 classes used</text>
+  <text x="60" y="210" font-family="Arial, sans-serif" font-size="14" fill="#92400e">Upgrade to Premium for unlimited classes</text>
+  <rect x="800" y="180" width="120" height="40" rx="20" fill="#dc2626"/>
+  <text x="860" y="205" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Upgrade</text>
+  
+  <!-- Add Class Button -->
+  <rect x="40" y="270" width="1000" height="60" rx="30" fill="#dc2626"/>
+  <text x="540" y="305" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">+ Log New Class</text>
+  
+  <!-- Class List -->
+  <text x="40" y="380" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a">Recent Classes</text>
+  
+  <!-- Class Item 1 -->
+  <rect x="40" y="410" width="1000" height="120" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="440" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Gi Class</text>
+  <text x="60" y="465" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Today • 60 minutes</text>
+  <text x="60" y="490" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Guard passes, armbar setups</text>
+  <text x="60" y="510" font-family="Arial, sans-serif" font-size="12" fill="#10b981">Instructor: Prof. Silva</text>
+  <circle cx="980" cy="470" r="8" fill="#10b981"/>
+  
+  <!-- Class Item 2 -->
+  <rect x="40" y="550" width="1000" height="120" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="580" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">No Gi Class</text>
+  <text x="60" y="605" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Yesterday • 90 minutes</text>
+  <text x="60" y="630" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Takedowns, leg locks, scrambles</text>
+  <text x="60" y="650" font-family="Arial, sans-serif" font-size="12" fill="#10b981">Instructor: Coach Martinez</text>
+  <circle cx="980" cy="610" r="8" fill="#10b981"/>
+  
+  <!-- Class Item 3 -->
+  <rect x="40" y="690" width="1000" height="120" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="720" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Competition Class</text>
+  <text x="60" y="745" font-family="Arial, sans-serif" font-size="14" fill="#64748b">2 days ago • 2 hours</text>
+  <text x="60" y="770" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Sparring, competition prep</text>
+  <text x="60" y="790" font-family="Arial, sans-serif" font-size="12" fill="#10b981">Instructor: Black Belt Team</text>
+  <circle cx="980" cy="750" r="8" fill="#10b981"/>
+  
+  <!-- Class Item 4 -->
+  <rect x="40" y="830" width="1000" height="120" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="860" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Gi Class</text>
+  <text x="60" y="885" font-family="Arial, sans-serif" font-size="14" fill="#64748b">3 days ago • 60 minutes</text>
+  <text x="60" y="910" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Back attacks, submissions</text>
+  <text x="60" y="930" font-family="Arial, sans-serif" font-size="12" fill="#10b981">Instructor: Prof. Silva</text>
+  <circle cx="980" cy="890" r="8" fill="#10b981"/>
+  
+  <!-- Stats Card -->
+  <rect x="40" y="980" width="1000" height="120" rx="15" fill="#1e3a8a"/>
+  <text x="60" y="1010" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">This Week's Stats</text>
+  <text x="60" y="1035" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.9">3 classes • 4.5 hours • 2 instructors</text>
+  <text x="60" y="1060" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.9">Most practiced: Guard work</text>
+  <text x="60" y="1080" font-family="Arial, sans-serif" font-size="14" fill="white" opacity="0.9">Weekly goal: 60% complete</text>
+  
+  <!-- Bottom Navigation -->
+  <rect x="0" y="1750" width="1080" height="100" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="108" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🏠</text>
+  <text x="108" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Home</text>
+  
+  <rect x="216" y="1760" width="216" height="80" fill="#dc2626" opacity="0.1"/>
+  <text x="324" y="1785" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">📚</text>
+  <text x="324" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#dc2626" text-anchor="middle">Classes</text>
+  
+  <text x="540" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">📝</text>
+  <text x="540" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Notes</text>
+  
+  <text x="756" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🎥</text>
+  <text x="756" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Videos</text>
+  
+  <text x="972" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">👥</text>
+  <text x="972" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Social</text>
+</svg>

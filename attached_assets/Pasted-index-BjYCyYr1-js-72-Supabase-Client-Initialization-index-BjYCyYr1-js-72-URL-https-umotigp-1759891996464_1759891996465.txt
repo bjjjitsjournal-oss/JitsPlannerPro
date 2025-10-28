@@ -1,0 +1,86 @@
+index-BjYCyYr1.js:72 🔧 Supabase Client Initialization
+index-BjYCyYr1.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-BjYCyYr1.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-BjYCyYr1.js:314 BJJ Journal - Full App Restored!
+index-BjYCyYr1.js:314 Open in new window if you see caching issues
+index-BjYCyYr1.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+manifest.json:1 Manifest: scope_extensions entry ignored, required properties 'type' and 'origin' are missing.
+index-BjYCyYr1.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-BjYCyYr1.js:72:35179
+(anonymous) @ index-BjYCyYr1.js:72
+index-BjYCyYr1.js:72 Query result: Object
+index-BjYCyYr1.js:72 Database query error: Error: Query timeout after 5s
+    at index-BjYCyYr1.js:72:35179
+j0 @ index-BjYCyYr1.js:72
+index-BjYCyYr1.js:72 User data loaded: undefined
+index-BjYCyYr1.js:270 Current belt data: undefined
+index-BjYCyYr1.js:270 Current belt data: undefined
+index-BjYCyYr1.js:72 Initial session check: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-BjYCyYr1.js:270 Current belt data: undefined
+index-BjYCyYr1.js:72 Auth state changed: INITIAL_SESSION bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-BjYCyYr1.js:270 Current belt data: undefined
+index-BjYCyYr1.js:72 Query result: Object
+index-BjYCyYr1.js:72 Found existing user: 1
+index-BjYCyYr1.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:270 Current belt data: undefined
+index-BjYCyYr1.js:75 WeeklyGoals user object: Object
+index-BjYCyYr1.js:75 getCurrent - Looking for week: 2025-10-05
+index-BjYCyYr1.js:270 Current belt data: Object
+index-BjYCyYr1.js:75 getCurrent - Found: Object Error: null
+index-BjYCyYr1.js:270 Current belt data: Object
+index-BjYCyYr1.js:72 Query result: Object
+index-BjYCyYr1.js:72 Found existing user: 1
+index-BjYCyYr1.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:270 Current belt data: Object
+index-BjYCyYr1.js:75 WeeklyGoals user object: Object
+index-BjYCyYr1.js:75 getCurrent - Looking for week: 2025-10-05
+index-BjYCyYr1.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BjYCyYr1.js:75 getCurrent - Looking for week: 2025-10-05
+index-BjYCyYr1.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-BjYCyYr1.js:70  POST https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=* 400 (Bad Request)
+(anonymous) @ index-BjYCyYr1.js:70
+(anonymous) @ index-BjYCyYr1.js:70
+a @ index-BjYCyYr1.js:70
+Promise.then
+u @ index-BjYCyYr1.js:70
+(anonymous) @ index-BjYCyYr1.js:70
+fM @ index-BjYCyYr1.js:70
+(anonymous) @ index-BjYCyYr1.js:70
+then @ index-BjYCyYr1.js:48
+index-BjYCyYr1.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-BjYCyYr1.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-BjYCyYr1.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-BjYCyYr1.js:72:35179
+(anonymous) @ index-BjYCyYr1.js:72
+Promise.catch
+j0 @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:72
+_notifyAllSubscribers @ index-BjYCyYr1.js:72
+_recoverAndRefresh @ index-BjYCyYr1.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:71
+index-BjYCyYr1.js:72 Query result: {existingUser: null, userError: Error: Query timeout after 5s
+    at https://bjj-jits-journal.vercel.app/assets/index-BjYCyYr1.js:7…}
+index-BjYCyYr1.js:72 Database query error: Error: Query timeout after 5s
+    at index-BjYCyYr1.js:72:35179
+j0 @ index-BjYCyYr1.js:72
+await in j0
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:72
+_notifyAllSubscribers @ index-BjYCyYr1.js:72
+_recoverAndRefresh @ index-BjYCyYr1.js:72
+await in _recoverAndRefresh
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:72
+(anonymous) @ index-BjYCyYr1.js:71
+index-BjYCyYr1.js:72 User data loaded: undefined

@@ -1,0 +1,108 @@
+
+Search
+
+Live tail
+GMT+11
+
+Menu
+
+     ==> Detected service running on port 10000
+     ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+Found user: 1
+9:23:35 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+9:23:38 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+9:23:38 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+9:23:38 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+9:23:39 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+9:23:40 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+9:23:40 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+9:23:40 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+9:23:40 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+9:23:47 PM [express] POST /api/gyms/join 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+9:23:50 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 771ms …
+9:23:50 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+9:23:50 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+9:23:50 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+9:23:51 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+9:23:52 PM [express] POST /api/gyms 401 in 0ms :: {"message":"Access token required"}
+9:24:26 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+9:24:26 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+9:24:26 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+9:24:26 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+9:24:28 PM [express] GET /api/classes 401 in 1ms :: {"message":"Access token required"}
+9:24:28 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+9:24:28 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+9:24:28 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+9:38:21 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 753ms …
+9:38:24 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+9:38:24 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+9:38:24 PM [express] GET /api/classes 401 in 1ms :: {"message":"Access token required"}
+9:38:24 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+9:38:25 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+9:38:25 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+9:38:25 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+9:38:25 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+9:38:28 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+9:38:28 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+Found user: 1
+9:38:28 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 95ms :…
+9:38:28 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+9:38:29 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+9:38:31 PM [express] POST /api/gyms 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+10:48:24 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 690ms …
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+10:48:24 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+10:48:27 PM [express] GET /api/classes 401 in 1ms :: {"message":"Access token required"}
+10:48:27 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+10:48:27 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+10:48:27 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+10:48:28 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+10:48:28 PM [express] GET /api/classes 401 in 1ms :: {"message":"Access token required"}
+10:48:28 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+10:48:28 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+10:48:31 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 95ms :…
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+10:48:31 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+Found user: 1
+10:48:32 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 95ms :…
+10:48:32 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+10:48:33 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+10:48:35 PM [express] POST /api/gyms 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 71ef24d4-1e0a-4da9-b161-92094463baaf
+User not found
+10:48:56 PM [express] GET /api/user/by-supabase-id/71ef24d4-1e0a-4da9-b161-92094463baaf 404 in 673ms …
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+10:49:12 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 671ms …
+10:49:14 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+10:49:14 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+10:49:14 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+10:49:14 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+10:49:15 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+10:49:15 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+10:49:15 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+10:49:15 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+10:49:18 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+10:49:19 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+Found user: 1
+10:49:19 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+10:49:19 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+10:49:20 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+10:49:22 PM [express] POST /api/gyms 401 in 0ms :: {"message":"Access token require

@@ -1,0 +1,51 @@
+index-CnKpiRxT.js:72 🔧 Supabase Client Initialization
+index-CnKpiRxT.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-CnKpiRxT.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-CnKpiRxT.js:314 BJJ Journal - Full App Restored!
+index-CnKpiRxT.js:314 Open in new window if you see caching issues
+index-CnKpiRxT.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-CnKpiRxT.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-CnKpiRxT.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+(anonymous) @ index-CnKpiRxT.js:72
+Promise.catch
+j0 @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+_initialize @ index-CnKpiRxT.js:71
+await in _initialize
+(anonymous) @ index-CnKpiRxT.js:71
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71
+index-CnKpiRxT.js:72 Query result: {existingUser: null, userError: Error: Query timeout after 5s
+    at https://bjj-jits-journal-c8e41w8nb-joes-projects-4f6e77c7.verc…}
+index-CnKpiRxT.js:72 Database query error: Error: Query timeout after 5s
+    at index-CnKpiRxT.js:72:35179
+j0 @ index-CnKpiRxT.js:72
+await in j0
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+_initialize @ index-CnKpiRxT.js:71
+await in _initialize
+(anonymous) @ index-CnKpiRxT.js:71
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71
+index-CnKpiRxT.js:72 getUserFromSupabaseId returned null after auth change - forcing logout
+(anonymous) @ index-CnKpiRxT.js:72
+await in (anonymous)
+(anonymous) @ index-CnKpiRxT.js:72
+_notifyAllSubscribers @ index-CnKpiRxT.js:72
+_recoverAndRefresh @ index-CnKpiRxT.js:72
+await in _recoverAndRefresh
+_initialize @ index-CnKpiRxT.js:71
+await in _initialize
+(anonymous) @ index-CnKpiRxT.js:71
+(anonymous) @ index-CnKpiRxT.js:72
+(anonymous) @ index-CnKpiRxT.js:71

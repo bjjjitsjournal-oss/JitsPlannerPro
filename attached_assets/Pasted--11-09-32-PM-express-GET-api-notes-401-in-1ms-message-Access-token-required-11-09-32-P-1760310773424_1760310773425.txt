@@ -1,0 +1,54 @@
+
+11:09:32 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+11:09:32 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+11:09:32 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+11:09:32 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+11:09:33 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+11:09:33 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+11:09:33 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+11:09:33 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:09:37 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:09:37 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+11:09:37 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+11:09:38 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+11:09:39 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+11:09:40 PM [express] POST /api/gyms 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:09:41 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 97ms :…
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:09:41 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 96ms :…
+11:09:41 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+11:09:41 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+11:09:41 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+11:09:41 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+11:09:42 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+11:09:42 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+11:09:42 PM [express] GET /api/user-stats 401 in 1ms :: {"message":"Access token required"}
+11:09:42 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+11:09:43 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+11:09:43 PM [express] GET /api/notes 401 in 0ms :: {"message":"Access token required"}
+11:09:43 PM [express] GET /api/my-gym 401 in 0ms :: {"message":"Access token required"}
+11:09:43 PM [express] GET /api/classes 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:11:57 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 677ms …
+11:12:00 PM [express] GET /api/user-stats 401 in 0ms :: {"message":"Access token required"}
+11:12:00 PM [express] GET /api/notes 401 in 1ms :: {"message":"Access token required"}
+11:12:00 PM [express] GET /api/my-gym 401 in 1ms :: {"message":"Access token required"}
+11:12:00 PM [express] GET /api/classes 401 in 1ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:12:01 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 95ms :…
+11:12:01 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29
+Found user: 1
+11:12:02 PM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 95ms :…
+11:12:02 PM [express] GET /api/gyms 401 in 0ms :: {"message":"Access token required"}
+11:12:03 PM [express] GET /api/gyms 401 in 1ms :: {"message":"Access token required"}
+11:12:04 PM [express] POST /api/gyms 401 in 1ms :: {"message":"Access token required"}

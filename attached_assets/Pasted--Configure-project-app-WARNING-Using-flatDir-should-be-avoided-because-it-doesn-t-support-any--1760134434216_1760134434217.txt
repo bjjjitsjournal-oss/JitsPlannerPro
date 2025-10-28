@@ -1,0 +1,129 @@
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Task :capacitor-android:compileReleaseJavaWithJavac
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 2s
+121 actionable tasks: 121 executed
+PS C:\Projects\JitsPlannerPro\android> cd app\build\outputs\bundle\release
+PS C:\Projects\JitsPlannerPro\android\app\build\outputs\bundle\release> cd C:\Projects\JitsPlannerPro
+PS C:\Projects\JitsPlannerPro> # Set the environment variable
+PS C:\Projects\JitsPlannerPro> $env:VITE_API_BASE_URL="https://bjj-jits-journal.onrender.com"
+PS C:\Projects\JitsPlannerPro> # Now build with the variable set
+PS C:\Projects\JitsPlannerPro> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (3) src\main.tsxBrowserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2750 modules transformed.
+../dist/public/index.html                   3.05 kB │ gzip:   1.07 kB
+../dist/public/assets/index-C2G_zT3N.css   84.18 kB │ gzip:  13.99 kB
+../dist/public/assets/index-k1s2Hc1E.js   779.63 kB │ gzip: 223.51 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.34s
+
+  dist\index.js  85.8kb
+
+⚡ Done in 18ms
+PS C:\Projects\JitsPlannerPro> npx cap sync android
+\ Copying web assets from public to android\app\src\main\assets\√ Copying web assets from public to android\app\src\main\assets\public in 50.56ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 4.15ms
+√ copy android in 169.76ms
+√ Updating Android plugins in 32.53ms
+√ update android in 248.76ms
+[info] Sync finished in 0.551s
+PS C:\Projects\JitsPlannerPro> cd android
+PS C:\Projects\JitsPlannerPro\android> .\gradlew bundleRelease
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 10s
+121 actionable tasks: 31 executed, 90 up-to-date
+PS C:\Projects\JitsPlannerPro\android> cd C:\Projects\JitsPlannerPro
+PS C:\Projects\JitsPlannerPro> # Set the backend URL
+PS C:\Projects\JitsPlannerPro> $env:VITE_API_BASE_URL="https://bjj-jits-journal.onrender.com"
+PS C:\Projects\JitsPlannerPro> # Build everything
+PS C:\Projects\JitsPlannerPro> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2750 modules transformed.
+../dist/public/index.html                   3.05 kB │ gzip:   1.07 kB
+../dist/public/assets/index-C2G_zT3N.css   84.18 kB │ gzip:  13.99 kB
+../dist/public/assets/index-k1s2Hc1E.js   779.63 kB │ gzip: 223.51 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.74s
+
+  dist\index.js  85.8kb
+
+⚡ Done in 27ms
+PS C:\Projects\JitsPlannerPro> npx cap sync android
+\ Copying web assets from public to android\app\src\main\assets\√ Copying web assets from public to android\app\src\main\assets\public in 49.69ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 3.76ms
+√ copy android in 178.72ms
+√ Updating Android plugins in 26.96ms
+√ update android in 247.47ms
+[info] Sync finished in 0.568s
+PS C:\Projects\JitsPlannerPro> cd android
+PS C:\Projects\JitsPlannerPro\android> .\gradlew bundleRelease
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+[Incubating] Problems report is available at: file:///C:/Projects/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 12s
+121 actionable tasks: 45 executed, 76 up-to-date
+PS C:\Projects\JitsPlannerPro\android>

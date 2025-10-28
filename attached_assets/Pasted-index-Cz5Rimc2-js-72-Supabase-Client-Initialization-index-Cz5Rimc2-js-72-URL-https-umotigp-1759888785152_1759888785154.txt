@@ -1,0 +1,105 @@
+index-Cz5Rimc2.js:72 🔧 Supabase Client Initialization
+index-Cz5Rimc2.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-Cz5Rimc2.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-Cz5Rimc2.js:314 BJJ Journal - Full App Restored!
+index-Cz5Rimc2.js:314 Open in new window if you see caching issues
+index-Cz5Rimc2.js:72 Initial session check: undefined
+index-Cz5Rimc2.js:72 Auth state changed: INITIAL_SESSION undefined
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+bjj-jits-journal-ojs2tzykd-joes-projects-4f6e77c7.vercel.app/:1 Manifest fetch from https://bjj-jits-journal-ojs2tzykd-joes-projects-4f6e77c7.vercel.app/manifest.json failed, code 401
+index-Cz5Rimc2.js:314 Notification permission: default
+index-Cz5Rimc2.js:314 Login attempt with: Object
+index-Cz5Rimc2.js:314 Login attempt with: Object
+index-Cz5Rimc2.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-Cz5Rimc2.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-Cz5Rimc2.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-Cz5Rimc2.js:270 Current belt data: undefined
+index-Cz5Rimc2.js:270 Current belt data: undefined
+index-Cz5Rimc2.js:72 Query result: Object
+index-Cz5Rimc2.js:72 Found existing user: 1
+index-Cz5Rimc2.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-Cz5Rimc2.js:314 Login successful: bjjjitsjournal@gmail.com
+index-Cz5Rimc2.js:270 Current belt data: undefined
+index-Cz5Rimc2.js:75 WeeklyGoals user object: Object
+index-Cz5Rimc2.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:75 getCurrent - Found: null Error: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:75 getCurrent - Looking for week: 2025-10-05
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:75 getCurrent - Found: null Error: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1:1  Failed to load resource: the server responded with a status of 400 ()
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:75 Creating note with userId: 5727fda2-3783-4b36-b6f2-0a643f764f29 noteData: Object
+umotigprfosrrjwpxlnp.supabase.co/rest/v1/notes?select=*:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:75 Note creation error: Object
+create @ index-Cz5Rimc2.js:75
+index-Cz5Rimc2.js:75 Error details: {
+  "code": "22P02",
+  "details": null,
+  "hint": null,
+  "message": "invalid input syntax for type integer: \"5727fda2-3783-4b36-b6f2-0a643f764f29\""
+}
+create @ index-Cz5Rimc2.js:75
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+notes:1  Failed to load resource: the server responded with a status of 400 ()
+index-Cz5Rimc2.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/notes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=created_at.desc 400 (Bad Request)
+(anonymous) @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+a @ index-Cz5Rimc2.js:70
+Promise.then
+u @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+fM @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+then @ index-Cz5Rimc2.js:48
+setInterval
+Bm @ index-Cz5Rimc2.js:48
+zm @ index-Cz5Rimc2.js:48
+onQueryUpdate @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+batch @ index-Cz5Rimc2.js:48
+Fn @ index-Cz5Rimc2.js:48
+a @ index-Cz5Rimc2.js:48
+h @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+index-Cz5Rimc2.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/notes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=created_at.desc 400 (Bad Request)
+(anonymous) @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+a @ index-Cz5Rimc2.js:70
+Promise.then
+u @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+fM @ index-Cz5Rimc2.js:70
+(anonymous) @ index-Cz5Rimc2.js:70
+then @ index-Cz5Rimc2.js:48
+setTimeout
+(anonymous) @ index-Cz5Rimc2.js:48
+jR @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+Promise.catch
+y @ index-Cz5Rimc2.js:48
+start @ index-Cz5Rimc2.js:48
+fetch @ index-Cz5Rimc2.js:48
+sl @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+setInterval
+Bm @ index-Cz5Rimc2.js:48
+zm @ index-Cz5Rimc2.js:48
+onQueryUpdate @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48
+batch @ index-Cz5Rimc2.js:48
+Fn @ index-Cz5Rimc2.js:48
+a @ index-Cz5Rimc2.js:48
+h @ index-Cz5Rimc2.js:48
+(anonymous) @ index-Cz5Rimc2.js:48

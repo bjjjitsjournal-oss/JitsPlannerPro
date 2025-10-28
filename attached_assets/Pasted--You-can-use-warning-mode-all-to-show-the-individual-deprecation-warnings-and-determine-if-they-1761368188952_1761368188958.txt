@@ -1,0 +1,2225 @@
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 7s
+193 actionable tasks: 46 executed, 147 up-to-date
+PS C:\Projects\JitsPlannerPro\android> Select-String -Path "dist\public\assets\*.js" -Pattern "umotigprfosrrjwpxlnp" | Select-Object -First 1
+Select-String : Cannot find path
+'C:\Projects\JitsPlannerPro\android\dist\public\assets'
+because it does not exist.
+At line:1 char:1
++ Select-String -Path "dist\public\assets\*.js" -Pattern
+"umotigprfosrr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Projects\Jit
+   ...t\public\assets:String) [Select-String], ItemNotFoundEx
+  ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.SelectStringCommand
+
+PS C:\Projects\JitsPlannerPro\android> cd C:\Projects\JitsPlannerPro
+PS C:\Projects\JitsPlannerPro> Select-String -Path "dist\public\assets\*.js" -Pattern "umotigprfosrrjwpxlnp" | Select-Object -First 1
+
+dist\public\assets\index-DfX01OPS.js:87:`);const N=await
+_.signMessage(new TextEncoder().encode(x),"utf8");if(!N||!(N
+instanceof Uint8Array))throw new Error("@supabase/auth-js:
+Wallet signMessage() API returned an recognized
+value");g=N}}try{const{data:b,error:w}=await ge(this.fetch,"POS
+T",`${this.url}/token?grant_type=web3`,{headers:this.headers,bo
+dy:Object.assign({chain:"solana",message:x,signature:Li(g)},!((
+h=e.options)===null||h===void 0)&&h.captchaToken?{gotrue_meta_s
+ecurity:{captcha_token:(p=e.options)===null||p===void 0?void
+0:p.captchaToken}}:null),xform:tn});if(w)throw w;return!b||!b.s
+ession||!b.user?{data:{user:null,session:null},error:new
+_o}:(b.session&&(await this._saveSession(b.session),await this.
+_notifyAllSubscribers("SIGNED_IN",b.session)),{data:Object.assi
+gn({},b),error:w})}catch(b){if(ae(b))return{data:{user:null,ses
+sion:null},error:b};throw b}}async
+_exchangeCodeForSession(e){const r=await ki(this.storage,`${thi
+s.storageKey}-code-verifier`),[n,s]=(r??"").split("/");try{cons
+t{data:i,error:o}=await ge(this.fetch,"POST",`${this.url}/token
+?grant_type=pkce`,{headers:this.headers,body:{auth_code:e,code_
+verifier:n},xform:tn});if(await
+Cs(this.storage,`${this.storageKey}-code-verifier`),o)throw o;r
+eturn!i||!i.session||!i.user?{data:{user:null,session:null,redi
+rectType:null},error:new _o}:(i.session&&(await
+this._saveSession(i.session),await this._notifyAllSubscribers("
+SIGNED_IN",i.session)),{data:Object.assign(Object.assign({},i),
+{redirectType:s??null}),error:o})}catch(i){if(ae(i))return{data
+:{user:null,session:null,redirectType:null},error:i};throw
+i}}async signInWithIdToken(e){try{const{options:r,provider:n,to
+ken:s,access_token:i,nonce:o}=e,l=await ge(this.fetch,"POST",`$
+{this.url}/token?grant_type=id_token`,{headers:this.headers,bod
+y:{provider:n,id_token:s,access_token:i,nonce:o,gotrue_meta_sec
+urity:{captcha_token:r==null?void
+0:r.captchaToken}},xform:tn}),{data:c,error:u}=l;return u?{data
+:{user:null,session:null},error:u}:!c||!c.session||!c.user?{dat
+a:{user:null,session:null},error:new _o}:(c.session&&(await
+this._saveSession(c.session),await this._notifyAllSubscribers("
+SIGNED_IN",c.session)),{data:c,error:u})}catch(r){if(ae(r))retu
+rn{data:{user:null,session:null},error:r};throw r}}async
+signInWithOtp(e){var r,n,s,i,o;try{if("email"in
+e){const{email:l,options:c}=e;let
+u=null,d=null;this.flowType==="pkce"&&([u,d]=await
+So(this.storage,this.storageKey));const{error:f}=await ge(this.
+fetch,"POST",`${this.url}/otp`,{headers:this.headers,body:{emai
+l:l,data:(r=c==null?void 0:c.data)!==null&&r!==void
+0?r:{},create_user:(n=c==null?void
+0:c.shouldCreateUser)!==null&&n!==void
+0?n:!0,gotrue_meta_security:{captcha_token:c==null?void 0:c.cap
+tchaToken},code_challenge:u,code_challenge_method:d},redirectTo
+:c==null?void 0:c.emailRedirectTo});return{data:{user:null,sess
+ion:null},error:f}}if("phone"in
+e){const{phone:l,options:c}=e,{data:u,error:d}=await ge(this.fe
+tch,"POST",`${this.url}/otp`,{headers:this.headers,body:{phone:
+l,data:(s=c==null?void 0:c.data)!==null&&s!==void
+0?s:{},create_user:(i=c==null?void
+0:c.shouldCreateUser)!==null&&i!==void
+0?i:!0,gotrue_meta_security:{captcha_token:c==null?void
+0:c.captchaToken},channel:(o=c==null?void
+0:c.channel)!==null&&o!==void 0?o:"sms"}});return{data:{user:nu
+ll,session:null,messageId:u==null?void
+0:u.message_id},error:d}}throw new Tu("You must provide either
+an email or phone number.")}catch(l){if(ae(l))return{data:{user
+:null,session:null},error:l};throw l}}async verifyOtp(e){var
+r,n;try{let s,i;"options"in
+e&&(s=(r=e.options)===null||r===void 0?void
+0:r.redirectTo,i=(n=e.options)===null||n===void 0?void
+0:n.captchaToken);const{data:o,error:l}=await ge(this.fetch,"PO
+ST",`${this.url}/verify`,{headers:this.headers,body:Object.assi
+gn(Object.assign({},e),{gotrue_meta_security:{captcha_token:i}}
+),redirectTo:s,xform:tn});if(l)throw l;if(!o)throw new
+Error("An error occurred on token verification.");const
+c=o.session,u=o.user;return c!=null&&c.access_token&&(await
+this._saveSession(c),await this._notifyAllSubscribers(e.type=="
+recovery"?"PASSWORD_RECOVERY":"SIGNED_IN",c)),{data:{user:u,ses
+sion:c},error:null}}catch(s){if(ae(s))return{data:{user:null,se
+ssion:null},error:s};throw s}}async signInWithSSO(e){var
+r,n,s;try{let i=null,o=null;return
+this.flowType==="pkce"&&([i,o]=await
+So(this.storage,this.storageKey)),await ge(this.fetch,"POST",`$
+{this.url}/sso`,{body:Object.assign(Object.assign(Object.assign
+(Object.assign(Object.assign({},"providerId"in
+e?{provider_id:e.providerId}:null),"domain"in e?{domain:e.domai
+n}:null),{redirect_to:(n=(r=e.options)===null||r===void 0?void
+0:r.redirectTo)!==null&&n!==void 0?n:void
+0}),!((s=e==null?void 0:e.options)===null||s===void 0)&&s.captc
+haToken?{gotrue_meta_security:{captcha_token:e.options.captchaT
+oken}}:null),{skip_http_redirect:!0,code_challenge:i,code_chall
+enge_method:o}),headers:this.headers,xform:X4})}catch(i){if(ae(
+i))return{data:null,error:i};throw i}}async
+reauthenticate(){return await this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._reauthenticate())}async _reauthenticate(){try{return
+await this._useSession(async
+e=>{const{data:{session:r},error:n}=e;if(n)throw n;if(!r)throw
+new Os;const{error:s}=await ge(this.fetch,"GET",`${this.url}/re
+authenticate`,{headers:this.headers,jwt:r.access_token});return
+{data:{user:null,session:null},error:s}})}catch(e){if(ae(e))ret
+urn{data:{user:null,session:null},error:e};throw e}}async
+resend(e){try{const r=`${this.url}/resend`;if("email"in
+e){const{email:n,type:s,options:i}=e,{error:o}=await ge(this.fe
+tch,"POST",r,{headers:this.headers,body:{email:n,type:s,gotrue_
+meta_security:{captcha_token:i==null?void
+0:i.captchaToken}},redirectTo:i==null?void 0:i.emailRedirectTo}
+);return{data:{user:null,session:null},error:o}}else
+if("phone"in
+e){const{phone:n,type:s,options:i}=e,{data:o,error:l}=await ge(
+this.fetch,"POST",r,{headers:this.headers,body:{phone:n,type:s,
+gotrue_meta_security:{captcha_token:i==null?void 0:i.captchaTok
+en}}});return{data:{user:null,session:null,messageId:o==null?vo
+id 0:o.message_id},error:l}}throw new Tu("You must provide
+either an email or phone number and a type")}catch(r){if(ae(r))
+return{data:{user:null,session:null},error:r};throw r}}async
+getSession(){return await this.initializePromise,await
+this._acquireLock(-1,async()=>this._useSession(async
+r=>r))}async _acquireLock(e,r){this._debug("#_acquireLock","beg
+in",e);try{if(this.lockAcquired){const n=this.pendingInLock.len
+gth?this.pendingInLock[this.pendingInLock.length-1]:Promise.res
+olve(),s=(async()=>(await n,await r()))();return
+this.pendingInLock.push((async()=>{try{await
+s}catch{}})()),s}return await this.lock(`lock:${this.storageKey
+}`,e,async()=>{this._debug("#_acquireLock","lock acquired for
+storage key",this.storageKey);try{this.lockAcquired=!0;const
+n=r();for(this.pendingInLock.push((async()=>{try{await
+n}catch{}})()),await n;this.pendingInLock.length;){const
+s=[...this.pendingInLock];await
+Promise.all(s),this.pendingInLock.splice(0,s.length)}return
+await n}finally{this._debug("#_acquireLock","lock released for
+storage key",this.storageKey),this.lockAcquired=!1}})}finally{t
+his._debug("#_acquireLock","end")}}async
+_useSession(e){this._debug("#_useSession","begin");try{const
+r=await this.__loadSession();return await
+e(r)}finally{this._debug("#_useSession","end")}}async __loadSes
+sion(){this._debug("#__loadSession()","begin"),this.lockAcquire
+d||this._debug("#__loadSession()","used outside of an acquired
+lock!",new Error().stack);try{let e=null;const r=await ki(this.
+storage,this.storageKey);if(this._debug("#getSession()","sessio
+n from storage",r),r!==null&&(this._isValidSession(r)?e=r:(this
+._debug("#getSession()","session from storage is not
+valid"),await this._removeSession())),!e)return{data:{session:n
+ull},error:null};const n=e.expires_at?e.expires_at*1e3-Date.now
+()<zh:!1;if(this._debug("#__loadSession()",`session
+has${n?"":" not"} expired`,"expires_at",e.expires_at),!n){if(th
+is.userStorage){const o=await ki(this.userStorage,this.storageK
+ey+"-user");o!=null&&o.user?e.user=o.user:e.user=Hh()}if(this.s
+torage.isServer&&e.user){let
+o=this.suppressGetSessionWarning;e=new
+Proxy(e,{get:(c,u,d)=>(!o&&u==="user"&&(console.warn("Using
+the user object as returned from supabase.auth.getSession() or
+from some supabase.auth.onAuthStateChange() events could be
+insecure! This value comes directly from the storage medium
+(usually cookies on the server) and may not be authentic. Use
+supabase.auth.getUser() instead which authenticates the data
+by contacting the Supabase Auth server."),o=!0,this.suppressGet
+SessionWarning=!0),Reflect.get(c,u,d))})}return{data:{session:e
+},error:null}}const{data:s,error:i}=await
+this._callRefreshToken(e.refresh_token);return i?{data:{session
+:null},error:i}:{data:{session:s},error:null}}finally{this._deb
+ug("#__loadSession()","end")}}async getUser(e){return e?await
+this._getUser(e):(await this.initializePromise,await
+this._acquireLock(-1,async()=>await this._getUser()))}async
+_getUser(e){try{return e?await ge(this.fetch,"GET",`${this.url}
+/user`,{headers:this.headers,jwt:e,xform:Fs}):await
+this._useSession(async r=>{var
+n,s,i;const{data:o,error:l}=r;if(l)throw
+l;return!(!((n=o.session)===null||n===void 0)&&n.access_token)&
+&!this.hasCustomAuthorizationHeader?{data:{user:null},error:new
+ Os}:await ge(this.fetch,"GET",`${this.url}/user`,{headers:this
+.headers,jwt:(i=(s=o.session)===null||s===void 0?void
+0:s.access_token)!==null&&i!==void 0?i:void
+0,xform:Fs})})}catch(r){if(ae(r))return C4(r)&&(await
+this._removeSession(),await Cs(this.storage,`${this.storageKey}
+-code-verifier`)),{data:{user:null},error:r};throw r}}async
+updateUser(e,r={}){return await this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._updateUser(e,r))}async _updateUser(e,r={}){try{return
+await this._useSession(async
+n=>{const{data:s,error:i}=n;if(i)throw i;if(!s.session)throw
+new Os;const o=s.session;let l=null,c=null;this.flowType==="pkc
+e"&&e.email!=null&&([l,c]=await
+So(this.storage,this.storageKey));const{data:u,error:d}=await g
+e(this.fetch,"PUT",`${this.url}/user`,{headers:this.headers,red
+irectTo:r==null?void 0:r.emailRedirectTo,body:Object.assign(Obj
+ect.assign({},e),{code_challenge:l,code_challenge_method:c}),jw
+t:o.access_token,xform:Fs});if(d)throw d;return
+o.user=u.user,await this._saveSession(o),await this._notifyAllS
+ubscribers("USER_UPDATED",o),{data:{user:o.user},error:null}})}
+catch(n){if(ae(n))return{data:{user:null},error:n};throw
+n}}async setSession(e){return await
+this.initializePromise,await
+this._acquireLock(-1,async()=>await this._setSession(e))}async
+_setSession(e){try{if(!e.access_token||!e.refresh_token)throw
+new Os;const r=Date.now()/1e3;let n=r,s=!0,i=null;const{payload
+:o}=qh(e.access_token);if(o.exp&&(n=o.exp,s=n<=r),s){const{data
+:l,error:c}=await this._callRefreshToken(e.refresh_token);if(c)
+return{data:{user:null,session:null},error:c};if(!l)return{data
+:{user:null,session:null},error:null};i=l}else{const{data:l,err
+or:c}=await this._getUser(e.access_token);if(c)throw c;i={acces
+s_token:e.access_token,refresh_token:e.refresh_token,user:l.use
+r,token_type:"bearer",expires_in:n-r,expires_at:n},await
+this._saveSession(i),await this._notifyAllSubscribers("SIGNED_I
+N",i)}return{data:{user:i.user,session:i},error:null}}catch(r){
+if(ae(r))return{data:{session:null,user:null},error:r};throw
+r}}async refreshSession(e){return await
+this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._refreshSession(e))}async _refreshSession(e){try{return
+await this._useSession(async r=>{var
+n;if(!e){const{data:o,error:l}=r;if(l)throw
+l;e=(n=o.session)!==null&&n!==void 0?n:void
+0}if(!(e!=null&&e.refresh_token))throw new
+Os;const{data:s,error:i}=await
+this._callRefreshToken(e.refresh_token);return i?{data:{user:nu
+ll,session:null},error:i}:s?{data:{user:s.user,session:s},error
+:null}:{data:{user:null,session:null},error:null}})}catch(r){if
+(ae(r))return{data:{user:null,session:null},error:r};throw
+r}}async _getSessionFromURL(e,r){try{if(!kr())throw new Au("No
+browser detected.");if(e.error||e.error_description||e.error_co
+de)throw new Au(e.error_description||"Error in URL with
+unspecified error_description",{error:e.error||"unspecified_err
+or",code:e.error_code||"unspecified_code"});switch(r){case"impl
+icit":if(this.flowType==="pkce")throw new sx("Not a valid PKCE
+flow
+url.");break;case"pkce":if(this.flowType==="implicit")throw
+new Au("Not a valid implicit grant flow url.");break;default:}i
+f(r==="pkce"){if(this._debug("#_initialize()","begin","is PKCE
+flow",!0),!e.code)throw new sx("No code
+detected.");const{data:m,error:v}=await
+this._exchangeCodeForSession(e.code);if(v)throw v;const _=new
+URL(window.location.href);return _.searchParams.delete("code"),
+window.history.replaceState(window.history.state,"",_.toString(
+)),{data:{session:m.session,redirectType:null},error:null}}cons
+t{provider_token:n,provider_refresh_token:s,access_token:i,refr
+esh_token:o,expires_in:l,expires_at:c,token_type:u}=e;if(!i||!l
+||!o||!u)throw new Au("No session defined in URL");const
+d=Math.round(Date.now()/1e3),f=parseInt(l);let
+h=d+f;c&&(h=parseInt(c));const
+p=h-d;p*1e3<=Oo&&console.warn(`@supabase/gotrue-js: Session as
+retrieved from URL expires in ${p}s, should have been closer
+to ${f}s`);const
+x=h-f;d-x>=120?console.warn("@supabase/gotrue-js: Session as
+retrieved from URL was issued over 120s ago, URL could be
+stale",x,h,d):d-x<0&&console.warn("@supabase/gotrue-js:
+Session as retrieved from URL was issued in the future? Check
+the device clock for skew",x,h,d);const{data:g,error:b}=await
+this._getUser(i);if(b)throw b;const w={provider_token:n,provide
+r_refresh_token:s,access_token:i,expires_in:f,expires_at:h,refr
+esh_token:o,token_type:u,user:g.user};return window.location.ha
+sh="",this._debug("#_getSessionFromURL()","clearing window.loca
+tion.hash"),{data:{session:w,redirectType:e.type},error:null}}c
+atch(n){if(ae(n))return{data:{session:null,redirectType:null},e
+rror:n};throw n}}_isImplicitGrantCallback(e){return!!(e.access_
+token||e.error_description)}async _isPKCECallback(e){const
+r=await ki(this.storage,`${this.storageKey}-code-verifier`);ret
+urn!!(e.code&&r)}async signOut(e={scope:"global"}){return
+await this.initializePromise,await
+this._acquireLock(-1,async()=>await this._signOut(e))}async
+_signOut({scope:e}={scope:"global"}){return await
+this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{error:i};const
+o=(n=s.session)===null||n===void 0?void
+0:n.access_token;if(o){const{error:l}=await this.admin.signOut(
+o,e);if(l&&!(k4(l)&&(l.status===404||l.status===401||l.status==
+=403)))return{error:l}}return e!=="others"&&(await
+this._removeSession(),await Cs(this.storage,`${this.storageKey}
+-code-verifier`)),{error:null}})}onAuthStateChange(e){const r=I
+4(),n={id:r,callback:e,unsubscribe:()=>{this._debug("#unsubscri
+be()","state change callback with id
+removed",r),this.stateChangeEmitters.delete(r)}};return
+this._debug("#onAuthStateChange()","registered callback with
+id",r),this.stateChangeEmitters.set(r,n),(async()=>(await
+this.initializePromise,await this._acquireLock(-1,async()=>{thi
+s._emitInitialSession(r)})))(),{data:{subscription:n}}}async
+_emitInitialSession(e){return await this._useSession(async
+r=>{var n,s;try{const{data:{session:i},error:o}=r;if(o)throw
+o;await((n=this.stateChangeEmitters.get(e))===null||n===void
+0?void 0:n.callback("INITIAL_SESSION",i)),this._debug("INITIAL_
+SESSION","callback id",e,"session",i)}catch(i){await((s=this.st
+ateChangeEmitters.get(e))===null||s===void 0?void 0:s.callback(
+"INITIAL_SESSION",null)),this._debug("INITIAL_SESSION","callbac
+k id",e,"error",i),console.error(i)}})}async
+resetPasswordForEmail(e,r={}){let
+n=null,s=null;this.flowType==="pkce"&&([n,s]=await
+So(this.storage,this.storageKey,!0));try{return await ge(this.f
+etch,"POST",`${this.url}/recover`,{body:{email:e,code_challenge
+:n,code_challenge_method:s,gotrue_meta_security:{captcha_token:
+r.captchaToken}},headers:this.headers,redirectTo:r.redirectTo})
+}catch(i){if(ae(i))return{data:null,error:i};throw i}}async
+getUserIdentities(){var e;try{const{data:r,error:n}=await
+this.getUser();if(n)throw n;return{data:{identities:(e=r.user.i
+dentities)!==null&&e!==void 0?e:[]},error:null}}catch(r){if(ae(
+r))return{data:null,error:r};throw r}}async
+linkIdentity(e){return"token"in
+e?this.linkIdentityIdToken(e):this.linkIdentityOAuth(e)}async
+linkIdentityOAuth(e){var r;try{const{data:n,error:s}=await
+this._useSession(async i=>{var
+o,l,c,u,d;const{data:f,error:h}=i;if(h)throw h;const p=await th
+is._getUrlForProvider(`${this.url}/user/identities/authorize`,e
+.provider,{redirectTo:(o=e.options)===null||o===void 0?void
+0:o.redirectTo,scopes:(l=e.options)===null||l===void 0?void
+0:l.scopes,queryParams:(c=e.options)===null||c===void 0?void
+0:c.queryParams,skipBrowserRedirect:!0});return await ge(this.f
+etch,"GET",p,{headers:this.headers,jwt:(d=(u=f.session)===null|
+|u===void 0?void 0:u.access_token)!==null&&d!==void 0?d:void
+0})});if(s)throw s;return
+kr()&&!(!((r=e.options)===null||r===void 0)&&r.skipBrowserRedir
+ect)&&window.location.assign(n==null?void
+0:n.url),{data:{provider:e.provider,url:n==null?void 0:n.url},e
+rror:null}}catch(n){if(ae(n))return{data:{provider:e.provider,u
+rl:null},error:n};throw n}}async linkIdentityIdToken(e){return
+await this._useSession(async r=>{var
+n;try{const{error:s,data:{session:i}}=r;if(s)throw s;const{opti
+ons:o,provider:l,token:c,access_token:u,nonce:d}=e,f=await ge(t
+his.fetch,"POST",`${this.url}/token?grant_type=id_token`,{heade
+rs:this.headers,jwt:(n=i==null?void
+0:i.access_token)!==null&&n!==void 0?n:void 0,body:{provider:l,
+id_token:c,access_token:u,nonce:d,link_identity:!0,gotrue_meta_
+security:{captcha_token:o==null?void
+0:o.captchaToken}},xform:tn}),{data:h,error:p}=f;return p?{data
+:{user:null,session:null},error:p}:!h||!h.session||!h.user?{dat
+a:{user:null,session:null},error:new _o}:(h.session&&(await
+this._saveSession(h.session),await this._notifyAllSubscribers("
+USER_UPDATED",h.session)),{data:h,error:p})}catch(s){if(ae(s))r
+eturn{data:{user:null,session:null},error:s};throw s}})}async
+unlinkIdentity(e){try{return await this._useSession(async
+r=>{var n,s;const{data:i,error:o}=r;if(o)throw o;return await g
+e(this.fetch,"DELETE",`${this.url}/user/identities/${e.identity
+_id}`,{headers:this.headers,jwt:(s=(n=i.session)===null||n===vo
+id 0?void 0:n.access_token)!==null&&s!==void 0?s:void
+0})})}catch(r){if(ae(r))return{data:null,error:r};throw
+r}}async _refreshAccessToken(e){const r=`#_refreshAccessToken($
+{e.substring(0,5)}...)`;this._debug(r,"begin");try{const
+n=Date.now();return await $4(async s=>(s>0&&await
+F4(200*Math.pow(2,s-1)),this._debug(r,"refreshing
+attempt",s),await ge(this.fetch,"POST",`${this.url}/token?grant
+_type=refresh_token`,{body:{refresh_token:e},headers:this.heade
+rs,xform:tn})),(s,i)=>{const o=200*Math.pow(2,s);return i&&Wh(i
+)&&Date.now()+o-n<Oo})}catch(n){if(this._debug(r,"error",n),ae(
+n))return{data:{session:null,user:null},error:n};throw
+n}finally{this._debug(r,"end")}}_isValidSession(e){return
+typeof e=="object"&&e!==null&&"access_token"in
+e&&"refresh_token"in e&&"expires_at"in e}async
+_handleProviderSignIn(e,r){const n=await this._getUrlForProvide
+r(`${this.url}/authorize`,e,{redirectTo:r.redirectTo,scopes:r.s
+copes,queryParams:r.queryParams});return this._debug("#_handleP
+roviderSignIn()","provider",e,"options",r,"url",n),kr()&&!r.ski
+pBrowserRedirect&&window.location.assign(n),{data:{provider:e,u
+rl:n},error:null}}async _recoverAndRefresh(){var e,r;const
+n="#_recoverAndRefresh()";this._debug(n,"begin");try{const
+s=await
+ki(this.storage,this.storageKey);if(s&&this.userStorage){let
+o=await ki(this.userStorage,this.storageKey+"-user");!this.stor
+age.isServer&&Object.is(this.storage,this.userStorage)&&!o&&(o=
+{user:s.user},await Ro(this.userStorage,this.storageKey+"-user"
+,o)),s.user=(e=o==null?void 0:o.user)!==null&&e!==void
+0?e:Hh()}else if(s&&!s.user&&!s.user){const o=await ki(this.sto
+rage,this.storageKey+"-user");o&&(o!=null&&o.user)?(s.user=o.us
+er,await Cs(this.storage,this.storageKey+"-user"),await Ro(this
+.storage,this.storageKey,s)):s.user=Hh()}if(this._debug(n,"sess
+ion from
+storage",s),!this._isValidSession(s)){this._debug(n,"session
+is not valid"),s!==null&&await
+this._removeSession();return}const
+i=((r=s.expires_at)!==null&&r!==void
+0?r:1/0)*1e3-Date.now()<zh;if(this._debug(n,`session
+has${i?"":" not"} expired with margin of ${zh}s`),i){if(this.au
+toRefreshToken&&s.refresh_token){const{error:o}=await this._cal
+lRefreshToken(s.refresh_token);o&&(console.error(o),Wh(o)||(thi
+s._debug(n,"refresh failed with a non-retryable error,
+removing the session",o),await this._removeSession()))}}else if
+(s.user&&s.user.__isUserNotAvailableProxy===!0)try{const{data:o
+,error:l}=await this._getUser(s.access_token);!l&&(o!=null&&o.u
+ser)?(s.user=o.user,await this._saveSession(s),await this._noti
+fyAllSubscribers("SIGNED_IN",s)):this._debug(n,"could not get
+user data, skipping SIGNED_IN
+notification")}catch(o){console.error("Error getting user
+data:",o),this._debug(n,"error getting user data, skipping
+SIGNED_IN notification",o)}else await this._notifyAllSubscriber
+s("SIGNED_IN",s)}catch(s){this._debug(n,"error",s),console.erro
+r(s);return}finally{this._debug(n,"end")}}async
+_callRefreshToken(e){var r,n;if(!e)throw new
+Os;if(this.refreshingDeferred)return
+this.refreshingDeferred.promise;const s=`#_callRefreshToken(${e
+.substring(0,5)}...)`;this._debug(s,"begin");try{this.refreshin
+gDeferred=new Ff;const{data:i,error:o}=await
+this._refreshAccessToken(e);if(o)throw o;if(!i.session)throw
+new Os;await this._saveSession(i.session),await
+this._notifyAllSubscribers("TOKEN_REFRESHED",i.session);const
+l={data:i.session,error:null};return this.refreshingDeferred.re
+solve(l),l}catch(i){if(this._debug(s,"error",i),ae(i)){const
+o={data:null,error:i};return Wh(i)||await this._removeSession()
+,(r=this.refreshingDeferred)===null||r===void 0||r.resolve(o),o
+}throw(n=this.refreshingDeferred)===null||n===void 0||n.reject(
+i),i}finally{this.refreshingDeferred=null,this._debug(s,"end")}
+}async _notifyAllSubscribers(e,r,n=!0){const s=`#_notifyAllSubs
+cribers(${e})`;this._debug(s,"begin",r,`broadcast = ${n}`);try{
+this.broadcastChannel&&n&&this.broadcastChannel.postMessage({ev
+ent:e,session:r});const
+i=[],o=Array.from(this.stateChangeEmitters.values()).map(async
+l=>{try{await l.callback(e,r)}catch(c){i.push(c)}});if(await
+Promise.all(o),i.length>0){for(let
+l=0;l<i.length;l+=1)console.error(i[l]);throw
+i[0]}}finally{this._debug(s,"end")}}async _saveSession(e){this.
+_debug("#_saveSession()",e),this.suppressGetSessionWarning=!0;c
+onst r=Object.assign({},e),n=r.user&&r.user.__isUserNotAvailabl
+eProxy===!0;if(this.userStorage){!n&&r.user&&await Ro(this.user
+Storage,this.storageKey+"-user",{user:r.user});const
+s=Object.assign({},r);delete s.user;const i=cx(s);await
+Ro(this.storage,this.storageKey,i)}else{const s=cx(r);await
+Ro(this.storage,this.storageKey,s)}}async
+_removeSession(){this._debug("#_removeSession()"),await
+Cs(this.storage,this.storageKey),await
+Cs(this.storage,this.storageKey+"-code-verifier"),await Cs(this
+.storage,this.storageKey+"-user"),this.userStorage&&await
+Cs(this.userStorage,this.storageKey+"-user"),await this._notify
+AllSubscribers("SIGNED_OUT",null)}_removeVisibilityChangedCallb
+ack(){this._debug("#_removeVisibilityChangedCallback()");const
+e=this.visibilityChangedCallback;this.visibilityChangedCallback
+=null;try{e&&kr()&&(window!=null&&window.removeEventListener)&&
+window.removeEventListener("visibilitychange",e)}catch(r){conso
+le.error("removing visibilitychange callback failed",r)}}async
+_startAutoRefresh(){await this._stopAutoRefresh(),this._debug("
+#_startAutoRefresh()");const e=setInterval(()=>this._autoRefres
+hTokenTick(),Oo);this.autoRefreshTicker=e,e&&typeof
+e=="object"&&typeof e.unref=="function"?e.unref():typeof
+Deno<"u"&&typeof Deno.unrefTimer=="function"&&Deno.unrefTimer(e
+),setTimeout(async()=>{await this.initializePromise,await
+this._autoRefreshTokenTick()},0)}async
+_stopAutoRefresh(){this._debug("#_stopAutoRefresh()");const e=t
+his.autoRefreshTicker;this.autoRefreshTicker=null,e&&clearInter
+val(e)}async startAutoRefresh(){this._removeVisibilityChangedCa
+llback(),await this._startAutoRefresh()}async stopAutoRefresh()
+{this._removeVisibilityChangedCallback(),await
+this._stopAutoRefresh()}async _autoRefreshTokenTick(){this._deb
+ug("#_autoRefreshTokenTick()","begin");try{await
+this._acquireLock(0,async()=>{try{const
+e=Date.now();try{return await this._useSession(async r=>{const{
+data:{session:n}}=r;if(!n||!n.refresh_token||!n.expires_at){thi
+s._debug("#_autoRefreshTokenTick()","no session");return}const
+s=Math.floor((n.expires_at*1e3-e)/Oo);this._debug("#_autoRefres
+hTokenTick()",`access token expires in ${s} ticks, a tick
+lasts ${Oo}ms, refresh threshold is ${Ip} ticks`),s<=Ip&&await
+this._callRefreshToken(n.refresh_token)})}catch(r){console.erro
+r("Auto refresh tick failed with error. This is likely a
+transient error.",r)}}finally{this._debug("#_autoRefreshTokenTi
+ck()","end")}})}catch(e){if(e.isAcquireTimeout||e instanceof
+Rk)this._debug("auto refresh token tick lock not
+available");else throw e}}async _handleVisibilityChange(){if(th
+is._debug("#_handleVisibilityChange()"),!kr()||!(window!=null&&
+window.addEventListener))return this.autoRefreshToken&&this.sta
+rtAutoRefresh(),!1;try{this.visibilityChangedCallback=async()=>
+await this._onVisibilityChanged(!1),window==null||window.addEve
+ntListener("visibilitychange",this.visibilityChangedCallback),a
+wait this._onVisibilityChanged(!0)}catch(e){console.error("_han
+dleVisibilityChange",e)}}async _onVisibilityChanged(e){const r=
+`#_onVisibilityChanged(${e})`;this._debug(r,"visibilityState",d
+ocument.visibilityState),document.visibilityState==="visible"?(
+this.autoRefreshToken&&this._startAutoRefresh(),e||(await
+this.initializePromise,await this._acquireLock(-1,async()=>{if(
+document.visibilityState!=="visible"){this._debug(r,"acquired
+the lock to recover the session, but the browser
+visibilityState is no longer visible, aborting");return}await t
+his._recoverAndRefresh()}))):document.visibilityState==="hidden
+"&&this.autoRefreshToken&&this._stopAutoRefresh()}async
+_getUrlForProvider(e,r,n){const s=[`provider=${encodeURICompone
+nt(r)}`];if(n!=null&&n.redirectTo&&s.push(`redirect_to=${encode
+URIComponent(n.redirectTo)}`),n!=null&&n.scopes&&s.push(`scopes
+=${encodeURIComponent(n.scopes)}`),this.flowType==="pkce"){cons
+t[i,o]=await So(this.storage,this.storageKey),l=new URLSearchPa
+rams({code_challenge:`${encodeURIComponent(i)}`,code_challenge_
+method:`${encodeURIComponent(o)}`});s.push(l.toString())}if(n!=
+null&&n.queryParams){const i=new
+URLSearchParams(n.queryParams);s.push(i.toString())}return n!=n
+ull&&n.skipBrowserRedirect&&s.push(`skip_http_redirect=${n.skip
+BrowserRedirect}`),`${e}?${s.join("&")}`}async
+_unenroll(e){try{return await this._useSession(async r=>{var
+n;const{data:s,error:i}=r;return i?{data:null,error:i}:await ge
+(this.fetch,"DELETE",`${this.url}/factors/${e.factorId}`,{heade
+rs:this.headers,jwt:(n=s==null?void
+0:s.session)===null||n===void 0?void 0:n.access_token})})}catch
+(r){if(ae(r))return{data:null,error:r};throw r}}async
+_enroll(e){try{return await this._useSession(async r=>{var n,s;
+const{data:i,error:o}=r;if(o)return{data:null,error:o};const l=
+Object.assign({friendly_name:e.friendlyName,factor_type:e.facto
+rType},e.factorType==="phone"?{phone:e.phone}:e.factorType==="t
+otp"?{issuer:e.issuer}:{}),{data:c,error:u}=await ge(this.fetch
+,"POST",`${this.url}/factors`,{body:l,headers:this.headers,jwt:
+(n=i==null?void 0:i.session)===null||n===void 0?void
+0:n.access_token});return u?{data:null,error:u}:(e.factorType==
+="totp"&&c.type==="totp"&&(!((s=c==null?void
+0:c.totp)===null||s===void 0)&&s.qr_code)&&(c.totp.qr_code=`dat
+a:image/svg+xml;utf-8,${c.totp.qr_code}`),{data:c,error:null})}
+)}catch(r){if(ae(r))return{data:null,error:r};throw r}}async
+_verify(e){return this._acquireLock(-1,async()=>{try{return
+await this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{data:null,error:i};const
+o=Object.assign({challenge_id:e.challengeId},"webauthn"in e?{we
+bauthn:Object.assign(Object.assign({},e.webauthn),{credential_r
+esponse:e.webauthn.type==="create"?gL(e.webauthn.credential_res
+ponse):yL(e.webauthn.credential_response)})}:{code:e.code}),{da
+ta:l,error:c}=await ge(this.fetch,"POST",`${this.url}/factors/$
+{e.factorId}/verify`,{body:o,headers:this.headers,jwt:(n=s==nul
+l?void 0:s.session)===null||n===void 0?void
+0:n.access_token});return c?{data:null,error:c}:(await this._sa
+veSession(Object.assign({expires_at:Math.round(Date.now()/1e3)+
+l.expires_in},l)),await this._notifyAllSubscribers("MFA_CHALLEN
+GE_VERIFIED",l),{data:l,error:c})})}catch(r){if(ae(r))return{da
+ta:null,error:r};throw r}})}async _challenge(e){return
+this._acquireLock(-1,async()=>{try{return await
+this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{data:null,error:i};const
+o=await ge(this.fetch,"POST",`${this.url}/factors/${e.factorId}
+/challenge`,{body:e,headers:this.headers,jwt:(n=s==null?void
+0:s.session)===null||n===void 0?void
+0:n.access_token});if(o.error)return o;const{data:l}=o;if(l.typ
+e!=="webauthn")return{data:l,error:null};switch(l.webauthn.type
+){case"create":return{data:Object.assign(Object.assign({},l),{w
+ebauthn:Object.assign(Object.assign({},l.webauthn),{credential_
+options:Object.assign(Object.assign({},l.webauthn.credential_op
+tions),{publicKey:mL(l.webauthn.credential_options.publicKey)})
+})}),error:null};case"request":return{data:Object.assign(Object
+.assign({},l),{webauthn:Object.assign(Object.assign({},l.webaut
+hn),{credential_options:Object.assign(Object.assign({},l.webaut
+hn.credential_options),{publicKey:pL(l.webauthn.credential_opti
+ons.publicKey)})})}),error:null}}})}catch(r){if(ae(r))return{da
+ta:null,error:r};throw r}})}async
+_challengeAndVerify(e){const{data:r,error:n}=await
+this._challenge({factorId:e.factorId});return
+n?{data:null,error:n}:await this._verify({factorId:e.factorId,c
+hallengeId:r.id,code:e.code})}async _listFactors(){var
+e;const{data:{user:r},error:n}=await
+this.getUser();if(n)return{data:null,error:n};const
+s={all:[],phone:[],totp:[],webauthn:[]};for(const i
+of(e=r==null?void 0:r.factors)!==null&&e!==void 0?e:[])s.all.pu
+sh(i),i.status==="verified"&&s[i.factor_type].push(i);return{da
+ta:s,error:null}}async
+_getAuthenticatorAssuranceLevel(){return
+this._acquireLock(-1,async()=>await this._useSession(async
+e=>{var r,n;const{data:{session:s},error:i}=e;if(i)return{data:
+null,error:i};if(!s)return{data:{currentLevel:null,nextLevel:nu
+ll,currentAuthenticationMethods:[]},error:null};const{payload:o
+}=qh(s.access_token);let l=null;o.aal&&(l=o.aal);let
+c=l;((n=(r=s.user.factors)===null||r===void 0?void
+0:r.filter(f=>f.status==="verified"))!==null&&n!==void
+0?n:[]).length>0&&(c="aal2");const d=o.amr||[];return{data:{cur
+rentLevel:l,nextLevel:c,currentAuthenticationMethods:d},error:n
+ull}}))}async fetchJwk(e,r={keys:[]}){let
+n=r.keys.find(l=>l.kid===e);if(n)return n;const s=Date.now();if
+(n=this.jwks.keys.find(l=>l.kid===e),n&&this.jwks_cached_at+j4>
+s)return n;const{data:i,error:o}=await ge(this.fetch,"GET",`${t
+his.url}/.well-known/jwks.json`,{headers:this.headers});if(o)th
+row o;return!i.keys||i.keys.length===0||(this.jwks=i,this.jwks_
+cached_at=s,n=i.keys.find(l=>l.kid===e),!n)?null:n}async
+getClaims(e,r={}){try{let
+n=e;if(!n){const{data:p,error:x}=await this.getSession();if(x||
+!p.session)return{data:null,error:x};n=p.session.access_token}c
+onst{header:s,payload:i,signature:o,raw:{header:l,payload:c}}=q
+h(n);r!=null&&r.allowExpired||H4(i.exp);const
+u=!s.alg||s.alg.startsWith("HS")||!s.kid||!("crypto"in
+globalThis&&"subtle"in globalThis.crypto)?null:await
+this.fetchJwk(s.kid,r!=null&&r.keys?{keys:r.keys}:r==null?void
+0:r.jwks);if(!u){const{error:p}=await
+this.getUser(n);if(p)throw p;return{data:{claims:i,header:s,sig
+nature:o},error:null}}const d=K4(s.alg),f=await
+crypto.subtle.importKey("jwk",u,d,!0,["verify"]);if(!await
+crypto.subtle.verify(d,f,o,R4(`${l}.${c}`)))throw new
+Fp("Invalid JWT signature");return{data:{claims:i,header:s,sign
+ature:o},error:null}}catch(n){if(ae(n))return{data:null,error:n
+};throw n}}}dc.nextInstanceID=0;const kL=dc;class CL extends
+kL{constructor(e){super(e)}}var EL=function(t,e,r,n){function
+s(i){return i instanceof r?i:new r(function(o){o(i)})}return
+new(r||(r=Promise))(function(i,o){function
+l(d){try{u(n.next(d))}catch(f){o(f)}}function
+c(d){try{u(n.throw(d))}catch(f){o(f)}}function u(d){d.done?i(d.
+value):s(d.value).then(l,c)}u((n=n.apply(t,e||[])).next())})};c
+lass PL{constructor(e,r,n){var
+s,i,o;this.supabaseUrl=e,this.supabaseKey=r;const
+l=x4(e);if(!r)throw new Error("supabaseKey is
+required.");this.realtimeUrl=new URL("realtime/v1",l),this.real
+timeUrl.protocol=this.realtimeUrl.protocol.replace("http","ws")
+,this.authUrl=new URL("auth/v1",l),this.storageUrl=new
+URL("storage/v1",l),this.functionsUrl=new
+URL("functions/v1",l);const c=`sb-${l.hostname.split(".")[0]}-a
+uth-token`,u={db:c4,realtime:d4,auth:Object.assign(Object.assig
+n({},u4),{storageKey:c}),global:l4},d=v4(n??{},u);this.storageK
+ey=(s=d.auth.storageKey)!==null&&s!==void
+0?s:"",this.headers=(i=d.global.headers)!==null&&i!==void 0?i:{
+},d.accessToken?(this.accessToken=d.accessToken,this.auth=new
+Proxy({},{get:(f,h)=>{throw new Error(`@supabase/supabase-js:
+Supabase Client is configured with the accessToken option,
+accessing supabase.auth.${String(h)} is not possible`)}})):this
+.auth=this._initSupabaseAuthClient((o=d.auth)!==null&&o!==void
+0?o:{},this.headers,d.global.fetch),this.fetch=p4(r,this._getAc
+cessToken.bind(this),d.global.fetch),this.realtime=this._initRe
+altimeClient(Object.assign({headers:this.headers,accessToken:th
+is._getAccessToken.bind(this)},d.realtime)),this.rest=new
+NM(new URL("rest/v1",l).href,{headers:this.headers,schema:d.db.
+schema,fetch:this.fetch}),this.storage=new
+i4(this.storageUrl.href,this.headers,this.fetch,n==null?void
+0:n.storage),d.accessToken||this._listenForAuthEvents()}get
+functions(){return new nM(this.functionsUrl.href,{headers:this.
+headers,customFetch:this.fetch})}from(e){return
+this.rest.from(e)}schema(e){return
+this.rest.schema(e)}rpc(e,r={},n={head:!1,get:!1,count:void
+0}){return
+this.rest.rpc(e,r,n)}channel(e,r={config:{}}){return
+this.realtime.channel(e,r)}getChannels(){return
+this.realtime.getChannels()}removeChannel(e){return
+this.realtime.removeChannel(e)}removeAllChannels(){return
+this.realtime.removeAllChannels()}_getAccessToken(){return
+EL(this,void 0,void 0,function*(){var
+e,r;if(this.accessToken)return yield
+this.accessToken();const{data:n}=yield
+this.auth.getSession();return(r=(e=n.session)===null||e===void
+0?void 0:e.access_token)!==null&&r!==void 0?r:this.supabaseKey}
+)}_initSupabaseAuthClient({autoRefreshToken:e,persistSession:r,
+detectSessionInUrl:n,storage:s,userStorage:i,storageKey:o,flowT
+ype:l,lock:c,debug:u},d,f){const h={Authorization:`Bearer
+${this.supabaseKey}`,apikey:`${this.supabaseKey}`};return new C
+L({url:this.authUrl.href,headers:Object.assign(Object.assign({}
+,h),d),storageKey:o,autoRefreshToken:e,persistSession:r,detectS
+essionInUrl:n,storage:s,userStorage:i,flowType:l,lock:c,debug:u
+,fetch:f,hasCustomAuthorizationHeader:Object.keys(this.headers)
+.some(p=>p.toLowerCase()==="authorization")})}_initRealtimeClie
+nt(e){return new VM(this.realtimeUrl.href,Object.assign(Object.
+assign({},e),{params:Object.assign({apikey:this.supabaseKey},e=
+=null?void 0:e.params)}))}_listenForAuthEvents(){return this.au
+th.onAuthStateChange((r,n)=>{this._handleTokenChanged(r,"CLIENT
+",n==null?void 0:n.access_token)})}_handleTokenChanged(e,r,n){(
+e==="TOKEN_REFRESHED"||e==="SIGNED_IN")&&this.changedAccessToke
+n!==n?(this.changedAccessToken=n,this.realtime.setAuth(n)):e===
+"SIGNED_OUT"&&(this.realtime.setAuth(),r=="STORAGE"&&this.auth.
+signOut(),this.changedAccessToken=void 0)}}const
+TL=(t,e,r)=>new PL(t,e,r);function AL(){if(typeof
+window<"u"||typeof process>"u")return!1;const
+t=process.version;if(t==null)return!1;const
+e=t.match(/^v(\d+)\./);return
+e?parseInt(e[1],10)<=18:!1}AL()&&console.warn("⚠️  Node.js 18
+and below are deprecated and will no longer be supported in
+future versions of @supabase/supabase-js. Please upgrade to
+Node.js 20 or later. For more information, visit:
+https://github.com/orgs/supabase/discussions/37217");const Lk="
+https://umotigprfosrrjwpxlnp.supabase.co",Zu="eyJhbGciOiJIUzI1N
+iIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtb3RpZ3B
+yZm9zcnJqd3B4bG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAzMzQ4NDAsIm
+V4cCI6MjAzNTkxMDg0MH0.d5yLGYOSzwvf0a2mR8XMIJo9mxgOAXZqSW8E6QdO7
+QU";console.log("🔧 Supabase Client
+Initialization");console.log("📍 URL:",Lk);console.log("🔑 Key
+(first 20 chars):",(Zu==null?void
+0:Zu.substring(0,20))+"...");const ze=TL(Lk,Zu,{auth:{autoRefre
+shToken:!0,persistSession:!0,detectSessionInUrl:!0,storage:wind
+ow.localStorage,flowType:"pkce"}});/*! Capacitor:
+https://capacitorjs.com/ - MIT License */var Ia;(function(t){t.
+Unimplemented="UNIMPLEMENTED",t.Unavailable="UNAVAILABLE"})(Ia|
+|(Ia={}));class Gh extends Error{constructor(e,r,n){super(e),th
+is.message=e,this.code=r,this.data=n}}const OL=t=>{var
+e,r;return
+t!=null&&t.androidBridge?"android":!((r=(e=t==null?void
+0:t.webkit)===null||e===void 0?void
+0:e.messageHandlers)===null||r===void
+0)&&r.bridge?"ios":"web"},RL=t=>{const e=t.CapacitorCustomPlatf
+orm||null,r=t.Capacitor||{},n=r.Plugins=r.Plugins||{},s=()=>e!=
+=null?e.name:OL(t),i=()=>s()!=="web",o=f=>{const h=u.get(f);ret
+urn!!(h!=null&&h.platforms.has(s())||l(f))},l=f=>{var
+h;return(h=r.PluginHeaders)===null||h===void 0?void
+0:h.find(p=>p.name===f)},c=f=>t.console.error(f),u=new
+Map,d=(f,h={})=>{const p=u.get(f);if(p)return
+console.warn(`Capacitor plugin "${f}" already registered.
+Cannot register plugins twice.`),p.proxy;const
+x=s(),g=l(f);let b;const w=async()=>(!b&&x in h?b=typeof
+h[x]=="function"?b=await h[x]():b=h[x]:e!==null&&!b&&"web"in
+h&&(b=typeof h.web=="function"?b=await
+h.web():b=h.web),b),m=(E,T)=>{var I,q;if(g){const
+M=g==null?void 0:g.methods.find(O=>T===O.name);if(M)return M.rt
+ype==="promise"?O=>r.nativePromise(f,T.toString(),O):(O,z)=>r.n
+ativeCallback(f,T.toString(),O,z);if(E)return(I=E[T])===null||I
+===void 0?void
+0:I.bind(E)}else{if(E)return(q=E[T])===null||q===void 0?void
+0:q.bind(E);throw new Gh(`"${f}" plugin is not implemented on
+${x}`,Ia.Unimplemented)}},v=E=>{let T;const I=(...q)=>{const
+M=w().then(O=>{const z=m(O,E);if(z){const R=z(...q);return
+T=R==null?void 0:R.remove,R}else throw new Gh(`"${f}.${E}()"
+is not implemented on ${x}`,Ia.Unimplemented)});return
+E==="addListener"&&(M.remove=async()=>T()),M};return
+I.toString=()=>`${E.toString()}() { [capacitor code] }`,Object.
+defineProperty(I,"name",{value:E,writable:!1,configurable:!1}),
+I},_=v("addListener"),S=v("removeListener"),N=(E,T)=>{const
+I=_({eventName:E},T),q=async()=>{const O=await
+I;S({eventName:E,callbackId:O},T)},M=new
+Promise(O=>I.then(()=>O({remove:q})));return
+M.remove=async()=>{console.warn("Using addListener() without
+'await' is deprecated."),await q()},M},j=new Proxy({},{get(E,T)
+{switch(T){case"$$typeof":return;case"toJSON":return()=>({});ca
+se"addListener":return g?N:_;case"removeListener":return
+S;default:return v(T)}}});return
+n[f]=j,u.set(f,{name:f,proxy:j,platforms:new
+Set([...Object.keys(h),...g?[x]:[]])}),j};return r.convertFileS
+rc||(r.convertFileSrc=f=>f),r.getPlatform=s,r.handleError=c,r.i
+sNativePlatform=i,r.isPluginAvailable=o,r.registerPlugin=d,r.Ex
+ception=Gh,r.DEBUG=!!r.DEBUG,r.isLoggingEnabled=!!r.isLoggingEn
+abled,r},DL=t=>t.Capacitor=RL(t),xn=DL(typeof
+globalThis<"u"?globalThis:typeof self<"u"?self:typeof
+window<"u"?window:typeof
+global<"u"?global:{}),yy=xn.registerPlugin;class Fk{constructor
+(){this.listeners={},this.retainedEventArguments={},this.window
+Listeners={}}addListener(e,r){let n=!1;this.listeners[e]||(this
+.listeners[e]=[],n=!0),this.listeners[e].push(r);const i=this.w
+indowListeners[e];i&&!i.registered&&this.addWindowListener(i),n
+&&this.sendRetainedArgumentsForEvent(e);const
+o=async()=>this.removeListener(e,r);return
+Promise.resolve({remove:o})}async
+removeAllListeners(){this.listeners={};for(const e in this.wind
+owListeners)this.removeWindowListener(this.windowListeners[e]);
+this.windowListeners={}}notifyListeners(e,r,n){const
+s=this.listeners[e];if(!s){if(n){let i=this.retainedEventArgume
+nts[e];i||(i=[]),i.push(r),this.retainedEventArguments[e]=i}ret
+urn}s.forEach(i=>i(r))}hasListeners(e){var
+r;return!!(!((r=this.listeners[e])===null||r===void 0)&&r.lengt
+h)}registerWindowListener(e,r){this.windowListeners[r]={registe
+red:!1,windowEventName:e,pluginEventName:r,handler:n=>{this.not
+ifyListeners(r,n)}}}unimplemented(e="not implemented"){return
+new xn.Exception(e,Ia.Unimplemented)}unavailable(e="not
+available"){return new xn.Exception(e,Ia.Unavailable)}async
+removeListener(e,r){const
+n=this.listeners[e];if(!n)return;const s=n.indexOf(r);this.list
+eners[e].splice(s,1),this.listeners[e].length||this.removeWindo
+wListener(this.windowListeners[e])}addWindowListener(e){window.
+addEventListener(e.windowEventName,e.handler),e.registered=!0}r
+emoveWindowListener(e){e&&(window.removeEventListener(e.windowE
+ventName,e.handler),e.registered=!1)}sendRetainedArgumentsForEv
+ent(e){const r=this.retainedEventArguments[e];r&&(delete this.r
+etainedEventArguments[e],r.forEach(n=>{this.notifyListeners(e,n
+)}))}}const gx=t=>encodeURIComponent(t).replace(/%(2[346B]|5E|6
+0|7C)/g,decodeURIComponent).replace(/[()]/g,escape),yx=t=>t.rep
+lace(/(%[\dA-F]{2})+/gi,decodeURIComponent);class IL extends
+Fk{async getCookies(){const e=document.cookie,r={};return e.spl
+it(";").forEach(n=>{if(n.length<=0)return;let[s,i]=n.replace(/=
+/,"CAP_COOKIE").split("CAP_COOKIE");s=yx(s).trim(),i=yx(i).trim
+(),r[s]=i}),r}async setCookie(e){try{const
+r=gx(e.key),n=gx(e.value),s=`; expires=${(e.expires||"").replac
+e("expires=","")}`,i=(e.path||"/").replace("path=",""),o=e.url!
+=null&&e.url.length>0?`domain=${e.url}`:"";document.cookie=`${r
+}=${n||""}${s}; path=${i}; ${o};`}catch(r){return
+Promise.reject(r)}}async
+deleteCookie(e){try{document.cookie=`${e.key}=;
+Max-Age=0`}catch(r){return Promise.reject(r)}}async
+clearCookies(){try{const
+e=document.cookie.split(";")||[];for(const r of
+e)document.cookie=r.replace(/^
++/,"").replace(/=.*/,`=;expires=${new
+Date().toUTCString()};path=/`)}catch(e){return
+Promise.reject(e)}}async clearAllCookies(){try{await
+this.clearCookies()}catch(e){return
+Promise.reject(e)}}}yy("CapacitorCookies",{web:()=>new
+IL});const ML=async t=>new Promise((e,r)=>{const n=new
+FileReader;n.onload=()=>{const s=n.result;e(s.indexOf(",")>=0?s
+.split(",")[1]:s)},n.onerror=s=>r(s),n.readAsDataURL(t)}),LL=(t
+={})=>{const e=Object.keys(t);return Object.keys(t).map(s=>s.to
+LocaleLowerCase()).reduce((s,i,o)=>(s[i]=t[e[o]],s),{})},FL=(t,
+e=!0)=>t?Object.entries(t).reduce((n,s)=>{const[i,o]=s;let
+l,c;return Array.isArray(o)?(c="",o.forEach(u=>{l=e?encodeURICo
+mponent(u):u,c+=`${i}=${l}&`}),c.slice(0,-1)):(l=e?encodeURICom
+ponent(o):o,c=`${i}=${l}`),`${n}&${c}`},"").substr(1):null,$L=(
+t,e={})=>{const r=Object.assign({method:t.method||"GET",headers
+:t.headers},e),s=LL(t.headers)["content-type"]||"";if(typeof
+t.data=="string")r.body=t.data;else
+if(s.includes("application/x-www-form-urlencoded")){const
+i=new URLSearchParams;for(const[o,l]of
+Object.entries(t.data||{}))i.set(o,l);r.body=i.toString()}else
+if(s.includes("multipart/form-data")||t.data instanceof
+FormData){const i=new FormData;if(t.data instanceof
+FormData)t.data.forEach((l,c)=>{i.append(c,l)});else for(const
+l of Object.keys(t.data))i.append(l,t.data[l]);r.body=i;const
+o=new Headers(r.headers);o.delete("content-type"),r.headers=o}e
+lse(s.includes("application/json")||typeof
+t.data=="object")&&(r.body=JSON.stringify(t.data));return
+r};class UL extends Fk{async request(e){const r=$L(e,e.webFetch
+Extra),n=FL(e.params,e.shouldEncodeUrlParams),s=n?`${e.url}?${n
+}`:e.url,i=await fetch(s,r),o=i.headers.get("content-type")||""
+;let{responseType:l="text"}=i.ok?e:{};o.includes("application/j
+son")&&(l="json");let
+c,u;switch(l){case"arraybuffer":case"blob":u=await
+i.blob(),c=await ML(u);break;case"json":c=await
+i.json();break;case"document":case"text":default:c=await
+i.text()}const d={};return i.headers.forEach((f,h)=>{d[h]=f}),{
+data:c,headers:d,status:i.status,url:i.url}}async
+get(e){return this.request(Object.assign(Object.assign({},e),{m
+ethod:"GET"}))}async post(e){return this.request(Object.assign(
+Object.assign({},e),{method:"POST"}))}async put(e){return this.
+request(Object.assign(Object.assign({},e),{method:"PUT"}))}asyn
+c patch(e){return this.request(Object.assign(Object.assign({},e
+),{method:"PATCH"}))}async delete(e){return this.request(Object
+.assign(Object.assign({},e),{method:"DELETE"}))}}yy("CapacitorH
+ttp",{web:()=>new UL});const $p=yy("Preferences",{web:()=>Ya(()
+=>import("./web-T1MsZR8W.js"),[]).then(t=>new t.PreferencesWeb)
+}),$k=(xn.isNativePlatform(),"https://bjj-jits-journal.onrender
+.com");let Xu=null;async function
+Cn(t){Xu=t,xn.isNativePlatform()&&(t?(await
+$p.set({key:"supabase_user_id",value:t}),console.log("💾
+Persisted Supabase ID to Preferences")):(await
+$p.remove({key:"supabase_user_id"}),console.log("🗑️ Cleared
+Supabase ID from Preferences")))}async function Uk(){var
+t;if(Xu)return
+Xu;if(xn.isNativePlatform())try{const{value:e}=await
+$p.get({key:"supabase_user_id"});if(e)return
+Xu=e,console.log("📱 Loaded Supabase ID from Preferences
+(instant!)"),e}catch(e){console.error("Failed to read from
+Preferences:",e)}try{console.log("⚠️ Falling back to
+getSession() - this should only happen
+once");const{data:{session:e}}=await
+ze.auth.getSession(),r=((t=e==null?void 0:e.user)==null?void
+0:t.id)||null;return r&&await Cn(r),r}catch(e){return
+console.error("Failed to get Supabase user:",e),null}}const
+qr=new MI({defaultOptions:{queries:{retry:1,refetchOnWindowFocu
+s:!1,queryFn:async({queryKey:t})=>{const e=await
+Uk(),r={"Content-Type":"application/json"};let
+n=`${$k}${t[0]}`;if(e){const i=n.includes("?")?"&":"?";n+=`${i}
+supabaseId=${e}`,console.log("📱 Query with supabaseId")}else
+console.warn("⚠️ No supabaseId available for query");const
+s=await fetch(n,{headers:r});if(!s.ok)throw(s.status===401||s.s
+tatus===403)&&(console.log("🔄 Auth failed - may need to
+refresh"),sessionStorage.setItem("auth_failure","true")),new
+Error(`${s.status}: ${s.statusText}`);return
+s.json()}}}});async function tr(t,e,r){const n=await Uk(),i={me
+thod:t,headers:{"Content-Type":"application/json"}};r?i.body=JS
+ON.stringify({...r,supabaseId:n}):n&&(i.body=JSON.stringify({su
+pabaseId:n}));const o=`${$k}${e}`,l=await
+fetch(o,i);if(!l.ok){if(l.status===401||l.status===403)throw
+console.log("🔄 Auth failed in API request"),new
+Error("Authentication required. Please refresh the page and
+try again.");let c=`${l.status}: ${l.statusText}`;try{c=(await
+l.json()).message||c}catch{const u=await
+l.text();c=`${l.status}: ${u}`}throw new Error(c)}return
+l}const BL=(xn.isNativePlatform(),"https://bjj-jits-journal.onr
+ender.com"),Bk=y.createContext(void 0),dr=()=>{const
+t=y.useContext(Bk);if(t===void 0)throw new Error("useAuth must
+be used within an AuthProvider");return t};async function
+Bl(t,e,r,n,s=3){var o,l;const i=4-s;console.log("🔍 Loading
+user data for supabaseId:",t,`(attempt ${i}/3)`);try{const
+c=new AbortController,u=setTimeout(()=>c.abort(),1e4),d={};n&&(
+d.Authorization=`Bearer ${n}`,console.log("🔑 Including
+Supabase access token in request"));const f=await fetch(`${BL}/
+api/user/by-supabase-id/${t}`,{signal:c.signal,headers:d});if(c
+learTimeout(u),console.log("📡 User endpoint response
+status:",f.status),f.ok){const p=await f.json();return
+console.log("✅ User data loaded successfully:",{id:p.id,email:p
+.email}),{id:p.id.toString(),email:p.email,firstName:p.first_na
+me,lastName:p.last_name,subscriptionStatus:p.subscription_statu
+s||"free",subscriptionPlan:p.subscription_plan,role:p.role||"us
+er",createdAt:p.created_at,supabaseId:p.supabase_uid}}if(f.stat
+us===404)return s>1?(console.log("⏳ User not found yet (signup
+race condition), retrying in 1000ms..."),await new Promise(p=>s
+etTimeout(p,1e3)),Bl(t,e,r,n,s-1)):(console.error("❌ User not
+found in database for
+supabaseId:",t),null);if(f.status>=500&&s>0){const
+p=Math.min(1e3*Math.pow(2,i-1),5e3);return console.log(`⚠️
+Server error ${f.status}, retrying in ${p}ms...`),await new
+Promise(x=>setTimeout(x,p)),Bl(t,e,r,n,s-1)}const h=await
+f.text();return console.error("❌ Unexpected error from backend:
+",f.status,h),null}catch(c){if(s>0&&(c.name==="AbortError"||(o=
+c.message)!=null&&o.includes("fetch")||(l=c.message)!=null&&l.i
+ncludes("network"))){const
+u=Math.min(1e3*Math.pow(2,i-1),5e3);return console.log(`⚠️
+Network error (${c.message}), retrying in ${u}ms...`),await
+new Promise(d=>setTimeout(d,u)),Bl(t,e,r,n,s-1)}return
+console.error("❌ Fatal error in
+getUserFromSupabaseId:",c),null}}const VL=({children:t})=>{cons
+t[e,r]=y.useState(null),[n,s]=y.useState(null),[i,o]=y.useState
+(null),[l,c]=y.useState(!0),[u,d]=y.useState("Loading..."),f=he
+.useRef(null),h=he.useRef(!1);y.useEffect(()=>{(async()=>{d("Ch
+ecking session...");const{data:{session:m}}=await
+ze.auth.getSession();if(o(m),s((m==null?void
+0:m.user)??null),m!=null&&m.user)try{await
+Cn(m.user.id),d("Loading your data...");const v=await Bl(m.user
+.id,m.user.email||"",m.user.user_metadata,m.access_token);v?(qr
+.clear(),r(v),f.current=m.user.id,c(!1)):(await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null),c(!1))}catch{await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null),c(!1)}else await
+Cn(null),c(!1)})().catch(m=>{console.error("Session check faile
+d:",m),c(!1)});const{data:{subscription:w}}=ze.auth.onAuthState
+Change(async(m,v)=>{if(console.log("🔔 Auth state change:",m,"i
+sSigningUp:",h.current),h.current){console.log("⏭️ Ignoring
+auth state change during
+signup");return}if(o(v),s((v==null?void
+0:v.user)??null),v!=null&&v.user){if(await Cn(v.user.id),m==="T
+OKEN_REFRESHED"||f.current===v.user.id){c(!1);return}c(!0),d("S
+igning you in...");try{const _=await Bl(v.user.id,v.user.email|
+|"",v.user.user_metadata,v.access_token);_?(qr.clear(),r(_),f.c
+urrent=v.user.id,c(!1)):(m!=="SIGNED_IN"?(console.log("⚠️ User
+data not found, signing out (event:",m,")"),await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null)):console.log("⏳ Fresh sign-in
+detected, user data not ready yet. Keeping session
+active."),c(!1))}catch{m!=="SIGNED_IN"&&(await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null)),c(!1)}}else await Cn(null),r(
+null),f.current=null,c(!1)});return()=>w.unsubscribe()},[]);con
+st p=b=>{r(b)},x=async()=>{await ze.auth.signOut(),await Cn(nul
+l),r(null),o(null),s(null),qr.clear()},g=b=>{console.log("🚦
+Setting signup in progress:",b),h.current=b};return a.jsx(Bk.Pr
+ovider,{value:{user:e,supabaseUser:n,session:i,isLoading:l,load
+ingMessage:u,login:p,logout:x,isAuthenticated:!!e,setSignupInPr
+ogress:g},children:t})},Vk=y.createContext(void 0);function zL(
+{children:t}){const[e,r]=y.useState(!0);y.useEffect(()=>{const
+o=localStorage.getItem("bjj_darkmode")!=="false";localStorage.g
+etItem("bjj_darkmode")||localStorage.setItem("bjj_darkmode","tr
+ue"),r(o),n(o)},[]);const n=o=>{o?document.documentElement.clas
+sList.add("dark"):document.documentElement.classList.remove("da
+rk")},s=o=>{r(o),localStorage.setItem("bjj_darkmode",o.toString
+()),n(o)},i=()=>{s(!e)};return a.jsx(Vk.Provider,{value:{darkMo
+de:e,toggleDarkMode:i,setDarkMode:s},children:t})}function
+WL(){const t=y.useContext(Vk);if(t===void 0)throw new
+Error("useTheme must be used within a ThemeProvider");return
+t}function qL(){const[t]=Ga();y.useEffect(()=>{window.scrollTo(
+{top:0,left:0,behavior:"instant"}),document.body.scrollTop=0,do
+cument.documentElement.scrollTop=0},[t])}const HL=1,zk=4e3;let
+Qh=0;function KL(){return
+Qh=(Qh+1)%Number.MAX_SAFE_INTEGER,Qh.toString()}const Yh=new
+Map,vx=t=>{if(Yh.has(t))return;const e=setTimeout(()=>{Yh.delet
+e(t),Vl({type:"REMOVE_TOAST",toastId:t})},zk);Yh.set(t,e)},GL=(
+t,e)=>{switch(e.type){case"ADD_TOAST":return{...t,toasts:[e.toa
+st,...t.toasts].slice(0,HL)};case"UPDATE_TOAST":return{...t,toa
+sts:t.toasts.map(r=>r.id===e.toast.id?{...r,...e.toast}:r)};cas
+e"DISMISS_TOAST":{const{toastId:r}=e;return r?vx(r):t.toasts.fo
+rEach(n=>{vx(n.id)}),{...t,toasts:t.toasts.map(n=>n.id===r||r==
+=void 0?{...n,open:!1}:n)}}case"REMOVE_TOAST":return
+e.toastId===void 0?{...t,toasts:[]}:{...t,toasts:t.toasts.filte
+r(r=>r.id!==e.toastId)}}},ed=[];let td={toasts:[]};function
+Vl(t){td=GL(td,t),ed.forEach(e=>{e(td)})}function
+QL({duration:t=zk,...e}){const r=KL(),n=i=>Vl({type:"UPDATE_TOA
+ST",toast:{...i,id:r}}),s=()=>Vl({type:"DISMISS_TOAST",toastId:
+r});return Vl({type:"ADD_TOAST",toast:{...e,id:r,open:!0,onOpen
+Change:i=>{i||s()}}}),setTimeout(()=>{s()},t),{id:r,dismiss:s,u
+pdate:n}}function Lt(){const[t,e]=y.useState(td);return
+y.useEffect(()=>(ed.push(e),()=>{const r=ed.indexOf(e);r>-1&&ed
+.splice(r,1)}),[t]),{...t,toast:QL,dismiss:r=>Vl({type:"DISMISS
+_TOAST",toastId:r})}}const Fi={async
+getAll(t){const{data:e,error:r}=await ze.from("classes").select
+("*").eq("user_id",t).order("date",{ascending:!1});if(r)throw
+r;return e||[]},async create(t,e){const r={date:e.date,time:e.t
+ime,duration:e.duration,class_type:e.classType,instructor:e.ins
+tructor||"",techniques_focused:e.techniquesFocused||"",rolling_
+partners:e.rollingPartners||[],your_submissions:e.yourSubmissio
+ns||0,partner_submissions:e.partnerSubmissions||0,cardio_rating
+:e.cardioRating||3,user_id:t};console.log("Class data being
+sent to Supabase:",JSON.stringify(r,null,2));const{data:n,error
+:s}=await
+ze.from("classes").insert(r).select().single();if(s)throw
+console.error("Class creation error:",s),console.error("Error
+details:",JSON.stringify(s,null,2)),s;return
+console.log("Class created successfully:",n),n},async
+update(t,e,r){const n={date:r.date,time:r.time,duration:r.durat
+ion,class_type:r.classType,instructor:r.instructor||"",techniqu
+es_focused:r.techniquesFocused||"",rolling_partners:r.rollingPa
+rtners||[],your_submissions:r.yourSubmissions||0,partner_submis
+sions:r.partnerSubmissions||0,cardio_rating:r.cardioRating||3},
+{data:s,error:i}=await ze.from("classes").update(n).eq("id",t).
+eq("user_id",e).select().single();if(i)throw i;return s},async
+delete(t,e){const{error:r}=await ze.from("classes").delete().eq
+("id",t).eq("user_id",e);if(r)throw
+r;return{success:!0}}},$s={async
+getCurrent(t){const{data:e,error:r}=await ze.from("belts").sele
+ct("*").eq("user_id",t).order("promotion_date",{ascending:!1}).
+limit(1).single();if(r&&r.code!=="PGRST116")throw r;return
+e},async getAll(t){const{data:e,error:r}=await ze.from("belts")
+.select("*").eq("user_id",t).order("promotion_date",{ascending:
+!1});if(r)throw r;return e||[]},async
+create(t,e){const{data:r,error:n}=await ze.from("belts").insert
+({belt:e.belt,stripes:e.stripes,promotion_date:e.promotionDate,
+instructor:e.instructor,notes:e.notes,user_id:t}).select().sing
+le();if(n)throw n;return r},async
+update(t,e,r){const{data:n,error:s}=await ze.from("belts").upda
+te({belt:r.belt,stripes:r.stripes,promotion_date:r.promotionDat
+e,instructor:r.instructor,notes:r.notes}).eq("id",t).eq("user_i
+d",e).select().single();if(s)throw s;return n},async
+delete(t,e){const{error:r}=await ze.from("belts").delete().eq("
+id",t).eq("user_id",e);if(r)throw r}},Jh={async
+getCurrent(t){const e=new
+Date,r=e.getUTCDay(),n=r===0?0:-r,s=new Date(Date.UTC(e.getUTCF
+ullYear(),e.getUTCMonth(),e.getUTCDate()+n,0,0,0,0)),i=s.toISOS
+tring().split("T")[0];console.log("getCurrent - Looking for
+week:",i);const{data:o,error:l}=await ze.from("weekly_commitmen
+ts").select("*").eq("user_id",t).gte("week_start_date",i).lt("w
+eek_start_date",new Date(s.getTime()+24*60*60*1e3).toISOString(
+).split("T")[0]).order("created_at",{ascending:!1}).limit(1).si
+ngle();if(console.log("getCurrent -
+Found:",o,"Error:",l),l&&l.code!=="PGRST116")throw l;return
+o},async create(t,e){console.log("Creating weekly commitment
+with userId:",t,"data:",e);const{data:r,error:n}=await ze.from(
+"weekly_commitments").insert({week_start_date:e.weekStartDate,t
+arget_classes:e.targetClasses,completed_classes:e.completedClas
+ses||0,is_completed:e.isCompleted||0,user_id:t}).select().singl
+e();if(n)throw console.error("Weekly commitment creation
+error:",n),console.error("Error
+details:",JSON.stringify(n,null,2)),n;return
+console.log("Weekly commitment created
+successfully:",r),r},async update(t,e,r){console.log("Updating
+weekly commitment:",t,"userId:",e,"data:",r);const
+n={};r.weekStartDate!==void
+0&&(n.week_start_date=r.weekStartDate),r.targetClasses!==void 0
+&&(n.target_classes=r.targetClasses),r.completedClasses!==void
+0&&(n.completed_classes=r.completedClasses),r.isCompleted!==voi
+d
+0&&(n.is_completed=r.isCompleted);const{data:s,error:i}=await z
+e.from("weekly_commitments").update(n).eq("id",t).eq("user_id",
+e).select().single();if(i)throw console.error("Weekly
+commitment update error:",i),console.error("Error
+details:",JSON.stringify(i,null,2)),i;return
+console.log("Weekly commitment updated
+successfully:",s),s}},xx={async
+getAll(t){const{data:e,error:r}=await ze.from("drawings").selec
+t("*").eq("user_id",t).order("created_at",{ascending:!1});if(r)
+throw r;return e||[]},async
+create(t,e){const{data:r,error:n}=await ze.from("drawings").ins
+ert({...e,user_id:t}).select().single();if(n)throw n;return
+r}};function YL(){const[t,e]=y.useState(!1),[r,n]=y.useState(3)
+,{toast:s}=Lt(),i=_s(),{user:o}=dr();he.useEffect(()=>{o&&conso
+le.log("WeeklyGoals user object:",{id:o.id,type:typeof o.id,ema
+il:o.email})},[o]);const{data:l,refetch:c}=Xe({queryKey:["weekl
+yCommitments","current",o==null?void 0:o.id],queryFn:()=>Jh.get
+Current(o.id),enabled:!!(o!=null&&o.id),staleTime:0,refetchOnWi
+ndowFocus:!0,refetchOnMount:!0,refetchInterval:2e3,gcTime:0,ret
+ry:!1}),{data:u=[],refetch:d}=Xe({queryKey:["classes",o==null?v
+oid 0:o.id],queryFn:()=>Fi.getAll(o.id),enabled:!!(o!=null&&o.i
+d),staleTime:0,refetchOnWindowFocus:!0,refetchOnMount:!0,refetc
+hInterval:3e3});he.useEffect(()=>{c(),d()},[c,d]);const f=new
+Date,h=new Date(f.getUTCFullYear(),f.getUTCMonth(),f.getUTCDate
+()-f.getUTCDay()+1);h.setUTCHours(0,0,0,0);const
+p=Array.isArray(u)?u.filter(_=>new
+Date(_.date)>=h).length:0,x=Qe({mutationFn:async
+_=>{if(!(o!=null&&o.id))throw new Error("User not
+authenticated");return l&&l.id?await
+Jh.update(l.id,o.id,_):await
+Jh.create(o.id,_)},onSuccess:_=>{console.log("Weekly goal
+mutation success:",_),i.invalidateQueries({queryKey:["weeklyCom
+mitments","current",o==null?void 0:o.id]}),i.invalidateQueries(
+{queryKey:["classes",o==null?void 0:o.id]}),setTimeout(()=>{c()
+,d()},100),e(!1),s({title:"Success",description:`Weekly goal
+set to ${r} classes!`,duration:4e3})}}),g=_=>{if(_.preventDefau
+lt(),x.isPending)return;const S=new
+Date,N=S.getUTCDay(),j=N===0?0:-N,E=new Date(Date.UTC(S.getUTCF
+ullYear(),S.getUTCMonth(),S.getUTCDate()+j,0,0,0,0));console.lo
+g("FRONTEND: Creating goal for week:",E.toISOString()),x.mutate
+({weekStartDate:E,targetClasses:r,completedClasses:p,isComplete
+d:p>=r?1:0})},b=(l==null?void 0:l.target_classes)||0,w=p,m=b>0?
+Math.min(w/b*100,100):0,v=Math.max(b-w,0);return
+a.jsxs("div",{className:"bg-white rounded-xl p-6
+shadow-md",children:[a.jsxs("div",{className:"flex
+items-center justify-between
+mb-4",children:[a.jsx("h3",{className:"text-lg font-semibold
+text-gray-800",children:"Weekly Goals"}),a.jsx("button",{onClic
+k:()=>e(!t),className:"text-blue-600 hover:text-blue-800
+text-sm font-medium",children:l?"Update":"Set
+Goal"})]}),t&&a.jsxs("form",{onSubmit:g,className:"mb-4 p-4
+bg-gray-50 rounded-lg",children:[a.jsxs("div",{className:"mb-3"
+,children:[a.jsxs("label",{className:"block text-sm
+font-medium text-gray-700 mb-1",children:["Classes this week: "
+,r]}),a.jsx("input",{type:"range",min:"1",max:"10",value:r,onCh
+ange:_=>n(parseInt(_.target.value)),className:"w-full"}),a.jsxs
+("div",{className:"flex justify-between text-xs text-gray-500 m
+t-1",children:[a.jsx("span",{children:"1"}),a.jsx("span",{child
+ren:"5"}),a.jsx("span",{children:"10"})]})]}),a.jsxs("div",{cla
+ssName:"flex gap-2",children:[a.jsx("button",{type:"submit",dis
+abled:x.isPending,className:"flex-1 bg-blue-600 text-white
+py-2 px-3 rounded-lg text-sm hover:bg-blue-700
+disabled:opacity-50",children:x.isPending?"Saving...":"Set Goal
+"}),a.jsx("button",{type:"button",onClick:()=>e(!1),className:"
+px-3 py-2 text-gray-600 hover:text-gray-800 text-sm",children:"
+Cancel"})]})]}),l?a.jsxs("div",{children:[a.jsxs("div",{classNa
+me:"flex items-center justify-between
+mb-2",children:[a.jsx("span",{className:"text-sm
+text-gray-600",children:"Progress this
+week"}),a.jsxs("span",{className:"text-sm font-medium
+text-gray-800",children:[w," / ",b,"
+classes"]})]}),a.jsx("div",{className:"w-full bg-gray-200
+rounded-full h-3 mb-3",children:a.jsx("div",{className:`h-3
+rounded-full transition-all duration-300 ${m>=100?"bg-green-500
+":m>=75?"bg-yellow-500":"bg-blue-500"}`,style:{width:`${m}%`}})
+}),a.jsxs("div",{className:"flex items-center justify-between t
+ext-sm",children:[a.jsx("div",{className:`${m>=100?"text-green-
+600":"text-gray-600"}`,children:m>=100?a.jsx("span",{className:
+"font-medium",children:"🎉 Goal
+completed!"}):v===1?a.jsxs("span",{children:[v," more class to
+go!"]}):v>1?a.jsxs("span",{children:[v," more classes to
+go!"]}):a.jsx("span",{children:"Keep it up!"})}),a.jsxs("div",{
+className:"text-gray-500",children:[Math.round(m),"%"]})]}),m>=
+100&&a.jsxs("div",{className:"mt-3 p-3 bg-green-50 rounded-lg
+text-center",children:[a.jsx("div",{className:"text-green-800
+font-medium text-sm",children:"Excellent work this week!
+🥋"}),a.jsx("div",{className:"text-green-600 text-xs
+mt-1",children:"You've reached your training
+goal"})]})]}):a.jsxs("div",{className:"text-center py-4 text-gr
+ay-500",children:[a.jsx("p",{className:"text-sm",children:"No
+weekly goal set
+yet."}),a.jsx("p",{className:"text-xs",children:"Set a goal to
+track your progress!"})]})]})}/**
+
+
+PS C:\Projects\JitsPlannerPro> Select-String -Path "android\app\src\main\assets\public\assets\*.js" -Pattern "umotigprfosrrjwpxlnp" | Select-Object -First 1
+
+android\app\src\main\assets\public\assets\index-DfX01OPS.js:87:
+`);const N=await _.signMessage(new
+TextEncoder().encode(x),"utf8");if(!N||!(N instanceof
+Uint8Array))throw new Error("@supabase/auth-js: Wallet
+signMessage() API returned an recognized
+value");g=N}}try{const{data:b,error:w}=await ge(this.fetch,"POS
+T",`${this.url}/token?grant_type=web3`,{headers:this.headers,bo
+dy:Object.assign({chain:"solana",message:x,signature:Li(g)},!((
+h=e.options)===null||h===void 0)&&h.captchaToken?{gotrue_meta_s
+ecurity:{captcha_token:(p=e.options)===null||p===void 0?void
+0:p.captchaToken}}:null),xform:tn});if(w)throw w;return!b||!b.s
+ession||!b.user?{data:{user:null,session:null},error:new
+_o}:(b.session&&(await this._saveSession(b.session),await this.
+_notifyAllSubscribers("SIGNED_IN",b.session)),{data:Object.assi
+gn({},b),error:w})}catch(b){if(ae(b))return{data:{user:null,ses
+sion:null},error:b};throw b}}async
+_exchangeCodeForSession(e){const r=await ki(this.storage,`${thi
+s.storageKey}-code-verifier`),[n,s]=(r??"").split("/");try{cons
+t{data:i,error:o}=await ge(this.fetch,"POST",`${this.url}/token
+?grant_type=pkce`,{headers:this.headers,body:{auth_code:e,code_
+verifier:n},xform:tn});if(await
+Cs(this.storage,`${this.storageKey}-code-verifier`),o)throw o;r
+eturn!i||!i.session||!i.user?{data:{user:null,session:null,redi
+rectType:null},error:new _o}:(i.session&&(await
+this._saveSession(i.session),await this._notifyAllSubscribers("
+SIGNED_IN",i.session)),{data:Object.assign(Object.assign({},i),
+{redirectType:s??null}),error:o})}catch(i){if(ae(i))return{data
+:{user:null,session:null,redirectType:null},error:i};throw
+i}}async signInWithIdToken(e){try{const{options:r,provider:n,to
+ken:s,access_token:i,nonce:o}=e,l=await ge(this.fetch,"POST",`$
+{this.url}/token?grant_type=id_token`,{headers:this.headers,bod
+y:{provider:n,id_token:s,access_token:i,nonce:o,gotrue_meta_sec
+urity:{captcha_token:r==null?void
+0:r.captchaToken}},xform:tn}),{data:c,error:u}=l;return u?{data
+:{user:null,session:null},error:u}:!c||!c.session||!c.user?{dat
+a:{user:null,session:null},error:new _o}:(c.session&&(await
+this._saveSession(c.session),await this._notifyAllSubscribers("
+SIGNED_IN",c.session)),{data:c,error:u})}catch(r){if(ae(r))retu
+rn{data:{user:null,session:null},error:r};throw r}}async
+signInWithOtp(e){var r,n,s,i,o;try{if("email"in
+e){const{email:l,options:c}=e;let
+u=null,d=null;this.flowType==="pkce"&&([u,d]=await
+So(this.storage,this.storageKey));const{error:f}=await ge(this.
+fetch,"POST",`${this.url}/otp`,{headers:this.headers,body:{emai
+l:l,data:(r=c==null?void 0:c.data)!==null&&r!==void
+0?r:{},create_user:(n=c==null?void
+0:c.shouldCreateUser)!==null&&n!==void
+0?n:!0,gotrue_meta_security:{captcha_token:c==null?void 0:c.cap
+tchaToken},code_challenge:u,code_challenge_method:d},redirectTo
+:c==null?void 0:c.emailRedirectTo});return{data:{user:null,sess
+ion:null},error:f}}if("phone"in
+e){const{phone:l,options:c}=e,{data:u,error:d}=await ge(this.fe
+tch,"POST",`${this.url}/otp`,{headers:this.headers,body:{phone:
+l,data:(s=c==null?void 0:c.data)!==null&&s!==void
+0?s:{},create_user:(i=c==null?void
+0:c.shouldCreateUser)!==null&&i!==void
+0?i:!0,gotrue_meta_security:{captcha_token:c==null?void
+0:c.captchaToken},channel:(o=c==null?void
+0:c.channel)!==null&&o!==void 0?o:"sms"}});return{data:{user:nu
+ll,session:null,messageId:u==null?void
+0:u.message_id},error:d}}throw new Tu("You must provide either
+an email or phone number.")}catch(l){if(ae(l))return{data:{user
+:null,session:null},error:l};throw l}}async verifyOtp(e){var
+r,n;try{let s,i;"options"in
+e&&(s=(r=e.options)===null||r===void 0?void
+0:r.redirectTo,i=(n=e.options)===null||n===void 0?void
+0:n.captchaToken);const{data:o,error:l}=await ge(this.fetch,"PO
+ST",`${this.url}/verify`,{headers:this.headers,body:Object.assi
+gn(Object.assign({},e),{gotrue_meta_security:{captcha_token:i}}
+),redirectTo:s,xform:tn});if(l)throw l;if(!o)throw new
+Error("An error occurred on token verification.");const
+c=o.session,u=o.user;return c!=null&&c.access_token&&(await
+this._saveSession(c),await this._notifyAllSubscribers(e.type=="
+recovery"?"PASSWORD_RECOVERY":"SIGNED_IN",c)),{data:{user:u,ses
+sion:c},error:null}}catch(s){if(ae(s))return{data:{user:null,se
+ssion:null},error:s};throw s}}async signInWithSSO(e){var
+r,n,s;try{let i=null,o=null;return
+this.flowType==="pkce"&&([i,o]=await
+So(this.storage,this.storageKey)),await ge(this.fetch,"POST",`$
+{this.url}/sso`,{body:Object.assign(Object.assign(Object.assign
+(Object.assign(Object.assign({},"providerId"in
+e?{provider_id:e.providerId}:null),"domain"in e?{domain:e.domai
+n}:null),{redirect_to:(n=(r=e.options)===null||r===void 0?void
+0:r.redirectTo)!==null&&n!==void 0?n:void
+0}),!((s=e==null?void 0:e.options)===null||s===void 0)&&s.captc
+haToken?{gotrue_meta_security:{captcha_token:e.options.captchaT
+oken}}:null),{skip_http_redirect:!0,code_challenge:i,code_chall
+enge_method:o}),headers:this.headers,xform:X4})}catch(i){if(ae(
+i))return{data:null,error:i};throw i}}async
+reauthenticate(){return await this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._reauthenticate())}async _reauthenticate(){try{return
+await this._useSession(async
+e=>{const{data:{session:r},error:n}=e;if(n)throw n;if(!r)throw
+new Os;const{error:s}=await ge(this.fetch,"GET",`${this.url}/re
+authenticate`,{headers:this.headers,jwt:r.access_token});return
+{data:{user:null,session:null},error:s}})}catch(e){if(ae(e))ret
+urn{data:{user:null,session:null},error:e};throw e}}async
+resend(e){try{const r=`${this.url}/resend`;if("email"in
+e){const{email:n,type:s,options:i}=e,{error:o}=await ge(this.fe
+tch,"POST",r,{headers:this.headers,body:{email:n,type:s,gotrue_
+meta_security:{captcha_token:i==null?void
+0:i.captchaToken}},redirectTo:i==null?void 0:i.emailRedirectTo}
+);return{data:{user:null,session:null},error:o}}else
+if("phone"in
+e){const{phone:n,type:s,options:i}=e,{data:o,error:l}=await ge(
+this.fetch,"POST",r,{headers:this.headers,body:{phone:n,type:s,
+gotrue_meta_security:{captcha_token:i==null?void 0:i.captchaTok
+en}}});return{data:{user:null,session:null,messageId:o==null?vo
+id 0:o.message_id},error:l}}throw new Tu("You must provide
+either an email or phone number and a type")}catch(r){if(ae(r))
+return{data:{user:null,session:null},error:r};throw r}}async
+getSession(){return await this.initializePromise,await
+this._acquireLock(-1,async()=>this._useSession(async
+r=>r))}async _acquireLock(e,r){this._debug("#_acquireLock","beg
+in",e);try{if(this.lockAcquired){const n=this.pendingInLock.len
+gth?this.pendingInLock[this.pendingInLock.length-1]:Promise.res
+olve(),s=(async()=>(await n,await r()))();return
+this.pendingInLock.push((async()=>{try{await
+s}catch{}})()),s}return await this.lock(`lock:${this.storageKey
+}`,e,async()=>{this._debug("#_acquireLock","lock acquired for
+storage key",this.storageKey);try{this.lockAcquired=!0;const
+n=r();for(this.pendingInLock.push((async()=>{try{await
+n}catch{}})()),await n;this.pendingInLock.length;){const
+s=[...this.pendingInLock];await
+Promise.all(s),this.pendingInLock.splice(0,s.length)}return
+await n}finally{this._debug("#_acquireLock","lock released for
+storage key",this.storageKey),this.lockAcquired=!1}})}finally{t
+his._debug("#_acquireLock","end")}}async
+_useSession(e){this._debug("#_useSession","begin");try{const
+r=await this.__loadSession();return await
+e(r)}finally{this._debug("#_useSession","end")}}async __loadSes
+sion(){this._debug("#__loadSession()","begin"),this.lockAcquire
+d||this._debug("#__loadSession()","used outside of an acquired
+lock!",new Error().stack);try{let e=null;const r=await ki(this.
+storage,this.storageKey);if(this._debug("#getSession()","sessio
+n from storage",r),r!==null&&(this._isValidSession(r)?e=r:(this
+._debug("#getSession()","session from storage is not
+valid"),await this._removeSession())),!e)return{data:{session:n
+ull},error:null};const n=e.expires_at?e.expires_at*1e3-Date.now
+()<zh:!1;if(this._debug("#__loadSession()",`session
+has${n?"":" not"} expired`,"expires_at",e.expires_at),!n){if(th
+is.userStorage){const o=await ki(this.userStorage,this.storageK
+ey+"-user");o!=null&&o.user?e.user=o.user:e.user=Hh()}if(this.s
+torage.isServer&&e.user){let
+o=this.suppressGetSessionWarning;e=new
+Proxy(e,{get:(c,u,d)=>(!o&&u==="user"&&(console.warn("Using
+the user object as returned from supabase.auth.getSession() or
+from some supabase.auth.onAuthStateChange() events could be
+insecure! This value comes directly from the storage medium
+(usually cookies on the server) and may not be authentic. Use
+supabase.auth.getUser() instead which authenticates the data
+by contacting the Supabase Auth server."),o=!0,this.suppressGet
+SessionWarning=!0),Reflect.get(c,u,d))})}return{data:{session:e
+},error:null}}const{data:s,error:i}=await
+this._callRefreshToken(e.refresh_token);return i?{data:{session
+:null},error:i}:{data:{session:s},error:null}}finally{this._deb
+ug("#__loadSession()","end")}}async getUser(e){return e?await
+this._getUser(e):(await this.initializePromise,await
+this._acquireLock(-1,async()=>await this._getUser()))}async
+_getUser(e){try{return e?await ge(this.fetch,"GET",`${this.url}
+/user`,{headers:this.headers,jwt:e,xform:Fs}):await
+this._useSession(async r=>{var
+n,s,i;const{data:o,error:l}=r;if(l)throw
+l;return!(!((n=o.session)===null||n===void 0)&&n.access_token)&
+&!this.hasCustomAuthorizationHeader?{data:{user:null},error:new
+ Os}:await ge(this.fetch,"GET",`${this.url}/user`,{headers:this
+.headers,jwt:(i=(s=o.session)===null||s===void 0?void
+0:s.access_token)!==null&&i!==void 0?i:void
+0,xform:Fs})})}catch(r){if(ae(r))return C4(r)&&(await
+this._removeSession(),await Cs(this.storage,`${this.storageKey}
+-code-verifier`)),{data:{user:null},error:r};throw r}}async
+updateUser(e,r={}){return await this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._updateUser(e,r))}async _updateUser(e,r={}){try{return
+await this._useSession(async
+n=>{const{data:s,error:i}=n;if(i)throw i;if(!s.session)throw
+new Os;const o=s.session;let l=null,c=null;this.flowType==="pkc
+e"&&e.email!=null&&([l,c]=await
+So(this.storage,this.storageKey));const{data:u,error:d}=await g
+e(this.fetch,"PUT",`${this.url}/user`,{headers:this.headers,red
+irectTo:r==null?void 0:r.emailRedirectTo,body:Object.assign(Obj
+ect.assign({},e),{code_challenge:l,code_challenge_method:c}),jw
+t:o.access_token,xform:Fs});if(d)throw d;return
+o.user=u.user,await this._saveSession(o),await this._notifyAllS
+ubscribers("USER_UPDATED",o),{data:{user:o.user},error:null}})}
+catch(n){if(ae(n))return{data:{user:null},error:n};throw
+n}}async setSession(e){return await
+this.initializePromise,await
+this._acquireLock(-1,async()=>await this._setSession(e))}async
+_setSession(e){try{if(!e.access_token||!e.refresh_token)throw
+new Os;const r=Date.now()/1e3;let n=r,s=!0,i=null;const{payload
+:o}=qh(e.access_token);if(o.exp&&(n=o.exp,s=n<=r),s){const{data
+:l,error:c}=await this._callRefreshToken(e.refresh_token);if(c)
+return{data:{user:null,session:null},error:c};if(!l)return{data
+:{user:null,session:null},error:null};i=l}else{const{data:l,err
+or:c}=await this._getUser(e.access_token);if(c)throw c;i={acces
+s_token:e.access_token,refresh_token:e.refresh_token,user:l.use
+r,token_type:"bearer",expires_in:n-r,expires_at:n},await
+this._saveSession(i),await this._notifyAllSubscribers("SIGNED_I
+N",i)}return{data:{user:i.user,session:i},error:null}}catch(r){
+if(ae(r))return{data:{session:null,user:null},error:r};throw
+r}}async refreshSession(e){return await
+this.initializePromise,await
+this._acquireLock(-1,async()=>await
+this._refreshSession(e))}async _refreshSession(e){try{return
+await this._useSession(async r=>{var
+n;if(!e){const{data:o,error:l}=r;if(l)throw
+l;e=(n=o.session)!==null&&n!==void 0?n:void
+0}if(!(e!=null&&e.refresh_token))throw new
+Os;const{data:s,error:i}=await
+this._callRefreshToken(e.refresh_token);return i?{data:{user:nu
+ll,session:null},error:i}:s?{data:{user:s.user,session:s},error
+:null}:{data:{user:null,session:null},error:null}})}catch(r){if
+(ae(r))return{data:{user:null,session:null},error:r};throw
+r}}async _getSessionFromURL(e,r){try{if(!kr())throw new Au("No
+browser detected.");if(e.error||e.error_description||e.error_co
+de)throw new Au(e.error_description||"Error in URL with
+unspecified error_description",{error:e.error||"unspecified_err
+or",code:e.error_code||"unspecified_code"});switch(r){case"impl
+icit":if(this.flowType==="pkce")throw new sx("Not a valid PKCE
+flow
+url.");break;case"pkce":if(this.flowType==="implicit")throw
+new Au("Not a valid implicit grant flow url.");break;default:}i
+f(r==="pkce"){if(this._debug("#_initialize()","begin","is PKCE
+flow",!0),!e.code)throw new sx("No code
+detected.");const{data:m,error:v}=await
+this._exchangeCodeForSession(e.code);if(v)throw v;const _=new
+URL(window.location.href);return _.searchParams.delete("code"),
+window.history.replaceState(window.history.state,"",_.toString(
+)),{data:{session:m.session,redirectType:null},error:null}}cons
+t{provider_token:n,provider_refresh_token:s,access_token:i,refr
+esh_token:o,expires_in:l,expires_at:c,token_type:u}=e;if(!i||!l
+||!o||!u)throw new Au("No session defined in URL");const
+d=Math.round(Date.now()/1e3),f=parseInt(l);let
+h=d+f;c&&(h=parseInt(c));const
+p=h-d;p*1e3<=Oo&&console.warn(`@supabase/gotrue-js: Session as
+retrieved from URL expires in ${p}s, should have been closer
+to ${f}s`);const
+x=h-f;d-x>=120?console.warn("@supabase/gotrue-js: Session as
+retrieved from URL was issued over 120s ago, URL could be
+stale",x,h,d):d-x<0&&console.warn("@supabase/gotrue-js:
+Session as retrieved from URL was issued in the future? Check
+the device clock for skew",x,h,d);const{data:g,error:b}=await
+this._getUser(i);if(b)throw b;const w={provider_token:n,provide
+r_refresh_token:s,access_token:i,expires_in:f,expires_at:h,refr
+esh_token:o,token_type:u,user:g.user};return window.location.ha
+sh="",this._debug("#_getSessionFromURL()","clearing window.loca
+tion.hash"),{data:{session:w,redirectType:e.type},error:null}}c
+atch(n){if(ae(n))return{data:{session:null,redirectType:null},e
+rror:n};throw n}}_isImplicitGrantCallback(e){return!!(e.access_
+token||e.error_description)}async _isPKCECallback(e){const
+r=await ki(this.storage,`${this.storageKey}-code-verifier`);ret
+urn!!(e.code&&r)}async signOut(e={scope:"global"}){return
+await this.initializePromise,await
+this._acquireLock(-1,async()=>await this._signOut(e))}async
+_signOut({scope:e}={scope:"global"}){return await
+this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{error:i};const
+o=(n=s.session)===null||n===void 0?void
+0:n.access_token;if(o){const{error:l}=await this.admin.signOut(
+o,e);if(l&&!(k4(l)&&(l.status===404||l.status===401||l.status==
+=403)))return{error:l}}return e!=="others"&&(await
+this._removeSession(),await Cs(this.storage,`${this.storageKey}
+-code-verifier`)),{error:null}})}onAuthStateChange(e){const r=I
+4(),n={id:r,callback:e,unsubscribe:()=>{this._debug("#unsubscri
+be()","state change callback with id
+removed",r),this.stateChangeEmitters.delete(r)}};return
+this._debug("#onAuthStateChange()","registered callback with
+id",r),this.stateChangeEmitters.set(r,n),(async()=>(await
+this.initializePromise,await this._acquireLock(-1,async()=>{thi
+s._emitInitialSession(r)})))(),{data:{subscription:n}}}async
+_emitInitialSession(e){return await this._useSession(async
+r=>{var n,s;try{const{data:{session:i},error:o}=r;if(o)throw
+o;await((n=this.stateChangeEmitters.get(e))===null||n===void
+0?void 0:n.callback("INITIAL_SESSION",i)),this._debug("INITIAL_
+SESSION","callback id",e,"session",i)}catch(i){await((s=this.st
+ateChangeEmitters.get(e))===null||s===void 0?void 0:s.callback(
+"INITIAL_SESSION",null)),this._debug("INITIAL_SESSION","callbac
+k id",e,"error",i),console.error(i)}})}async
+resetPasswordForEmail(e,r={}){let
+n=null,s=null;this.flowType==="pkce"&&([n,s]=await
+So(this.storage,this.storageKey,!0));try{return await ge(this.f
+etch,"POST",`${this.url}/recover`,{body:{email:e,code_challenge
+:n,code_challenge_method:s,gotrue_meta_security:{captcha_token:
+r.captchaToken}},headers:this.headers,redirectTo:r.redirectTo})
+}catch(i){if(ae(i))return{data:null,error:i};throw i}}async
+getUserIdentities(){var e;try{const{data:r,error:n}=await
+this.getUser();if(n)throw n;return{data:{identities:(e=r.user.i
+dentities)!==null&&e!==void 0?e:[]},error:null}}catch(r){if(ae(
+r))return{data:null,error:r};throw r}}async
+linkIdentity(e){return"token"in
+e?this.linkIdentityIdToken(e):this.linkIdentityOAuth(e)}async
+linkIdentityOAuth(e){var r;try{const{data:n,error:s}=await
+this._useSession(async i=>{var
+o,l,c,u,d;const{data:f,error:h}=i;if(h)throw h;const p=await th
+is._getUrlForProvider(`${this.url}/user/identities/authorize`,e
+.provider,{redirectTo:(o=e.options)===null||o===void 0?void
+0:o.redirectTo,scopes:(l=e.options)===null||l===void 0?void
+0:l.scopes,queryParams:(c=e.options)===null||c===void 0?void
+0:c.queryParams,skipBrowserRedirect:!0});return await ge(this.f
+etch,"GET",p,{headers:this.headers,jwt:(d=(u=f.session)===null|
+|u===void 0?void 0:u.access_token)!==null&&d!==void 0?d:void
+0})});if(s)throw s;return
+kr()&&!(!((r=e.options)===null||r===void 0)&&r.skipBrowserRedir
+ect)&&window.location.assign(n==null?void
+0:n.url),{data:{provider:e.provider,url:n==null?void 0:n.url},e
+rror:null}}catch(n){if(ae(n))return{data:{provider:e.provider,u
+rl:null},error:n};throw n}}async linkIdentityIdToken(e){return
+await this._useSession(async r=>{var
+n;try{const{error:s,data:{session:i}}=r;if(s)throw s;const{opti
+ons:o,provider:l,token:c,access_token:u,nonce:d}=e,f=await ge(t
+his.fetch,"POST",`${this.url}/token?grant_type=id_token`,{heade
+rs:this.headers,jwt:(n=i==null?void
+0:i.access_token)!==null&&n!==void 0?n:void 0,body:{provider:l,
+id_token:c,access_token:u,nonce:d,link_identity:!0,gotrue_meta_
+security:{captcha_token:o==null?void
+0:o.captchaToken}},xform:tn}),{data:h,error:p}=f;return p?{data
+:{user:null,session:null},error:p}:!h||!h.session||!h.user?{dat
+a:{user:null,session:null},error:new _o}:(h.session&&(await
+this._saveSession(h.session),await this._notifyAllSubscribers("
+USER_UPDATED",h.session)),{data:h,error:p})}catch(s){if(ae(s))r
+eturn{data:{user:null,session:null},error:s};throw s}})}async
+unlinkIdentity(e){try{return await this._useSession(async
+r=>{var n,s;const{data:i,error:o}=r;if(o)throw o;return await g
+e(this.fetch,"DELETE",`${this.url}/user/identities/${e.identity
+_id}`,{headers:this.headers,jwt:(s=(n=i.session)===null||n===vo
+id 0?void 0:n.access_token)!==null&&s!==void 0?s:void
+0})})}catch(r){if(ae(r))return{data:null,error:r};throw
+r}}async _refreshAccessToken(e){const r=`#_refreshAccessToken($
+{e.substring(0,5)}...)`;this._debug(r,"begin");try{const
+n=Date.now();return await $4(async s=>(s>0&&await
+F4(200*Math.pow(2,s-1)),this._debug(r,"refreshing
+attempt",s),await ge(this.fetch,"POST",`${this.url}/token?grant
+_type=refresh_token`,{body:{refresh_token:e},headers:this.heade
+rs,xform:tn})),(s,i)=>{const o=200*Math.pow(2,s);return i&&Wh(i
+)&&Date.now()+o-n<Oo})}catch(n){if(this._debug(r,"error",n),ae(
+n))return{data:{session:null,user:null},error:n};throw
+n}finally{this._debug(r,"end")}}_isValidSession(e){return
+typeof e=="object"&&e!==null&&"access_token"in
+e&&"refresh_token"in e&&"expires_at"in e}async
+_handleProviderSignIn(e,r){const n=await this._getUrlForProvide
+r(`${this.url}/authorize`,e,{redirectTo:r.redirectTo,scopes:r.s
+copes,queryParams:r.queryParams});return this._debug("#_handleP
+roviderSignIn()","provider",e,"options",r,"url",n),kr()&&!r.ski
+pBrowserRedirect&&window.location.assign(n),{data:{provider:e,u
+rl:n},error:null}}async _recoverAndRefresh(){var e,r;const
+n="#_recoverAndRefresh()";this._debug(n,"begin");try{const
+s=await
+ki(this.storage,this.storageKey);if(s&&this.userStorage){let
+o=await ki(this.userStorage,this.storageKey+"-user");!this.stor
+age.isServer&&Object.is(this.storage,this.userStorage)&&!o&&(o=
+{user:s.user},await Ro(this.userStorage,this.storageKey+"-user"
+,o)),s.user=(e=o==null?void 0:o.user)!==null&&e!==void
+0?e:Hh()}else if(s&&!s.user&&!s.user){const o=await ki(this.sto
+rage,this.storageKey+"-user");o&&(o!=null&&o.user)?(s.user=o.us
+er,await Cs(this.storage,this.storageKey+"-user"),await Ro(this
+.storage,this.storageKey,s)):s.user=Hh()}if(this._debug(n,"sess
+ion from
+storage",s),!this._isValidSession(s)){this._debug(n,"session
+is not valid"),s!==null&&await
+this._removeSession();return}const
+i=((r=s.expires_at)!==null&&r!==void
+0?r:1/0)*1e3-Date.now()<zh;if(this._debug(n,`session
+has${i?"":" not"} expired with margin of ${zh}s`),i){if(this.au
+toRefreshToken&&s.refresh_token){const{error:o}=await this._cal
+lRefreshToken(s.refresh_token);o&&(console.error(o),Wh(o)||(thi
+s._debug(n,"refresh failed with a non-retryable error,
+removing the session",o),await this._removeSession()))}}else if
+(s.user&&s.user.__isUserNotAvailableProxy===!0)try{const{data:o
+,error:l}=await this._getUser(s.access_token);!l&&(o!=null&&o.u
+ser)?(s.user=o.user,await this._saveSession(s),await this._noti
+fyAllSubscribers("SIGNED_IN",s)):this._debug(n,"could not get
+user data, skipping SIGNED_IN
+notification")}catch(o){console.error("Error getting user
+data:",o),this._debug(n,"error getting user data, skipping
+SIGNED_IN notification",o)}else await this._notifyAllSubscriber
+s("SIGNED_IN",s)}catch(s){this._debug(n,"error",s),console.erro
+r(s);return}finally{this._debug(n,"end")}}async
+_callRefreshToken(e){var r,n;if(!e)throw new
+Os;if(this.refreshingDeferred)return
+this.refreshingDeferred.promise;const s=`#_callRefreshToken(${e
+.substring(0,5)}...)`;this._debug(s,"begin");try{this.refreshin
+gDeferred=new Ff;const{data:i,error:o}=await
+this._refreshAccessToken(e);if(o)throw o;if(!i.session)throw
+new Os;await this._saveSession(i.session),await
+this._notifyAllSubscribers("TOKEN_REFRESHED",i.session);const
+l={data:i.session,error:null};return this.refreshingDeferred.re
+solve(l),l}catch(i){if(this._debug(s,"error",i),ae(i)){const
+o={data:null,error:i};return Wh(i)||await this._removeSession()
+,(r=this.refreshingDeferred)===null||r===void 0||r.resolve(o),o
+}throw(n=this.refreshingDeferred)===null||n===void 0||n.reject(
+i),i}finally{this.refreshingDeferred=null,this._debug(s,"end")}
+}async _notifyAllSubscribers(e,r,n=!0){const s=`#_notifyAllSubs
+cribers(${e})`;this._debug(s,"begin",r,`broadcast = ${n}`);try{
+this.broadcastChannel&&n&&this.broadcastChannel.postMessage({ev
+ent:e,session:r});const
+i=[],o=Array.from(this.stateChangeEmitters.values()).map(async
+l=>{try{await l.callback(e,r)}catch(c){i.push(c)}});if(await
+Promise.all(o),i.length>0){for(let
+l=0;l<i.length;l+=1)console.error(i[l]);throw
+i[0]}}finally{this._debug(s,"end")}}async _saveSession(e){this.
+_debug("#_saveSession()",e),this.suppressGetSessionWarning=!0;c
+onst r=Object.assign({},e),n=r.user&&r.user.__isUserNotAvailabl
+eProxy===!0;if(this.userStorage){!n&&r.user&&await Ro(this.user
+Storage,this.storageKey+"-user",{user:r.user});const
+s=Object.assign({},r);delete s.user;const i=cx(s);await
+Ro(this.storage,this.storageKey,i)}else{const s=cx(r);await
+Ro(this.storage,this.storageKey,s)}}async
+_removeSession(){this._debug("#_removeSession()"),await
+Cs(this.storage,this.storageKey),await
+Cs(this.storage,this.storageKey+"-code-verifier"),await Cs(this
+.storage,this.storageKey+"-user"),this.userStorage&&await
+Cs(this.userStorage,this.storageKey+"-user"),await this._notify
+AllSubscribers("SIGNED_OUT",null)}_removeVisibilityChangedCallb
+ack(){this._debug("#_removeVisibilityChangedCallback()");const
+e=this.visibilityChangedCallback;this.visibilityChangedCallback
+=null;try{e&&kr()&&(window!=null&&window.removeEventListener)&&
+window.removeEventListener("visibilitychange",e)}catch(r){conso
+le.error("removing visibilitychange callback failed",r)}}async
+_startAutoRefresh(){await this._stopAutoRefresh(),this._debug("
+#_startAutoRefresh()");const e=setInterval(()=>this._autoRefres
+hTokenTick(),Oo);this.autoRefreshTicker=e,e&&typeof
+e=="object"&&typeof e.unref=="function"?e.unref():typeof
+Deno<"u"&&typeof Deno.unrefTimer=="function"&&Deno.unrefTimer(e
+),setTimeout(async()=>{await this.initializePromise,await
+this._autoRefreshTokenTick()},0)}async
+_stopAutoRefresh(){this._debug("#_stopAutoRefresh()");const e=t
+his.autoRefreshTicker;this.autoRefreshTicker=null,e&&clearInter
+val(e)}async startAutoRefresh(){this._removeVisibilityChangedCa
+llback(),await this._startAutoRefresh()}async stopAutoRefresh()
+{this._removeVisibilityChangedCallback(),await
+this._stopAutoRefresh()}async _autoRefreshTokenTick(){this._deb
+ug("#_autoRefreshTokenTick()","begin");try{await
+this._acquireLock(0,async()=>{try{const
+e=Date.now();try{return await this._useSession(async r=>{const{
+data:{session:n}}=r;if(!n||!n.refresh_token||!n.expires_at){thi
+s._debug("#_autoRefreshTokenTick()","no session");return}const
+s=Math.floor((n.expires_at*1e3-e)/Oo);this._debug("#_autoRefres
+hTokenTick()",`access token expires in ${s} ticks, a tick
+lasts ${Oo}ms, refresh threshold is ${Ip} ticks`),s<=Ip&&await
+this._callRefreshToken(n.refresh_token)})}catch(r){console.erro
+r("Auto refresh tick failed with error. This is likely a
+transient error.",r)}}finally{this._debug("#_autoRefreshTokenTi
+ck()","end")}})}catch(e){if(e.isAcquireTimeout||e instanceof
+Rk)this._debug("auto refresh token tick lock not
+available");else throw e}}async _handleVisibilityChange(){if(th
+is._debug("#_handleVisibilityChange()"),!kr()||!(window!=null&&
+window.addEventListener))return this.autoRefreshToken&&this.sta
+rtAutoRefresh(),!1;try{this.visibilityChangedCallback=async()=>
+await this._onVisibilityChanged(!1),window==null||window.addEve
+ntListener("visibilitychange",this.visibilityChangedCallback),a
+wait this._onVisibilityChanged(!0)}catch(e){console.error("_han
+dleVisibilityChange",e)}}async _onVisibilityChanged(e){const r=
+`#_onVisibilityChanged(${e})`;this._debug(r,"visibilityState",d
+ocument.visibilityState),document.visibilityState==="visible"?(
+this.autoRefreshToken&&this._startAutoRefresh(),e||(await
+this.initializePromise,await this._acquireLock(-1,async()=>{if(
+document.visibilityState!=="visible"){this._debug(r,"acquired
+the lock to recover the session, but the browser
+visibilityState is no longer visible, aborting");return}await t
+his._recoverAndRefresh()}))):document.visibilityState==="hidden
+"&&this.autoRefreshToken&&this._stopAutoRefresh()}async
+_getUrlForProvider(e,r,n){const s=[`provider=${encodeURICompone
+nt(r)}`];if(n!=null&&n.redirectTo&&s.push(`redirect_to=${encode
+URIComponent(n.redirectTo)}`),n!=null&&n.scopes&&s.push(`scopes
+=${encodeURIComponent(n.scopes)}`),this.flowType==="pkce"){cons
+t[i,o]=await So(this.storage,this.storageKey),l=new URLSearchPa
+rams({code_challenge:`${encodeURIComponent(i)}`,code_challenge_
+method:`${encodeURIComponent(o)}`});s.push(l.toString())}if(n!=
+null&&n.queryParams){const i=new
+URLSearchParams(n.queryParams);s.push(i.toString())}return n!=n
+ull&&n.skipBrowserRedirect&&s.push(`skip_http_redirect=${n.skip
+BrowserRedirect}`),`${e}?${s.join("&")}`}async
+_unenroll(e){try{return await this._useSession(async r=>{var
+n;const{data:s,error:i}=r;return i?{data:null,error:i}:await ge
+(this.fetch,"DELETE",`${this.url}/factors/${e.factorId}`,{heade
+rs:this.headers,jwt:(n=s==null?void
+0:s.session)===null||n===void 0?void 0:n.access_token})})}catch
+(r){if(ae(r))return{data:null,error:r};throw r}}async
+_enroll(e){try{return await this._useSession(async r=>{var n,s;
+const{data:i,error:o}=r;if(o)return{data:null,error:o};const l=
+Object.assign({friendly_name:e.friendlyName,factor_type:e.facto
+rType},e.factorType==="phone"?{phone:e.phone}:e.factorType==="t
+otp"?{issuer:e.issuer}:{}),{data:c,error:u}=await ge(this.fetch
+,"POST",`${this.url}/factors`,{body:l,headers:this.headers,jwt:
+(n=i==null?void 0:i.session)===null||n===void 0?void
+0:n.access_token});return u?{data:null,error:u}:(e.factorType==
+="totp"&&c.type==="totp"&&(!((s=c==null?void
+0:c.totp)===null||s===void 0)&&s.qr_code)&&(c.totp.qr_code=`dat
+a:image/svg+xml;utf-8,${c.totp.qr_code}`),{data:c,error:null})}
+)}catch(r){if(ae(r))return{data:null,error:r};throw r}}async
+_verify(e){return this._acquireLock(-1,async()=>{try{return
+await this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{data:null,error:i};const
+o=Object.assign({challenge_id:e.challengeId},"webauthn"in e?{we
+bauthn:Object.assign(Object.assign({},e.webauthn),{credential_r
+esponse:e.webauthn.type==="create"?gL(e.webauthn.credential_res
+ponse):yL(e.webauthn.credential_response)})}:{code:e.code}),{da
+ta:l,error:c}=await ge(this.fetch,"POST",`${this.url}/factors/$
+{e.factorId}/verify`,{body:o,headers:this.headers,jwt:(n=s==nul
+l?void 0:s.session)===null||n===void 0?void
+0:n.access_token});return c?{data:null,error:c}:(await this._sa
+veSession(Object.assign({expires_at:Math.round(Date.now()/1e3)+
+l.expires_in},l)),await this._notifyAllSubscribers("MFA_CHALLEN
+GE_VERIFIED",l),{data:l,error:c})})}catch(r){if(ae(r))return{da
+ta:null,error:r};throw r}})}async _challenge(e){return
+this._acquireLock(-1,async()=>{try{return await
+this._useSession(async r=>{var
+n;const{data:s,error:i}=r;if(i)return{data:null,error:i};const
+o=await ge(this.fetch,"POST",`${this.url}/factors/${e.factorId}
+/challenge`,{body:e,headers:this.headers,jwt:(n=s==null?void
+0:s.session)===null||n===void 0?void
+0:n.access_token});if(o.error)return o;const{data:l}=o;if(l.typ
+e!=="webauthn")return{data:l,error:null};switch(l.webauthn.type
+){case"create":return{data:Object.assign(Object.assign({},l),{w
+ebauthn:Object.assign(Object.assign({},l.webauthn),{credential_
+options:Object.assign(Object.assign({},l.webauthn.credential_op
+tions),{publicKey:mL(l.webauthn.credential_options.publicKey)})
+})}),error:null};case"request":return{data:Object.assign(Object
+.assign({},l),{webauthn:Object.assign(Object.assign({},l.webaut
+hn),{credential_options:Object.assign(Object.assign({},l.webaut
+hn.credential_options),{publicKey:pL(l.webauthn.credential_opti
+ons.publicKey)})})}),error:null}}})}catch(r){if(ae(r))return{da
+ta:null,error:r};throw r}})}async
+_challengeAndVerify(e){const{data:r,error:n}=await
+this._challenge({factorId:e.factorId});return
+n?{data:null,error:n}:await this._verify({factorId:e.factorId,c
+hallengeId:r.id,code:e.code})}async _listFactors(){var
+e;const{data:{user:r},error:n}=await
+this.getUser();if(n)return{data:null,error:n};const
+s={all:[],phone:[],totp:[],webauthn:[]};for(const i
+of(e=r==null?void 0:r.factors)!==null&&e!==void 0?e:[])s.all.pu
+sh(i),i.status==="verified"&&s[i.factor_type].push(i);return{da
+ta:s,error:null}}async
+_getAuthenticatorAssuranceLevel(){return
+this._acquireLock(-1,async()=>await this._useSession(async
+e=>{var r,n;const{data:{session:s},error:i}=e;if(i)return{data:
+null,error:i};if(!s)return{data:{currentLevel:null,nextLevel:nu
+ll,currentAuthenticationMethods:[]},error:null};const{payload:o
+}=qh(s.access_token);let l=null;o.aal&&(l=o.aal);let
+c=l;((n=(r=s.user.factors)===null||r===void 0?void
+0:r.filter(f=>f.status==="verified"))!==null&&n!==void
+0?n:[]).length>0&&(c="aal2");const d=o.amr||[];return{data:{cur
+rentLevel:l,nextLevel:c,currentAuthenticationMethods:d},error:n
+ull}}))}async fetchJwk(e,r={keys:[]}){let
+n=r.keys.find(l=>l.kid===e);if(n)return n;const s=Date.now();if
+(n=this.jwks.keys.find(l=>l.kid===e),n&&this.jwks_cached_at+j4>
+s)return n;const{data:i,error:o}=await ge(this.fetch,"GET",`${t
+his.url}/.well-known/jwks.json`,{headers:this.headers});if(o)th
+row o;return!i.keys||i.keys.length===0||(this.jwks=i,this.jwks_
+cached_at=s,n=i.keys.find(l=>l.kid===e),!n)?null:n}async
+getClaims(e,r={}){try{let
+n=e;if(!n){const{data:p,error:x}=await this.getSession();if(x||
+!p.session)return{data:null,error:x};n=p.session.access_token}c
+onst{header:s,payload:i,signature:o,raw:{header:l,payload:c}}=q
+h(n);r!=null&&r.allowExpired||H4(i.exp);const
+u=!s.alg||s.alg.startsWith("HS")||!s.kid||!("crypto"in
+globalThis&&"subtle"in globalThis.crypto)?null:await
+this.fetchJwk(s.kid,r!=null&&r.keys?{keys:r.keys}:r==null?void
+0:r.jwks);if(!u){const{error:p}=await
+this.getUser(n);if(p)throw p;return{data:{claims:i,header:s,sig
+nature:o},error:null}}const d=K4(s.alg),f=await
+crypto.subtle.importKey("jwk",u,d,!0,["verify"]);if(!await
+crypto.subtle.verify(d,f,o,R4(`${l}.${c}`)))throw new
+Fp("Invalid JWT signature");return{data:{claims:i,header:s,sign
+ature:o},error:null}}catch(n){if(ae(n))return{data:null,error:n
+};throw n}}}dc.nextInstanceID=0;const kL=dc;class CL extends
+kL{constructor(e){super(e)}}var EL=function(t,e,r,n){function
+s(i){return i instanceof r?i:new r(function(o){o(i)})}return
+new(r||(r=Promise))(function(i,o){function
+l(d){try{u(n.next(d))}catch(f){o(f)}}function
+c(d){try{u(n.throw(d))}catch(f){o(f)}}function u(d){d.done?i(d.
+value):s(d.value).then(l,c)}u((n=n.apply(t,e||[])).next())})};c
+lass PL{constructor(e,r,n){var
+s,i,o;this.supabaseUrl=e,this.supabaseKey=r;const
+l=x4(e);if(!r)throw new Error("supabaseKey is
+required.");this.realtimeUrl=new URL("realtime/v1",l),this.real
+timeUrl.protocol=this.realtimeUrl.protocol.replace("http","ws")
+,this.authUrl=new URL("auth/v1",l),this.storageUrl=new
+URL("storage/v1",l),this.functionsUrl=new
+URL("functions/v1",l);const c=`sb-${l.hostname.split(".")[0]}-a
+uth-token`,u={db:c4,realtime:d4,auth:Object.assign(Object.assig
+n({},u4),{storageKey:c}),global:l4},d=v4(n??{},u);this.storageK
+ey=(s=d.auth.storageKey)!==null&&s!==void
+0?s:"",this.headers=(i=d.global.headers)!==null&&i!==void 0?i:{
+},d.accessToken?(this.accessToken=d.accessToken,this.auth=new
+Proxy({},{get:(f,h)=>{throw new Error(`@supabase/supabase-js:
+Supabase Client is configured with the accessToken option,
+accessing supabase.auth.${String(h)} is not possible`)}})):this
+.auth=this._initSupabaseAuthClient((o=d.auth)!==null&&o!==void
+0?o:{},this.headers,d.global.fetch),this.fetch=p4(r,this._getAc
+cessToken.bind(this),d.global.fetch),this.realtime=this._initRe
+altimeClient(Object.assign({headers:this.headers,accessToken:th
+is._getAccessToken.bind(this)},d.realtime)),this.rest=new
+NM(new URL("rest/v1",l).href,{headers:this.headers,schema:d.db.
+schema,fetch:this.fetch}),this.storage=new
+i4(this.storageUrl.href,this.headers,this.fetch,n==null?void
+0:n.storage),d.accessToken||this._listenForAuthEvents()}get
+functions(){return new nM(this.functionsUrl.href,{headers:this.
+headers,customFetch:this.fetch})}from(e){return
+this.rest.from(e)}schema(e){return
+this.rest.schema(e)}rpc(e,r={},n={head:!1,get:!1,count:void
+0}){return
+this.rest.rpc(e,r,n)}channel(e,r={config:{}}){return
+this.realtime.channel(e,r)}getChannels(){return
+this.realtime.getChannels()}removeChannel(e){return
+this.realtime.removeChannel(e)}removeAllChannels(){return
+this.realtime.removeAllChannels()}_getAccessToken(){return
+EL(this,void 0,void 0,function*(){var
+e,r;if(this.accessToken)return yield
+this.accessToken();const{data:n}=yield
+this.auth.getSession();return(r=(e=n.session)===null||e===void
+0?void 0:e.access_token)!==null&&r!==void 0?r:this.supabaseKey}
+)}_initSupabaseAuthClient({autoRefreshToken:e,persistSession:r,
+detectSessionInUrl:n,storage:s,userStorage:i,storageKey:o,flowT
+ype:l,lock:c,debug:u},d,f){const h={Authorization:`Bearer
+${this.supabaseKey}`,apikey:`${this.supabaseKey}`};return new C
+L({url:this.authUrl.href,headers:Object.assign(Object.assign({}
+,h),d),storageKey:o,autoRefreshToken:e,persistSession:r,detectS
+essionInUrl:n,storage:s,userStorage:i,flowType:l,lock:c,debug:u
+,fetch:f,hasCustomAuthorizationHeader:Object.keys(this.headers)
+.some(p=>p.toLowerCase()==="authorization")})}_initRealtimeClie
+nt(e){return new VM(this.realtimeUrl.href,Object.assign(Object.
+assign({},e),{params:Object.assign({apikey:this.supabaseKey},e=
+=null?void 0:e.params)}))}_listenForAuthEvents(){return this.au
+th.onAuthStateChange((r,n)=>{this._handleTokenChanged(r,"CLIENT
+",n==null?void 0:n.access_token)})}_handleTokenChanged(e,r,n){(
+e==="TOKEN_REFRESHED"||e==="SIGNED_IN")&&this.changedAccessToke
+n!==n?(this.changedAccessToken=n,this.realtime.setAuth(n)):e===
+"SIGNED_OUT"&&(this.realtime.setAuth(),r=="STORAGE"&&this.auth.
+signOut(),this.changedAccessToken=void 0)}}const
+TL=(t,e,r)=>new PL(t,e,r);function AL(){if(typeof
+window<"u"||typeof process>"u")return!1;const
+t=process.version;if(t==null)return!1;const
+e=t.match(/^v(\d+)\./);return
+e?parseInt(e[1],10)<=18:!1}AL()&&console.warn("⚠️  Node.js 18
+and below are deprecated and will no longer be supported in
+future versions of @supabase/supabase-js. Please upgrade to
+Node.js 20 or later. For more information, visit:
+https://github.com/orgs/supabase/discussions/37217");const Lk="
+https://umotigprfosrrjwpxlnp.supabase.co",Zu="eyJhbGciOiJIUzI1N
+iIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtb3RpZ3B
+yZm9zcnJqd3B4bG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAzMzQ4NDAsIm
+V4cCI6MjAzNTkxMDg0MH0.d5yLGYOSzwvf0a2mR8XMIJo9mxgOAXZqSW8E6QdO7
+QU";console.log("🔧 Supabase Client
+Initialization");console.log("📍 URL:",Lk);console.log("🔑 Key
+(first 20 chars):",(Zu==null?void
+0:Zu.substring(0,20))+"...");const ze=TL(Lk,Zu,{auth:{autoRefre
+shToken:!0,persistSession:!0,detectSessionInUrl:!0,storage:wind
+ow.localStorage,flowType:"pkce"}});/*! Capacitor:
+https://capacitorjs.com/ - MIT License */var Ia;(function(t){t.
+Unimplemented="UNIMPLEMENTED",t.Unavailable="UNAVAILABLE"})(Ia|
+|(Ia={}));class Gh extends Error{constructor(e,r,n){super(e),th
+is.message=e,this.code=r,this.data=n}}const OL=t=>{var
+e,r;return
+t!=null&&t.androidBridge?"android":!((r=(e=t==null?void
+0:t.webkit)===null||e===void 0?void
+0:e.messageHandlers)===null||r===void
+0)&&r.bridge?"ios":"web"},RL=t=>{const e=t.CapacitorCustomPlatf
+orm||null,r=t.Capacitor||{},n=r.Plugins=r.Plugins||{},s=()=>e!=
+=null?e.name:OL(t),i=()=>s()!=="web",o=f=>{const h=u.get(f);ret
+urn!!(h!=null&&h.platforms.has(s())||l(f))},l=f=>{var
+h;return(h=r.PluginHeaders)===null||h===void 0?void
+0:h.find(p=>p.name===f)},c=f=>t.console.error(f),u=new
+Map,d=(f,h={})=>{const p=u.get(f);if(p)return
+console.warn(`Capacitor plugin "${f}" already registered.
+Cannot register plugins twice.`),p.proxy;const
+x=s(),g=l(f);let b;const w=async()=>(!b&&x in h?b=typeof
+h[x]=="function"?b=await h[x]():b=h[x]:e!==null&&!b&&"web"in
+h&&(b=typeof h.web=="function"?b=await
+h.web():b=h.web),b),m=(E,T)=>{var I,q;if(g){const
+M=g==null?void 0:g.methods.find(O=>T===O.name);if(M)return M.rt
+ype==="promise"?O=>r.nativePromise(f,T.toString(),O):(O,z)=>r.n
+ativeCallback(f,T.toString(),O,z);if(E)return(I=E[T])===null||I
+===void 0?void
+0:I.bind(E)}else{if(E)return(q=E[T])===null||q===void 0?void
+0:q.bind(E);throw new Gh(`"${f}" plugin is not implemented on
+${x}`,Ia.Unimplemented)}},v=E=>{let T;const I=(...q)=>{const
+M=w().then(O=>{const z=m(O,E);if(z){const R=z(...q);return
+T=R==null?void 0:R.remove,R}else throw new Gh(`"${f}.${E}()"
+is not implemented on ${x}`,Ia.Unimplemented)});return
+E==="addListener"&&(M.remove=async()=>T()),M};return
+I.toString=()=>`${E.toString()}() { [capacitor code] }`,Object.
+defineProperty(I,"name",{value:E,writable:!1,configurable:!1}),
+I},_=v("addListener"),S=v("removeListener"),N=(E,T)=>{const
+I=_({eventName:E},T),q=async()=>{const O=await
+I;S({eventName:E,callbackId:O},T)},M=new
+Promise(O=>I.then(()=>O({remove:q})));return
+M.remove=async()=>{console.warn("Using addListener() without
+'await' is deprecated."),await q()},M},j=new Proxy({},{get(E,T)
+{switch(T){case"$$typeof":return;case"toJSON":return()=>({});ca
+se"addListener":return g?N:_;case"removeListener":return
+S;default:return v(T)}}});return
+n[f]=j,u.set(f,{name:f,proxy:j,platforms:new
+Set([...Object.keys(h),...g?[x]:[]])}),j};return r.convertFileS
+rc||(r.convertFileSrc=f=>f),r.getPlatform=s,r.handleError=c,r.i
+sNativePlatform=i,r.isPluginAvailable=o,r.registerPlugin=d,r.Ex
+ception=Gh,r.DEBUG=!!r.DEBUG,r.isLoggingEnabled=!!r.isLoggingEn
+abled,r},DL=t=>t.Capacitor=RL(t),xn=DL(typeof
+globalThis<"u"?globalThis:typeof self<"u"?self:typeof
+window<"u"?window:typeof
+global<"u"?global:{}),yy=xn.registerPlugin;class Fk{constructor
+(){this.listeners={},this.retainedEventArguments={},this.window
+Listeners={}}addListener(e,r){let n=!1;this.listeners[e]||(this
+.listeners[e]=[],n=!0),this.listeners[e].push(r);const i=this.w
+indowListeners[e];i&&!i.registered&&this.addWindowListener(i),n
+&&this.sendRetainedArgumentsForEvent(e);const
+o=async()=>this.removeListener(e,r);return
+Promise.resolve({remove:o})}async
+removeAllListeners(){this.listeners={};for(const e in this.wind
+owListeners)this.removeWindowListener(this.windowListeners[e]);
+this.windowListeners={}}notifyListeners(e,r,n){const
+s=this.listeners[e];if(!s){if(n){let i=this.retainedEventArgume
+nts[e];i||(i=[]),i.push(r),this.retainedEventArguments[e]=i}ret
+urn}s.forEach(i=>i(r))}hasListeners(e){var
+r;return!!(!((r=this.listeners[e])===null||r===void 0)&&r.lengt
+h)}registerWindowListener(e,r){this.windowListeners[r]={registe
+red:!1,windowEventName:e,pluginEventName:r,handler:n=>{this.not
+ifyListeners(r,n)}}}unimplemented(e="not implemented"){return
+new xn.Exception(e,Ia.Unimplemented)}unavailable(e="not
+available"){return new xn.Exception(e,Ia.Unavailable)}async
+removeListener(e,r){const
+n=this.listeners[e];if(!n)return;const s=n.indexOf(r);this.list
+eners[e].splice(s,1),this.listeners[e].length||this.removeWindo
+wListener(this.windowListeners[e])}addWindowListener(e){window.
+addEventListener(e.windowEventName,e.handler),e.registered=!0}r
+emoveWindowListener(e){e&&(window.removeEventListener(e.windowE
+ventName,e.handler),e.registered=!1)}sendRetainedArgumentsForEv
+ent(e){const r=this.retainedEventArguments[e];r&&(delete this.r
+etainedEventArguments[e],r.forEach(n=>{this.notifyListeners(e,n
+)}))}}const gx=t=>encodeURIComponent(t).replace(/%(2[346B]|5E|6
+0|7C)/g,decodeURIComponent).replace(/[()]/g,escape),yx=t=>t.rep
+lace(/(%[\dA-F]{2})+/gi,decodeURIComponent);class IL extends
+Fk{async getCookies(){const e=document.cookie,r={};return e.spl
+it(";").forEach(n=>{if(n.length<=0)return;let[s,i]=n.replace(/=
+/,"CAP_COOKIE").split("CAP_COOKIE");s=yx(s).trim(),i=yx(i).trim
+(),r[s]=i}),r}async setCookie(e){try{const
+r=gx(e.key),n=gx(e.value),s=`; expires=${(e.expires||"").replac
+e("expires=","")}`,i=(e.path||"/").replace("path=",""),o=e.url!
+=null&&e.url.length>0?`domain=${e.url}`:"";document.cookie=`${r
+}=${n||""}${s}; path=${i}; ${o};`}catch(r){return
+Promise.reject(r)}}async
+deleteCookie(e){try{document.cookie=`${e.key}=;
+Max-Age=0`}catch(r){return Promise.reject(r)}}async
+clearCookies(){try{const
+e=document.cookie.split(";")||[];for(const r of
+e)document.cookie=r.replace(/^
++/,"").replace(/=.*/,`=;expires=${new
+Date().toUTCString()};path=/`)}catch(e){return
+Promise.reject(e)}}async clearAllCookies(){try{await
+this.clearCookies()}catch(e){return
+Promise.reject(e)}}}yy("CapacitorCookies",{web:()=>new
+IL});const ML=async t=>new Promise((e,r)=>{const n=new
+FileReader;n.onload=()=>{const s=n.result;e(s.indexOf(",")>=0?s
+.split(",")[1]:s)},n.onerror=s=>r(s),n.readAsDataURL(t)}),LL=(t
+={})=>{const e=Object.keys(t);return Object.keys(t).map(s=>s.to
+LocaleLowerCase()).reduce((s,i,o)=>(s[i]=t[e[o]],s),{})},FL=(t,
+e=!0)=>t?Object.entries(t).reduce((n,s)=>{const[i,o]=s;let
+l,c;return Array.isArray(o)?(c="",o.forEach(u=>{l=e?encodeURICo
+mponent(u):u,c+=`${i}=${l}&`}),c.slice(0,-1)):(l=e?encodeURICom
+ponent(o):o,c=`${i}=${l}`),`${n}&${c}`},"").substr(1):null,$L=(
+t,e={})=>{const r=Object.assign({method:t.method||"GET",headers
+:t.headers},e),s=LL(t.headers)["content-type"]||"";if(typeof
+t.data=="string")r.body=t.data;else
+if(s.includes("application/x-www-form-urlencoded")){const
+i=new URLSearchParams;for(const[o,l]of
+Object.entries(t.data||{}))i.set(o,l);r.body=i.toString()}else
+if(s.includes("multipart/form-data")||t.data instanceof
+FormData){const i=new FormData;if(t.data instanceof
+FormData)t.data.forEach((l,c)=>{i.append(c,l)});else for(const
+l of Object.keys(t.data))i.append(l,t.data[l]);r.body=i;const
+o=new Headers(r.headers);o.delete("content-type"),r.headers=o}e
+lse(s.includes("application/json")||typeof
+t.data=="object")&&(r.body=JSON.stringify(t.data));return
+r};class UL extends Fk{async request(e){const r=$L(e,e.webFetch
+Extra),n=FL(e.params,e.shouldEncodeUrlParams),s=n?`${e.url}?${n
+}`:e.url,i=await fetch(s,r),o=i.headers.get("content-type")||""
+;let{responseType:l="text"}=i.ok?e:{};o.includes("application/j
+son")&&(l="json");let
+c,u;switch(l){case"arraybuffer":case"blob":u=await
+i.blob(),c=await ML(u);break;case"json":c=await
+i.json();break;case"document":case"text":default:c=await
+i.text()}const d={};return i.headers.forEach((f,h)=>{d[h]=f}),{
+data:c,headers:d,status:i.status,url:i.url}}async
+get(e){return this.request(Object.assign(Object.assign({},e),{m
+ethod:"GET"}))}async post(e){return this.request(Object.assign(
+Object.assign({},e),{method:"POST"}))}async put(e){return this.
+request(Object.assign(Object.assign({},e),{method:"PUT"}))}asyn
+c patch(e){return this.request(Object.assign(Object.assign({},e
+),{method:"PATCH"}))}async delete(e){return this.request(Object
+.assign(Object.assign({},e),{method:"DELETE"}))}}yy("CapacitorH
+ttp",{web:()=>new UL});const $p=yy("Preferences",{web:()=>Ya(()
+=>import("./web-T1MsZR8W.js"),[]).then(t=>new t.PreferencesWeb)
+}),$k=(xn.isNativePlatform(),"https://bjj-jits-journal.onrender
+.com");let Xu=null;async function
+Cn(t){Xu=t,xn.isNativePlatform()&&(t?(await
+$p.set({key:"supabase_user_id",value:t}),console.log("💾
+Persisted Supabase ID to Preferences")):(await
+$p.remove({key:"supabase_user_id"}),console.log("🗑️ Cleared
+Supabase ID from Preferences")))}async function Uk(){var
+t;if(Xu)return
+Xu;if(xn.isNativePlatform())try{const{value:e}=await
+$p.get({key:"supabase_user_id"});if(e)return
+Xu=e,console.log("📱 Loaded Supabase ID from Preferences
+(instant!)"),e}catch(e){console.error("Failed to read from
+Preferences:",e)}try{console.log("⚠️ Falling back to
+getSession() - this should only happen
+once");const{data:{session:e}}=await
+ze.auth.getSession(),r=((t=e==null?void 0:e.user)==null?void
+0:t.id)||null;return r&&await Cn(r),r}catch(e){return
+console.error("Failed to get Supabase user:",e),null}}const
+qr=new MI({defaultOptions:{queries:{retry:1,refetchOnWindowFocu
+s:!1,queryFn:async({queryKey:t})=>{const e=await
+Uk(),r={"Content-Type":"application/json"};let
+n=`${$k}${t[0]}`;if(e){const i=n.includes("?")?"&":"?";n+=`${i}
+supabaseId=${e}`,console.log("📱 Query with supabaseId")}else
+console.warn("⚠️ No supabaseId available for query");const
+s=await fetch(n,{headers:r});if(!s.ok)throw(s.status===401||s.s
+tatus===403)&&(console.log("🔄 Auth failed - may need to
+refresh"),sessionStorage.setItem("auth_failure","true")),new
+Error(`${s.status}: ${s.statusText}`);return
+s.json()}}}});async function tr(t,e,r){const n=await Uk(),i={me
+thod:t,headers:{"Content-Type":"application/json"}};r?i.body=JS
+ON.stringify({...r,supabaseId:n}):n&&(i.body=JSON.stringify({su
+pabaseId:n}));const o=`${$k}${e}`,l=await
+fetch(o,i);if(!l.ok){if(l.status===401||l.status===403)throw
+console.log("🔄 Auth failed in API request"),new
+Error("Authentication required. Please refresh the page and
+try again.");let c=`${l.status}: ${l.statusText}`;try{c=(await
+l.json()).message||c}catch{const u=await
+l.text();c=`${l.status}: ${u}`}throw new Error(c)}return
+l}const BL=(xn.isNativePlatform(),"https://bjj-jits-journal.onr
+ender.com"),Bk=y.createContext(void 0),dr=()=>{const
+t=y.useContext(Bk);if(t===void 0)throw new Error("useAuth must
+be used within an AuthProvider");return t};async function
+Bl(t,e,r,n,s=3){var o,l;const i=4-s;console.log("🔍 Loading
+user data for supabaseId:",t,`(attempt ${i}/3)`);try{const
+c=new AbortController,u=setTimeout(()=>c.abort(),1e4),d={};n&&(
+d.Authorization=`Bearer ${n}`,console.log("🔑 Including
+Supabase access token in request"));const f=await fetch(`${BL}/
+api/user/by-supabase-id/${t}`,{signal:c.signal,headers:d});if(c
+learTimeout(u),console.log("📡 User endpoint response
+status:",f.status),f.ok){const p=await f.json();return
+console.log("✅ User data loaded successfully:",{id:p.id,email:p
+.email}),{id:p.id.toString(),email:p.email,firstName:p.first_na
+me,lastName:p.last_name,subscriptionStatus:p.subscription_statu
+s||"free",subscriptionPlan:p.subscription_plan,role:p.role||"us
+er",createdAt:p.created_at,supabaseId:p.supabase_uid}}if(f.stat
+us===404)return s>1?(console.log("⏳ User not found yet (signup
+race condition), retrying in 1000ms..."),await new Promise(p=>s
+etTimeout(p,1e3)),Bl(t,e,r,n,s-1)):(console.error("❌ User not
+found in database for
+supabaseId:",t),null);if(f.status>=500&&s>0){const
+p=Math.min(1e3*Math.pow(2,i-1),5e3);return console.log(`⚠️
+Server error ${f.status}, retrying in ${p}ms...`),await new
+Promise(x=>setTimeout(x,p)),Bl(t,e,r,n,s-1)}const h=await
+f.text();return console.error("❌ Unexpected error from backend:
+",f.status,h),null}catch(c){if(s>0&&(c.name==="AbortError"||(o=
+c.message)!=null&&o.includes("fetch")||(l=c.message)!=null&&l.i
+ncludes("network"))){const
+u=Math.min(1e3*Math.pow(2,i-1),5e3);return console.log(`⚠️
+Network error (${c.message}), retrying in ${u}ms...`),await
+new Promise(d=>setTimeout(d,u)),Bl(t,e,r,n,s-1)}return
+console.error("❌ Fatal error in
+getUserFromSupabaseId:",c),null}}const VL=({children:t})=>{cons
+t[e,r]=y.useState(null),[n,s]=y.useState(null),[i,o]=y.useState
+(null),[l,c]=y.useState(!0),[u,d]=y.useState("Loading..."),f=he
+.useRef(null),h=he.useRef(!1);y.useEffect(()=>{(async()=>{d("Ch
+ecking session...");const{data:{session:m}}=await
+ze.auth.getSession();if(o(m),s((m==null?void
+0:m.user)??null),m!=null&&m.user)try{await
+Cn(m.user.id),d("Loading your data...");const v=await Bl(m.user
+.id,m.user.email||"",m.user.user_metadata,m.access_token);v?(qr
+.clear(),r(v),f.current=m.user.id,c(!1)):(await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null),c(!1))}catch{await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null),c(!1)}else await
+Cn(null),c(!1)})().catch(m=>{console.error("Session check faile
+d:",m),c(!1)});const{data:{subscription:w}}=ze.auth.onAuthState
+Change(async(m,v)=>{if(console.log("🔔 Auth state change:",m,"i
+sSigningUp:",h.current),h.current){console.log("⏭️ Ignoring
+auth state change during
+signup");return}if(o(v),s((v==null?void
+0:v.user)??null),v!=null&&v.user){if(await Cn(v.user.id),m==="T
+OKEN_REFRESHED"||f.current===v.user.id){c(!1);return}c(!0),d("S
+igning you in...");try{const _=await Bl(v.user.id,v.user.email|
+|"",v.user.user_metadata,v.access_token);_?(qr.clear(),r(_),f.c
+urrent=v.user.id,c(!1)):(m!=="SIGNED_IN"?(console.log("⚠️ User
+data not found, signing out (event:",m,")"),await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null)):console.log("⏳ Fresh sign-in
+detected, user data not ready yet. Keeping session
+active."),c(!1))}catch{m!=="SIGNED_IN"&&(await
+ze.auth.signOut(),await
+Cn(null),r(null),o(null),s(null)),c(!1)}}else await Cn(null),r(
+null),f.current=null,c(!1)});return()=>w.unsubscribe()},[]);con
+st p=b=>{r(b)},x=async()=>{await ze.auth.signOut(),await Cn(nul
+l),r(null),o(null),s(null),qr.clear()},g=b=>{console.log("🚦
+Setting signup in progress:",b),h.current=b};return a.jsx(Bk.Pr
+ovider,{value:{user:e,supabaseUser:n,session:i,isLoading:l,load
+ingMessage:u,login:p,logout:x,isAuthenticated:!!e,setSignupInPr
+ogress:g},children:t})},Vk=y.createContext(void 0);function zL(
+{children:t}){const[e,r]=y.useState(!0);y.useEffect(()=>{const
+o=localStorage.getItem("bjj_darkmode")!=="false";localStorage.g
+etItem("bjj_darkmode")||localStorage.setItem("bjj_darkmode","tr
+ue"),r(o),n(o)},[]);const n=o=>{o?document.documentElement.clas
+sList.add("dark"):document.documentElement.classList.remove("da
+rk")},s=o=>{r(o),localStorage.setItem("bjj_darkmode",o.toString
+()),n(o)},i=()=>{s(!e)};return a.jsx(Vk.Provider,{value:{darkMo
+de:e,toggleDarkMode:i,setDarkMode:s},children:t})}function
+WL(){const t=y.useContext(Vk);if(t===void 0)throw new
+Error("useTheme must be used within a ThemeProvider");return
+t}function qL(){const[t]=Ga();y.useEffect(()=>{window.scrollTo(
+{top:0,left:0,behavior:"instant"}),document.body.scrollTop=0,do
+cument.documentElement.scrollTop=0},[t])}const HL=1,zk=4e3;let
+Qh=0;function KL(){return
+Qh=(Qh+1)%Number.MAX_SAFE_INTEGER,Qh.toString()}const Yh=new
+Map,vx=t=>{if(Yh.has(t))return;const e=setTimeout(()=>{Yh.delet
+e(t),Vl({type:"REMOVE_TOAST",toastId:t})},zk);Yh.set(t,e)},GL=(
+t,e)=>{switch(e.type){case"ADD_TOAST":return{...t,toasts:[e.toa
+st,...t.toasts].slice(0,HL)};case"UPDATE_TOAST":return{...t,toa
+sts:t.toasts.map(r=>r.id===e.toast.id?{...r,...e.toast}:r)};cas
+e"DISMISS_TOAST":{const{toastId:r}=e;return r?vx(r):t.toasts.fo
+rEach(n=>{vx(n.id)}),{...t,toasts:t.toasts.map(n=>n.id===r||r==
+=void 0?{...n,open:!1}:n)}}case"REMOVE_TOAST":return
+e.toastId===void 0?{...t,toasts:[]}:{...t,toasts:t.toasts.filte
+r(r=>r.id!==e.toastId)}}},ed=[];let td={toasts:[]};function
+Vl(t){td=GL(td,t),ed.forEach(e=>{e(td)})}function
+QL({duration:t=zk,...e}){const r=KL(),n=i=>Vl({type:"UPDATE_TOA
+ST",toast:{...i,id:r}}),s=()=>Vl({type:"DISMISS_TOAST",toastId:
+r});return Vl({type:"ADD_TOAST",toast:{...e,id:r,open:!0,onOpen
+Change:i=>{i||s()}}}),setTimeout(()=>{s()},t),{id:r,dismiss:s,u
+pdate:n}}function Lt(){const[t,e]=y.useState(td);return
+y.useEffect(()=>(ed.push(e),()=>{const r=ed.indexOf(e);r>-1&&ed
+.splice(r,1)}),[t]),{...t,toast:QL,dismiss:r=>Vl({type:"DISMISS
+_TOAST",toastId:r})}}const Fi={async
+getAll(t){const{data:e,error:r}=await ze.from("classes").select
+("*").eq("user_id",t).order("date",{ascending:!1});if(r)throw
+r;return e||[]},async create(t,e){const r={date:e.date,time:e.t
+ime,duration:e.duration,class_type:e.classType,instructor:e.ins
+tructor||"",techniques_focused:e.techniquesFocused||"",rolling_
+partners:e.rollingPartners||[],your_submissions:e.yourSubmissio
+ns||0,partner_submissions:e.partnerSubmissions||0,cardio_rating
+:e.cardioRating||3,user_id:t};console.log("Class data being
+sent to Supabase:",JSON.stringify(r,null,2));const{data:n,error
+:s}=await
+ze.from("classes").insert(r).select().single();if(s)throw
+console.error("Class creation error:",s),console.error("Error
+details:",JSON.stringify(s,null,2)),s;return
+console.log("Class created successfully:",n),n},async
+update(t,e,r){const n={date:r.date,time:r.time,duration:r.durat
+ion,class_type:r.classType,instructor:r.instructor||"",techniqu
+es_focused:r.techniquesFocused||"",rolling_partners:r.rollingPa
+rtners||[],your_submissions:r.yourSubmissions||0,partner_submis
+sions:r.partnerSubmissions||0,cardio_rating:r.cardioRating||3},
+{data:s,error:i}=await ze.from("classes").update(n).eq("id",t).
+eq("user_id",e).select().single();if(i)throw i;return s},async
+delete(t,e){const{error:r}=await ze.from("classes").delete().eq
+("id",t).eq("user_id",e);if(r)throw
+r;return{success:!0}}},$s={async
+getCurrent(t){const{data:e,error:r}=await ze.from("belts").sele
+ct("*").eq("user_id",t).order("promotion_date",{ascending:!1}).
+limit(1).single();if(r&&r.code!=="PGRST116")throw r;return
+e},async getAll(t){const{data:e,error:r}=await ze.from("belts")
+.select("*").eq("user_id",t).order("promotion_date",{ascending:
+!1});if(r)throw r;return e||[]},async
+create(t,e){const{data:r,error:n}=await ze.from("belts").insert
+({belt:e.belt,stripes:e.stripes,promotion_date:e.promotionDate,
+instructor:e.instructor,notes:e.notes,user_id:t}).select().sing
+le();if(n)throw n;return r},async
+update(t,e,r){const{data:n,error:s}=await ze.from("belts").upda
+te({belt:r.belt,stripes:r.stripes,promotion_date:r.promotionDat
+e,instructor:r.instructor,notes:r.notes}).eq("id",t).eq("user_i
+d",e).select().single();if(s)throw s;return n},async
+delete(t,e){const{error:r}=await ze.from("belts").delete().eq("
+id",t).eq("user_id",e);if(r)throw r}},Jh={async
+getCurrent(t){const e=new
+Date,r=e.getUTCDay(),n=r===0?0:-r,s=new Date(Date.UTC(e.getUTCF
+ullYear(),e.getUTCMonth(),e.getUTCDate()+n,0,0,0,0)),i=s.toISOS
+tring().split("T")[0];console.log("getCurrent - Looking for
+week:",i);const{data:o,error:l}=await ze.from("weekly_commitmen
+ts").select("*").eq("user_id",t).gte("week_start_date",i).lt("w
+eek_start_date",new Date(s.getTime()+24*60*60*1e3).toISOString(
+).split("T")[0]).order("created_at",{ascending:!1}).limit(1).si
+ngle();if(console.log("getCurrent -
+Found:",o,"Error:",l),l&&l.code!=="PGRST116")throw l;return
+o},async create(t,e){console.log("Creating weekly commitment
+with userId:",t,"data:",e);const{data:r,error:n}=await ze.from(
+"weekly_commitments").insert({week_start_date:e.weekStartDate,t
+arget_classes:e.targetClasses,completed_classes:e.completedClas
+ses||0,is_completed:e.isCompleted||0,user_id:t}).select().singl
+e();if(n)throw console.error("Weekly commitment creation
+error:",n),console.error("Error
+details:",JSON.stringify(n,null,2)),n;return
+console.log("Weekly commitment created
+successfully:",r),r},async update(t,e,r){console.log("Updating
+weekly commitment:",t,"userId:",e,"data:",r);const
+n={};r.weekStartDate!==void
+0&&(n.week_start_date=r.weekStartDate),r.targetClasses!==void 0
+&&(n.target_classes=r.targetClasses),r.completedClasses!==void
+0&&(n.completed_classes=r.completedClasses),r.isCompleted!==voi
+d
+0&&(n.is_completed=r.isCompleted);const{data:s,error:i}=await z
+e.from("weekly_commitments").update(n).eq("id",t).eq("user_id",
+e).select().single();if(i)throw console.error("Weekly
+commitment update error:",i),console.error("Error
+details:",JSON.stringify(i,null,2)),i;return
+console.log("Weekly commitment updated
+successfully:",s),s}},xx={async
+getAll(t){const{data:e,error:r}=await ze.from("drawings").selec
+t("*").eq("user_id",t).order("created_at",{ascending:!1});if(r)
+throw r;return e||[]},async
+create(t,e){const{data:r,error:n}=await ze.from("drawings").ins
+ert({...e,user_id:t}).select().single();if(n)throw n;return
+r}};function YL(){const[t,e]=y.useState(!1),[r,n]=y.useState(3)
+,{toast:s}=Lt(),i=_s(),{user:o}=dr();he.useEffect(()=>{o&&conso
+le.log("WeeklyGoals user object:",{id:o.id,type:typeof o.id,ema
+il:o.email})},[o]);const{data:l,refetch:c}=Xe({queryKey:["weekl
+yCommitments","current",o==null?void 0:o.id],queryFn:()=>Jh.get
+Current(o.id),enabled:!!(o!=null&&o.id),staleTime:0,refetchOnWi
+ndowFocus:!0,refetchOnMount:!0,refetchInterval:2e3,gcTime:0,ret
+ry:!1}),{data:u=[],refetch:d}=Xe({queryKey:["classes",o==null?v
+oid 0:o.id],queryFn:()=>Fi.getAll(o.id),enabled:!!(o!=null&&o.i
+d),staleTime:0,refetchOnWindowFocus:!0,refetchOnMount:!0,refetc
+hInterval:3e3});he.useEffect(()=>{c(),d()},[c,d]);const f=new
+Date,h=new Date(f.getUTCFullYear(),f.getUTCMonth(),f.getUTCDate
+()-f.getUTCDay()+1);h.setUTCHours(0,0,0,0);const
+p=Array.isArray(u)?u.filter(_=>new
+Date(_.date)>=h).length:0,x=Qe({mutationFn:async
+_=>{if(!(o!=null&&o.id))throw new Error("User not
+authenticated");return l&&l.id?await
+Jh.update(l.id,o.id,_):await
+Jh.create(o.id,_)},onSuccess:_=>{console.log("Weekly goal
+mutation success:",_),i.invalidateQueries({queryKey:["weeklyCom
+mitments","current",o==null?void 0:o.id]}),i.invalidateQueries(
+{queryKey:["classes",o==null?void 0:o.id]}),setTimeout(()=>{c()
+,d()},100),e(!1),s({title:"Success",description:`Weekly goal
+set to ${r} classes!`,duration:4e3})}}),g=_=>{if(_.preventDefau
+lt(),x.isPending)return;const S=new
+Date,N=S.getUTCDay(),j=N===0?0:-N,E=new Date(Date.UTC(S.getUTCF
+ullYear(),S.getUTCMonth(),S.getUTCDate()+j,0,0,0,0));console.lo
+g("FRONTEND: Creating goal for week:",E.toISOString()),x.mutate
+({weekStartDate:E,targetClasses:r,completedClasses:p,isComplete
+d:p>=r?1:0})},b=(l==null?void 0:l.target_classes)||0,w=p,m=b>0?
+Math.min(w/b*100,100):0,v=Math.max(b-w,0);return
+a.jsxs("div",{className:"bg-white rounded-xl p-6
+shadow-md",children:[a.jsxs("div",{className:"flex
+items-center justify-between
+mb-4",children:[a.jsx("h3",{className:"text-lg font-semibold
+text-gray-800",children:"Weekly Goals"}),a.jsx("button",{onClic
+k:()=>e(!t),className:"text-blue-600 hover:text-blue-800
+text-sm font-medium",children:l?"Update":"Set
+Goal"})]}),t&&a.jsxs("form",{onSubmit:g,className:"mb-4 p-4
+bg-gray-50 rounded-lg",children:[a.jsxs("div",{className:"mb-3"
+,children:[a.jsxs("label",{className:"block text-sm
+font-medium text-gray-700 mb-1",children:["Classes this week: "
+,r]}),a.jsx("input",{type:"range",min:"1",max:"10",value:r,onCh
+ange:_=>n(parseInt(_.target.value)),className:"w-full"}),a.jsxs
+("div",{className:"flex justify-between text-xs text-gray-500 m
+t-1",children:[a.jsx("span",{children:"1"}),a.jsx("span",{child
+ren:"5"}),a.jsx("span",{children:"10"})]})]}),a.jsxs("div",{cla
+ssName:"flex gap-2",children:[a.jsx("button",{type:"submit",dis
+abled:x.isPending,className:"flex-1 bg-blue-600 text-white
+py-2 px-3 rounded-lg text-sm hover:bg-blue-700
+disabled:opacity-50",children:x.isPending?"Saving...":"Set Goal
+"}),a.jsx("button",{type:"button",onClick:()=>e(!1),className:"
+px-3 py-2 text-gray-600 hover:text-gray-800 text-sm",children:"
+Cancel"})]})]}),l?a.jsxs("div",{children:[a.jsxs("div",{classNa
+me:"flex items-center justify-between
+mb-2",children:[a.jsx("span",{className:"text-sm
+text-gray-600",children:"Progress this
+week"}),a.jsxs("span",{className:"text-sm font-medium
+text-gray-800",children:[w," / ",b,"
+classes"]})]}),a.jsx("div",{className:"w-full bg-gray-200
+rounded-full h-3 mb-3",children:a.jsx("div",{className:`h-3
+rounded-full transition-all duration-300 ${m>=100?"bg-green-500
+":m>=75?"bg-yellow-500":"bg-blue-500"}`,style:{width:`${m}%`}})
+}),a.jsxs("div",{className:"flex items-center justify-between t
+ext-sm",children:[a.jsx("div",{className:`${m>=100?"text-green-
+600":"text-gray-600"}`,children:m>=100?a.jsx("span",{className:
+"font-medium",children:"🎉 Goal
+completed!"}):v===1?a.jsxs("span",{children:[v," more class to
+go!"]}):v>1?a.jsxs("span",{children:[v," more classes to
+go!"]}):a.jsx("span",{children:"Keep it up!"})}),a.jsxs("div",{
+className:"text-gray-500",children:[Math.round(m),"%"]})]}),m>=
+100&&a.jsxs("div",{className:"mt-3 p-3 bg-green-50 rounded-lg
+text-center",children:[a.jsx("div",{className:"text-green-800
+font-medium text-sm",children:"Excellent work this week!
+🥋"}),a.jsx("div",{className:"text-green-600 text-xs
+mt-1",children:"You've reached your training
+goal"})]})]}):a.jsxs("div",{className:"text-center py-4 text-gr
+ay-500",children:[a.jsx("p",{className:"text-sm",children:"No
+weekly goal set
+yet."}),a.jsx("p",{className:"text-xs",children:"Set a goal to
+track your progress!"})]})]})}/**
+
+
+PS C:\Projects\JitsPlannerPro>

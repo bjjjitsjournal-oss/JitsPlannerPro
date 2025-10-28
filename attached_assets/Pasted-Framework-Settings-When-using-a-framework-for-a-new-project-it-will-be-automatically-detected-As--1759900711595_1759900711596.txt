@@ -1,0 +1,63 @@
+Framework Settings
+When using a framework for a new project, it will be automatically detected. As a result, several project settings are automatically configured to achieve the best result. You can override them below.
+
+Framework Preset
+Framework logo
+Vite
+vite build
+dist/public
+`yarn install`, `pnpm install`, `npm install`, or `bun install`
+vite
+Learn more about Build and Development Settings
+Root Directory
+The directory within your project, where your code is located. Leave this field empty if your code is not located in a subdirectory.
+
+Include files outside the root directory in the Build Step.
+
+
+Skip deployments when there are no changes to the root directory or its dependencies.
+
+
+Learn more about Root Directory
+
+Node.js Version
+The version of Node.js that is used in the Build Step and for Serverless Functions. A new Deployment is required for your changes to take effect.
+
+
+22.x
+Learn more about Node.js Version
+
+Rolling Releases
+Configure rolling release settings for your production environment. Rolling releases allow you to gradually deploy changes to users by defining a percentage of traffic for each stage.
+
+This feature is available on the Pro plan
+
+Prioritize Production Builds
+Builds for Production environment will be prioritized over Pre-Production environments.
+
+Enabled
+Learn more about Prioritize Production Builds
+
+On-Demand Concurrent Builds
+Instantly scale build capacity to skip the queue, even if all build slots are in use. Charges apply per minute if it exceeds your team's pre-committed concurrency.
+
+Disabled
+This feature is available on the Pro plan
+
+Build Machine
+Instantly scale build capacity to skip the queue, even if all build slots are in use. You can also choose a larger build machine; charges apply per minute if it exceeds your team's pre-committed concurrency.
+
+​
+Standard performance
+
+Default
+4 vCPUs
+8 GB Memory
+Cost-effective option for lightweight apps and APIs
+
+​
+Enhanced performance
+
+8 vCPUs
+16 GB Memory
+Increased compute, ideal for large applications

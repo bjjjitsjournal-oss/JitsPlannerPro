@@ -1,0 +1,6 @@
+﻿node_modules/
+android/build/
+android/app/build/
+ios/build/
+.gradle/
+final-android-package/

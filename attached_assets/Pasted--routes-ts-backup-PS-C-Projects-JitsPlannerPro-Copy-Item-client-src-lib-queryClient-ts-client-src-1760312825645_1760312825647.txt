@@ -1,0 +1,130 @@
+\routes.ts.backup
+PS C:\Projects\JitsPlannerPro> Copy-Item client\src\lib\queryClient.ts client\src\lib\queryClient.ts.backup
+PS C:\Projects\JitsPlannerPro> Copy-Item client\src\pages\Settings.tsx client\src\pages\Settings.tsx.backup
+PS C:\Projects\JitsPlannerPro>
+PS C:\Projects\JitsPlannerPro> Write-Host "✅ Files backed up!"
+✅ Files backed up!
+PS C:\Projects\JitsPlannerPro> Write-Host "`nNow I'll give you the exact code to paste into each file."
+
+Now I'll give you the exact code to paste into each file.
+PS C:\Projects\JitsPlannerPro> Select-String -Path server\routes.ts -Pattern "const authenticateToken = async" -Context 0,80 | Select-Object -First 1
+
+> server\routes.ts:41:const authenticateToken = async (req:
+any, res: any, next: any) => {
+  server\routes.ts:42:  const authHeader =
+req.headers['authorization'];
+  server\routes.ts:43:  const token = authHeader &&
+authHeader.split(' ')[1];
+  server\routes.ts:44:
+  server\routes.ts:45:  if (!token) {
+  server\routes.ts:46:    return res.status(401).json({
+message: 'Access token required' });
+  server\routes.ts:47:  }
+  server\routes.ts:48:
+  server\routes.ts:49:  let decoded: any = null;
+  server\routes.ts:50:  let isSupabaseToken = false;
+  server\routes.ts:51:
+  server\routes.ts:52:  // Try Supabase token verification
+first (only if configured)
+  server\routes.ts:53:  if (supabaseAdmin) {
+  server\routes.ts:54:    try {
+  server\routes.ts:55:      const { data: { user: supabaseUser
+}, error } = await supabaseAdmin.auth.getUser(token);
+  server\routes.ts:56:
+  server\routes.ts:57:      if (supabaseUser && !error) {
+  server\routes.ts:58:        console.log('âœ… Supabase token
+verified for:', supabaseUser.email);
+  server\routes.ts:59:        decoded = {
+  server\routes.ts:60:          email: supabaseUser.email,
+  server\routes.ts:61:          supabaseId: supabaseUser.id,
+  server\routes.ts:62:        };
+  server\routes.ts:63:        isSupabaseToken = true;
+  server\routes.ts:64:      }
+  server\routes.ts:65:    } catch (supabaseError) {
+  server\routes.ts:66:      console.log('Not a Supabase token,
+trying legacy JWT...');
+  server\routes.ts:67:    }
+  server\routes.ts:68:  }
+  server\routes.ts:69:
+  server\routes.ts:70:  // Fallback to legacy JWT verification
+  server\routes.ts:71:  if (!decoded) {
+  server\routes.ts:72:    try {
+  server\routes.ts:73:      decoded = jwt.verify(token,
+JWT_SECRET) as any;
+  server\routes.ts:74:      console.log('âœ… Legacy JWT
+verified for:', decoded.email);
+  server\routes.ts:75:    } catch (error: any) {
+  server\routes.ts:76:      console.error('Token verification
+error:', error.message);
+  server\routes.ts:77:      return res.status(403).json({
+message: 'Invalid or expired token' });
+  server\routes.ts:78:    }
+  server\routes.ts:79:  }
+  server\routes.ts:80:
+  server\routes.ts:81:  try {
+  server\routes.ts:82:    // Find user in database
+  server\routes.ts:83:    let user;
+  server\routes.ts:84:
+  server\routes.ts:85:    if (isSupabaseToken) {
+  server\routes.ts:86:      // For Supabase tokens, look up by
+email or supabase_uid
+  server\routes.ts:87:      user = await
+storage.getUserByEmail(decoded.email);
+  server\routes.ts:88:
+  server\routes.ts:89:      if (!user) {
+  server\routes.ts:90:        console.log('Supabase user not
+found in database, auto-creating:', decoded.email);
+  server\routes.ts:91:
+  server\routes.ts:92:        // Auto-create user account with
+premium status for known emails
+  server\routes.ts:93:        const premiumEmails =
+['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au',
+'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+  server\routes.ts:94:        const adminEmails =
+['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+  server\routes.ts:95:        const isPremiumUser =
+premiumEmails.includes(decoded.email);
+  server\routes.ts:96:        const isAdmin =
+adminEmails.includes(decoded.email);
+  server\routes.ts:97:
+  server\routes.ts:98:        const tempPassword = await
+bcrypt.hash('temp-password-' + Date.now(), 10);
+  server\routes.ts:99:        user = await storage.createUser({
+  server\routes.ts:100:          email: decoded.email,
+  server\routes.ts:101:          password: tempPassword,
+  server\routes.ts:102:          firstName:
+decoded.email.split('@')[0],
+  server\routes.ts:103:          lastName: '',
+  server\routes.ts:104:          subscriptionStatus:
+isPremiumUser ? 'premium' : 'free',
+  server\routes.ts:105:          subscriptionExpiresAt:
+isPremiumUser ? new Date('2099-12-31') : null,
+  server\routes.ts:106:          supabaseUid:
+decoded.supabaseId,
+  server\routes.ts:107:          role: isAdmin ? 'admin' :
+'user',
+  server\routes.ts:108:        });
+  server\routes.ts:109:
+  server\routes.ts:110:        console.log('âœ… Auto-created
+user account for Supabase user:', decoded.email);
+  server\routes.ts:111:      }
+  server\routes.ts:112:    } else {
+  server\routes.ts:113:      // For legacy JWT, use userId
+from token
+  server\routes.ts:114:      user = await
+storage.getUser(decoded.userId);
+  server\routes.ts:115:
+  server\routes.ts:116:      if (!user) {
+  server\routes.ts:117:        console.log('Token valid but
+user not found in storage, userId:', decoded.userId, 'email:',
+decoded.email);
+  server\routes.ts:118:
+  server\routes.ts:119:        // Auto-restore user account
+  server\routes.ts:120:        const premiumEmails =
+['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au',
+'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+  server\routes.ts:121:        const isPremiumUser =
+premiumEmails.includes(decoded.email);
+
+
+PS C:\Projects\JitsPlannerPro>

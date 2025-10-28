@@ -1,0 +1,789 @@
+index-DDwShRm3.js:72 🔧 Supabase Client Initialization
+index-DDwShRm3.js:72 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-DDwShRm3.js:72 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-DDwShRm3.js:314 BJJ Journal - Full App Restored!
+index-DDwShRm3.js:314 Open in new window if you see caching issues
+index-DDwShRm3.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+(index):1 Manifest fetch from https://bjj-jits-journal-6gj3e34hp-joes-projects-4f6e77c7.vercel.app/manifest.json failed, code 401
+index-DDwShRm3.js:72 Query failed or timed out: Error: Query timeout after 5s
+    at index-DDwShRm3.js:72:35179
+(anonymous) @ index-DDwShRm3.js:72
+index-DDwShRm3.js:72 Query result: Object
+index-DDwShRm3.js:72 Database query error: Error: Query timeout after 5s
+    at index-DDwShRm3.js:72:35179
+j0 @ index-DDwShRm3.js:72
+index-DDwShRm3.js:72 User data loaded: undefined
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:72 Initial session check: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:72 Auth state changed: INITIAL_SESSION bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-DDwShRm3.js:270 Current belt data: undefined
+manifest.json:1  Failed to load resource: the server responded with a status of 401 ()
+index-DDwShRm3.js:72 Query result: {existingUser: {…}, userError: null}
+index-DDwShRm3.js:72 Found existing user: 1
+index-DDwShRm3.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:75 WeeklyGoals user object: {id: 1, type: 'number', email: 'bjjjitsjournal@gmail.com'}
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-DDwShRm3.js:72 Query result: {existingUser: {…}, userError: null}
+index-DDwShRm3.js:72 Found existing user: 1
+index-DDwShRm3.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:270 Current belt data: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-DDwShRm3.js:75 WeeklyGoals user object: {id: 1, type: 'number', email: 'bjjjitsjournal@gmail.com'}
+index-DDwShRm3.js:270 Current belt data: {id: 1, belt: 'blue', stripes: 2, promotion_date: '2025-09-22T00:00:00', instructor: '', …}
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:75 getCurrent - Found: {id: 4, week_start_date: '2025-10-05T00:00:00', target_classes: 2, completed_classes: 0, is_completed: 0, …} Error: null
+index-DDwShRm3.js:72 Auth state changed: SIGNED_OUT undefined
+index-DDwShRm3.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-DDwShRm3.js:314 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-DDwShRm3.js:72 Auth state changed: SIGNED_IN bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Looking up user with Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:72 Querying users table with supabase_uid: 5727fda2-3783-4b36-b6f2-0a643f764f29
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:72 Query result: {existingUser: {…}, userError: null}
+index-DDwShRm3.js:72 Found existing user: 1
+index-DDwShRm3.js:72 User data loaded: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:314 Login successful: bjjjitsjournal@gmail.com
+index-DDwShRm3.js:270 Current belt data: undefined
+index-DDwShRm3.js:75 WeeklyGoals user object: {id: '5727fda2-3783-4b36-b6f2-0a643f764f29', type: 'string', email: 'bjjjitsjournal@gmail.com'}
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+index-DDwShRm3.js:75 getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setTimeout
+(anonymous) @ index-DDwShRm3.js:48
+jR @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setTimeout
+(anonymous) @ index-DDwShRm3.js:48
+jR @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+index-DDwShRm3.js:75 getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+index-DDwShRm3.js:75 getCurrent - Looking for week: 2025-10-05
+index-DDwShRm3.js:70  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+index-DDwShRm3.js:75 getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setTimeout
+(anonymous) @ index-DDwShRm3.js:48
+jR @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Looking for week: 2025-10-05
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/belts?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=promotion_date.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setTimeout
+(anonymous) @ index-DDwShRm3.js:48
+jR @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Looking for week: 2025-10-05
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/classes?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&order=date.desc 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setTimeout
+(anonymous) @ index-DDwShRm3.js:48
+jR @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.then
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Looking for week: 2025-10-05
+  GET https://umotigprfosrrjwpxlnp.supabase.co/rest/v1/weekly_commitments?select=*&user_id=eq.5727fda2-3783-4b36-b6f2-0a643f764f29&week_start_date=gte.2025-10-05&week_start_date=lt.2025-10-06&order=created_at.desc&limit=1 400 (Bad Request)
+(anonymous) @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+a @ index-DDwShRm3.js:70
+Promise.then
+u @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+fD @ index-DDwShRm3.js:70
+(anonymous) @ index-DDwShRm3.js:70
+then @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+setInterval
+Bm @ index-DDwShRm3.js:48
+zm @ index-DDwShRm3.js:48
+onQueryUpdate @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+batch @ index-DDwShRm3.js:48
+Fn @ index-DDwShRm3.js:48
+a @ index-DDwShRm3.js:48
+h @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Promise.catch
+y @ index-DDwShRm3.js:48
+start @ index-DDwShRm3.js:48
+fetch @ index-DDwShRm3.js:48
+sl @ index-DDwShRm3.js:48
+setOptions @ index-DDwShRm3.js:48
+(anonymous) @ index-DDwShRm3.js:48
+Kd @ index-DDwShRm3.js:40
+Bo @ index-DDwShRm3.js:40
+(anonymous) @ index-DDwShRm3.js:40
+S @ index-DDwShRm3.js:25
+I @ index-DDwShRm3.js:25
+ getCurrent - Found: null Error: {code: '22P02', details: null, hint: null, message: 'invalid input syntax for type integer: "5727fda2-3783-4b36-b6f2-0a643f764f29"'}
