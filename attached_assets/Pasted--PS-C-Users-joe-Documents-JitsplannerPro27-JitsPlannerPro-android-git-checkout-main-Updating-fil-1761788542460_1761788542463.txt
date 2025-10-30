@@ -1,0 +1,86 @@
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android> git checkout main
+Updating files: 100% (2449/2449), done.
+branch 'main' set up to track 'origin/main'.
+Switched to a new branch 'main'
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android> git pull origin replit-agent
+From https://github.com/bjjjitsjournal-oss/JitsPlannerPro
+ * branch            replit-agent -> FETCH_HEAD
+fatal: refusing to merge unrelated histories
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android> git push origin main
+Everything up-to-date
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android> git pull origin replit-agent --allow-unrelated-histories
+From https://github.com/bjjjitsjournal-oss/JitsPlannerPro
+ * branch            replit-agent -> FETCH_HEAD
+Auto-merging .gitignore
+CONFLICT (add/add): Merge conflict in .gitignore
+Auto-merging .replit
+CONFLICT (add/add): Merge conflict in .replit
+Auto-merging attached_assets/Pasted--2025-09-22-14-53-50-71-03d48a57-User-at-afterConnectMultiple-node-net-1682-16-2025-09-22-1-1758517223386_1758517223386.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted--2025-09-22-14-53-50-71-03d48a57-User-at-afterConnectMultiple-node-net-1682-16-2025-09-22-1-1758517223386_1758517223386.txt
+CONFLICT (add/add): Merge conflict in build-android.sh
+CONFLICT (add/add): Merge conflict in build-apk-direct.sh
+Auto-merging capacitor.config.ts
+CONFLICT (add/add): Merge conflict in capacitor.config.ts
+Auto-merging client/index.html
+CONFLICT (add/add): Merge conflict in client/index.html
+Auto-merging client/src/App.tsx
+CONFLICT (add/add): Merge conflict in client/src/App.tsx
+Auto-merging client/src/components/BottomNav.tsx
+CONFLICT (add/add): Merge conflict in client/src/components/BottomNav.tsx
+Auto-merging client/src/components/ProfileDropdown.tsx
+CONFLICT (add/add): Merge conflict in client/src/components/ProfileDropdown.tsx
+Auto-merging client/src/components/VideoUpload.tsx
+CONFLICT (add/add): Merge conflict in client/src/components/VideoUpload.tsx
+Auto-merging client/src/components/WeeklyGoals.tsx
+CONFLICT (add/add): Merge conflict in client/src/components/WeeklyGoals.tsx
+Auto-merging client/src/contexts/AuthContext.tsx
+CONFLICT (add/add): Merge conflict in client/src/contexts/AuthContext.tsx
+Auto-merging client/src/lib/queryClient.ts
+CONFLICT (add/add): Merge conflict in client/src/lib/queryClient.ts
+Auto-merging client/src/main.tsx
+CONFLICT (add/add): Merge conflict in client/src/main.tsx
+Auto-merging client/src/pages/Auth.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Auth.tsx
+Auto-merging client/src/pages/Classes.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Classes.tsx
+Auto-merging client/src/pages/Dashboard.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Dashboard.tsx
+Auto-merging client/src/pages/Drawing.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Drawing.tsx
+Auto-merging client/src/pages/Notes.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Notes.tsx
+Auto-merging client/src/pages/Settings.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Settings.tsx
+Auto-merging client/src/pages/Social.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Social.tsx
+Auto-merging client/src/pages/belts.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/belts.tsx
+Auto-merging client/src/utils/subscription.ts
+CONFLICT (add/add): Merge conflict in client/src/utils/subscription.ts
+CONFLICT (add/add): Merge conflict in create-apk.sh
+CONFLICT (add/add): Merge conflict in create-zip-packages.sh
+CONFLICT (add/add): Merge conflict in fast-apk-build.sh
+CONFLICT (add/add): Merge conflict in hybrid-apk-generator.sh
+Auto-merging package-lock.json
+CONFLICT (add/add): Merge conflict in package-lock.json
+Auto-merging package.json
+CONFLICT (add/add): Merge conflict in package.json
+Auto-merging replit.md
+CONFLICT (add/add): Merge conflict in replit.md
+Auto-merging server/db.ts
+CONFLICT (add/add): Merge conflict in server/db.ts
+Auto-merging server/emailService.ts
+CONFLICT (add/add): Merge conflict in server/emailService.ts
+Auto-merging server/index.ts
+CONFLICT (add/add): Merge conflict in server/index.ts
+Auto-merging server/routes.ts
+CONFLICT (add/add): Merge conflict in server/routes.ts
+Auto-merging server/storage.ts
+CONFLICT (add/add): Merge conflict in server/storage.ts
+Auto-merging shared/schema.ts
+CONFLICT (add/add): Merge conflict in shared/schema.ts
+Automatic merge failed; fix conflicts and then commit the result.
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android> git push origin main
+Everything up-to-date
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\android>
