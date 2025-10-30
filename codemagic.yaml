@@ -51,10 +51,10 @@ workflows:
           echo "🏗️  Building React app..."
           npm run build
       
-      - name: Sync Capacitor iOS
+      - name: Create iOS platform
         script: |
-          echo "🔄 Syncing Capacitor to iOS..."
-          npx cap sync ios
+          echo "🍎 Creating fresh iOS platform on macOS..."
+          npx cap add ios
       
       - name: Install CocoaPods dependencies
         script: |
@@ -142,10 +142,10 @@ workflows:
           echo "🏗️  Building React app..."
           npm run build
       
-      - name: Sync Capacitor Android
+      - name: Create Android platform
         script: |
-          echo "🔄 Syncing Capacitor to Android..."
-          npx cap sync android
+          echo "🤖 Creating fresh Android platform on macOS..."
+          npx cap add android
       
       - name: Build Android AAB
         script: |
