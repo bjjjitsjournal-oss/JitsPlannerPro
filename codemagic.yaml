@@ -152,9 +152,13 @@ workflows:
         script: |
           echo "🤖 Building Android AAB..."
           cd android
+          # Use gradle command directly if gradlew doesn't exist
+          if [ ! -f "./gradlew" ]; then
+            echo "gradlew not found, using gradle directly"
+            gradle wrapper
+          fi
           chmod +x ./gradlew
-          ./gradlew clean
-          ./gradlew bundleRelease --stacktrace
+          ./gradlew clean bundleRelease --stacktrace
     
     artifacts:
       - android/app/build/outputs/**/*.aab
