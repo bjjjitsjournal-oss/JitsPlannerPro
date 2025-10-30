@@ -2266,6 +2266,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get gym members (admin only or super admin)
+  app.get("/api/gyms/:gymId/members", flexibleAuth, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const gymId = parseInt(req.params.gymId);
+      
+      // Get current user
+      const user = await storage.getUser(userId);
+      
+      // Check if user is super admin (bjjjitsjournal@gmail.com)
+      const isSuperAdmin = user?.email === 'bjjjitsjournal@gmail.com';
+      
+      // Check if user is gym admin
+      const gymMembership = await storage.getGymMembership(userId, gymId);
+      const isGymAdmin = gymMembership?.role === 'admin';
+      
+      if (!isSuperAdmin && !isGymAdmin) {
+        return res.status(403).json({ message: "Admin access required to view gym members" });
+      }
+      
+      // Get all gym members with user details
+      const members = await storage.getGymMembers(gymId);
+      
+      res.json(members);
+    } catch (error) {
+      console.error("Error getting gym members:", error);
+      res.status(500).json({ message: "Failed to get gym members" });
+    }
+  });
+  
+  // Remove gym member (admin only or super admin)
+  app.delete("/api/gyms/:gymId/members/:userId", flexibleAuth, async (req, res) => {
+    try {
+      const requestUserId = req.userId;
+      const gymId = parseInt(req.params.gymId);
+      const memberUserId = parseInt(req.params.userId);
+      
+      // Get current user
+      const user = await storage.getUser(requestUserId);
+      
+      // Check if user is super admin (bjjjitsjournal@gmail.com)
+      const isSuperAdmin = user?.email === 'bjjjitsjournal@gmail.com';
+      
+      // Check if user is gym admin
+      const gymMembership = await storage.getGymMembership(requestUserId, gymId);
+      const isGymAdmin = gymMembership?.role === 'admin';
+      
+      if (!isSuperAdmin && !isGymAdmin) {
+        return res.status(403).json({ message: "Admin access required to remove gym members" });
+      }
+      
+      // Don't allow removing the gym owner unless super admin
+      const gym = await storage.getGym(gymId);
+      if (gym?.ownerId === memberUserId && !isSuperAdmin) {
+        return res.status(403).json({ message: "Cannot remove gym owner" });
+      }
+      
+      // Remove membership
+      await storage.deleteGymMembership(memberUserId, gymId);
+      
+      res.json({ message: "Member removed successfully" });
+    } catch (error) {
+      console.error("Error removing gym member:", error);
+      res.status(500).json({ message: "Failed to remove gym member" });
+    }
+  });
+  
   // Unshare note from gym (admin only)
   app.post("/api/notes/:id/unshare-from-gym", authenticateToken, async (req, res) => {
     try {

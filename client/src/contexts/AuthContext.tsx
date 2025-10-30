@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { queryClient, setCachedSupabaseId, setCachedAccessToken, hydrateAuthCache } from '@/lib/queryClient';
+import { queryClient, setCachedSupabaseId, setCachedAccessToken, setCachedSessionData, getCachedSessionData, hydrateAuthCache } from '@/lib/queryClient';
 import { Capacitor } from '@capacitor/core';
 
 // Get API base URL - use Render for mobile, env var for web
@@ -151,20 +151,68 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     const initAuth = async () => {
       setLoadingMessage('Checking session...');
+      
+      // OPTIMIZATION: On mobile with cached data, skip the slow getSession() call
+      const cachedSession = getCachedSessionData();
+      if (Capacitor.isNativePlatform() && cachedSession) {
+        console.log('🚀 FAST PATH: Using cached session data on mobile - skipping slow getSession() call!');
+        
+        // Create mock session object from cached data
+        const mockSession = {
+          user: {
+            id: cachedSession.id,
+            email: cachedSession.email,
+            user_metadata: cachedSession.metadata
+          },
+          access_token: cachedSession.token
+        };
+        
+        setSession(mockSession);
+        setSupabaseUser(mockSession.user as any);
+        
+        try {
+          setLoadingMessage('Loading your data...');
+          const userDataStart = performance.now();
+          const userData = await getUserFromSupabaseId(cachedSession.id, cachedSession.email, cachedSession.metadata, cachedSession.token);
+          const userDataDuration = performance.now() - userDataStart;
+          console.log(`⏱️  getUserFromSupabaseId() took ${userDataDuration.toFixed(0)}ms`);
+          
+          if (userData) {
+            queryClient.clear();
+            setUser(userData);
+            loadedSupabaseIdRef.current = cachedSession.id;
+            setIsLoading(false);
+            console.log('✅ Fast path auth complete!');
+            return; // Exit early - no need to call getSession()
+          }
+        } catch (error) {
+          console.error('❌ Fast path failed, falling back to slow path:', error);
+          // Fall through to slow path below
+        }
+      }
+      
+      // SLOW PATH: Call getSession() - required for web and mobile on first login
+      const sessionStart = performance.now();
       const { data: { session } } = await supabase.auth.getSession();
+      const sessionDuration = performance.now() - sessionStart;
+      console.log(`⏱️  supabase.auth.getSession() took ${sessionDuration.toFixed(0)}ms`);
       setSession(session);
       setSupabaseUser(session?.user ?? null);
       
       if (session?.user) {
         try {
-          // Cache the Supabase ID and access token immediately for fast API calls
+          // Cache the Supabase ID, access token, and session data for fast cold-start next time
           await Promise.all([
             setCachedSupabaseId(session.user.id),
-            setCachedAccessToken(session.access_token)
+            setCachedAccessToken(session.access_token),
+            setCachedSessionData(session.user.email || null, session.user.user_metadata)
           ]);
           
           setLoadingMessage('Loading your data...');
+          const userDataStart = performance.now();
           const userData = await getUserFromSupabaseId(session.user.id, session.user.email || '', session.user.user_metadata, session.access_token);
+          const userDataDuration = performance.now() - userDataStart;
+          console.log(`⏱️  getUserFromSupabaseId() took ${userDataDuration.toFixed(0)}ms`);
           if (userData) {
             queryClient.clear();
             setUser(userData);
@@ -174,7 +222,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             await supabase.auth.signOut();
             await Promise.all([
               setCachedSupabaseId(null),
-              setCachedAccessToken(null)
+              setCachedAccessToken(null),
+              setCachedSessionData(null, null)
             ]);
             setUser(null);
             setSession(null);
@@ -185,7 +234,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await supabase.auth.signOut();
           await Promise.all([
             setCachedSupabaseId(null),
-            setCachedAccessToken(null)
+            setCachedAccessToken(null),
+            setCachedSessionData(null, null)
           ]);
           setUser(null);
           setSession(null);
@@ -195,7 +245,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         await Promise.all([
           setCachedSupabaseId(null),
-          setCachedAccessToken(null)
+          setCachedAccessToken(null),
+          setCachedSessionData(null, null)
         ]);
         setIsLoading(false);
       }

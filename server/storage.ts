@@ -137,6 +137,9 @@ export interface IStorage {
   // Gym Memberships
   createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership>;
   getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined>;
+  getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>>;
+  deleteGymMembership(userId: number, gymId: number): Promise<boolean>;
+  getGym(gymId: number): Promise<Gym | undefined>;
   
   // Stripe subscription methods
   updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined>;
@@ -776,6 +779,42 @@ export class DatabaseStorage implements IStorage {
         eq(gymMemberships.gymId, gymId)
       ));
     return membership || undefined;
+  }
+  
+  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>> {
+    const members = await db.select({
+      userId: gymMemberships.userId,
+      email: users.email,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      role: gymMemberships.role,
+      joinedAt: gymMemberships.createdAt
+    })
+      .from(gymMemberships)
+      .innerJoin(users, eq(gymMemberships.userId, users.id))
+      .where(eq(gymMemberships.gymId, gymId))
+      .orderBy(desc(gymMemberships.createdAt));
+    
+    return members.map(m => ({
+      ...m,
+      firstName: m.firstName || '',
+      lastName: m.lastName || '',
+      joinedAt: m.joinedAt || new Date()
+    }));
+  }
+  
+  async deleteGymMembership(userId: number, gymId: number): Promise<boolean> {
+    const result = await db.delete(gymMemberships)
+      .where(and(
+        eq(gymMemberships.userId, userId),
+        eq(gymMemberships.gymId, gymId)
+      ));
+    return true;
+  }
+  
+  async getGym(gymId: number): Promise<Gym | undefined> {
+    const [gym] = await db.select().from(gyms).where(eq(gyms.id, gymId));
+    return gym || undefined;
   }
   
   async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
@@ -1464,6 +1503,18 @@ class MemStoragePrimary implements IStorage {
   }
 
   async getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined> {
+    return undefined;
+  }
+  
+  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>> {
+    return [];
+  }
+  
+  async deleteGymMembership(userId: number, gymId: number): Promise<boolean> {
+    return true;
+  }
+  
+  async getGym(gymId: number): Promise<Gym | undefined> {
     return undefined;
   }
   

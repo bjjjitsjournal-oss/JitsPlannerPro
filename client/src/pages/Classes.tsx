@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { classesQueries } from '../lib/supabaseQueries';
@@ -8,6 +8,10 @@ import { isPremiumUser, FREE_TIER_LIMITS } from '../utils/subscription';
 import { ChevronDown, ChevronUp, Edit, Trash2 } from 'lucide-react';
 
 export default function Classes() {
+  // Auto-scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   const [showForm, setShowForm] = useState(false);
   const [editingClassId, setEditingClassId] = useState<number | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -257,7 +261,7 @@ export default function Classes() {
 
   if (showForm) {
     return (
-      <div className="p-6 max-w-md mx-auto bg-background min-h-screen">
+      <div className="p-6 max-w-md mx-auto bg-background min-h-screen" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-foreground">
             {editingClassId ? 'Edit Class' : 'Log Class'}
@@ -442,7 +446,7 @@ export default function Classes() {
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-background min-h-screen">
+    <div className="p-6 max-w-md mx-auto bg-background min-h-screen" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-foreground">Classes</h2>
         <button

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useToast } from '../hooks/use-toast';
@@ -17,6 +17,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export default function Notes() {
+  // Auto-scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -330,7 +334,7 @@ export default function Notes() {
 
   if (showForm) {
     return (
-      <div className="p-6 max-w-md mx-auto">
+      <div className="p-6 max-w-md mx-auto" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {editingNote ? 'Edit Note' : 'New Note'}
@@ -414,7 +418,7 @@ export default function Notes() {
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto">
+    <div className="p-6 max-w-md mx-auto" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Notes</h2>
         <button

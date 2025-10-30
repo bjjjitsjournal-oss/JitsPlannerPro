@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, ExternalLink, Play } from 'lucide-react';
 
 export default function Videos() {
+  // Auto-scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -33,7 +37,7 @@ export default function Videos() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
+    <div className="p-6 max-w-md mx-auto" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
       <div className="flex items-center gap-3 mb-6">
         <Play className="text-red-600" size={28} />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">BJJ Videos</h1>
