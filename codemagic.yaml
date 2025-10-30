@@ -142,21 +142,15 @@ workflows:
           echo "🏗️  Building React app..."
           npm run build
       
-      - name: Copy web build to Android
+      - name: Sync Capacitor Android
         script: |
-          echo "📂 Copying web build to android/app/src/main/assets..."
-          mkdir -p android/app/src/main/assets/public
-          cp -r dist/public/* android/app/src/main/assets/public/
+          echo "🔄 Syncing Capacitor to Android..."
+          npx cap sync android
       
       - name: Build Android AAB
         script: |
-          echo "🤖 Building Android AAB..."
+          echo "🤖 Building signed Android AAB..."
           cd android
-          # Use gradle command directly if gradlew doesn't exist
-          if [ ! -f "./gradlew" ]; then
-            echo "gradlew not found, using gradle directly"
-            gradle wrapper
-          fi
           chmod +x ./gradlew
           ./gradlew clean bundleRelease --stacktrace
     
