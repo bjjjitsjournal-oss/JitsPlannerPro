@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -6,6 +6,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { Users, UserPlus, Share2, MessageCircle, Heart, Eye, Trash2 } from 'lucide-react';
 
 export default function Social() {
+  // Auto-scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   const [activeTab, setActiveTab] = useState<'community' | 'friends' | 'invite' | 'my-gym'>('community');
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -97,7 +101,7 @@ export default function Social() {
   const isAdmin = user?.role === 'admin';
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Social</h1>
         <div className="flex items-center gap-2">

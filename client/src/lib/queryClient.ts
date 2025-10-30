@@ -11,6 +11,8 @@ const API_BASE_URL = Capacitor.isNativePlatform()
 // In-memory cache for fast access (but cleared on app restart)
 let cachedSupabaseId: string | null = null;
 let cachedAccessToken: string | null = null;
+let cachedEmail: string | null = null;
+let cachedUserMetadata: any = null;
 let cacheHydrated = false;
 
 // Bootstrap function to preload cache from Preferences/localStorage (call ASAP on app start)
@@ -22,9 +24,11 @@ export async function hydrateAuthCache() {
   if (Capacitor.isNativePlatform()) {
     // Mobile: Use Capacitor Preferences
     try {
-      const [idResult, tokenResult] = await Promise.all([
+      const [idResult, tokenResult, emailResult, metadataResult] = await Promise.all([
         Preferences.get({ key: 'supabase_user_id' }),
-        Preferences.get({ key: 'supabase_access_token' })
+        Preferences.get({ key: 'supabase_access_token' }),
+        Preferences.get({ key: 'supabase_email' }),
+        Preferences.get({ key: 'supabase_metadata' })
       ]);
       
       if (idResult.value) {
@@ -33,11 +37,23 @@ export async function hydrateAuthCache() {
       if (tokenResult.value) {
         cachedAccessToken = tokenResult.value;
       }
+      if (emailResult.value) {
+        cachedEmail = emailResult.value;
+      }
+      if (metadataResult.value) {
+        try {
+          cachedUserMetadata = JSON.parse(metadataResult.value);
+        } catch (e) {
+          console.error('Failed to parse cached metadata:', e);
+        }
+      }
       
       const duration = performance.now() - startTime;
       console.log(`⚡ BOOTSTRAP: Hydrated auth cache from Preferences in ${duration.toFixed(1)}ms`, {
         hasId: !!cachedSupabaseId,
-        hasToken: !!cachedAccessToken
+        hasToken: !!cachedAccessToken,
+        hasEmail: !!cachedEmail,
+        hasMetadata: !!cachedUserMetadata
       });
     } catch (e) {
       console.error('Failed to hydrate auth cache:', e);
@@ -47,6 +63,8 @@ export async function hydrateAuthCache() {
     try {
       const id = localStorage.getItem('supabase_user_id');
       const token = localStorage.getItem('supabase_access_token');
+      const email = localStorage.getItem('supabase_email');
+      const metadata = localStorage.getItem('supabase_metadata');
       
       if (id) {
         cachedSupabaseId = id;
@@ -54,11 +72,23 @@ export async function hydrateAuthCache() {
       if (token) {
         cachedAccessToken = token;
       }
+      if (email) {
+        cachedEmail = email;
+      }
+      if (metadata) {
+        try {
+          cachedUserMetadata = JSON.parse(metadata);
+        } catch (e) {
+          console.error('Failed to parse cached metadata:', e);
+        }
+      }
       
       const duration = performance.now() - startTime;
       console.log(`⚡ BOOTSTRAP: Hydrated auth cache from localStorage in ${duration.toFixed(1)}ms`, {
         hasId: !!cachedSupabaseId,
-        hasToken: !!cachedAccessToken
+        hasToken: !!cachedAccessToken,
+        hasEmail: !!cachedEmail,
+        hasMetadata: !!cachedUserMetadata
       });
     } catch (e) {
       console.error('Failed to hydrate auth cache from localStorage:', e);
@@ -116,6 +146,56 @@ export async function setCachedAccessToken(token: string | null) {
       console.log('🗑️ Cleared access token from localStorage');
     }
   }
+}
+
+// Cache and persist session data (email and metadata) for fast cold-start on Android
+export async function setCachedSessionData(email: string | null, metadata: any) {
+  cachedEmail = email;
+  cachedUserMetadata = metadata;
+  
+  if (Capacitor.isNativePlatform()) {
+    // Mobile: Use Capacitor Preferences
+    if (email) {
+      await Preferences.set({ key: 'supabase_email', value: email });
+    } else {
+      await Preferences.remove({ key: 'supabase_email' });
+    }
+    
+    if (metadata) {
+      await Preferences.set({ key: 'supabase_metadata', value: JSON.stringify(metadata) });
+    } else {
+      await Preferences.remove({ key: 'supabase_metadata' });
+    }
+    console.log('💾 Persisted session data to Preferences');
+  } else {
+    // Web: Use localStorage
+    if (email) {
+      localStorage.setItem('supabase_email', email);
+    } else {
+      localStorage.removeItem('supabase_email');
+    }
+    
+    if (metadata) {
+      localStorage.setItem('supabase_metadata', JSON.stringify(metadata));
+    } else {
+      localStorage.removeItem('supabase_metadata');
+    }
+    console.log('💾 Persisted session data to localStorage');
+  }
+}
+
+// Get cached session data without calling Supabase (for fast cold-start on Android)
+export function getCachedSessionData(): { id: string; email: string; metadata: any; token: string } | null {
+  if (cachedSupabaseId && cachedEmail && cachedAccessToken) {
+    console.log('⚡ Using cached session data (skipping slow getSession() call!)');
+    return {
+      id: cachedSupabaseId,
+      email: cachedEmail,
+      metadata: cachedUserMetadata || {},
+      token: cachedAccessToken
+    };
+  }
+  return null;
 }
 
 async function getSupabaseId(): Promise<string | null> {
