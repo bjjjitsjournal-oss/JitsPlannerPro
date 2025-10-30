@@ -25,7 +25,7 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.80'; // Will be auto-updated by build process
+  const appVersion = '1.0.87'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -81,8 +81,14 @@ export default function Settings() {
   });
 
   // Fetch user's gym membership
-  const { data: gymMembership } = useQuery<{ id: number; name: string; code: string } | null>({
+  const { data: gymMembership } = useQuery<{ id: number; name: string; code: string; role: string } | null>({
     queryKey: ['/api/my-gym'],
+  });
+
+  // Fetch gym members if user is admin
+  const { data: gymMembers } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
+    queryKey: ['/api/gyms', gymMembership?.id, 'members'],
+    enabled: !!gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
   });
 
   // Join gym mutation
@@ -102,6 +108,27 @@ export default function Settings() {
       toast({
         title: "Error",
         description: error.message || "Failed to join gym",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Remove gym member mutation
+  const removeMemberMutation = useMutation({
+    mutationFn: async ({ userId }: { userId: number }) => {
+      return await apiRequest('DELETE', `/api/gyms/${gymMembership?.id}/members/${userId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/gyms', gymMembership?.id, 'members'] });
+      toast({
+        title: "Success!",
+        description: "Member removed from gym",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove member",
         variant: "destructive",
       });
     }
@@ -305,6 +332,85 @@ export default function Settings() {
               </button>
             </div>
           </div>
+          
+          {/* Gym Members (Admin Only) */}
+          {gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com') && (
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h4 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Gym Members {gymMembers && `(${gymMembers.length})`}
+              </h4>
+              {!gymMembers ? (
+                <div className="text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Loading members...</p>
+                </div>
+              ) : gymMembers.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No members yet</p>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {gymMembers.map((member) => (
+                  <div
+                    key={member.userId}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-800 dark:text-white">
+                        {member.firstName && member.lastName ? `${member.firstName} ${member.lastName}` : member.email}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{member.email}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                        Joined {new Date(member.joinedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {member.role === 'admin' && (
+                        <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">
+                          Admin
+                        </span>
+                      )}
+                      {member.userId !== user?.id && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button
+                              disabled={removeMemberMutation.isPending}
+                              className="text-red-600 hover:text-red-700 p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                              data-testid={`button-remove-member-${member.userId}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-white dark:bg-gray-800">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-gray-800 dark:text-white">
+                                Remove Member?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                                Are you sure you want to remove {member.firstName || member.email} from the gym?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => removeMemberMutation.mutate({ userId: member.userId })}
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                              >
+                                Remove
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
+                  </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           
           {user?.role === 'admin' && (
             <button 

@@ -3,7 +3,7 @@
 ## Overview
 Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training companion application designed to help practitioners track their progress, manage training data, and enhance their learning experience. It offers features for class tracking, note-taking, belt progression, video search, and competition game plan creation. The application aims to provide an intuitive experience, supporting BJJ practitioners in their journey with a clean, responsive, and PWA-ready design. It includes a free tier and premium subscriptions managed via app stores, targeting the global BJJ community.
 
-## Mobile App Status (v1.0.80)
+## Mobile App Status (v1.0.87)
 ### Android
 - ✅ Build configured and tested
 - ✅ Google Play Store subscriptions created (bjj_enthusiast_monthly: $9.99 AUD, gym_pro_monthly: $19.99 AUD)
@@ -11,7 +11,7 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - ✅ Simplified subscription flow (opens Play Store for subscription purchase)
 - 📦 Build command: `./gradlew bundleRelease` (generates AAB for Play Store)
 - 📱 App ID: com.jitsjournal.app
-- ⏳ Status: v1.0.80 ready for build and submission
+- ⏳ Status: v1.0.87 ready for build and submission
 
 ### iOS
 - ✅ Xcode project configured
@@ -26,9 +26,19 @@ Jits Journal is a comprehensive mobile-first Brazilian Jiu-Jitsu training compan
 - 🛠️ Build script: build-ios.sh (for Mac users)
 - 📱 Bundle ID: com.jitsjournal.app
 - 🎯 Recommended: Use Codemagic for cloud builds (no Mac needed)
-- ⏳ Status: v1.0.80 ready for Codemagic build and App Store submission
+- ⏳ Status: v1.0.87 ready for Codemagic build and App Store submission
 
-### Recent Updates (v1.0.80 - October 2025)
+### Recent Updates (v1.0.87 - October 2025)
+- 📱 **iOS SAFE AREA FIX**: Added env(safe-area-inset-top) padding to all pages (Classes, Notes, Videos, Social) - buttons no longer hide behind iPhone notch/Dynamic Island
+- 🔝 **AUTO-SCROLL UX**: Pages auto-scroll to top when navigating to Classes/Notes for better user experience
+- ⚡ **ANDROID PERFORMANCE FIX**: Optimized bootstrap cache to store complete session data (ID, token, email, metadata) - eliminates slow 6-second Supabase call on app cold start, reduces to <1 second
+- 👥 **GYM MEMBER MANAGEMENT**: Admins can now view and remove gym members directly in Settings page
+- 🔐 **SUPER ADMIN ROLE**: bjjjitsjournal@gmail.com can manage all gyms regardless of membership status
+- 🎯 **BACKEND API**: Added GET /api/gyms/:gymId/members and DELETE /api/gyms/:gymId/members/:userId endpoints with proper authorization
+- 📊 **LOADING STATES**: Added loading/empty states for gym member list in Settings
+- ✅ **Architect Verified**: All changes reviewed and approved for production
+
+### Previous Updates (v1.0.80 - October 2025)
 - ⚡ **CRITICAL PERFORMANCE FIX**: Notes now load in <1 second (was 10 seconds on mobile)
 - 🚀 **Bootstrap Cache Hydration**: Auth cache preloads from Preferences before any queries run
 - 🔒 **Race Condition Eliminated**: App blocks rendering until cache is ready, guarantees fast path
