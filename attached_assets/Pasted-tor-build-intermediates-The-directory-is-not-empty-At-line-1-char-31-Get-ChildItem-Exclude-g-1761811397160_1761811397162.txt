@@ -1,0 +1,89 @@
+tor\build\intermediates: The directory is not empty.
+At line:1 char:31
++ Get-ChildItem -Exclude .git | Remove-Item -Recurse -Force
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (intermediates:Direc
+   toryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build: The directory is not empty.
+At line:1 char:31
++ Get-ChildItem -Exclude .git | Remove-Item -Recurse -Force
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (build:DirectoryInfo
+   ) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor: The directory is not empty.
+At line:1 char:31
++ Get-ChildItem -Exclude .git | Remove-Item -Recurse -Force
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Expand-Archive
+    The archive file 'C:\Users\joe\Downloads\JitsPlannerPro (17)
+    .zip' expansion is in progress...
+    [oooooooooooooooooo                                  ]
+
+directory is not empty.
+At line:1 char:31
++ Get-ChildItem -Exclude .git | Remove-Item -Recurse -Force
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (android:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Could not find a part of the path 'C:\Users\joe\D
+ocuments\JitsplannerPro27\JitsPlannerPro\node_modules\@capacito
+r\preferences\android\build\.transforms\14bdfc7275                  + CategoryInfo          : WriteError: (capacite                Info) [Remove-Item], IOException               rs\joe\Downloa    + FullyQualifiedErrorId : RemoveFileSystemItemogress..    .    osoft.PowerShell.Commands.RemoveItemCommand    oooooooooooo  Remove-Item : Cannot remove item C:\Users\joe\Docu              nnerPro27\JitsPlannerPro\node_modules\@capacitor\a
++ Get-ChildItem -Exclude .git | Remove-Item -Recur~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\joe\Do...r
+   o\node_modules:String) [Remove-Item], DirectoryNotFoundExc
+  eption
+    + FullyQualifiedErrorId : RemoveItemIOError,Microsoft.Powe
+   rShell.Commands.RemoveItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Extract the NEW Replit zip
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Expand-Archive -Path "C:\Users\joe\Downloads\JitsPlannerPro (17).zip" -DestinationPath . -Force
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Move files out of nested folder if needed
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> $nestedFolder = Get-ChildItem -Directory | Where-Object { $_.Name -like "JitsPlannerPro*" } | Select-Object -First 1
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> if ($nestedFolder) {
+>>     Get-ChildItem -Path $nestedFolder.FullName | Move-Item -Destination . -Force
+>>     Remove-Item $nestedFolder.FullName -Force
+>> }
+Move-Item : Cannot create a file when that file already exists.
+At line:2 char:50
++ ... ldItem -Path $nestedFolder.FullName | Move-Item
+-Destination . -Force
++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\joe\Do...P
+   lannerPro\.git:DirectoryInfo) [Move-Item], IOException
+    + FullyQualifiedErrorId : MoveDirectoryItemIOError,Microso
+   ft.PowerShell.Commands.MoveItemCommand
+
+Move-Item : Cannot create a file when that file already exists.
+At line:2 char:50
++ ... ldItem -Path $nestedFolder.FullName | Move-Item
+-Destination . -Force
++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\joe\Do...\
+   JitsPlannerPro:DirectoryInfo) [Move-Item], IOException
+    + FullyQualifiedErrorId : MoveDirectoryItemIOError,Microso
+   ft.PowerShell.Commands.MoveItemCommand
+
+
+Confirm
+The item at
+C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\JitsPlan
+nerPro has children and the Recurse parameter was not
+specified. If you continue, all children will be removed with
+the item. Are you sure you want to continue?
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend
+[?] Help(default is "Y"):
