@@ -1,6 +1,6 @@
 workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.75
+    name: Jits Journal iOS v1.0.87
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -105,7 +105,7 @@ workflows:
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.84
+    name: Jits Journal Android v1.0.87
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -117,7 +117,7 @@ workflows:
         PACKAGE_NAME: "com.jitsjournal.app"
       
       node: latest
-      java: 17
+      java: 21
     
     triggering:
       events:
