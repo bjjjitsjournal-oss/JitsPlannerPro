@@ -1,0 +1,130 @@
+ll be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/assets/public/public/screenshot-subscription.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/assets/public/public/sw.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/java/com/jitsjournal/app/MainActivity.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/drawable/ic_launcher_background.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/layout/activity_main.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/values/ic_launcher_background.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/values/strings.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/values/styles.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/xml/config.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/main/res/xml/file_paths.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/build.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/capacitor-cordova-android-plugins/build.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/capacitor-cordova-android-plugins/cordova.variables.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/capacitor-cordova-android-plugins/src/main/res/.gitkeep', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/capacitor.settings.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/gradle.properties', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/gradle/wrapper/gradle-wrapper.properties', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/gradlew', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/settings.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/android/variables.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react-native-apk-package/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'render.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'replit.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/create-game-plans-table.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/create-game-plans-table.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/db.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/emailService.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/openaiService.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/r2Storage.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/routes.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/routes.ts.backup', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/setup-stripe-products.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/storage.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/storage.ts.backup', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/storageUtils.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/vite.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'shared/schema.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/AndroidManifest.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/assets/index-DcGGSogR.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/assets/index-Dha91UYG.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/feature-graphic.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/icon-192x192.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/icon-512x512.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/screenshot-classes.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/screenshot-dashboard.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/screenshot-notes.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/screenshot-subscription.svg', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/assets/www/public/sw.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/res/drawable/icon.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/res/values/styles.xml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'simple-build/src/main/java/com/jitsjournal/app/MainActivity.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tailwind.config.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tsconfig.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'update-android.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'vercel.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'vite.config.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'weekly_commitments_backup.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'working-credentials.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'attached_assets/Pasted-plugins-id-com-android-application-id-kotlin-android-android-namespace-com-j-1761806185660_1761806185661.txt', LF will be replaced by CRLF the next time Git touches it
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git commit -m "Fix: Keep android/ios in git, use cap sync not add"
+[replit-agent 8bbba89] Fix: Keep android/ios in git, use cap sync not add
+ 52 files changed, 364 insertions(+), 14 deletions(-)
+ create mode 100644 .local/state/replit/agent/.agent_state_0589f380298dfcc9bfb79f03066c878ae8fd8cf1.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_0da223d4530bb3af6411bb89f630881de729fcbb.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_0ed02e45857733be57fe66dd7599b72db0b816eb.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_101609ce7baab688a5d5597ef48995c4b2794bc6.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_11832bbbade1962ff17c4c3161108c5b976386ab.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_1d34c0b2e89dd15076a9a8d23530edf2dcdb88a8.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_2b0f42e81cf64dee7f0934a160866a9a7920e658.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_2cbdbaf55311f2b9f0baa421374862683d06599e.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_2da4f31e7f2160c7dbe1dc2a3d92e5caa8d0ddb1.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_2ef9ff6eb9e67ed5a078ed873d98afe92c11030c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_3a7b75b483f0c1ac69dbb1a9e6ac059231527794.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_45e6e3a815469d8987aa0534df5f3faf1170efb2.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_568baf61763effcf7f9e84c15cbea240e937245d.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_60cab0fae0e02174f7b93340a149f9795435896e.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_6b17776371024335c9e0fb1d0e080aef05a7de98.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_6d7bcb3efe13a1ecd9ef55a7c0caf5a62619b2e8.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_755001ecd3a9e16388d38b3d75dac65ba9f7b090.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_85ea3355bc5e63cfcd7871574c2cb520d92a609a.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_89684ff1554d0ce66ed407e21a03d4027fa27246.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_8b686f8aaffe1d333a800ee38ccc2327e3f51287.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_8f8142797cafd800470fec5f2f502b196b6939b0.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_995cc5b80b83d631e9443487919a0c039981d127.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_9ecf91dabd3e5f82f9832aff8dbb0a886d274d00.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_a36b0cf25dfe0149a00128fd82485178a41ada1e.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_a7881ff104b92d99202f91bbc8e787e0696d31ad.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_c3bbca25cbc724a7aefddc60416117e233254336.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_c9b397cd3f72d1052e69594374d8b8e053764b1f.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_caed8307c5eaba64f43817177824b0321bb9864a.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_d3e4b2a50feb411a8bf0755e39078fff29e74ac5.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_d4c59842d072d62e3ffde4330aeed63b763090c5.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_da9db63905e780ebe405c4a374764252b193a728.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_dfe209a2696f15c145aeff4e76ebc9c0f0285397.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_e7c00ceab1157b53a314bd515b725cb263f5e2c2.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_e946e1e394f7570bd51f04eb06b4129e8b3f8abc.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ec52f112b1b7934cdbd4e9441ff3598e337edbd2.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ec5aa1430d5fe6e4dc9c23f5f3dcf6bffa7dd05c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_efebebf81a86e253d3071f7f50b3c3d69f47c57d.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f03542f2ecc28a26ed604b4edd2403059bdb9b3f.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb76bd926ef3cee0ee10a38e7892605a0a75b440.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc05907cb267d6885fbc28ebce24122e671c272d.bin
+ delete mode 100644 android/app/upload-key.jks
+ create mode 100644 attached_assets/Pasted--capacitor-preferences-7-0-2-update-android-in-230-82ms-info-Sync-finished-in-0-61s-PS-1761806833731_1761806833732.txt
+ create mode 100644 attached_assets/Pasted-PS-C-Users-joe-Documents-JitsplannerPro27-JitsPlannerPro-android-app-notepad-build-gradle-PS-C-U-1761806540103_1761806540105.txt
+ create mode 100644 attached_assets/Pasted-True-PS-C-Users-joe-Documents-jits-journal-cd-C-Users-joe-Documents-JitsplannerPro27-JitsPlanner-1761810111500_1761810111502.txt
+ create mode 100644 attached_assets/Pasted-UILD-FAILED-in-52s-197-actionable-tasks-192-executed-5-up-to-date-PS-C-Users-joe-Documents-Jits-1761808673849_1761808673850.txt
+ create mode 100644 attached_assets/Pasted-d-gradle-PS-C-Users-joe-Documents-jits-journal-android-app-Get-ChildItem-Path-C-Users-joe-Docum-1761806083809_1761806083813.txt
+ create mode 100644 attached_assets/Pasted-plugins-id-com-android-application-id-kotlin-android-android-namespace-com-j-1761806185660_1761806185661.txt
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git push origin replit-agent
+Enumerating objects: 73, done.
+Counting objects: 100% (73/73), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (57/57), done.
+Writing objects: 100% (60/60), 5.21 MiB | 1.97 MiB/s, done.
+Total 60 (delta 11), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (11/11), completed with 8 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   d5a4619..8bbba89  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
