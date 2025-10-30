@@ -1,0 +1,138 @@
+{
+  "id": "com.jitsjournal.app",
+  "name": "Jits Journal - BJJ Training Companion",
+  "short_name": "Jits Journal",
+  "description": "Track your Brazilian Jiu-Jitsu training progress with class logging, belt tracking, and technique notes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#dc2626",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["sports", "fitness", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/screenshot-dashboard.svg",
+      "sizes": "390x844",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Dashboard with weekly goals and quick actions"
+    },
+    {
+      "src": "/screenshot-classes.svg",
+      "sizes": "390x844", 
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Class logging with subscription limits"
+    },
+    {
+      "src": "/screenshot-notes.svg",
+      "sizes": "390x844",
+      "type": "image/svg+xml", 
+      "form_factor": "narrow",
+      "label": "Technique notes with video attachments"
+    },
+    {
+      "src": "/screenshot-subscription.svg",
+      "sizes": "390x844",
+      "type": "image/svg+xml",
+      "form_factor": "narrow", 
+      "label": "Premium subscription plans"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Class",
+      "short_name": "Log Class",
+      "description": "Quickly log a new training class",
+      "url": "/classes",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "New Note",
+      "short_name": "New Note",
+      "description": "Create a new technique note",
+      "url": "/notes",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.jitsjournal.app",
+      "id": "com.jitsjournal.app"
+    }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://jitsjournal.com"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}
