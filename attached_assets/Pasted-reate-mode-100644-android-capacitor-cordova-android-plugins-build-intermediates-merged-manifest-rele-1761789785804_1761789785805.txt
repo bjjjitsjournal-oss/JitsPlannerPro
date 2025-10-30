@@ -1,0 +1,33 @@
+reate mode 100644 android/capacitor-cordova-android-plugins/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml
+ create mode 100644 android/capacitor-cordova-android-plugins/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json
+ create mode 100644 android/capacitor-cordova-android-plugins/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt
+ create mode 100644 android/capacitor-cordova-android-plugins/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar
+ create mode 100644 android/capacitor-cordova-android-plugins/build/intermediates/symbol_list_with_package_name/release/generateReleaseRFile/package-aware-r.txt
+ create mode 100644 android/capacitor-cordova-android-plugins/build/outputs/logs/manifest-merger-release-report.txt
+ create mode 100644 android/capacitor-cordova-android-plugins/cordova.variables.gradle
+ create mode 100644 android/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml
+ create mode 100644 android/capacitor-cordova-android-plugins/src/main/java/.gitkeep
+ create mode 100644 android/capacitor-cordova-android-plugins/src/main/res/.gitkeep
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git push origin replit-agent
+Enumerating objects: 1106, done.
+Counting objects: 100% (1106/1106), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (761/761), done.
+Writing objects: 100% (1105/1105), 20.72 MiB | 1.11 MiB/s, done.
+Total 1105 (delta 241), reused 12 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (241/241), completed with 1 local object.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   a04ae59..14fcffa  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> ls android/gradlew
+ls : Cannot find path 'C:\Users\joe\Documents\JitsplannerPro27\
+JitsPlannerPro\android\gradlew' because it does not exist.
+At line:1 char:1
++ ls android/gradlew
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\Do
+   ...android\gradlew:String) [Get-ChildItem], ItemNotFoundEx
+  ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.GetChildItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
