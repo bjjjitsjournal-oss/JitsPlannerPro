@@ -534,42 +534,94 @@ export default function GamePlans() {
         <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100">AI Counter Move Suggestions</h3>
+            <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100">AI Decision Tree Suggestions</h3>
           </div>
           
           {aiLoading ? (
             <p className="text-purple-700 dark:text-purple-300">Generating suggestions...</p>
-          ) : aiSuggestions.length > 0 ? (
-            <div className="space-y-3">
-              {aiSuggestions.map((suggestion, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                        {suggestion.moveName}
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {suggestion.description}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setMoveData({
-                          moveName: suggestion.moveName,
-                          description: suggestion.description,
-                          parentId: moveData.parentId,
-                        });
-                        setShowMoveForm(true);
-                        setShowAiSuggestions(false);
-                      }}
-                      className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-                      data-testid={`button-use-suggestion-${index}`}
-                    >
-                      Use This
-                    </button>
+          ) : (aiSuggestions.successMoves.length > 0 || aiSuggestions.failureMoves.length > 0) ? (
+            <div className="space-y-6">
+              {/* Success Moves */}
+              {aiSuggestions.successMoves.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-green-700 dark:text-green-400 mb-3 flex items-center gap-2">
+                    <span className="text-xl">✓</span> If Successful
+                  </h4>
+                  <div className="space-y-3">
+                    {aiSuggestions.successMoves.map((suggestion, index) => (
+                      <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-green-500">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h5 className="font-semibold text-gray-900 dark:text-white mb-1">
+                              {suggestion.moveName}
+                            </h5>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {suggestion.description}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setMoveData({
+                                moveName: suggestion.moveName,
+                                description: suggestion.description,
+                                parentId: moveData.parentId,
+                                branchType: 'success',
+                              });
+                              setShowMoveForm(true);
+                              setShowAiSuggestions(false);
+                            }}
+                            className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors whitespace-nowrap"
+                            data-testid={`button-use-success-${index}`}
+                          >
+                            Use This
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* Failure Moves */}
+              {aiSuggestions.failureMoves.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
+                    <span className="text-xl">✗</span> If Fails/Defended
+                  </h4>
+                  <div className="space-y-3">
+                    {aiSuggestions.failureMoves.map((suggestion, index) => (
+                      <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-red-500">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h5 className="font-semibold text-gray-900 dark:text-white mb-1">
+                              {suggestion.moveName}
+                            </h5>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {suggestion.description}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setMoveData({
+                                moveName: suggestion.moveName,
+                                description: suggestion.description,
+                                parentId: moveData.parentId,
+                                branchType: 'failure',
+                              });
+                              setShowMoveForm(true);
+                              setShowAiSuggestions(false);
+                            }}
+                            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors whitespace-nowrap"
+                            data-testid={`button-use-failure-${index}`}
+                          >
+                            Use This
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-purple-700 dark:text-purple-300">No suggestions available.</p>
