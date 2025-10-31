@@ -2036,7 +2036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Counter Move Suggestions
+  // AI Decision Tree Suggestions (success/failure paths)
   app.post("/api/game-plans/ai-suggest", authenticateToken, async (req, res) => {
     try {
       const { currentMove, position, context } = req.body;
@@ -2047,8 +2047,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const counterMoves = await generateBJJCounterMoves(currentMove, position, context);
-      res.json({ counterMoves });
+      const suggestions = await generateBJJCounterMoves(currentMove, position, context);
+      res.json(suggestions);
     } catch (error: any) {
       console.error("AI suggestion error:", error);
       res.status(500).json({ 
