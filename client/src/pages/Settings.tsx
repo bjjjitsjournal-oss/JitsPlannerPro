@@ -89,8 +89,8 @@ export default function Settings() {
   const { data: gymMembers, isLoading: membersLoading } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
     queryKey: ['/api/gyms', gymMembership?.id, 'members'],
     queryFn: async () => {
-      if (!gymMembership?.id) return [];
-      const response = await fetch(`/api/gyms/${gymMembership.id}/members`, {
+      if (!gymMembership?.id || !user?.supabaseId) return [];
+      const response = await fetch(`/api/gyms/${gymMembership.id}/members?supabaseId=${user.supabaseId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('supabase_access_token')}`
         }
@@ -101,7 +101,7 @@ export default function Settings() {
       }
       return response.json();
     },
-    enabled: !!gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
+    enabled: !!gymMembership && !!user?.supabaseId && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
   });
 
   // Join gym mutation
