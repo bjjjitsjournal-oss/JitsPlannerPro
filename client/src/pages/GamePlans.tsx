@@ -236,6 +236,14 @@ export default function GamePlans() {
     setAiLoading(true);
     setShowAiSuggestions(true);
     
+    // Set the parent ID for the suggestions
+    setMoveData({ 
+      moveName: '', 
+      description: '', 
+      parentId: currentMove.id, 
+      branchType: 'root' 
+    });
+    
     try {
       const data = await apiRequest('/api/game-plans/ai-suggest', {
         method: 'POST',
@@ -251,13 +259,13 @@ export default function GamePlans() {
         failureMoves: data.failureMoves || []
       });
       
-      const totalSuggestions = (data.successMoves?.length || 0) + (data.failureMoves?.length || 0);
       toast({
         title: 'AI Suggestions Ready!',
         description: `Generated ${data.successMoves?.length || 0} success moves and ${data.failureMoves?.length || 0} failure moves.`,
         duration: 4000,
       });
     } catch (error: any) {
+      console.error('AI suggestion error:', error);
       toast({
         title: 'AI Error',
         description: error.message || 'Failed to generate suggestions. Make sure OpenAI API key is configured.',
@@ -321,6 +329,12 @@ export default function GamePlans() {
                         <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       )}
                     </button>
+                  )}
+                  {move.branchType === 'success' && (
+                    <span className="w-2 h-2 bg-green-500 rounded-full" title="Success move - if the previous move works"></span>
+                  )}
+                  {move.branchType === 'failure' && (
+                    <span className="w-2 h-2 bg-red-500 rounded-full" title="Failure move - if the previous move fails"></span>
                   )}
                   <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
                 </div>
