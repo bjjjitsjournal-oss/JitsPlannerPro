@@ -204,6 +204,14 @@ export default function Dashboard() {
             <div className="font-bold text-lg mb-1">New Note</div>
             <div className="text-sm opacity-90">Save techniques</div>
           </Link>
+          <Link
+            to="/game-plans"
+            className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200 block col-span-2"
+          >
+            <div className="text-2xl mb-2">🎯</div>
+            <div className="font-bold text-lg mb-1">Game Plans</div>
+            <div className="text-sm opacity-90">Build competition strategy with AI decision trees</div>
+          </Link>
         </div>
       </div>
 
