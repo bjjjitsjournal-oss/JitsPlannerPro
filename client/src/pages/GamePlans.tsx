@@ -198,7 +198,7 @@ export default function GamePlans() {
     createMoveMutation.mutate({
       planName: newPlanName.trim(),
       moveName: 'Starting Position',
-      description: 'Define your starting position here',
+      description: '',
       parentId: null,
       moveOrder: 0,
     });
@@ -209,7 +209,7 @@ export default function GamePlans() {
   };
 
   const handleAddMove = () => {
-    if (!moveData.moveName.trim() || !selectedPlan) return;
+    if (!moveData.moveName?.trim() || !selectedPlan) return;
 
     if (editingMove) {
       updateMoveMutation.mutate({
