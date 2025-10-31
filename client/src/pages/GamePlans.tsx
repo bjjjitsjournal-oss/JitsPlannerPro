@@ -254,7 +254,6 @@ export default function GamePlans() {
       console.log('🤖 AI Request:', requestData);
       
       const response = await apiRequest('POST', '/api/game-plans/ai-suggest', requestData);
-      
       const data = await response.json();
 
       setAiSuggestions({
