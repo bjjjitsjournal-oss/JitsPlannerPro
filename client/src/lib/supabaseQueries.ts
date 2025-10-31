@@ -476,7 +476,19 @@ export const gamePlansQueries = {
       .order('move_order', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    
+    // Transform snake_case to camelCase for frontend compatibility
+    return (data || []).map((move: any) => ({
+      id: move.id,
+      planName: move.plan_name,
+      moveName: move.move_name,
+      description: move.description,
+      parentId: move.parent_id,
+      branchType: move.branch_type,
+      moveOrder: move.move_order,
+      createdAt: move.created_at,
+      updatedAt: move.updated_at,
+    }));
   },
 
   // Get children of a specific move
