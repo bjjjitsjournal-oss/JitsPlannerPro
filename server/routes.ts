@@ -2037,7 +2037,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Decision Tree Suggestions (success/failure paths)
-  app.post("/api/game-plans/ai-suggest", authenticateToken, async (req, res) => {
+  app.post("/api/game-plans/ai-suggest", flexibleAuth, async (req, res) => {
     try {
       const { currentMove, position, context } = req.body;
       
