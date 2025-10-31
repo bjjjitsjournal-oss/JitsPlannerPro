@@ -316,10 +316,16 @@ export default function GamePlans() {
       
       return (
         <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-gray-200 dark:border-gray-700' : ''}`}>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 shadow-sm">
+          <div className={`rounded-lg p-4 mb-3 shadow-sm border-l-4 ${
+            move.branchType === 'success' 
+              ? 'bg-green-50 dark:bg-green-900/20 border-green-500' 
+              : move.branchType === 'failure'
+              ? 'bg-red-50 dark:bg-red-900/20 border-red-500'
+              : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
+          }`}>
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-3 mb-2">
                   {hasAnyChildren && (
                     <button
                       onClick={() => toggleExpand(move.id)}
@@ -334,10 +340,14 @@ export default function GamePlans() {
                     </button>
                   )}
                   {move.branchType === 'success' && (
-                    <span className="w-2 h-2 bg-green-500 rounded-full" title="Success move - if the previous move works"></span>
+                    <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-md flex items-center gap-1">
+                      <span className="text-sm">✓</span> IF IT WORKS
+                    </span>
                   )}
                   {move.branchType === 'failure' && (
-                    <span className="w-2 h-2 bg-red-500 rounded-full" title="Failure move - if the previous move fails"></span>
+                    <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-md flex items-center gap-1">
+                      <span className="text-sm">✗</span> IF IT FAILS
+                    </span>
                   )}
                   <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
                 </div>
