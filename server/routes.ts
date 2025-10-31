@@ -2670,6 +2670,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test email endpoint (admin only)
+  app.post("/api/test-email", flexibleAuth, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const user = await storage.getUser(userId);
+      
+      // Only allow super admin to test emails
+      if (user?.email !== 'bjjjitsjournal@gmail.com') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const { email, firstName } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email address required" });
+      }
+      
+      console.log(`📧 Testing email send to: ${email}`);
+      const result = await sendWelcomeEmail(email, firstName || "there");
+      
+      if (result) {
+        console.log(`✅ Test email successfully sent to ${email}`);
+        res.json({ success: true, message: "Email sent successfully!" });
+      } else {
+        console.error(`❌ Failed to send test email to ${email}`);
+        res.status(500).json({ success: false, message: "Failed to send email" });
+      }
+    } catch (error) {
+      console.error("Test email error:", error);
+      res.status(500).json({ success: false, message: "Email test failed", error: String(error) });
+    }
+  });
+
   // Global error handler - ensures all errors return JSON instead of HTML
   app.use((err: any, req: any, res: any, next: any) => {
     console.error('❌ Global error handler caught:', err.message);
