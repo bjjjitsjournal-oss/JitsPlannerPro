@@ -355,19 +355,19 @@ export default function GamePlans() {
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 {!hasSuccessChild && (
                   <button
                     onClick={() => {
                       setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'success' });
                       setShowMoveForm(true);
                     }}
-                    className="p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
+                    className="px-3 py-2 bg-green-600 text-white text-xs font-bold rounded hover:bg-green-700 transition-colors flex items-center gap-1 shadow-md"
                     title="Add success move (if it works)"
                     data-testid={`button-add-success-${move.id}`}
                   >
                     <Plus className="w-4 h-4" />
-                    <span className="text-xs ml-1">✓</span>
+                    <span>IF SUCCESS</span>
                   </button>
                 )}
                 {!hasFailureChild && (
@@ -376,12 +376,12 @@ export default function GamePlans() {
                       setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'failure' });
                       setShowMoveForm(true);
                     }}
-                    className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                    className="px-3 py-2 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 transition-colors flex items-center gap-1 shadow-md"
                     title="Add failure move (if it fails)"
                     data-testid={`button-add-failure-${move.id}`}
                   >
                     <Plus className="w-4 h-4" />
-                    <span className="text-xs ml-1">✗</span>
+                    <span>IF FAILS</span>
                   </button>
                 )}
                 <button
