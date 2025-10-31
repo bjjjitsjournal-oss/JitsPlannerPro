@@ -2039,13 +2039,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Decision Tree Suggestions (success/failure paths)
   app.post("/api/game-plans/ai-suggest", flexibleAuth, async (req, res) => {
     try {
+      console.log('🤖 AI suggest request body:', JSON.stringify(req.body, null, 2));
       const { currentMove, position, context } = req.body;
       
       if (!currentMove || !position) {
+        console.error('❌ Missing fields - currentMove:', currentMove, 'position:', position);
         return res.status(400).json({ 
           message: "Missing required fields: currentMove and position are required" 
         });
       }
+      
+      console.log('✅ AI request validated - generating suggestions...');
 
       const suggestions = await generateBJJCounterMoves(currentMove, position, context);
       res.json(suggestions);

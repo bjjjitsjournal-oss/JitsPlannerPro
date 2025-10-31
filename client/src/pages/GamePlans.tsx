@@ -245,11 +245,15 @@ export default function GamePlans() {
     });
     
     try {
-      const response = await apiRequest('POST', '/api/game-plans/ai-suggest', {
+      const requestData = {
         currentMove: currentMove.moveName,
         position: selectedPlan || 'General Position',
         context: currentMove.description || '',
-      });
+      };
+      
+      console.log('🤖 AI Request:', requestData);
+      
+      const response = await apiRequest('POST', '/api/game-plans/ai-suggest', requestData);
       
       const data = await response.json();
 
