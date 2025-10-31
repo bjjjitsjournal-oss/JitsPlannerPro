@@ -514,30 +514,71 @@ export const gamePlansQueries = {
         move_name: moveData.moveName,
         description: moveData.description,
         parent_id: moveData.parentId || null,
+        branch_type: moveData.branchType || 'root',
         move_order: moveData.moveOrder || 0,
       })
       .select()
       .single();
 
     if (error) throw error;
+    
+    // Transform response to camelCase for consistency
+    if (data) {
+      return {
+        id: data.id,
+        planName: data.plan_name,
+        moveName: data.move_name,
+        description: data.description,
+        parentId: data.parent_id,
+        branchType: data.branch_type,
+        moveOrder: data.move_order,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      };
+    }
     return data;
   },
 
   // Update a move
   async update(moveId: string, userId: number, moveData: any) {
+    const updateData: any = {
+      move_name: moveData.moveName,
+      description: moveData.description,
+    };
+    
+    // Only update branch_type if provided
+    if (moveData.branchType !== undefined) {
+      updateData.branch_type = moveData.branchType;
+    }
+    
+    if (moveData.moveOrder !== undefined) {
+      updateData.move_order = moveData.moveOrder;
+    }
+    
     const { data, error } = await supabase
       .from('game_plans')
-      .update({
-        move_name: moveData.moveName,
-        description: moveData.description,
-        move_order: moveData.moveOrder,
-      })
+      .update(updateData)
       .eq('id', moveId)
       .eq('user_id', userId)
       .select()
       .single();
 
     if (error) throw error;
+    
+    // Transform response to camelCase
+    if (data) {
+      return {
+        id: data.id,
+        planName: data.plan_name,
+        moveName: data.move_name,
+        description: data.description,
+        parentId: data.parent_id,
+        branchType: data.branch_type,
+        moveOrder: data.move_order,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+      };
+    }
     return data;
   },
 
