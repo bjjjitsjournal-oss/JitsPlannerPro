@@ -19,28 +19,42 @@ interface CounterMove {
   description: string;
 }
 
+interface DecisionTreeSuggestions {
+  successMoves: CounterMove[];
+  failureMoves: CounterMove[];
+}
+
 export async function generateBJJCounterMoves(
   currentMove: string,
   position: string,
   context: string = ""
-): Promise<CounterMove[]> {
+): Promise<DecisionTreeSuggestions> {
   try {
     const openai = getOpenAIClient();
     
-    const prompt = `You are a Brazilian Jiu-Jitsu expert. Given the following scenario, suggest 3-5 realistic counter moves or responses.
+    const prompt = `You are a Brazilian Jiu-Jitsu expert. Create a decision tree for the following scenario by suggesting moves for BOTH outcomes:
 
 Position: ${position}
 Current Move/Attack: ${currentMove}
 ${context ? `Additional Context: ${context}` : ""}
 
-Provide practical BJJ counter techniques that would be appropriate responses. For each counter move, include:
-1. The name of the technique
-2. A brief description of how to execute it
+Provide TWO separate sets of moves:
 
-Respond with JSON in this format: 
+1. SUCCESS MOVES (if the current move works): 2-3 follow-up techniques to capitalize on success
+2. FAILURE MOVES (if the current move is defended/fails): 2-3 backup techniques or transitions
+
+For each move, include:
+- The name of the technique
+- A brief description of how to execute it
+
+Respond with JSON in this EXACT format: 
 {
-  "counterMoves": [
-    {"moveName": "technique name", "description": "how to execute"},
+  "successMoves": [
+    {"moveName": "technique name", "description": "how to execute if original move works"},
+    ...
+  ],
+  "failureMoves": [
+    {"moveName": "technique name", "description": "what to do if original move fails"},
     ...
   ]
 }`;
@@ -50,7 +64,7 @@ Respond with JSON in this format:
       messages: [
         {
           role: "system",
-          content: "You are a Brazilian Jiu-Jitsu expert coach providing technical counter move suggestions. Always provide realistic, practical techniques."
+          content: "You are a Brazilian Jiu-Jitsu expert coach creating decision trees for game planning. Always provide realistic, practical techniques for both success and failure scenarios."
         },
         {
           role: "user",
@@ -62,7 +76,10 @@ Respond with JSON in this format:
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
-    return result.counterMoves || [];
+    return {
+      successMoves: result.successMoves || [],
+      failureMoves: result.failureMoves || []
+    };
   } catch (error: any) {
     console.error("OpenAI counter move generation error:", error);
     

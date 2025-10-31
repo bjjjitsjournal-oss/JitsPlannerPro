@@ -12,13 +12,21 @@ interface GamePlanMove {
   moveName: string;
   description?: string;
   parentId?: string | null;
+  branchType?: string; // 'root', 'success', or 'failure'
   moveOrder: number;
   children?: GamePlanMove[];
+  successChild?: GamePlanMove;
+  failureChild?: GamePlanMove;
 }
 
 interface CounterMove {
   moveName: string;
   description: string;
+}
+
+interface AISuggestions {
+  successMoves: CounterMove[];
+  failureMoves: CounterMove[];
 }
 
 export default function GamePlans() {
@@ -32,7 +40,7 @@ export default function GamePlans() {
   const [expandedMoves, setExpandedMoves] = useState<Set<string>>(new Set());
   const [editingMove, setEditingMove] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<CounterMove[]>([]);
+  const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({ successMoves: [], failureMoves: [] });
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
 
   const [newPlanName, setNewPlanName] = useState('');
@@ -40,6 +48,7 @@ export default function GamePlans() {
     moveName: '',
     description: '',
     parentId: null as string | null,
+    branchType: 'root' as 'root' | 'success' | 'failure',
   });
 
   // Get plan names
@@ -62,26 +71,35 @@ export default function GamePlans() {
     enabled: !!user?.id && !!selectedPlan,
   });
 
-  // Build tree structure from flat list
+  // Build tree structure from flat list with success/failure branches
   const buildTree = (flatMoves: any[]): GamePlanMove[] => {
     const moveMap = new Map<string, GamePlanMove>();
     const rootMoves: GamePlanMove[] = [];
 
     // First pass: create all nodes
     flatMoves.forEach(move => {
-      moveMap.set(move.id, { ...move, children: [] });
+      moveMap.set(move.id, { ...move, children: [], successChild: undefined, failureChild: undefined });
     });
 
-    // Second pass: build tree
+    // Second pass: build tree and organize by branch type
     flatMoves.forEach(move => {
       const node = moveMap.get(move.id)!;
+      const branchType = move.branch_type || move.branchType || 'root';
+      
       if (!move.parent_id && !move.parentId) {
         rootMoves.push(node);
       } else {
         const parentId = move.parent_id || move.parentId;
         const parent = moveMap.get(parentId);
         if (parent) {
-          parent.children!.push(node);
+          // Organize by branch type
+          if (branchType === 'success') {
+            parent.successChild = node;
+          } else if (branchType === 'failure') {
+            parent.failureChild = node;
+          } else {
+            parent.children!.push(node);
+          }
         } else {
           rootMoves.push(node); // Orphaned node becomes root
         }
@@ -168,8 +186,8 @@ export default function GamePlans() {
   const resetMoveForm = () => {
     setShowMoveForm(false);
     setEditingMove(null);
-    setMoveData({ moveName: '', description: '', parentId: null });
-    setAiSuggestions([]);
+    setMoveData({ moveName: '', description: '', parentId: null, branchType: 'root' });
+    setAiSuggestions({ successMoves: [], failureMoves: [] });
     setShowAiSuggestions(false);
   };
 
@@ -199,6 +217,7 @@ export default function GamePlans() {
         data: {
           moveName: moveData.moveName,
           description: moveData.description,
+          branchType: moveData.branchType,
         },
       });
     } else {
@@ -207,6 +226,7 @@ export default function GamePlans() {
         moveName: moveData.moveName,
         description: moveData.description,
         parentId: moveData.parentId,
+        branchType: moveData.branchType,
         moveOrder: 0,
       });
     }
@@ -226,11 +246,15 @@ export default function GamePlans() {
         }),
       });
 
-      setAiSuggestions(data.counterMoves || []);
+      setAiSuggestions({
+        successMoves: data.successMoves || [],
+        failureMoves: data.failureMoves || []
+      });
       
+      const totalSuggestions = (data.successMoves?.length || 0) + (data.failureMoves?.length || 0);
       toast({
         title: 'AI Suggestions Ready!',
-        description: `Found ${data.counterMoves?.length || 0} counter move suggestions.`,
+        description: `Generated ${data.successMoves?.length || 0} success moves and ${data.failureMoves?.length || 0} failure moves.`,
         duration: 4000,
       });
     } catch (error: any) {
@@ -251,6 +275,7 @@ export default function GamePlans() {
       moveName: move.moveName,
       description: move.description || '',
       parentId: move.parentId || null,
+      branchType: (move.branchType as 'root' | 'success' | 'failure') || 'root',
     });
     setShowMoveForm(true);
   };
@@ -272,78 +297,127 @@ export default function GamePlans() {
   };
 
   const renderMoveTree = (moves: GamePlanMove[], depth: number = 0) => {
-    return moves.map(move => (
-      <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-blue-200 dark:border-blue-800' : ''}`}>
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                {move.children && move.children.length > 0 && (
+    return moves.map(move => {
+      const hasSuccessChild = !!move.successChild;
+      const hasFailureChild = !!move.failureChild;
+      const hasLegacyChildren = move.children && move.children.length > 0;
+      const hasAnyChildren = hasSuccessChild || hasFailureChild || hasLegacyChildren;
+      
+      return (
+        <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-gray-200 dark:border-gray-700' : ''}`}>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  {hasAnyChildren && (
+                    <button
+                      onClick={() => toggleExpand(move.id)}
+                      className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                      data-testid={`button-toggle-${move.id}`}
+                    >
+                      {expandedMoves.has(move.id) ? (
+                        <ChevronDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      )}
+                    </button>
+                  )}
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
+                </div>
+                {move.description && (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 ml-9">{move.description}</p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                {!hasSuccessChild && (
                   <button
-                    onClick={() => toggleExpand(move.id)}
-                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                    data-testid={`button-toggle-${move.id}`}
+                    onClick={() => {
+                      setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'success' });
+                      setShowMoveForm(true);
+                    }}
+                    className="p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-colors"
+                    title="Add success move (if it works)"
+                    data-testid={`button-add-success-${move.id}`}
                   >
-                    {expandedMoves.has(move.id) ? (
-                      <ChevronDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    )}
+                    <Plus className="w-4 h-4" />
+                    <span className="text-xs ml-1">✓</span>
                   </button>
                 )}
-                <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
+                {!hasFailureChild && (
+                  <button
+                    onClick={() => {
+                      setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'failure' });
+                      setShowMoveForm(true);
+                    }}
+                    className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                    title="Add failure move (if it fails)"
+                    data-testid={`button-add-failure-${move.id}`}
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="text-xs ml-1">✗</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => handleAiSuggest(move)}
+                  disabled={aiLoading}
+                  className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors disabled:opacity-50"
+                  title="AI suggest moves for both paths"
+                  data-testid={`button-ai-suggest-${move.id}`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleEdit(move)}
+                  className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                  data-testid={`button-edit-${move.id}`}
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(move.id)}
+                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                  data-testid={`button-delete-${move.id}`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
-              {move.description && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 ml-9">{move.description}</p>
+            </div>
+          </div>
+
+          {expandedMoves.has(move.id) && (
+            <div className="mt-2 space-y-2">
+              {/* Success Branch */}
+              {hasSuccessChild && (
+                <div className="ml-6 border-l-2 border-green-400 dark:border-green-600 pl-4">
+                  <div className="text-xs font-semibold text-green-600 dark:text-green-400 mb-2 flex items-center gap-1">
+                    <span>✓</span> IF IT WORKS
+                  </div>
+                  {renderMoveTree([move.successChild], depth + 1)}
+                </div>
+              )}
+              
+              {/* Failure Branch */}
+              {hasFailureChild && (
+                <div className="ml-6 border-l-2 border-red-400 dark:border-red-600 pl-4">
+                  <div className="text-xs font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-1">
+                    <span>✗</span> IF IT FAILS
+                  </div>
+                  {renderMoveTree([move.failureChild], depth + 1)}
+                </div>
+              )}
+              
+              {/* Legacy children (for backward compatibility) */}
+              {hasLegacyChildren && (
+                <div className="ml-6">
+                  {renderMoveTree(move.children, depth + 1)}
+                </div>
               )}
             </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  setMoveData({ moveName: '', description: '', parentId: move.id });
-                  setShowMoveForm(true);
-                }}
-                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                title="Add counter move"
-                data-testid={`button-add-counter-${move.id}`}
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleAiSuggest(move)}
-                disabled={aiLoading}
-                className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors disabled:opacity-50"
-                title="AI suggest counter moves"
-                data-testid={`button-ai-suggest-${move.id}`}
-              >
-                <Sparkles className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleEdit(move)}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                data-testid={`button-edit-${move.id}`}
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleDelete(move.id)}
-                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                data-testid={`button-delete-${move.id}`}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          )}
         </div>
-
-        {move.children && move.children.length > 0 && expandedMoves.has(move.id) && (
-          <div className="mt-2">
-            {renderMoveTree(move.children, depth + 1)}
-          </div>
-        )}
-      </div>
-    ));
+      );
+    });
   };
 
   return (

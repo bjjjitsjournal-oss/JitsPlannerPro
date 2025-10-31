@@ -179,6 +179,7 @@ export const gamePlans = pgTable("game_plans", {
   moveName: text("move_name").notNull(), // The specific technique/move
   description: text("description"), // Detailed notes about the move
   parentId: varchar("parent_id"), // Self-reference for tree structure, null for root moves
+  branchType: text("branch_type").default("root"), // 'root', 'success', or 'failure' - defines the decision path
   moveOrder: integer("move_order").default(0), // Order among siblings
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
