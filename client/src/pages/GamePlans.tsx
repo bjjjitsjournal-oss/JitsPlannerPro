@@ -245,14 +245,13 @@ export default function GamePlans() {
     });
     
     try {
-      const data = await apiRequest('/api/game-plans/ai-suggest', {
-        method: 'POST',
-        body: JSON.stringify({
-          currentMove: currentMove.moveName,
-          position: selectedPlan || 'General Position',
-          context: currentMove.description || '',
-        }),
+      const response = await apiRequest('POST', '/api/game-plans/ai-suggest', {
+        currentMove: currentMove.moveName,
+        position: selectedPlan || 'General Position',
+        context: currentMove.description || '',
       });
+      
+      const data = await response.json();
 
       setAiSuggestions({
         successMoves: data.successMoves || [],
@@ -510,14 +509,15 @@ export default function GamePlans() {
           </h2>
           <input
             type="text"
-            value={moveData.moveName}
+            value={moveData.moveName || ''}
             onChange={(e) => setMoveData({ ...moveData, moveName: e.target.value })}
             placeholder="Move Name"
             className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg mb-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             data-testid="input-move-name"
+            required
           />
           <textarea
-            value={moveData.description}
+            value={moveData.description || ''}
             onChange={(e) => setMoveData({ ...moveData, description: e.target.value })}
             placeholder="Description (optional)"
             rows={3}
