@@ -181,6 +181,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             queryClient.clear();
             setUser(userData);
             loadedSupabaseIdRef.current = cachedSession.id;
+            
+            // Prefetch notes and social data immediately after login
+            console.log('🚀 Prefetching notes and social data...');
+            Promise.all([
+              queryClient.prefetchQuery({ queryKey: ['/api/notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/notes/shared'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/gym-notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/my-gym'] }),
+            ]).then(() => {
+              console.log('✅ Prefetch complete!');
+            }).catch((e) => console.log('⚠️ Prefetch failed:', e));
+            
             setIsLoading(false);
             console.log('✅ Fast path auth complete!');
             return; // Exit early - no need to call getSession()
@@ -217,6 +229,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             queryClient.clear();
             setUser(userData);
             loadedSupabaseIdRef.current = session.user.id;
+            
+            // Prefetch notes and social data immediately after login
+            console.log('🚀 Prefetching notes and social data...');
+            Promise.all([
+              queryClient.prefetchQuery({ queryKey: ['/api/notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/notes/shared'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/gym-notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/my-gym'] }),
+            ]).then(() => {
+              console.log('✅ Prefetch complete!');
+            }).catch((e) => console.log('⚠️ Prefetch failed:', e));
+            
             setIsLoading(false);
           } else {
             await supabase.auth.signOut();
@@ -289,6 +313,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             queryClient.clear();
             setUser(userData);
             loadedSupabaseIdRef.current = session.user.id;
+            
+            // Prefetch notes and social data immediately after login
+            console.log('🚀 Prefetching notes and social data...');
+            Promise.all([
+              queryClient.prefetchQuery({ queryKey: ['/api/notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/notes/shared'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/gym-notes'] }),
+              queryClient.prefetchQuery({ queryKey: ['/api/my-gym'] }),
+            ]).then(() => {
+              console.log('✅ Prefetch complete!');
+            }).catch((e) => console.log('⚠️ Prefetch failed:', e));
+            
             setIsLoading(false);
           } else {
             // Only sign out if this is NOT a fresh sign-in event
