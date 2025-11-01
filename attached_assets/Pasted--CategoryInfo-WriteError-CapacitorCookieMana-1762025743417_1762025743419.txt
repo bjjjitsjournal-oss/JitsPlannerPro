@@ -1,0 +1,702 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (CapacitorCookieMana
+   ger.dex:FileInfo) [Remove-Item], DirectoryNotFoundExceptio
+  n
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\plugin\CapacitorCookies.dex: Could not
+find a part of the path 'CapacitorCookies.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (CapacitorCookies.de
+   x:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\plugin\CapacitorHttp$1.dex: Could not find
+a part of the path 'CapacitorHttp$1.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (CapacitorHttp$1.dex
+   :FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\plugin\CapacitorHttp.dex: Could not find a
+part of the path 'CapacitorHttp.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (CapacitorHttp.dex:F
+   ileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\plugin: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (plugin:DirectoryInf
+   o) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\HostMask$Any.dex: Could not find a
+part of the path 'HostMask$Any.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Any.dex:Fi
+   leInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\HostMask$Nothing.dex: Could not find
+a part of the path 'HostMask$Nothing.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Nothing.de
+   x:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\HostMask$Parser.dex: Could not find a
+part of the path 'HostMask$Parser.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Parser.dex
+   :FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\HostMask$Simple.dex: Could not find a
+part of the path 'HostMask$Simple.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Simple.dex
+   :FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\HostMask$Util.dex: Could not find a
+part of the path 'HostMask$Util.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostMask$Util.dex:F
+   ileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\InternalUtils.dex: Could not find a
+part of the path 'InternalUtils.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (InternalUtils.dex:F
+   ileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util\PermissionHelper.dex: Could not find
+a part of the path 'PermissionHelper.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PermissionHelper.de
+   x:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\util: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (util:DirectoryInfo)
+    [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\AndroidProtocolHandler.dex: Could not find
+a part of the path 'AndroidProtocolHandler.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (AndroidProtocolHand
+   ler.dex:FileInfo) [Remove-Item], DirectoryNotFoundExceptio
+  n
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\App$AppRestoredListener.dex: Could not
+find a part of the path 'App$AppRestoredListener.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (App$AppRestoredList
+   ener.dex:FileInfo) [Remove-Item], DirectoryNotFoundExcepti
+  on
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\App$AppStatusChangeListener.dex: Could not
+find a part of the path 'App$AppStatusChangeListener.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (App$AppStatusChange
+   Listener.dex:FileInfo) [Remove-Item], DirectoryNotFoundExc
+  eption
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\BridgeWebChromeClient$ActivityResultListene
+r.dex: Could not find a part of the path
+'BridgeWebChromeClient$ActivityResultListener.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (BridgeWebChrome...u
+   ltListener.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\BridgeWebChromeClient$PermissionListener.de
+x: Could not find a part of the path
+'BridgeWebChromeClient$PermissionListener.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (BridgeWebChrome...i
+   onListener.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\BridgeWebChromeClient.dex: Could not find
+a part of the path 'BridgeWebChromeClient.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (BridgeWebChromeClie
+   nt.dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\BridgeWebViewClient.dex: Could not find a
+part of the path 'BridgeWebViewClient.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (BridgeWebViewClient
+   .dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\CapConfig$Builder.dex: Could not find a
+part of the path 'CapConfig$Builder.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (CapConfig$Builder.d
+   ex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\InvalidPluginException.dex: Could not find
+a part of the path 'InvalidPluginException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (InvalidPluginExcept
+   ion.dex:FileInfo) [Remove-Item], DirectoryNotFoundExceptio
+  n
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\InvalidPluginMethodException.dex: Could
+not find a part of the path 'InvalidPluginMethodException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (InvalidPluginMethod
+   Exception.dex:FileInfo) [Remove-Item], DirectoryNotFoundEx
+  ception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\JSExportException.dex: Could not find a
+part of the path 'JSExportException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (JSExportException.d
+   ex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\PluginCall$PluginCallDataTypeException.dex:
+ Could not find a part of the path
+'PluginCall$PluginCallDataTypeException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PluginCall$Plug...p
+   eException.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\PluginInvocationException.dex: Could not
+find a part of the path 'PluginInvocationException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PluginInvocationExc
+   eption.dex:FileInfo) [Remove-Item], DirectoryNotFoundExcep
+  tion
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\PluginLoadException.dex: Could not find a
+part of the path 'PluginLoadException.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PluginLoadException
+   .dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\PluginMethodHandle.dex: Could not find a
+part of the path 'PluginMethodHandle.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PluginMethodHandle.
+   dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\ServerPath$PathType.dex: Could not find a
+part of the path 'ServerPath$PathType.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (ServerPath$PathType
+   .dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\WebViewLocalServer$1.dex: Could not find a
+part of the path 'WebViewLocalServer$1.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (WebViewLocalServer$
+   1.dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\WebViewLocalServer$LazyInputStream.dex:
+Could not find a part of the path
+'WebViewLocalServer$LazyInputStream.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (WebViewLocalServer$
+   LazyInputStream.dex:FileInfo) [Remove-Item], DirectoryNotF
+  oundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\WebViewLocalServer$LollipopLazyInputStream.
+dex: Could not find a part of the path
+'WebViewLocalServer$LollipopLazyInputStream.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (WebViewLocalSer...I
+   nputStream.dex:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\WebViewLocalServer$PathHandler.dex: Could
+not find a part of the path
+'WebViewLocalServer$PathHandler.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (WebViewLocalServer$
+   PathHandler.dex:FileInfo) [Remove-Item], DirectoryNotFound
+  Exception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor\WebViewLocalServer.dex: Could not find a
+part of the path 'WebViewLocalServer.dex'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (WebViewLocalServer.
+   dex:FileInfo) [Remove-Item], DirectoryNotFoundException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com\getcapacitor: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (getcapacitor:Direct
+   oryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex\com: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (com:DirectoryInfo)
+   [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease\bundleLibRuntimeToDirRelease_d
+ex: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease_dex:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med\bundleLibRuntimeToDirRelease: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595\transfor
+med: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (transformed:Directo
+   ryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms\e965681ab3794c827c5c18b1c1555595: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (e965681ab3794c827c5
+   c18b1c1555595:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\.transforms: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (.transforms:Directo
+   ryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com\getcapacitor\plugin\util\HttpRequ
+estHandler$HttpURLConnectionBuilder.class: Could not find a
+part of the path
+'HttpRequestHandler$HttpURLConnectionBuilder.class'.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HttpRequestHand...o
+   nBuilder.class:FileInfo) [Remove-Item], DirectoryNotFoundE
+  xception
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com\getcapacitor\plugin\util: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (util:DirectoryInfo)
+    [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com\getcapacitor\plugin: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (plugin:DirectoryInf
+   o) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com\getcapacitor: The directory is
+not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (getcapacitor:Direct
+   oryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (com:DirectoryInfo)
+   [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release:
+The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (release:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (runtime_library_cla
+   sses_dir:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (intermediates:Direc
+   toryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (build:DirectoryInfo
+   ) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (capacitor:Directory
+   Info) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path "JitsPlannerPro" -Recurse -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (android:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Could not find a part of the path 'C:\Users\joe\D
+ocuments\JitsplannerPro27\JitsPlannerPro\node_modules\@capacito
+r\preferences\android\build\.transforms\14bdfc7275de08db7905dc6
+f397deb30\transformed\bundleLibRuntimeToDirRelease\bundleLibRun
+timeToDirRelease_dex\com\capacitorjs\plugins\preferences'.
+
+ Expand-Archive
+    The archive file 'C:\Users\joe\Downloads\JitsPlannerPro (19)
+    .zip' expansion is in progress...
+    [oooooooooo                                          ]
+
+    + FullyQualifiedErrorId : RemoveItemIOError,Microsoft.Powe
+   rShell.Commands.RemoveItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27> Expand-Archive -Path "C:\Users\joe\Downloads\JitsPlannerPro (19).zip" -DestinationPath "C:\Users\joe\Documents\JitsplannerPro27"
+ExpandArchiveHelper : Failed to create file
+'C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\.env'
+while expanding the archive file
+'C:\Users\joe\Downloads\JitsPlannerPro (19).zip' contents as
+the file
+'C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\.env'
+already exists. Use the -Force parameter if you want to
+overwrite the existing directory
+'C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro\.env'
+contents when expanding the archive file.
+At C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\Microsoft
+.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:397
+char:17
++ ...             ExpandArchiveHelper $resolvedSourcePaths
+$resolvedDestina ...
++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (C:\Users\joe\
+   Do...PlannerPro\.env:String) [Write-Error], IOException
+    + FullyQualifiedErrorId : ExpandArchiveFileExists,ExpandAr
+   chiveHelper
+
