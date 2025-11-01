@@ -5,7 +5,7 @@ services:
     runtime: node
     region: oregon
     plan: starter
-    branch: main
+    branch: replit-agent
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
@@ -13,6 +13,10 @@ services:
       # Node Environment
       - key: NODE_ENV
         value: production
+      
+      # Force install devDependencies even in production (needed for vite build)
+      - key: NPM_CONFIG_PRODUCTION
+        value: false
       
       # Database (Neon PostgreSQL)
       - key: DATABASE_URL
@@ -82,4 +86,3 @@ services:
       # Port (Render automatically sets this)
       - key: PORT
         value: 10000
-
