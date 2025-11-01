@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
@@ -98,6 +98,14 @@ export default function GamePlans() {
     treeLength: moveTree?.length || 0,
     tree: moveTree 
   });
+
+  // Auto-expand all moves when they load
+  useEffect(() => {
+    if (moves.length > 0) {
+      const allMoveIds = new Set(moves.map(m => m.id));
+      setExpandedMoves(allMoveIds);
+    }
+  }, [moves]);
 
   // Create move mutation
   const createMoveMutation = useMutation({
