@@ -36,6 +36,9 @@ workflows:
         - pattern: 'main'
           include: true
           source: true
+        - pattern: 'replit-agent'
+          include: true
+          source: true
         - pattern: 'release/*'
           include: true
           source: true
@@ -125,6 +128,9 @@ workflows:
         - tag
       branch_patterns:
         - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'replit-agent'
           include: true
           source: true
         - pattern: 'release/*'
