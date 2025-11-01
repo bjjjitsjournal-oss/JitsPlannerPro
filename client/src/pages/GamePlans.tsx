@@ -53,6 +53,14 @@ export default function GamePlans() {
     enabled: !!user?.id && !!selectedPlan,
   });
 
+  // Debug logging
+  console.log('🎯 GamePlans Debug:', { 
+    selectedPlan, 
+    movesCount: moves?.length || 0, 
+    firstMove: moves?.[0],
+    hasUser: !!user?.id 
+  });
+
   // Build tree structure from flat list
   const buildTree = (flatMoves: any[]): GamePlanMove[] => {
     const moveMap = new Map<string, GamePlanMove>();
