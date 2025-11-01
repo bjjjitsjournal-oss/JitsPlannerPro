@@ -1,0 +1,90 @@
+uncher-foreground-png-modified--1760158998803_1760158998804.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-g-modified-app-src-main-res-mipmap-xhdpi-ic-launcher-foreground-png-modified--1760158998803_1760158998804.txt
+Auto-merging attached_assets/Pasted-https-umotigprfosrrjwpxlnp-supabase-co-rest-v1-classes-select-user-id-eq-5727fda2-3783-4b36-b6f2-1759894567275_1759894567276.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-https-umotigprfosrrjwpxlnp-supabase-co-rest-v1-classes-select-user-id-eq-5727fda2-3783-4b36-b6f2-1759894567275_1759894567276.txt
+Auto-merging attached_assets/Pasted-id-build-reports-problems-problems-report-html-Deprecated-Gradle-features-were-used-in-this-build-1760328323109_1760328323110.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-id-build-reports-problems-problems-report-html-Deprecated-Gradle-features-were-used-in-this-build-1760328323109_1760328323110.txt
+Auto-merging attached_assets/Pasted-index-BF4h1tzN-js-87-Supabase-Client-Initialization-index-BF4h1tzN-js-87-URL-https-umotigp-1761303321293_1761303321298.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BF4h1tzN-js-87-Supabase-Client-Initialization-index-BF4h1tzN-js-87-URL-https-umotigp-1761303321293_1761303321298.txt
+Auto-merging attached_assets/Pasted-index-BMIJiTRb-js-72-Supabase-Client-Initialization-index-BMIJiTRb-js-72-URL-https-umotigp-1759897740840_1759897740841.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BMIJiTRb-js-72-Supabase-Client-Initialization-index-BMIJiTRb-js-72-URL-https-umotigp-1759897740840_1759897740841.txt
+Auto-merging attached_assets/Pasted-index-BMIJiTRb-js-72-Supabase-Client-Initialization-index-BMIJiTRb-js-72-URL-https-umotigp-1759898424074_1759898424075.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BMIJiTRb-js-72-Supabase-Client-Initialization-index-BMIJiTRb-js-72-URL-https-umotigp-1759898424074_1759898424075.txt
+Auto-merging attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759890993331_1759890993332.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759890993331_1759890993332.txt
+Auto-merging attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891175514_1759891175515.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891175514_1759891175515.txt
+Auto-merging attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891637783_1759891637784.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891637783_1759891637784.txt
+Auto-merging attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891996464_1759891996465.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759891996464_1759891996465.txt
+Auto-merging attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759892068980_1759892068982.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BjYCyYr1-js-72-Supabase-Client-Initialization-index-BjYCyYr1-js-72-URL-https-umotigp-1759892068980_1759892068982.txt
+Auto-merging attached_assets/Pasted-index-BnTwCuhP-js-72-Supabase-Client-Initialization-index-BnTwCuhP-js-72-URL-https-umotigp-1760062188563_1760062188565.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BnTwCuhP-js-72-Supabase-Client-Initialization-index-BnTwCuhP-js-72-URL-https-umotigp-1760062188563_1760062188565.txt
+Auto-merging attached_assets/Pasted-index-BnTwCuhP-js-72-Supabase-Client-Initialization-index-BnTwCuhP-js-72-URL-https-umotigp-1760127066003_1760127066005.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-BnTwCuhP-js-72-Supabase-Client-Initialization-index-BnTwCuhP-js-72-URL-https-umotigp-1760127066003_1760127066005.txt
+Auto-merging attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899217329_1759899217330.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899217329_1759899217330.txt
+Auto-merging attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899462530_1759899462531.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899462530_1759899462531.txt
+Auto-merging attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899687968_1759899687969.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759899687968_1759899687969.txt
+Auto-merging attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759900321163_1759900321164.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759900321163_1759900321164.txt
+Auto-merging attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759900950760_1759900950761.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-CnKpiRxT-js-72-Supabase-Client-Initialization-index-CnKpiRxT-js-72-URL-https-umotigp-1759900950760_1759900950761.txt
+Auto-merging attached_assets/Pasted-index-Cz5Rimc2-js-72-Supabase-Client-Initialization-index-Cz5Rimc2-js-72-URL-https-umotigp-1759888785152_1759888785154.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-Cz5Rimc2-js-72-Supabase-Client-Initialization-index-Cz5Rimc2-js-72-URL-https-umotigp-1759888785152_1759888785154.txt
+Auto-merging attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759895399873_1759895399874.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759895399873_1759895399874.txt
+Auto-merging attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759895533723_1759895533725.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759895533723_1759895533725.txt
+Auto-merging attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759896520550_1759896520552.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DDwShRm3-js-72-Supabase-Client-Initialization-index-DDwShRm3-js-72-URL-https-umotigp-1759896520550_1759896520552.txt
+Auto-merging attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760071657429_1760071657434.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760071657429_1760071657434.txt
+Auto-merging attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760072271525_1760072271526.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760072271525_1760072271526.txt
+Auto-merging attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760082285613_1760082285614.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-index-DtAme4-c-js-72-Supabase-Client-Initialization-index-DtAme4-c-js-72-URL-https-umotigp-1760082285613_1760082285614.txt
+Auto-merging attached_assets/Pasted-lic-assets-index-CrB2W0cV-css-84-42-kB-gzip-14-02-kB-dist-public-assets-index-CQcWAiXd-js--1760323245647_1760323245652.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-lic-assets-index-CrB2W0cV-css-84-42-kB-gzip-14-02-kB-dist-public-assets-index-CQcWAiXd-js--1760323245647_1760323245652.txt
+Auto-merging attached_assets/Pasted-n-the-Gradle-documentation-BUILD-SUCCESSFUL-in-24s-125-actionable-tasks-113-executed-12-up-to-1760178101978_1760178101978.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-n-the-Gradle-documentation-BUILD-SUCCESSFUL-in-24s-125-actionable-tasks-113-executed-12-up-to-1760178101978_1760178101978.txt
+Auto-merging attached_assets/Pasted-npm-warn-deprecated-xmldom-xmldom-0-7-13-this-version-is-no-longer-supported-please-update-to-at--1761435890099_1761435890100.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-npm-warn-deprecated-xmldom-xmldom-0-7-13-this-version-is-no-longer-supported-please-update-to-at--1761435890099_1761435890100.txt
+Auto-merging attached_assets/Pasted-umotigprfosrrjwpxlnp-b6f2-0a643f764f29-1-Failed-to-load-resource-the-server-responded-with-a-sta-1759889278301_1759889278302.txt
+CONFLICT (add/add): Merge conflict in attached_assets/Pasted-umotigprfosrrjwpxlnp-b6f2-0a643f764f29-1-Failed-to-load-resource-the-server-responded-with-a-sta-1759889278301_1759889278302.txt
+Auto-merging client/.env.production
+CONFLICT (add/add): Merge conflict in client/.env.production
+Auto-merging client/src/contexts/AuthContext.tsx
+CONFLICT (add/add): Merge conflict in client/src/contexts/AuthContext.tsx
+Auto-merging client/src/lib/queryClient.ts
+CONFLICT (add/add): Merge conflict in client/src/lib/queryClient.ts
+Auto-merging client/src/pages/Classes.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Classes.tsx
+Auto-merging client/src/pages/Notes.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Notes.tsx
+Auto-merging client/src/pages/Settings.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Settings.tsx
+Auto-merging client/src/pages/Social.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Social.tsx
+Auto-merging client/src/pages/Videos.tsx
+CONFLICT (add/add): Merge conflict in client/src/pages/Videos.tsx
+Auto-merging codemagic.yaml
+CONFLICT (add/add): Merge conflict in codemagic.yaml
+Auto-merging ios/App/App.xcodeproj/project.pbxproj
+CONFLICT (add/add): Merge conflict in ios/App/App.xcodeproj/project.pbxproj
+Auto-merging render.yaml
+CONFLICT (add/add): Merge conflict in render.yaml
+Auto-merging replit.md
+CONFLICT (add/add): Merge conflict in replit.md
+Auto-merging server/routes.ts
+CONFLICT (add/add): Merge conflict in server/routes.ts
+Auto-merging server/storage.ts
+CONFLICT (add/add): Merge conflict in server/storage.ts
+Auto-merging shared/schema.ts
+CONFLICT (add/add): Merge conflict in shared/schema.ts
+Automatic merge failed; fix conflicts and then commit the result.
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
