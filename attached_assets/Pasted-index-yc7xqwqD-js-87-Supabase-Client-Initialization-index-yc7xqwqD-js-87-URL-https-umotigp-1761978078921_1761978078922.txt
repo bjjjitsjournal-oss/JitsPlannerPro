@@ -1,0 +1,98 @@
+index-yc7xqwqD.js:87 🔧 Supabase Client Initialization
+index-yc7xqwqD.js:87 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+index-yc7xqwqD.js:87 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+index-yc7xqwqD.js:391 BJJ Journal - Full App Restored!
+index-yc7xqwqD.js:391 Open in new window if you see caching issues
+index-yc7xqwqD.js:87 ⚡ BOOTSTRAP: Hydrated auth cache from localStorage in 0.0ms Object
+index-yc7xqwqD.js:87 ✅ Auth cache hydrated - app ready to render
+index-yc7xqwqD.js:87 ⏱️  supabase.auth.getSession() took 12ms
+index-yc7xqwqD.js:87 🗑️ Cleared Supabase ID from localStorage
+index-yc7xqwqD.js:87 🗑️ Cleared access token from localStorage
+index-yc7xqwqD.js:87 💾 Persisted session data to localStorage
+index-yc7xqwqD.js:87 🔔 Auth state change: INITIAL_SESSION isSigningUp: false
+index-yc7xqwqD.js:87 🗑️ Cleared Supabase ID from localStorage
+index-yc7xqwqD.js:87 🗑️ Cleared access token from localStorage
+index-yc7xqwqD.js:391 Notification permission: denied
+index-yc7xqwqD.js:391 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-yc7xqwqD.js:391 Login attempt with: {email: 'bjjjitsjournal@gmail.com', hasPassword: true}
+index-yc7xqwqD.js:71  POST https://umotigprfosrrjwpxlnp.supabase.co/auth/v1/token?grant_type=password 401 (Unauthorized)
+(anonymous) @ index-yc7xqwqD.js:71
+aL @ index-yc7xqwqD.js:71
+ge @ index-yc7xqwqD.js:71
+signInWithPassword @ index-yc7xqwqD.js:86
+mutationFn @ index-yc7xqwqD.js:391
+fn @ index-yc7xqwqD.js:48
+p @ index-yc7xqwqD.js:48
+start @ index-yc7xqwqD.js:48
+execute @ index-yc7xqwqD.js:48
+await in execute
+mutate @ index-yc7xqwqD.js:48
+(anonymous) @ index-yc7xqwqD.js:48
+v @ index-yc7xqwqD.js:391
+(anonymous) @ index-yc7xqwqD.js:391
+await in (anonymous)
+aR @ index-yc7xqwqD.js:37
+cR @ index-yc7xqwqD.js:37
+uR @ index-yc7xqwqD.js:37
+h0 @ index-yc7xqwqD.js:37
+Y1 @ index-yc7xqwqD.js:37
+(anonymous) @ index-yc7xqwqD.js:37
+dy @ index-yc7xqwqD.js:40
+w1 @ index-yc7xqwqD.js:37
+Rh @ index-yc7xqwqD.js:37
+$g @ index-yc7xqwqD.js:37
+NR @ index-yc7xqwqD.js:37
+index-yc7xqwqD.js:391 Login error: AuthApiError: Invalid API key
+    at _x (index-yc7xqwqD.js:71:8269)
+    at async aL (index-yc7xqwqD.js:71:9258)
+    at async ge (index-yc7xqwqD.js:71:8919)
+    at async ML.signInWithPassword (index-yc7xqwqD.js:86:19150)
+    at async Object.mutationFn (index-yc7xqwqD.js:391:292794)
+mutationFn @ index-yc7xqwqD.js:391
+await in mutationFn
+fn @ index-yc7xqwqD.js:48
+p @ index-yc7xqwqD.js:48
+start @ index-yc7xqwqD.js:48
+execute @ index-yc7xqwqD.js:48
+await in execute
+mutate @ index-yc7xqwqD.js:48
+(anonymous) @ index-yc7xqwqD.js:48
+v @ index-yc7xqwqD.js:391
+(anonymous) @ index-yc7xqwqD.js:391
+await in (anonymous)
+aR @ index-yc7xqwqD.js:37
+cR @ index-yc7xqwqD.js:37
+uR @ index-yc7xqwqD.js:37
+h0 @ index-yc7xqwqD.js:37
+Y1 @ index-yc7xqwqD.js:37
+(anonymous) @ index-yc7xqwqD.js:37
+dy @ index-yc7xqwqD.js:40
+w1 @ index-yc7xqwqD.js:37
+Rh @ index-yc7xqwqD.js:37
+$g @ index-yc7xqwqD.js:37
+NR @ index-yc7xqwqD.js:37
+index-yc7xqwqD.js:391 Login mutation error: AuthApiError: Invalid API key
+    at _x (index-yc7xqwqD.js:71:8269)
+    at async aL (index-yc7xqwqD.js:71:9258)
+    at async ge (index-yc7xqwqD.js:71:8919)
+    at async ML.signInWithPassword (index-yc7xqwqD.js:86:19150)
+    at async Object.mutationFn (index-yc7xqwqD.js:391:292794)
+onError @ index-yc7xqwqD.js:391
+execute @ index-yc7xqwqD.js:48
+await in execute
+mutate @ index-yc7xqwqD.js:48
+(anonymous) @ index-yc7xqwqD.js:48
+v @ index-yc7xqwqD.js:391
+(anonymous) @ index-yc7xqwqD.js:391
+await in (anonymous)
+aR @ index-yc7xqwqD.js:37
+cR @ index-yc7xqwqD.js:37
+uR @ index-yc7xqwqD.js:37
+h0 @ index-yc7xqwqD.js:37
+Y1 @ index-yc7xqwqD.js:37
+(anonymous) @ index-yc7xqwqD.js:37
+dy @ index-yc7xqwqD.js:40
+w1 @ index-yc7xqwqD.js:37
+Rh @ index-yc7xqwqD.js:37
+$g @ index-yc7xqwqD.js:37
+NR @ index-yc7xqwqD.js:37
