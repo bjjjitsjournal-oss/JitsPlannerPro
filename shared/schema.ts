@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp, jsonb, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, jsonb, varchar, index } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -51,6 +51,12 @@ export const notes = pgTable("notes", {
   videoThumbnail: text("video_thumbnail"), // Thumbnail URL
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+  return {
+    isSharedIdx: index("notes_is_shared_idx").on(table.isShared),
+    userIdIdx: index("notes_user_id_idx").on(table.userId),
+    gymIdIdx: index("notes_gym_id_idx").on(table.gymId),
+  };
 });
 
 
