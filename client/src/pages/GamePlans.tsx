@@ -91,7 +91,7 @@ export default function GamePlans() {
       return await apiRequest('POST', '/api/game-plans', data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/game-plans/${selectedPlan}`] });
       queryClient.invalidateQueries({ queryKey: ['/api/game-plans/names'] });
       toast({
         title: 'Move Added!',
@@ -116,7 +116,7 @@ export default function GamePlans() {
       return await apiRequest('PUT', `/api/game-plans/${moveId}`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/game-plans/${selectedPlan}`] });
       toast({
         title: 'Move Updated!',
         description: 'Your move has been updated.',
@@ -140,7 +140,7 @@ export default function GamePlans() {
       return await apiRequest('DELETE', `/api/game-plans/${moveId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/game-plans/${selectedPlan}`] });
       toast({
         title: 'Move Deleted',
         description: 'The move and all its counter moves have been removed.',
