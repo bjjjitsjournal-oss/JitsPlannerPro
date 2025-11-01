@@ -1,0 +1,69 @@
+Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Navigate to your GitHub repo folder
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> cd "C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro"
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Copy Android build.gradle (version 88)
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Copy-Item "C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\android\app\build.gradle" -Destination ".\android\app\build.gradle" -Force
+Copy-Item : Cannot find path 'C:\Users\joe\Downloads\JitsPlanne
+rPro-v1.0.88\android\app\build.gradle' because it does not
+exist.
+At line:1 char:1
++ Copy-Item
+"C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\android\app\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\Do
+   ...pp\build.gradle:String) [Copy-Item], ItemNotFoundExcept
+  ion
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.CopyItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Copy iOS project file (version 88)
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Copy-Item "C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\ios\App\App.xcodeproj\project.pbxproj" -Destination ".\ios\App\App.xcodeproj\project.pbxproj" -Force
+Copy-Item : Cannot find path 'C:\Users\joe\Downloads\JitsPlanne
+rPro-v1.0.88\ios\App\App.xcodeproj\project.pbxproj' because it
+does not exist.
+At line:1 char:1
++ Copy-Item
+"C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\ios\App\App. ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\Do
+   ...project.pbxproj:String) [Copy-Item], ItemNotFoundExcept
+  ion
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.CopyItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Copy schema with performance indexes
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Copy-Item "C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\shared\schema.ts" -Destination ".\shared\schema.ts" -Force
+Copy-Item : Cannot find path 'C:\Users\joe\Downloads\JitsPlanne
+rPro-v1.0.88\shared\schema.ts' because it does not exist.
+At line:1 char:1
++ Copy-Item
+"C:\Users\joe\Downloads\JitsPlannerPro-v1.0.88\shared\schem ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\Do
+   ...hared\schema.ts:String) [Copy-Item], ItemNotFoundExcept
+  ion
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.CopyItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Verify files were copied
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> echo "Files copied successfully!"
+Files copied successfully!
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> # Now commit and push to GitHub
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git add android/app/build.gradle ios/App/App.xcodeproj/project.pbxproj shared/schema.ts
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git commit -m "v1.0.88 - Performance optimized with database indexes for fast notes loading"
+On branch replit-agent
+Your branch is up to date with 'origin/replit-agent'.
+
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> git push origin replit-agent
+Everything up-to-date
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
