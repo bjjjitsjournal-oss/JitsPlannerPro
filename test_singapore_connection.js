@@ -4,14 +4,12 @@
 
 import { neon } from '@neondatabase/serverless';
 
-const password = process.env.SINGAPORE_DB_PASSWORD;
+const singaporeUrl = process.env.SINGAPORE_DATABASE_URL;
 
-if (!password) {
-  console.error('❌ SINGAPORE_DB_PASSWORD not set');
+if (!singaporeUrl) {
+  console.error('❌ SINGAPORE_DATABASE_URL not set');
   process.exit(1);
 }
-
-const singaporeUrl = `postgresql://postgres:${password}@db.vsuiumdimczjkbioywtw.supabase.co:5432/postgres`;
 
 console.log('🔍 Testing connection to Singapore database...');
 console.log('Host: db.vsuiumdimczjkbioywtw.supabase.co\n');
