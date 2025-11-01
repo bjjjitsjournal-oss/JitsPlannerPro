@@ -1,0 +1,42 @@
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2772 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/public/index.html                   3.07 kB │ gzip:   1.08 kB
+../dist/public/assets/index-DJx7SPZe.css  100.35 kB │ gzip:  16.22 kB
+../dist/public/assets/web-uSH-5U9C.js       1.25 kB │ gzip:   0.59 kB
+../dist/public/assets/index-yc7xqwqD.js   883.55 kB │ gzip: 248.90 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.43s
+  dist/index.js  142.4kb
+⚡ Done in 18ms
+==> Uploading build...
+==> Uploaded in 25.3s. Compression took 11.9s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'npm start'
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+6:18:25 AM [express] serving on port 10000
+6:18:27 AM [express] GET /api/health 200 in 3ms :: {"status":"ok","timestamp":"2025-11-01T06:18:27.6…
+6:18:28 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2025-11-01T06:18:28.2…
+==> Your service is live 🎉
+==> 
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://jitsjournal-backend.onrender.com
+==> 
+==> ///////////////////////////////////////////////////////////
+6:18:32 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2025-11-01T06:18:32.6…
+6:18:37 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2025-11-01T06:18:37.6…
+6:18:42 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2025-11-01T06:18:42.6…
+6:18:47 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2025-11-01T06:18:47.6…
+6:18:47 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2025-11-01T06:18:47.6…
+6:18:52 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2025-11-01T06:18:52.6…
+6:18:57 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2025-11-01T06:18:57.6…
+6:19:02 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2025-11-01T06:19:02.6…
+6:19:07 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2025-11-01T06:19:07.6…
