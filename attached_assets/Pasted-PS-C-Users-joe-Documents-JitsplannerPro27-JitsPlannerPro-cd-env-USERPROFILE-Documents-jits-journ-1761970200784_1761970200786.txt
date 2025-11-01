@@ -1,0 +1,21 @@
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> cd "$env:USERPROFILE\Documents\jits-journal"
+PS C:\Users\joe\Documents\jits-journal> cd "C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro"
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> @"
+>> VITE_SUPABASE_URL=https://vsuiumdimczjkbioywtw.supabase.co
+>> VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzdWl1bWRpbWN6amtiaW95d3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAzODMwMjIsImV4cCI6MjA0NTk1OTAyMn0.FzvnOxVCJk6vGrJE95aOCU_DhILXcjXmCQx7tPZdjvc
+>> VITE_API_BASE_URL=https://bjj-jits-journal.onrender.com
+>> "@ | Set-Content -Path ".env" -Encoding UTF8
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> @"
+>> VITE_SUPABASE_URL=https://vsuiumdimczjkbioywtw.supabase.co
+>> VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzdWl1bWRpbWN6amtiaW95d3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAzODMwMjIsImV4cCI6MjA0NTk1OTAyMn0.FzvnOxVCJk6vGrJE95aOCU_DhILXcjXmCQx7tPZdjvc
+>> VITE_API_BASE_URL=https://bjj-jits-journal.onrender.com
+>> "@ | Set-Content -Path "client\.env.production" -Encoding UTF8
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Write-Host "✅ Both .env files updated successfully!" -ForegrounWrite-Host "✅ Both .env files updated successfully!" -ForegroundColor Green
+✅ Both .env files updated successfully!
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro> Get-Content .env
+VITE_SUPABASE_URL=https://vsuiumdimczjkbioywtw.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzdWl1bWRpbWN6amtiaW95d3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAzODMwMjIsImV4cCI6MjA0NTk1OTAyMn0.FzvnOxVCJk6vGrJE95aOCU_DhILXcjXmCQx7tPZdjvc
+VITE_API_BASE_URL=https://bjj-jits-journal.onrender.com
+PS C:\Users\joe\Documents\JitsplannerPro27\JitsPlannerPro>
