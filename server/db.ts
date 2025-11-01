@@ -11,7 +11,13 @@ if (!DATABASE_URL) {
 
 export const pool = new Pool({ 
   connectionString: DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // Supabase requires SSL
+  ssl: { rejectUnauthorized: false }, // Supabase requires SSL
+  max: 20, // Maximum pool size
+  min: 2, // Minimum pool size (keep connections warm)
+  idleTimeoutMillis: 30000, // Close idle connections after 30s
+  connectionTimeoutMillis: 10000, // 10s timeout for new connections
+  keepAlive: true, // Enable TCP keep-alive
+  keepAliveInitialDelayMillis: 10000
 });
 
 export const db = drizzle(pool, { schema });
