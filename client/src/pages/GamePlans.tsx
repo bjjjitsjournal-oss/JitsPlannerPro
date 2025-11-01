@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
-import { gamePlansQueries } from '../lib/supabaseQueries';
 import { useToast } from '../hooks/use-toast';
 import { ChevronRight, ChevronDown, Plus, Sparkles, Edit2, Trash2 } from 'lucide-react';
 import { apiRequest } from '../lib/queryClient';
@@ -43,22 +42,14 @@ export default function GamePlans() {
   });
 
   // Get plan names
-  const { data: planNames = [] } = useQuery({
-    queryKey: ['game-plan-names', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      return await gamePlansQueries.getPlanNames(user.id);
-    },
+  const { data: planNames = [] } = useQuery<string[]>({
+    queryKey: ['/api/game-plans/names'],
     enabled: !!user?.id,
   });
 
   // Get moves for selected plan
-  const { data: moves = [] } = useQuery({
-    queryKey: ['game-plans', user?.id, selectedPlan],
-    queryFn: async () => {
-      if (!user?.id || !selectedPlan) return [];
-      return await gamePlansQueries.getByPlanName(user.id, selectedPlan);
-    },
+  const { data: moves = [] } = useQuery<any[]>({
+    queryKey: [`/api/game-plans/${selectedPlan}`],
     enabled: !!user?.id && !!selectedPlan,
   });
 
@@ -97,11 +88,11 @@ export default function GamePlans() {
   const createMoveMutation = useMutation({
     mutationFn: async (data: any) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await gamePlansQueries.create(user.id, data);
+      return await apiRequest('POST', '/api/game-plans', data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['game-plans', user?.id] });
-      queryClient.invalidateQueries({ queryKey: ['game-plan-names', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/game-plans/names'] });
       toast({
         title: 'Move Added!',
         description: 'Your move has been added to the game plan.',
@@ -122,10 +113,10 @@ export default function GamePlans() {
   const updateMoveMutation = useMutation({
     mutationFn: async ({ moveId, data }: { moveId: string; data: any }) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await gamePlansQueries.update(moveId, user.id, data);
+      return await apiRequest('PUT', `/api/game-plans/${moveId}`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['game-plans', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
       toast({
         title: 'Move Updated!',
         description: 'Your move has been updated.',
@@ -146,10 +137,10 @@ export default function GamePlans() {
   const deleteMoveMutation = useMutation({
     mutationFn: async (moveId: string) => {
       if (!user?.id) throw new Error('User not authenticated');
-      return await gamePlansQueries.delete(moveId, user.id);
+      return await apiRequest('DELETE', `/api/game-plans/${moveId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['game-plans', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/game-plans'] });
       toast({
         title: 'Move Deleted',
         description: 'The move and all its counter moves have been removed.',
@@ -217,13 +208,10 @@ export default function GamePlans() {
     setShowAiSuggestions(true);
     
     try {
-      const data = await apiRequest('/api/game-plans/ai-suggest', {
-        method: 'POST',
-        body: JSON.stringify({
-          currentMove: currentMove.moveName,
-          position: selectedPlan || 'General Position',
-          context: currentMove.description || '',
-        }),
+      const data: any = await apiRequest('POST', '/api/game-plans/ai-suggest', {
+        currentMove: currentMove.moveName,
+        position: selectedPlan || 'General Position',
+        context: currentMove.description || '',
       });
 
       setAiSuggestions(data.counterMoves || []);
