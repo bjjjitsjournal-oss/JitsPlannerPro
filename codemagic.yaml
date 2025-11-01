@@ -44,6 +44,8 @@ workflows:
       - name: Install npm dependencies
         script: |
           echo "📦 Installing dependencies..."
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
           npm install
       
       - name: Build web application
@@ -135,6 +137,8 @@ workflows:
       - name: Install npm dependencies
         script: |
           echo "📦 Installing dependencies..."
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
           npm install
       
       - name: Build web application
