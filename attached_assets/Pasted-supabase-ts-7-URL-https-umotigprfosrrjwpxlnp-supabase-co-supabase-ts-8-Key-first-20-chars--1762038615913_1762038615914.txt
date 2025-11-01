@@ -1,0 +1,52 @@
+supabase.ts:7 📍 URL: https://umotigprfosrrjwpxlnp.supabase.co
+supabase.ts:8 🔑 Key (first 20 chars): eyJhbGciOiJIUzI1NiIs...
+main.tsx:48 BJJ Journal - Full App Restored!
+main.tsx:49 Open in new window if you see caching issues
+queryClient.ts:87 ⚡ BOOTSTRAP: Hydrated auth cache from localStorage in 0.0ms {hasId: true, hasToken: true, hasEmail: false, hasMetadata: false}
+AuthContext.tsx:144 ✅ Auth cache hydrated - app ready to render
+AuthContext.tsx:198 ⏱️  supabase.auth.getSession() took 8ms
+queryClient.ts:118 💾 Persisted Supabase ID to localStorage
+queryClient.ts:143 🔑 Persisted access token to localStorage
+queryClient.ts:183 💾 Persisted session data to localStorage
+AuthContext.tsx:52 🔍 Loading user data for supabaseId: 5727fda2-3783-4b36-b6f2-0a643f764f29 (attempt 1/3)
+AuthContext.tsx:62 🔑 Including Supabase access token in request
+AuthContext.tsx:261 🔔 Auth state change: INITIAL_SESSION isSigningUp: false
+queryClient.ts:118 💾 Persisted Supabase ID to localStorage
+queryClient.ts:143 🔑 Persisted access token to localStorage
+AuthContext.tsx:52 🔍 Loading user data for supabaseId: 5727fda2-3783-4b36-b6f2-0a643f764f29 (attempt 1/3)
+AuthContext.tsx:62 🔑 Including Supabase access token in request
+AuthContext.tsx:71 📡 User endpoint response status: 200
+AuthContext.tsx:75 ✅ User data loaded successfully: {id: 1, email: 'bjjjitsjournal@gmail.com'}
+AuthContext.tsx:215 ⏱️  getUserFromSupabaseId() took 1747ms
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: null, movesCount: 0, firstMove: undefined, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 0, treeLength: 0, tree: Array(0)}
+queryClient.ts:207 ⚡ getSupabaseId from cache in 0.0ms
+queryClient.ts:263 ⚡ getAccessToken from cache in 0.0ms
+queryClient.ts:331 🔑 Query with Authorization header (fast path!)
+AuthContext.tsx:71 📡 User endpoint response status: 200
+AuthContext.tsx:75 ✅ User data loaded successfully: {id: 1, email: 'bjjjitsjournal@gmail.com'}
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: null, movesCount: 0, firstMove: undefined, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 0, treeLength: 0, tree: Array(0)}
+queryClient.ts:207 ⚡ getSupabaseId from cache in 0.0ms
+queryClient.ts:263 ⚡ getAccessToken from cache in 0.0ms
+queryClient.ts:331 🔑 Query with Authorization header (fast path!)
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: null, movesCount: 0, firstMove: undefined, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 0, treeLength: 0, tree: Array(0)}
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 0, firstMove: undefined, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 0, treeLength: 0, tree: Array(0)}
+queryClient.ts:207 ⚡ getSupabaseId from cache in 0.0ms
+queryClient.ts:263 ⚡ getAccessToken from cache in 0.0ms
+queryClient.ts:331 🔑 Query with Authorization header (fast path!)
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 8, firstMove: {…}, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 8, treeLength: 1, tree: Array(1)}
+queryClient.ts:207 ⚡ getSupabaseId from cache in 0.0ms
+queryClient.ts:263 ⚡ getAccessToken from cache in 0.0ms
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 8, firstMove: {…}, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 8, treeLength: 1, tree: Array(1)}
+queryClient.ts:374 🔑 Mutation with Authorization header (fast path!)
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 8, firstMove: {…}, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 8, treeLength: 1, tree: Array(1)}
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 8, firstMove: {…}, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 8, treeLength: 1, tree: Array(1)}
+GamePlans.tsx:57 🎯 GamePlans Debug: {selectedPlan: 'Test Visual', movesCount: 8, firstMove: {…}, hasUser: true}
+GamePlans.tsx:96 🌳 Tree Debug: {inputMovesCount: 8, treeLength: 1, tree: Array(1)}
