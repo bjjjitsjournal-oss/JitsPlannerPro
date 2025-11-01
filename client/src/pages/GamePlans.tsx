@@ -91,6 +91,13 @@ export default function GamePlans() {
   };
 
   const moveTree = buildTree(moves);
+  
+  // Debug tree building
+  console.log('🌳 Tree Debug:', { 
+    inputMovesCount: moves?.length || 0,
+    treeLength: moveTree?.length || 0,
+    tree: moveTree 
+  });
 
   // Create move mutation
   const createMoveMutation = useMutation({
