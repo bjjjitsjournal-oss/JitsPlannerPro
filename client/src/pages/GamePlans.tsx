@@ -18,6 +18,7 @@ interface GamePlanMove {
 interface CounterMove {
   moveName: string;
   description: string;
+  type: 'attack' | 'defense';
 }
 
 export default function GamePlans() {
@@ -480,35 +481,50 @@ export default function GamePlans() {
             <p className="text-purple-700 dark:text-purple-300">Generating suggestions...</p>
           ) : aiSuggestions.length > 0 ? (
             <div className="space-y-3">
-              {aiSuggestions.map((suggestion, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
-                        {suggestion.moveName}
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {suggestion.description}
-                      </p>
+              {aiSuggestions.map((suggestion, index) => {
+                const isAttack = suggestion.type === 'attack';
+                const bgColor = isAttack 
+                  ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
+                  : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
+                const badge = isAttack 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-red-600 text-white';
+                
+                return (
+                  <div key={index} className={`${bgColor} border rounded-lg p-4`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                            {suggestion.moveName}
+                          </h4>
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${badge}`}>
+                            {isAttack ? 'Attack' : 'Defense'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {suggestion.description}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setMoveData({
+                            moveName: suggestion.moveName,
+                            description: suggestion.description,
+                            parentId: moveData.parentId,
+                          });
+                          setShowMoveForm(true);
+                          setShowAiSuggestions(false);
+                        }}
+                        className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                        data-testid={`button-use-suggestion-${index}`}
+                      >
+                        Use This
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        setMoveData({
-                          moveName: suggestion.moveName,
-                          description: suggestion.description,
-                          parentId: moveData.parentId,
-                        });
-                        setShowMoveForm(true);
-                        setShowAiSuggestions(false);
-                      }}
-                      className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-                      data-testid={`button-use-suggestion-${index}`}
-                    >
-                      Use This
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <p className="text-purple-700 dark:text-purple-300">No suggestions available.</p>

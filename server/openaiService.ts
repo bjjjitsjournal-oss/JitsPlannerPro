@@ -17,6 +17,7 @@ function getOpenAIClient(): OpenAI {
 interface CounterMove {
   moveName: string;
   description: string;
+  type: 'attack' | 'defense';
 }
 
 export async function generateBJJCounterMoves(
@@ -36,11 +37,13 @@ ${context ? `Additional Context: ${context}` : ""}
 Provide practical BJJ counter techniques that would be appropriate responses. For each counter move, include:
 1. The name of the technique
 2. A brief description of how to execute it
+3. The type: "attack" for offensive/advancing moves, "defense" for defensive/escaping moves
 
 Respond with JSON in this format: 
 {
   "counterMoves": [
-    {"moveName": "technique name", "description": "how to execute"},
+    {"moveName": "technique name", "description": "how to execute", "type": "attack"},
+    {"moveName": "technique name", "description": "how to execute", "type": "defense"},
     ...
   ]
 }`;
