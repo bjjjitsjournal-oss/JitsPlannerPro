@@ -54,14 +54,6 @@ export default function GamePlans() {
     enabled: !!user?.id && !!selectedPlan,
   });
 
-  // Debug logging
-  console.log('🎯 GamePlans Debug:', { 
-    selectedPlan, 
-    movesCount: moves?.length || 0, 
-    firstMove: moves?.[0],
-    hasUser: !!user?.id 
-  });
-
   // Build tree structure from flat list
   const buildTree = (flatMoves: any[]): GamePlanMove[] => {
     const moveMap = new Map<string, GamePlanMove>();
@@ -92,13 +84,6 @@ export default function GamePlans() {
   };
 
   const moveTree = buildTree(moves);
-  
-  // Debug tree building
-  console.log('🌳 Tree Debug:', { 
-    inputMovesCount: moves?.length || 0,
-    treeLength: moveTree?.length || 0,
-    tree: moveTree 
-  });
 
   // Auto-expand all moves when they load
   useEffect(() => {
@@ -238,7 +223,6 @@ export default function GamePlans() {
         context: currentMove.description || '',
       });
 
-      console.log('🤖 AI Response:', data);
       setAiSuggestions(data.counterMoves || []);
       
       toast({
@@ -247,7 +231,6 @@ export default function GamePlans() {
         duration: 4000,
       });
     } catch (error: any) {
-      console.error('🤖 AI Error:', error);
       toast({
         title: 'AI Error',
         description: error.message || 'Failed to generate suggestions. Make sure OpenAI API key is configured.',
