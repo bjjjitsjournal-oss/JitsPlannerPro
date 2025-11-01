@@ -237,6 +237,7 @@ export default function GamePlans() {
         context: currentMove.description || '',
       });
 
+      console.log('🤖 AI Response:', data);
       setAiSuggestions(data.counterMoves || []);
       
       toast({
@@ -245,6 +246,7 @@ export default function GamePlans() {
         duration: 4000,
       });
     } catch (error: any) {
+      console.error('🤖 AI Error:', error);
       toast({
         title: 'AI Error',
         description: error.message || 'Failed to generate suggestions. Make sure OpenAI API key is configured.',
