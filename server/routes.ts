@@ -1947,7 +1947,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Game Plan routes
-  app.get("/api/game-plans", authenticateToken, async (req, res) => {
+  app.get("/api/game-plans", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const gamePlans = await storage.getGamePlans(userId);
@@ -1958,7 +1958,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/game-plans/names", authenticateToken, async (req, res) => {
+  app.get("/api/game-plans/names", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const planNames = await storage.getGamePlanNames(userId);
@@ -1969,7 +1969,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/game-plans/:planName", authenticateToken, async (req, res) => {
+  app.get("/api/game-plans/:planName", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const planName = req.params.planName;
@@ -1981,7 +1981,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/game-plans", authenticateToken, async (req, res) => {
+  app.post("/api/game-plans", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const gamePlanData = insertGamePlanSchema.parse(req.body);
@@ -1997,7 +1997,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/game-plans/:id", authenticateToken, async (req, res) => {
+  app.put("/api/game-plans/:id", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const moveId = req.params.id;
@@ -2019,7 +2019,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/game-plans/:id", authenticateToken, async (req, res) => {
+  app.delete("/api/game-plans/:id", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const moveId = req.params.id;
