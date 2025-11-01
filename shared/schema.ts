@@ -176,6 +176,11 @@ export const noteLikes = pgTable("note_likes", {
   noteId: varchar("note_id").references(() => notes.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+}, (table) => {
+  return {
+    noteIdUserIdIdx: index("note_likes_note_id_user_id_idx").on(table.noteId, table.userId),
+    noteIdIdx: index("note_likes_note_id_idx").on(table.noteId),
+  };
 });
 
 export const gamePlans = pgTable("game_plans", {
