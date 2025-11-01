@@ -411,5 +411,5 @@ export async function apiRequest(method: string, url: string, data?: any) {
     throw new Error(errorMessage);
   }
 
-  return response;
+  return response.json();
 }
