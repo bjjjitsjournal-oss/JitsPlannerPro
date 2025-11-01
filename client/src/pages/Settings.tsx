@@ -378,7 +378,7 @@ export default function Settings() {
                           Admin
                         </span>
                       )}
-                      {member.userId !== user?.id && (
+                      {member.userId !== Number(user?.id) && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <button
