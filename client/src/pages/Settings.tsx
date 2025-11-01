@@ -87,15 +87,7 @@ export default function Settings() {
 
   // Fetch gym members if user is admin
   const { data: gymMembers } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
-    queryKey: ['/api/gyms', gymMembership?.id, 'members'],
-    queryFn: async () => {
-      const response = await fetch(`/api/gyms/${gymMembership?.id}/members`, {
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (!response.ok) throw new Error('Failed to fetch gym members');
-      return response.json();
-    },
+    queryKey: [`/api/gyms/${gymMembership?.id}/members`],
     enabled: !!gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
   });
 
