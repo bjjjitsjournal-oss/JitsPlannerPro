@@ -1,0 +1,37 @@
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git merge --abort
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Let's do this the smart way instead
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Checkout ONLY the GamePlans file from main
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git checkout origin/main -- client/src/pages/GamePlans.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check if it worked
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> dir client\src\pages\GamePlans.tsx
+
+
+    Directory: C:\Users\joe\Documents\JitsplannerPro27\FRESH3\c
+    lient\src\pages
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         2/11/2025   7:25 AM          19577 GamePlans.tsx
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show origin/main:shared/schema.ts | findstr -i "gameplan"
+export const gamePlans = pgTable("game_plans", {
+export const insertGamePlanSchema = createInsertSchema(gamePlans).omit({
+export type GamePlan = typeof gamePlans.$inferSelect;
+export type InsertGamePlan = z.infer<typeof insertGamePlanSchema>;
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show origin/main:server/routes.ts | findstr -i "gameplan"
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users } from "@shared/schema";
+      const gamePlans = await storage.getGamePlans(userId);
+      res.json(gamePlans);
+      const planNames = await storage.getGamePlanNames(userId);
+      const gamePlans = await storage.getGamePlanByName(userId, planName);
+      res.json(gamePlans);
+      const gamePlanData = insertGamePlanSchema.parse(req.body);
+      const newMove = await storage.createGamePlanMove(userId, gamePlanData);
+      const moveData = insertGamePlanSchema.partial().parse(req.body);
+      const updatedMove = await storage.updateGamePlanMove(moveId, userId, moveData);
+      const result = await storage.deleteGamePlanMove(moveId, userId);
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
