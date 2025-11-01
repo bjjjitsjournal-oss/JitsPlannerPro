@@ -1,0 +1,142 @@
+RuntimeToDirRelease\com\getcapacitor\plugin: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (plugin:DirectoryInf
+   o) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com\getcapacitor: The directory is
+not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (getcapacitor:Direct
+   oryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease\com: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (com:DirectoryInfo)
+   [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release\bun
+dleLibRuntimeToDirRelease: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (bundleLibRuntimeToD
+   irRelease:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir\release:
+The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (release:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates\runtime_library_classes_dir: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (runtime_library_cla
+   sses_dir:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build\intermediates: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (intermediates:Direc
+   toryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor\build: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (build:DirectoryInfo
+   ) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android\capaci
+tor: The directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (capacitor:Directory
+   Info) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Users\joe\Documents\Jitspla
+nnerPro27\JitsPlannerPro\node_modules\@capacitor\android: The
+directory is not empty.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (android:DirectoryIn
+   fo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Micr
+   osoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Could not find a part of the path 'C:\Users\joe\D
+ocuments\JitsplannerPro27\JitsPlannerPro\node_modules\@capacito
+r\preferences\android\build\.transforms\14bdfc7275de08db7905dc6
+f397deb30\transformed\bundleLibRuntimeToDirRelease\bundleLibRun
+timeToDirRelease_dex\com\capacitorjs\plugins\preferences'.
+At line:1 char:1
++ Remove-Item -Path
+"C:\Users\joe\Documents\JitsplannerPro27\JitsPlanne ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Users\joe\Do...\
+   JitsPlannerPro:String) [Remove-Item], DirectoryNotFoundExc
+  eption
+    + FullyQualifiedErrorId : RemoveItemIOError,Microsoft.Powe
+   rShell.Commands.RemoveItemCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27>
