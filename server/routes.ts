@@ -182,20 +182,25 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
 
   // Try token-based auth first
   if (token) {
+    console.log('🔍 Token received (first 50 chars):', token.substring(0, 50));
+    console.log('🔍 Token length:', token.length);
+    console.log('🔍 Token starts with "eyJ"?:', token.startsWith('eyJ'));
+    
     let decoded: any = null;
     let isSupabaseToken = false;
 
     // FAST PATH: Try local Supabase JWT verification first (< 1ms)
     if (supabaseJwtSecret) {
       try {
-        const supabaseDecoded = jwt.verify(token, supabaseJwtSecret) as any;
+        const supabaseDecoded = jwt.verify(token, supabaseJwtSecret, { algorithms: ['HS256'] }) as any;
         console.log('⚡ FAST: Local Supabase token verified for:', supabaseDecoded.email);
         decoded = {
           email: supabaseDecoded.email,
           supabaseId: supabaseDecoded.sub,
         };
         isSupabaseToken = true;
-      } catch (supabaseError) {
+      } catch (supabaseError: any) {
+        console.log('❌ Fast JWT verify failed:', supabaseError.message);
         // Not a Supabase token or verification failed
       }
     }
@@ -221,9 +226,10 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     // Legacy JWT fallback
     if (!decoded) {
       try {
-        decoded = jwt.verify(token, JWT_SECRET) as any;
+        decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }) as any;
         console.log('✅ Legacy JWT verified for:', decoded.email);
       } catch (error: any) {
+        console.log('❌ Legacy JWT verify failed:', error.message);
         // Token invalid, fall through to supabaseId check
       }
     }
