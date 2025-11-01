@@ -69,7 +69,7 @@ export function formatBytes(bytes: number, decimals = 2): string {
 }
 
 /**
- * Get storage usage percentage (0-100) with one decimal place
+ * Get storage usage percentage (0-100)
  */
 export function getStoragePercentage(
   currentUsage: number,
@@ -77,7 +77,7 @@ export function getStoragePercentage(
 ): number {
   const quota = getStorageQuota(subscriptionTier);
   if (quota === 0) return 0;
-  return Math.min(100, Math.round((currentUsage / quota) * 1000) / 10);
+  return Math.min(100, Math.round((currentUsage / quota) * 100));
 }
 
 /**

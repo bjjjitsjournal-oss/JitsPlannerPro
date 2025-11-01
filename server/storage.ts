@@ -137,7 +137,7 @@ export interface IStorage {
   // Gym Memberships
   createGymMembership(membershipData: InsertGymMembership): Promise<GymMembership>;
   getGymMembership(userId: number, gymId: number): Promise<GymMembership | undefined>;
-  getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>;
+  getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>>;
   deleteGymMembership(userId: number, gymId: number): Promise<boolean>;
   getGym(gymId: number): Promise<Gym | undefined>;
   
@@ -781,7 +781,7 @@ export class DatabaseStorage implements IStorage {
     return membership || undefined;
   }
   
-  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>> {
+  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>> {
     const members = await db.select({
       userId: gymMemberships.userId,
       email: users.email,
@@ -799,7 +799,7 @@ export class DatabaseStorage implements IStorage {
       ...m,
       firstName: m.firstName || '',
       lastName: m.lastName || '',
-      joinedAt: (m.joinedAt || new Date()).toISOString()
+      joinedAt: m.joinedAt || new Date()
     }));
   }
   
@@ -1506,7 +1506,7 @@ class MemStoragePrimary implements IStorage {
     return undefined;
   }
   
-  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>> {
+  async getGymMembers(gymId: number): Promise<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: Date }>> {
     return [];
   }
   

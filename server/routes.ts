@@ -185,12 +185,28 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     let decoded: any = null;
     let isSupabaseToken = false;
 
-    // SECURE PATH: Verify Supabase token with admin API (~1500ms but SECURE)
-    if (supabaseAdmin) {
+    // FAST PATH: Try local Supabase JWT verification first (< 1ms)
+    if (supabaseJwtSecret) {
+      try {
+        const supabaseDecoded = jwt.verify(token, supabaseJwtSecret) as any;
+        console.log('⚡ FAST: Local Supabase token verified for:', supabaseDecoded.email);
+        decoded = {
+          email: supabaseDecoded.email,
+          supabaseId: supabaseDecoded.sub,
+        };
+        isSupabaseToken = true;
+      } catch (supabaseError) {
+        // Not a Supabase token or verification failed
+      }
+    }
+
+    // SLOW PATH: Fallback to API-based Supabase verification (~1500ms)
+    if (!decoded && supabaseAdmin) {
       try {
         const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
         
         if (supabaseUser && !error) {
+          console.log('🐌 SLOW: API Supabase token verified for:', supabaseUser.email);
           decoded = {
             email: supabaseUser.email,
             supabaseId: supabaseUser.id,
@@ -198,17 +214,16 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
           isSupabaseToken = true;
         }
       } catch (supabaseError) {
-        // Not a Supabase token, try legacy JWT
+        console.log('Not a Supabase token, trying legacy JWT...');
       }
     }
 
     // Legacy JWT fallback
     if (!decoded) {
       try {
-        decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }) as any;
+        decoded = jwt.verify(token, JWT_SECRET) as any;
         console.log('✅ Legacy JWT verified for:', decoded.email);
       } catch (error: any) {
-        console.log('❌ Legacy JWT verify failed:', error.message);
         // Token invalid, fall through to supabaseId check
       }
     }
@@ -2021,23 +2036,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Decision Tree Suggestions (success/failure paths)
-  app.post("/api/game-plans/ai-suggest", flexibleAuth, async (req, res) => {
+  // AI Counter Move Suggestions
+  app.post("/api/game-plans/ai-suggest", authenticateToken, async (req, res) => {
     try {
-      console.log('🤖 AI suggest request body:', JSON.stringify(req.body, null, 2));
       const { currentMove, position, context } = req.body;
       
       if (!currentMove || !position) {
-        console.error('❌ Missing fields - currentMove:', currentMove, 'position:', position);
         return res.status(400).json({ 
           message: "Missing required fields: currentMove and position are required" 
         });
       }
-      
-      console.log('✅ AI request validated - generating suggestions...');
 
-      const suggestions = await generateBJJCounterMoves(currentMove, position, context);
-      res.json(suggestions);
+      const counterMoves = await generateBJJCounterMoves(currentMove, position, context);
+      res.json({ counterMoves });
     } catch (error: any) {
       console.error("AI suggestion error:", error);
       res.status(500).json({ 
@@ -2652,39 +2663,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching storage usage:", error);
       res.status(500).json({ message: "Failed to fetch storage usage" });
-    }
-  });
-
-  // Test email endpoint (admin only)
-  app.post("/api/test-email", flexibleAuth, async (req, res) => {
-    try {
-      const userId = req.userId;
-      const user = await storage.getUser(userId);
-      
-      // Only allow super admin to test emails
-      if (user?.email !== 'bjjjitsjournal@gmail.com') {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      
-      const { email, firstName } = req.body;
-      
-      if (!email) {
-        return res.status(400).json({ message: "Email address required" });
-      }
-      
-      console.log(`📧 Testing email send to: ${email}`);
-      const result = await sendWelcomeEmail(email, firstName || "there");
-      
-      if (result) {
-        console.log(`✅ Test email successfully sent to ${email}`);
-        res.json({ success: true, message: "Email sent successfully!" });
-      } else {
-        console.error(`❌ Failed to send test email to ${email}`);
-        res.status(500).json({ success: false, message: "Failed to send email" });
-      }
-    } catch (error) {
-      console.error("Test email error:", error);
-      res.status(500).json({ success: false, message: "Email test failed", error: String(error) });
     }
   });
 

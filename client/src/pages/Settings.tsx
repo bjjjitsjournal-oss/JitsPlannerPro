@@ -86,22 +86,9 @@ export default function Settings() {
   });
 
   // Fetch gym members if user is admin
-  const { data: gymMembers, isLoading: membersLoading } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
+  const { data: gymMembers } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
     queryKey: ['/api/gyms', gymMembership?.id, 'members'],
-    queryFn: async () => {
-      if (!gymMembership?.id || !user?.supabaseId) return [];
-      const response = await fetch(`/api/gyms/${gymMembership.id}/members?supabaseId=${user.supabaseId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('supabase_access_token')}`
-        }
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch gym members');
-      }
-      return response.json();
-    },
-    enabled: !!gymMembership && !!user?.supabaseId && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
+    enabled: !!gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
   });
 
   // Join gym mutation
@@ -353,11 +340,11 @@ export default function Settings() {
                 <Users className="w-4 h-4" />
                 Gym Members {gymMembers && `(${gymMembers.length})`}
               </h4>
-              {membersLoading ? (
+              {!gymMembers ? (
                 <div className="text-center py-4">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Loading members...</p>
                 </div>
-              ) : !gymMembers || gymMembers.length === 0 ? (
+              ) : gymMembers.length === 0 ? (
                 <div className="text-center py-4">
                   <p className="text-sm text-gray-500 dark:text-gray-400">No members yet</p>
                 </div>

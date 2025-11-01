@@ -12,21 +12,13 @@ interface GamePlanMove {
   moveName: string;
   description?: string;
   parentId?: string | null;
-  branchType?: string; // 'root', 'success', or 'failure'
   moveOrder: number;
   children?: GamePlanMove[];
-  successChild?: GamePlanMove;
-  failureChild?: GamePlanMove;
 }
 
 interface CounterMove {
   moveName: string;
   description: string;
-}
-
-interface AISuggestions {
-  successMoves: CounterMove[];
-  failureMoves: CounterMove[];
 }
 
 export default function GamePlans() {
@@ -40,7 +32,7 @@ export default function GamePlans() {
   const [expandedMoves, setExpandedMoves] = useState<Set<string>>(new Set());
   const [editingMove, setEditingMove] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({ successMoves: [], failureMoves: [] });
+  const [aiSuggestions, setAiSuggestions] = useState<CounterMove[]>([]);
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
 
   const [newPlanName, setNewPlanName] = useState('');
@@ -48,7 +40,6 @@ export default function GamePlans() {
     moveName: '',
     description: '',
     parentId: null as string | null,
-    branchType: 'root' as 'root' | 'success' | 'failure',
   });
 
   // Get plan names
@@ -71,35 +62,26 @@ export default function GamePlans() {
     enabled: !!user?.id && !!selectedPlan,
   });
 
-  // Build tree structure from flat list with success/failure branches
+  // Build tree structure from flat list
   const buildTree = (flatMoves: any[]): GamePlanMove[] => {
     const moveMap = new Map<string, GamePlanMove>();
     const rootMoves: GamePlanMove[] = [];
 
     // First pass: create all nodes
     flatMoves.forEach(move => {
-      moveMap.set(move.id, { ...move, children: [], successChild: undefined, failureChild: undefined });
+      moveMap.set(move.id, { ...move, children: [] });
     });
 
-    // Second pass: build tree and organize by branch type
+    // Second pass: build tree
     flatMoves.forEach(move => {
       const node = moveMap.get(move.id)!;
-      const branchType = move.branch_type || move.branchType || 'root';
-      
       if (!move.parent_id && !move.parentId) {
         rootMoves.push(node);
       } else {
         const parentId = move.parent_id || move.parentId;
         const parent = moveMap.get(parentId);
         if (parent) {
-          // Organize by branch type
-          if (branchType === 'success') {
-            parent.successChild = node;
-          } else if (branchType === 'failure') {
-            parent.failureChild = node;
-          } else {
-            parent.children!.push(node);
-          }
+          parent.children!.push(node);
         } else {
           rootMoves.push(node); // Orphaned node becomes root
         }
@@ -186,8 +168,8 @@ export default function GamePlans() {
   const resetMoveForm = () => {
     setShowMoveForm(false);
     setEditingMove(null);
-    setMoveData({ moveName: '', description: '', parentId: null, branchType: 'root' });
-    setAiSuggestions({ successMoves: [], failureMoves: [] });
+    setMoveData({ moveName: '', description: '', parentId: null });
+    setAiSuggestions([]);
     setShowAiSuggestions(false);
   };
 
@@ -198,7 +180,7 @@ export default function GamePlans() {
     createMoveMutation.mutate({
       planName: newPlanName.trim(),
       moveName: 'Starting Position',
-      description: '',
+      description: 'Define your starting position here',
       parentId: null,
       moveOrder: 0,
     });
@@ -209,7 +191,7 @@ export default function GamePlans() {
   };
 
   const handleAddMove = () => {
-    if (!moveData.moveName?.trim() || !selectedPlan) return;
+    if (!moveData.moveName.trim() || !selectedPlan) return;
 
     if (editingMove) {
       updateMoveMutation.mutate({
@@ -217,7 +199,6 @@ export default function GamePlans() {
         data: {
           moveName: moveData.moveName,
           description: moveData.description,
-          branchType: moveData.branchType,
         },
       });
     } else {
@@ -226,7 +207,6 @@ export default function GamePlans() {
         moveName: moveData.moveName,
         description: moveData.description,
         parentId: moveData.parentId,
-        branchType: moveData.branchType,
         moveOrder: 0,
       });
     }
@@ -236,38 +216,24 @@ export default function GamePlans() {
     setAiLoading(true);
     setShowAiSuggestions(true);
     
-    // Set the parent ID for the suggestions
-    setMoveData({ 
-      moveName: '', 
-      description: '', 
-      parentId: currentMove.id, 
-      branchType: 'root' 
-    });
-    
     try {
-      const requestData = {
-        currentMove: currentMove.moveName,
-        position: selectedPlan || 'General Position',
-        context: currentMove.description || '',
-      };
-      
-      console.log('🤖 AI Request:', requestData);
-      
-      const response = await apiRequest('POST', '/api/game-plans/ai-suggest', requestData);
-      const data = await response.json();
-
-      setAiSuggestions({
-        successMoves: data.successMoves || [],
-        failureMoves: data.failureMoves || []
+      const data = await apiRequest('/api/game-plans/ai-suggest', {
+        method: 'POST',
+        body: JSON.stringify({
+          currentMove: currentMove.moveName,
+          position: selectedPlan || 'General Position',
+          context: currentMove.description || '',
+        }),
       });
+
+      setAiSuggestions(data.counterMoves || []);
       
       toast({
         title: 'AI Suggestions Ready!',
-        description: `Generated ${data.successMoves?.length || 0} success moves and ${data.failureMoves?.length || 0} failure moves.`,
+        description: `Found ${data.counterMoves?.length || 0} counter move suggestions.`,
         duration: 4000,
       });
     } catch (error: any) {
-      console.error('AI suggestion error:', error);
       toast({
         title: 'AI Error',
         description: error.message || 'Failed to generate suggestions. Make sure OpenAI API key is configured.',
@@ -285,7 +251,6 @@ export default function GamePlans() {
       moveName: move.moveName,
       description: move.description || '',
       parentId: move.parentId || null,
-      branchType: (move.branchType as 'root' | 'success' | 'failure') || 'root',
     });
     setShowMoveForm(true);
   };
@@ -307,143 +272,78 @@ export default function GamePlans() {
   };
 
   const renderMoveTree = (moves: GamePlanMove[], depth: number = 0) => {
-    return moves.map(move => {
-      const hasSuccessChild = !!move.successChild;
-      const hasFailureChild = !!move.failureChild;
-      const hasLegacyChildren = move.children && move.children.length > 0;
-      const hasAnyChildren = hasSuccessChild || hasFailureChild || hasLegacyChildren;
-      
-      return (
-        <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-gray-200 dark:border-gray-700' : ''}`}>
-          <div className={`rounded-lg p-4 mb-3 shadow-sm border-l-4 ${
-            move.branchType === 'success' 
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-500' 
-              : move.branchType === 'failure'
-              ? 'bg-red-50 dark:bg-red-900/20 border-red-500'
-              : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700'
-          }`}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  {hasAnyChildren && (
-                    <button
-                      onClick={() => toggleExpand(move.id)}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                      data-testid={`button-toggle-${move.id}`}
-                    >
-                      {expandedMoves.has(move.id) ? (
-                        <ChevronDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      )}
-                    </button>
-                  )}
-                  {move.branchType === 'success' && (
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-md flex items-center gap-1">
-                      <span className="text-sm">✓</span> IF IT WORKS
-                    </span>
-                  )}
-                  {move.branchType === 'failure' && (
-                    <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-md flex items-center gap-1">
-                      <span className="text-sm">✗</span> IF IT FAILS
-                    </span>
-                  )}
-                  <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
-                </div>
-                {move.description && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 ml-9">{move.description}</p>
+    return moves.map(move => (
+      <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-blue-200 dark:border-blue-800' : ''}`}>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                {move.children && move.children.length > 0 && (
+                  <button
+                    onClick={() => toggleExpand(move.id)}
+                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                    data-testid={`button-toggle-${move.id}`}
+                  >
+                    {expandedMoves.has(move.id) ? (
+                      <ChevronDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    )}
+                  </button>
                 )}
+                <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
               </div>
+              {move.description && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 ml-9">{move.description}</p>
+              )}
+            </div>
 
-              <div className="flex items-center gap-2 flex-wrap">
-                {!hasSuccessChild && (
-                  <button
-                    onClick={() => {
-                      setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'success' });
-                      setShowMoveForm(true);
-                    }}
-                    className="px-3 py-2 bg-green-600 text-white text-xs font-bold rounded hover:bg-green-700 transition-colors flex items-center gap-1 shadow-md"
-                    title="Add success move (if it works)"
-                    data-testid={`button-add-success-${move.id}`}
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>IF SUCCESS</span>
-                  </button>
-                )}
-                {!hasFailureChild && (
-                  <button
-                    onClick={() => {
-                      setMoveData({ moveName: '', description: '', parentId: move.id, branchType: 'failure' });
-                      setShowMoveForm(true);
-                    }}
-                    className="px-3 py-2 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 transition-colors flex items-center gap-1 shadow-md"
-                    title="Add failure move (if it fails)"
-                    data-testid={`button-add-failure-${move.id}`}
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>IF FAILS</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => handleAiSuggest(move)}
-                  disabled={aiLoading}
-                  className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors disabled:opacity-50"
-                  title="AI suggest moves for both paths"
-                  data-testid={`button-ai-suggest-${move.id}`}
-                >
-                  <Sparkles className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleEdit(move)}
-                  className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                  data-testid={`button-edit-${move.id}`}
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(move.id)}
-                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                  data-testid={`button-delete-${move.id}`}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setMoveData({ moveName: '', description: '', parentId: move.id });
+                  setShowMoveForm(true);
+                }}
+                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                title="Add counter move"
+                data-testid={`button-add-counter-${move.id}`}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleAiSuggest(move)}
+                disabled={aiLoading}
+                className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors disabled:opacity-50"
+                title="AI suggest counter moves"
+                data-testid={`button-ai-suggest-${move.id}`}
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleEdit(move)}
+                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                data-testid={`button-edit-${move.id}`}
+              >
+                <Edit2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(move.id)}
+                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                data-testid={`button-delete-${move.id}`}
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
-
-          {expandedMoves.has(move.id) && (
-            <div className="mt-2 space-y-2">
-              {/* Success Branch */}
-              {hasSuccessChild && (
-                <div className="ml-6 border-l-2 border-green-400 dark:border-green-600 pl-4">
-                  <div className="text-xs font-semibold text-green-600 dark:text-green-400 mb-2 flex items-center gap-1">
-                    <span>✓</span> IF IT WORKS
-                  </div>
-                  {renderMoveTree([move.successChild], depth + 1)}
-                </div>
-              )}
-              
-              {/* Failure Branch */}
-              {hasFailureChild && (
-                <div className="ml-6 border-l-2 border-red-400 dark:border-red-600 pl-4">
-                  <div className="text-xs font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-1">
-                    <span>✗</span> IF IT FAILS
-                  </div>
-                  {renderMoveTree([move.failureChild], depth + 1)}
-                </div>
-              )}
-              
-              {/* Legacy children (for backward compatibility) */}
-              {hasLegacyChildren && (
-                <div className="ml-6">
-                  {renderMoveTree(move.children, depth + 1)}
-                </div>
-              )}
-            </div>
-          )}
         </div>
-      );
-    });
+
+        {move.children && move.children.length > 0 && expandedMoves.has(move.id) && (
+          <div className="mt-2">
+            {renderMoveTree(move.children, depth + 1)}
+          </div>
+        )}
+      </div>
+    ));
   };
 
   return (
@@ -522,15 +422,14 @@ export default function GamePlans() {
           </h2>
           <input
             type="text"
-            value={moveData.moveName || ''}
+            value={moveData.moveName}
             onChange={(e) => setMoveData({ ...moveData, moveName: e.target.value })}
             placeholder="Move Name"
             className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg mb-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             data-testid="input-move-name"
-            required
           />
           <textarea
-            value={moveData.description || ''}
+            value={moveData.description}
             onChange={(e) => setMoveData({ ...moveData, description: e.target.value })}
             placeholder="Description (optional)"
             rows={3}
@@ -561,94 +460,42 @@ export default function GamePlans() {
         <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100">AI Decision Tree Suggestions</h3>
+            <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100">AI Counter Move Suggestions</h3>
           </div>
           
           {aiLoading ? (
             <p className="text-purple-700 dark:text-purple-300">Generating suggestions...</p>
-          ) : (aiSuggestions.successMoves.length > 0 || aiSuggestions.failureMoves.length > 0) ? (
-            <div className="space-y-6">
-              {/* Success Moves */}
-              {aiSuggestions.successMoves.length > 0 && (
-                <div>
-                  <h4 className="font-bold text-green-700 dark:text-green-400 mb-3 flex items-center gap-2">
-                    <span className="text-xl">✓</span> If Successful
-                  </h4>
-                  <div className="space-y-3">
-                    {aiSuggestions.successMoves.map((suggestion, index) => (
-                      <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-green-500">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h5 className="font-semibold text-gray-900 dark:text-white mb-1">
-                              {suggestion.moveName}
-                            </h5>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {suggestion.description}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => {
-                              setMoveData({
-                                moveName: suggestion.moveName,
-                                description: suggestion.description,
-                                parentId: moveData.parentId,
-                                branchType: 'success',
-                              });
-                              setShowMoveForm(true);
-                              setShowAiSuggestions(false);
-                            }}
-                            className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors whitespace-nowrap"
-                            data-testid={`button-use-success-${index}`}
-                          >
-                            Use This
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+          ) : aiSuggestions.length > 0 ? (
+            <div className="space-y-3">
+              {aiSuggestions.map((suggestion, index) => (
+                <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                        {suggestion.moveName}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {suggestion.description}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setMoveData({
+                          moveName: suggestion.moveName,
+                          description: suggestion.description,
+                          parentId: moveData.parentId,
+                        });
+                        setShowMoveForm(true);
+                        setShowAiSuggestions(false);
+                      }}
+                      className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                      data-testid={`button-use-suggestion-${index}`}
+                    >
+                      Use This
+                    </button>
                   </div>
                 </div>
-              )}
-
-              {/* Failure Moves */}
-              {aiSuggestions.failureMoves.length > 0 && (
-                <div>
-                  <h4 className="font-bold text-red-700 dark:text-red-400 mb-3 flex items-center gap-2">
-                    <span className="text-xl">✗</span> If Fails/Defended
-                  </h4>
-                  <div className="space-y-3">
-                    {aiSuggestions.failureMoves.map((suggestion, index) => (
-                      <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-red-500">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h5 className="font-semibold text-gray-900 dark:text-white mb-1">
-                              {suggestion.moveName}
-                            </h5>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {suggestion.description}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => {
-                              setMoveData({
-                                moveName: suggestion.moveName,
-                                description: suggestion.description,
-                                parentId: moveData.parentId,
-                                branchType: 'failure',
-                              });
-                              setShowMoveForm(true);
-                              setShowAiSuggestions(false);
-                            }}
-                            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors whitespace-nowrap"
-                            data-testid={`button-use-failure-${index}`}
-                          >
-                            Use This
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              ))}
             </div>
           ) : (
             <p className="text-purple-700 dark:text-purple-300">No suggestions available.</p>

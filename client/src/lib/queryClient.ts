@@ -315,8 +315,6 @@ export const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes - keep data fresh in cache to avoid refetches
-      gcTime: 10 * 60 * 1000, // 10 minutes - keep unused data in memory
       queryFn: async ({ queryKey }) => {
         const [supabaseId, accessToken] = await Promise.all([
           getSupabaseId(),

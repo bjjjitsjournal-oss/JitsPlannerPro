@@ -1,6 +1,6 @@
 workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.87
+    name: Jits Journal iOS v1.0.75
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -36,9 +36,6 @@ workflows:
         - pattern: 'main'
           include: true
           source: true
-        - pattern: 'replit-agent'
-          include: true
-          source: true
         - pattern: 'release/*'
           include: true
           source: true
@@ -54,9 +51,9 @@ workflows:
           echo "🏗️  Building React app..."
           npm run build
       
-      - name: Sync iOS platform
+      - name: Sync Capacitor iOS
         script: |
-          echo "🍎 Syncing iOS platform..."
+          echo "🔄 Syncing Capacitor to iOS..."
           npx cap sync ios
       
       - name: Install CocoaPods dependencies
@@ -108,7 +105,7 @@ workflows:
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.87
+    name: Jits Journal Android v1.0.84
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -120,7 +117,7 @@ workflows:
         PACKAGE_NAME: "com.jitsjournal.app"
       
       node: latest
-      java: 21
+      java: 17
     
     triggering:
       events:
@@ -128,9 +125,6 @@ workflows:
         - tag
       branch_patterns:
         - pattern: 'main'
-          include: true
-          source: true
-        - pattern: 'replit-agent'
           include: true
           source: true
         - pattern: 'release/*'
@@ -148,17 +142,19 @@ workflows:
           echo "🏗️  Building React app..."
           npm run build
       
-      - name: Sync Android platform
+      - name: Copy web build to Android
         script: |
-          echo "🤖 Syncing Android platform..."
-          npx cap sync android
+          echo "📂 Copying web build to android/app/src/main/assets..."
+          mkdir -p android/app/src/main/assets/public
+          cp -r dist/public/* android/app/src/main/assets/public/
       
       - name: Build Android AAB
         script: |
-          echo "🤖 Building signed Android AAB..."
+          echo "🤖 Building Android AAB..."
           cd android
           chmod +x ./gradlew
-          ./gradlew clean bundleRelease --stacktrace
+          ./gradlew clean
+          ./gradlew bundleRelease --stacktrace
     
     artifacts:
       - android/app/build/outputs/**/*.aab

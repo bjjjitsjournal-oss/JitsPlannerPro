@@ -13,7 +13,6 @@ import Belts from './pages/belts';
 import Social from './pages/Social';
 import MyVideos from './pages/MyVideos';
 import Drawing from './pages/Drawing';
-import GamePlans from './pages/GamePlans';
 import Contact from './pages/Contact';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -44,7 +43,6 @@ function AuthenticatedApp() {
           <Route path="/settings" component={Settings} />
           <Route path="/belts" component={Belts} />
           <Route path="/social" component={Social} />
-          <Route path="/game-plans" component={GamePlans} />
           <Route path="/my-videos" component={MyVideos} />
           <Route path="/drawing" component={Drawing} />
           <Route path="/contact" component={Contact} />

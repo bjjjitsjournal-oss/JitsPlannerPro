@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-// Using GPT-4o Mini for cost-effective BJJ move suggestions (~$0.0003 per request)
+// the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
 // Lazy-load OpenAI client only when needed to avoid startup errors if API key is missing
 let openaiClient: OpenAI | null = null;
 
@@ -19,52 +19,38 @@ interface CounterMove {
   description: string;
 }
 
-interface DecisionTreeSuggestions {
-  successMoves: CounterMove[];
-  failureMoves: CounterMove[];
-}
-
 export async function generateBJJCounterMoves(
   currentMove: string,
   position: string,
   context: string = ""
-): Promise<DecisionTreeSuggestions> {
+): Promise<CounterMove[]> {
   try {
     const openai = getOpenAIClient();
     
-    const prompt = `You are a Brazilian Jiu-Jitsu expert. Create a decision tree for the following scenario by suggesting moves for BOTH outcomes:
+    const prompt = `You are a Brazilian Jiu-Jitsu expert. Given the following scenario, suggest 3-5 realistic counter moves or responses.
 
 Position: ${position}
 Current Move/Attack: ${currentMove}
 ${context ? `Additional Context: ${context}` : ""}
 
-Provide TWO separate sets of moves:
+Provide practical BJJ counter techniques that would be appropriate responses. For each counter move, include:
+1. The name of the technique
+2. A brief description of how to execute it
 
-1. SUCCESS MOVES (if the current move works): 2-3 follow-up techniques to capitalize on success
-2. FAILURE MOVES (if the current move is defended/fails): 2-3 backup techniques or transitions
-
-For each move, include:
-- The name of the technique
-- A brief description of how to execute it
-
-Respond with JSON in this EXACT format: 
+Respond with JSON in this format: 
 {
-  "successMoves": [
-    {"moveName": "technique name", "description": "how to execute if original move works"},
-    ...
-  ],
-  "failureMoves": [
-    {"moveName": "technique name", "description": "what to do if original move fails"},
+  "counterMoves": [
+    {"moveName": "technique name", "description": "how to execute"},
     ...
   ]
 }`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5",
       messages: [
         {
           role: "system",
-          content: "You are a Brazilian Jiu-Jitsu expert coach creating decision trees for game planning. Always provide realistic, practical techniques for both success and failure scenarios."
+          content: "You are a Brazilian Jiu-Jitsu expert coach providing technical counter move suggestions. Always provide realistic, practical techniques."
         },
         {
           role: "user",
@@ -76,10 +62,7 @@ Respond with JSON in this EXACT format:
     });
 
     const result = JSON.parse(response.choices[0].message.content || "{}");
-    return {
-      successMoves: result.successMoves || [],
-      failureMoves: result.failureMoves || []
-    };
+    return result.counterMoves || [];
   } catch (error: any) {
     console.error("OpenAI counter move generation error:", error);
     
