@@ -5,7 +5,7 @@ services:
     runtime: node
     region: oregon
     plan: starter
-    branch: main
+    branch: replit-agent
     buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
