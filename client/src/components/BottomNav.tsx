@@ -9,7 +9,7 @@ export default function BottomNav() {
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/classes', label: 'Classes', icon: '📅' },
     { path: '/notes', label: 'Notes', icon: '📝' },
-    { path: '/videos', label: 'Videos', icon: '📺' },
+    { path: '/game-plans', label: 'Plans', icon: '🎯' },
     { path: '/social', label: 'Social', icon: '👥' },
   ];
 

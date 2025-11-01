@@ -22,6 +22,7 @@ import Auth from './pages/Auth';
 import Admin from './pages/Admin';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import GamePlans from './pages/GamePlans';
 import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
@@ -40,6 +41,7 @@ function AuthenticatedApp() {
           <Route path="/classes" component={Classes} />
           <Route path="/notes" component={Notes} />
           <Route path="/videos" component={Videos} />
+          <Route path="/game-plans" component={GamePlans} />
           <Route path="/settings" component={Settings} />
           <Route path="/belts" component={Belts} />
           <Route path="/social" component={Social} />
