@@ -28,23 +28,32 @@ export async function generateBJJCounterMoves(
   try {
     const openai = getOpenAIClient();
     
-    const prompt = `You are a Brazilian Jiu-Jitsu expert. Given the following scenario, suggest 3-5 realistic counter moves or responses.
+    const prompt = `You are a Brazilian Jiu-Jitsu expert. Given the following scenario, suggest counter moves or responses.
 
 Position: ${position}
 Current Move/Attack: ${currentMove}
 ${context ? `Additional Context: ${context}` : ""}
 
-Provide practical BJJ counter techniques that would be appropriate responses. For each counter move, include:
+Provide exactly 6 practical BJJ counter techniques:
+- First 3 moves: OFFENSIVE/ATTACKING moves (advancing position, submissions, sweeps)
+- Last 3 moves: DEFENSIVE moves (escapes, guards, frames)
+
+For each counter move, include:
 1. The name of the technique
 2. A brief description of how to execute it
-3. The type: "attack" for offensive/advancing moves, "defense" for defensive/escaping moves
+3. The type: "attack" for offensive moves, "defense" for defensive moves
+
+IMPORTANT: List all 3 attack moves FIRST, then all 3 defense moves.
 
 Respond with JSON in this format: 
 {
   "counterMoves": [
-    {"moveName": "technique name", "description": "how to execute", "type": "attack"},
-    {"moveName": "technique name", "description": "how to execute", "type": "defense"},
-    ...
+    {"moveName": "attack technique 1", "description": "how to execute", "type": "attack"},
+    {"moveName": "attack technique 2", "description": "how to execute", "type": "attack"},
+    {"moveName": "attack technique 3", "description": "how to execute", "type": "attack"},
+    {"moveName": "defense technique 1", "description": "how to execute", "type": "defense"},
+    {"moveName": "defense technique 2", "description": "how to execute", "type": "defense"},
+    {"moveName": "defense technique 3", "description": "how to execute", "type": "defense"}
   ]
 }`;
 
