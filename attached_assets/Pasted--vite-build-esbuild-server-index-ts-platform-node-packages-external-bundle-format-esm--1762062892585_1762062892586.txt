@@ -1,0 +1,70 @@
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (3) src\main.tsxBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2772 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-3886ofBq.css   99.82 kB │ gzip:  16.17 kB
+../dist/public/assets/web-BWCVDwCu.js       1.25 kB │ gzip:   0.59 kB
+../dist/public/assets/index-CfZRki7o.js   880.66 kB │ gzip: 248.33 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.35s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 24ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 35.25ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.55ms
+√ copy android in 160.03ms
+√ Updating Android plugins in 31.35ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 238.23ms
+√ Copying web assets from public to ios\App\App\public in 30.70ms
+√ Creating capacitor.config.json in ios\App\App in 1.34ms
+√ copy ios in 171.48ms
+√ Updating iOS plugins in 31.81ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 42.20ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 275.49ms
+√ copy web in 65.57ms
+√ update web in 73.36ms
+[info] Sync finished in 1.325s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # 4. Commit everything
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add -A
+warning: in the working copy of 'android/app/capacitor.build.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/capacitor.settings.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ios/App/Podfile', LF will be replaced by CRLF the next time Git touches it
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.97 - COMPLETE: GamePlans UI + Routes + Gym Management"
+[replit-agent 2954ee3c] v1.0.97 - COMPLETE: GamePlans UI + Routes + Gym Management
+ 3 files changed, 100 insertions(+), 99 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 21, done.
+Counting objects: 100% (21/21), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (11/11), 1.55 KiB | 199.00 KiB/s, done.
+Total 11 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (8/8), completed with 8 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   a0d863f8..2954ee3c  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "`n🎉 v1.0.97 COMPLETE and pushed to GitHub!" -ForegroundColor Green
+
+🎉 v1.0.97 COMPLETE and pushed to GitHub!
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "✅ All features included - ready for Codemagic build!" -ForegroundColor Green
+✅ All features included - ready for Codemagic build!
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
