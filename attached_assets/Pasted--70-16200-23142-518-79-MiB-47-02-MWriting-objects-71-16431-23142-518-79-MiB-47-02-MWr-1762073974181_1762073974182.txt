@@ -1,0 +1,37 @@
+  70% (16200/23142), 518.79 MiB | 47.02 MWriting objects:  71% (16431/23142), 518.79 MiB | 47.02 MWriting objects:  72% (16663/23142), 584.80 MiB | 50.73 MWriting objects:  73% (16894/23142), 584.80 MiB | 50.73 MWriting objects:  74% (17126/23142), 584.80 MiB | 50.73 MWriting objects:  74% (17199/23142), 584.80 MiB | 50.73 MWriting objects:  75% (17357/23142), 584.80 MiB | 50.73 MWriting objects:  76% (17588/23142), 584.80 MiB | 50.73 MWriting objects:  77% (17820/23142), 584.80 MiB | 50.73 MWriting objects:  78% (18051/23142), 584.80 MiB | 50.73 MWriting objects:  79% (18283/23142), 609.17 MiB | 50.96 MWriting objects:  80% (18514/23142), 609.17 MiB | 50.96 MWriting objects:  81% (18746/23142), 609.17 MiB | 50.96 MWriting objects:  82% (18977/23142), 609.17 MiB | 50.96 MWriting objects:  83% (19208/23142), 609.17 MiB | 50.96 MWriting objects:  84% (19440/23142), 609.17 MiB | 50.96 MWriting objects:  85% (19671/23142), 609.17 MiB | 50.96 MWriting objects:  86% (19903/23142), 609.17 MiB | 50.96 MWriting objects:  87% (20134/23142), 609.17 MiB | 50.96 MWriting objects:  88% (20365/23142), 635.37 MiB | 53.89 MWriting objects:  89% (20597/23142), 635.37 MiB | 53.89 MWriting objects:  90% (20828/23142), 635.37 MiB | 53.89 MWriting objects:  90% (21026/23142), 635.37 MiB | 53.89 MWriting objects:  91% (21060/23142), 635.37 MiB | 53.89 MWriting objects:  92% (21291/23142), 635.37 MiB | 53.89 MWriting objects:  93% (21523/23142), 635.37 MiB | 53.89 MWriting objects:  94% (21754/23142), 635.37 MiB | 53.89 MWriting objects:  95% (21985/23142), 655.67 MiB | 48.74 MWriting objects:  96% (22217/23142), 655.67 MiB | 48.74 MWriting objects:  97% (22448/23142), 655.67 MiB | 48.74 MWriting objects:  98% (22680/23142), 655.67 MiB | 48.74 MWriting objects:  99% (22911/23142), 655.67 MiB | 48.74 MWriting objects: 100% (23142/23142), 655.67 MiB | 48.74 MWriting objects: 100% (23142/23142), 657.35 MiB | 2.09 MiB/s, done.
+Total 23142 (delta 9273), reused 17409 (delta 6966), pack-reused 0 (from 0)
+fatal: the remote end hung up unexpectedly
+Everything up-to-date
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> curl https://jitsjournal-backend.onrender.com/api/health
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"status":"ok","timestamp":"2025-11-
+                    02T08:59:08.683Z","version":"v1.0.75
+                    "}
+RawContent        : HTTP/1.1 200 OK
+                    Transfer-Encoding: chunked
+                    Connection: keep-alive
+                    CF-RAY: 99826f1e6bf45737-SYD
+                    access-control-allow-headers:
+                    Origin, X-Requested-With,
+                    Content-Type, Accept, Authorization
+                    access-c...
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked],
+                    [Connection, keep-alive], [CF-RAY,
+                    99826f1e6bf45737-SYD],
+                    [access-control-allow-headers,
+                    Origin, X-Requested-With,
+                    Content-Type, Accept,
+                    Authorization]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 74
+
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
