@@ -1,0 +1,107 @@
+Host "`n🔧 Adding missing navigation and UI..." -ForegroundColor Yellow
+
+🔧 Adding missing navigation and UI...
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # 1. Add GamePlans import to App.tsx (after line 24)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $appContent = Get-Content "client\src\App.tsx" -Raw
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> if ($appContent -notmatch "import GamePlans") {
+>>     $appContent = $appContent -replace "(import TermsOfService from './pages/TermsOfService';)", "`$1`nimport GamePlans from './pages/GamePlans';"
+>>     Set-Content "client\src\App.tsx" -Value $appContent
+>>     Write-Host "✅ Added GamePlans import to App.tsx" -ForegroundColor Green
+>> }
+✅ Added GamePlans import to App.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # 2. Add GamePlans route to App.tsx (after line 43)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $appContent = Get-Content "client\src\App.tsx" -Raw
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> if ($appContent -notmatch '<Route path="/game-plans"') {
+>>     $appContent = $appContent -replace '(<Route path="/videos" component=\{Videos\} />)', "`$1`n          <Route path=`"/game-plans`" component={GamePlans} />"
+>>     Set-Content "client\src\App.tsx" -Value $appContent
+>>     Write-Host "✅ Added GamePlans route to App.tsx" -ForegroundColor Green
+>> }
+✅ Added GamePlans route to App.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # 3. Add Game Plans icon to BottomNav (check if it exists)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $navContent = Get-Content "client\src\components\BottomNav.tsx" -Raw
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> if ($navContent -notmatch "game-plans") {
+>>     # Add Target icon import
+>>     $navContent = $navContent -replace "(import \{ Home.*? \} from 'lucide-react';)", "import { Home, BookOpen, Video, Target, Settings } from 'lucide-react';"
+>>
+>>     # Add navigation item after Videos
+>>     $navContent = $navContent -replace "(<Link.*?/videos.*?</Link>)", "`$1`n      <Link href=`"/game-plans`">`n        <button className=`"flex flex-col items-center justify-center w-full h-full transition-colors `${isActive('/game-plans') ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'}`" data-testid=`"nav-game-plans`">`n          <Target className=`"w-6 h-6`" />`n          <span className=`"text-xs mt-1`">Plans</span>`n        </button>`n      </Link>"
+>>
+>>     Set-Content "client\src\components\BottomNav.tsx" -Value $navContent
+>>     Write-Host "✅ Added Game Plans to BottomNav" -ForegroundColor Green
+>> }
+✅ Added Game Plans to BottomNav
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # 4. Build, sync, commit, push
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (3) src\main.tsxBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2773 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-3886ofBq.css   99.82 kB │ gzip:  16.17 kB
+../dist/public/assets/web-B9lmjsbO.js       1.25 kB │ gzip:   0.58 kB
+../dist/public/assets/index-CRlxuI2u.js   890.28 kB │ gzip: 250.63 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.97s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 28ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 37.93ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.27ms
+√ copy android in 153.91ms
+√ Updating Android plugins in 36.90ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 241.08ms
+√ Copying web assets from public to ios\App\App\public in 34.78ms
+√ Creating capacitor.config.json in ios\App\App in 2.20ms
+√ copy ios in 186.02ms
+√ Updating iOS plugins in 27.64ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 40.21ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 263.62ms
+√ copy web in 64.23ms
+√ update web in 63.45ms
+[info] Sync finished in 1.296s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add -A
+warning: in the working copy of 'android/app/capacitor.build.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'android/capacitor.settings.gradle', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'client/src/App.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ios/App/Podfile', LF will be replaced by CRLF the next time Git touches it
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.97 - Add GamePlans navigation and routes"
+[replit-agent 835ed493] v1.0.97 - Add GamePlans navigation and routes
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 13, done.
+Counting objects: 100% (13/13), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 652 bytes | 217.00 KiB/s, done.
+Total 7 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (6/6), completed with 6 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   2954ee3c..835ed493  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "`n✅ NOW it's complete! Game Plans navigation added!" -ForegroundColor Green
+
+✅ NOW it's complete! Game Plans navigation added!
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
