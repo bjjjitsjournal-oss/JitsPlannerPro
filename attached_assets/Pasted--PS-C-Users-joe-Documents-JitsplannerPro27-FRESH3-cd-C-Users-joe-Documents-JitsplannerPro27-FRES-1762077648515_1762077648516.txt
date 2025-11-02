@@ -1,0 +1,24 @@
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> cd C:\Users\joe\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+'vite' is not recognized as an internal or external command,
+operable program or batch file.
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\assets\| Copying web assets from public to android\app\src\main\assets\/ Copying web assets from public to android\app\src\main\assets\- Copying web assets from public to android\app\src\main\assets\\ Copying web assets from public to android\app\src\main\assets\| Copying web assets from public to android\app\src\main\assets\/ Copying web assets from public to android\app\src\main\assets\- Copying web assets from public to android\app\src\main\assets\\ Copying web assets from public to android\app\src\main\assets\| Copying web assets from public to android\app\src\main\assets\/ Copying web assets from public to android\app\src\main\assets\- Copying web assets from public to android\app\src\main\assets\√ Copying web assets from public to android\app\src\main\assets\public in 656.80ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 6.30ms
+√ copy android in 781.65ms
+√ Updating Android plugins in 42.07ms
+× update android - failed!
+[error] Unable to find node_modules/@capacitor/android.
+        Are you sure @capacitor/android is installed?
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add capacitor.config.ts android/app/build.gradle client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.102 - Gym members list with delete + OpenAI integration"
+On branch replit-agent
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
