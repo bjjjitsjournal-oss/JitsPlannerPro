@@ -1,0 +1,48 @@
+ + 8356e054...3b6fcb0f replit-agent -> replit-agent (forced update)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Should show newer version (not v1.0.75)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> curl https://jitsjournal-backend.onrender.com/api/health
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"status":"ok","timestamp":"2025-11-02T09:1
+                    3:15.012Z","version":"v1.0.75"}
+RawContent        : HTTP/1.1 200 OK
+                    Transfer-Encoding: chunked
+                    Connection: keep-alive
+                    CF-RAY: 998283c81864aadd-SYD
+                    access-control-allow-headers: Origin,
+                    X-Requested-With, Content-Type, Accept,
+                    Authorization
+                    access-c...
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked],
+                    [Connection, keep-alive], [CF-RAY,
+                    998283c81864aadd-SYD],
+                    [access-control-allow-headers, Origin,
+                    X-Requested-With, Content-Type, Accept,
+                    Authorization]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 74
+
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Should return JSON data (not HTML)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> curl https://jitsjournal-backend.onrender.com/api/gyms/1/members
+curl : The remote server returned an error: (401) Unauthorized.
+At line:1 char:1
++ curl
+https://jitsjournal-backend.onrender.com/api/gyms/1/members
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~
+    + CategoryInfo          : InvalidOperation: (System.Net.Ht
+   tpWebRequest:HttpWebRequest) [Invoke-WebRequest], WebExcep
+  tion
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Mi
+   crosoft.PowerShell.Commands.InvokeWebRequestCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
