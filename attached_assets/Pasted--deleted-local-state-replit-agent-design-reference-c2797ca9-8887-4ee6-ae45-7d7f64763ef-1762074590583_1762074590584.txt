@@ -1,0 +1,35 @@
+
+        deleted:    .local/state/replit/agent/design_reference/c2797ca9-8887-4ee6-ae45-7d7f64763ef9/af515f90-b37b-4a72-97d8-26014b3c9425.html
+        deleted:    .local/state/replit/agent/design_reference/c2797ca9-8887-4ee6-ae45-7d7f64763ef9/dac7fb37-580e-415a-8774-201f63b22e2d.html
+        deleted:    .local/state/replit/agent/filesystem/filesystem_state.json
+        deleted:    .local/state/replit/agent/rapid_build_started
+        deleted:    .local/state/replit/agent/rapid_build_success
+        deleted:    .local/state/replit/agent/repl_state.bin
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Reset to clean state if needed
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git reset --hard HEAD
+Updating files: 100% (2461/2461), done.
+HEAD is now at 3b6fcb0f v1.0.102 - Sync with Replit (add gym endpoints)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Add only the important files
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add server/ client/ shared/ android/ capacitor.config.ts package.json .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Commit
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.102 - Add gym member endpoints from Replit"
+On branch replit-agent
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Force push
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent --force
+Enumerating objects: 23142, done.
+Counting objects: 100% (23142/23142), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (10320/10320), done.
+Writing objects: 100% (23142/23142), 657.35 MiB | 1.30 MiB/s, done.
+Total 23142 (delta 9273), reused 17409 (delta 6966), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (9273/9273), done.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+ + 8356e054...3b6fcb0f replit-agent -> replit-agent (forced update)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
