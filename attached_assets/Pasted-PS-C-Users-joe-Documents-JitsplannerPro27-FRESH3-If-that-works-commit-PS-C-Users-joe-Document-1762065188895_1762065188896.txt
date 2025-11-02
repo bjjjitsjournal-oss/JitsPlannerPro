@@ -1,0 +1,36 @@
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # If that works, commit
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Fix template literal syntax"
+Auto packing the repository for optimum performance.
+See "git help gc" for manual housekeeping.
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Checking connectivity: 37737, done.
+warning: There are too many unreachable loose objects; run 'git prune' to remove them.
+[replit-agent 8bef2c5f] v1.0.100 - Fix template literal syntax
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Read file as single string
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $content = Get-Content client/src/pages/Settings.tsx -Raw
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Fix line 90 - queryKey
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $content = $content -replace 'queryKey: \[/api/gyms/\+\$\+\{gymMembership\?\.id\+\}\+/members\]', 'queryKey: [`/api/gyms/${gymMembership?.id}/members`]'
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Fix line 120 - DELETE request (simpler pattern)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $content = $content -replace "return await apiRequest\('DELETE', /api/gyms/\+\$\+\{gymMembership\?\.id\+\}\+/members/\+\$\+\{userId\+\}\+\);", "return await apiRequest('DELETE', \`/api/gyms/\${gymMembership?.id}/members/\${userId}\`);"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Save
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Set-Content client/src/pages/Settings.tsx -Value $content -Encoding UTF8
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify the fixes
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Get-Content client/src/pages/Settings.tsx | Select-Object -Skip 89 -First 1
+    queryKey: [`/api/gyms/${gymMembership?.id}/members`],
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Get-Content client/src/pages/Settings.tsx | Select-Object -Skip 119 -First 1
+      return await apiRequest('DELETE', /api/gyms/+$+{gymMembership?.id+}+/members/+$+{userId+});
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Build
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
