@@ -1,0 +1,103 @@
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $settingsContent = $settingsContent -replace '(\s+<div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">\s+<h3[^>]*>.*?Manage Gyms.*?</h3>)', "$gymMembersUI`$1"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Save the file
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Set-Content -Path "client\src\pages\Settings.tsx" -Value $settingsContent -Encoding UTF8
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "✅ Gym Members UI added to Settings.tsx" -ForegroundColor Green
+✅ Gym Members UI added to Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Build and commit
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (3) src\main.tsxBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2773 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-3886ofBq.css   99.82 kB │ gzip:  16.17 kB
+../dist/public/assets/web-aWGIRGB_.js       1.25 kB │ gzip:   0.58 kB
+../dist/public/assets/index-C0tVviaZ.js   890.28 kB │ gzip: 250.63 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.04s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 24ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 48.88ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.20ms
+√ copy android in 162.40ms
+√ Updating Android plugins in 32.83ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 254.05ms
+√ Copying web assets from public to ios\App\App\public in 38.80ms
+√ Creating capacitor.config.json in ios\App\App in 2.54ms
+√ copy ios in 186.15ms
+√ Updating iOS plugins in 27.92ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 42.30ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 279.18ms
+√ copy web in 65.05ms
+√ update web in 65.50ms
+[info] Sync finished in 1.366s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Add Gym Members admin panel to Settings"
+Auto packing the repository for optimum performance.
+See "git help gc" for manual housekeeping.
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Checking connectivity: 37725, done.
+warning: There are too many unreachable loose objects; run 'git prune' to remove them.
+[replit-agent 9f59d3c7] v1.0.100 - Add Gym Members admin panel to Settings
+ 1 file changed, 1 insertion(+)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 11, done.
+Counting objects: 100% (11/11), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 539 bytes | 134.00 KiB/s, done.
+Total 6 (delta 5), reused 1 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (5/5), completed with 5 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   ee100f92..9f59d3c7  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show HEAD:client/src/pages/Settings.tsx | Select-String "gymMembers|removeMemberMutation"
+
+  const { data: gymMembership } = useQuery<{ id:
+number; name: string; code: string } | null>({
+          {gymMembership && (
+                <span className="font-semibold
+text-gray-800
+dark:text-white">{gymMembership.name}</span>
+                Code: <span className="font-mono
+font-bold">{gymMembership.code}</span>
+              {gymMembership ? 'Join another gym
+community' : 'Join a gym community to share notes with
+your training partners'}
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "`n✅ v1.0.100 complete with Gym Members UI!" -ForegroundColor Green
+
+✅ v1.0.100 complete with Gym Members UI!
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
