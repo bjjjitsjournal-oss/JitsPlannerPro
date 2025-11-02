@@ -1,0 +1,59 @@
+885faf8ead2810ff3b6287.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f8730b6602c3dcd721ba04187d83849db90faf3c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f8b32cfafd197b5ffa2dca1019428665d54204c4.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f8d372e72daba2a213b4595a18ebec458f2c859b.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f8ed25295f59225743ae25d498d22bc802cbb7a1.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f921d3490c53d2a25e6c52b79aec488146e43c4e.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f99405b4879d4fa82bf06efd9e6a216fdbad66e9.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f9a053c009efb53f16cc86d2ece0a38eb77bb8c9.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f9f09037813995db6df31b6f94cd566d57b7c309.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_f9f924803580ac84e50d8d05af090ada10cebb9f.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fa7426bbd246bdc608bd1143cc17fb1986a4180e.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fadc42efd8455b992ad269c55a7fba6e44a9a111.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb1fb9ae5ebc0da7e0e9dcfd4ea0228a5c17bf3c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb421ecbe350caf0e655d2ab713308689b1ea0e5.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb467b7c9df2e3d8a40065387a82d161b03781ae.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb6dc1d9226d62c03a3d814e70f36ea92ae4e5c1.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb6f6dbbb21aacc3d08618d8256d89eefe8e0578.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fb76bd926ef3cee0ee10a38e7892605a0a75b440.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fbb316bfa57c973845ca17fc986b4fb27e7342e6.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fbf54216959b946a276a68184e9416e243d61d23.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc05907cb267d6885fbc28ebce24122e671c272d.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc2f4692918d7a4f0a795b67b1e2e0e8c6a30442.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc386847786ef6d4345018ca4a81229ff92d8a1b.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc42fb3b7cbcad15ede908ea6cc698f92d168a81.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc600f3302714e244854a0bf49f9af0840e07af4.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc6762ed48e09b0c60fe8fd144da973d8b84d593.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc92c48d931c626795366d9c7dd31e26cc81c12d.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fc97e8f38ea785323d1196569445ca835e4a1d2c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fcdf8af2aeece48612bad252d1844f81c0706ec2.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fcf76412fc0231444677823e83964443aa386b62.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fd2bf5ec665d404eae55c50c5e7a8ebd71f43521.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fd312b236696e12688ee4e4117d1523cb706fba0.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fd4e85977dbdbebf6cd937f6c7ea551fcf1cad60.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fd57a9f4965520628626bee4e30dc3e6c7343aee.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fdae70e73c4cd5693aa38737ab2c0c6a7c863927.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fdaf29e91172d265bb792fc4bd2e4c2f9e124672.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fe4812572346236dc55b044c28d87ad87657d1ee.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fe4875344e0d484bbc145669e8dacfcf9e9f4816.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fe96bc5559523bc25b989558476d5802ce4ceb0c.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_fec1364fdab3e93b521dd4bddbf0e2d879bd05c8.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ff1aef298901c9a7b12cdde4e1ec011125696e7f.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ff43007916f9c8a9c82c71e4b88c2c07ad1559b9.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ff70da32b9278b30eafeb75f7d653b80b9b3ffef.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ff90e23b3888ed9abf990ff2f459c0352fd456de.bin
+ create mode 100644 .local/state/replit/agent/.agent_state_ffc785a4570af6f31e13b26111591375665e1a72.bin
+ mode change 100755 => 100644 android/gradlew
+ delete mode 100644 final-android-package/android-studio/build/reports/problems/problems-report.html
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+ ! [rejected]          replit-agent -> replit-agent (fetch first)
+error: failed to push some refs to 'https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
