@@ -1,0 +1,27 @@
+option). You
+        may need to compile the web assets for your app (typically npm run
+        build). More info:
+        https://capacitorjs.com/docs/basics/workflow#sync-your-project
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add .
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.93 - Fix version codes to 93"
+[replit-agent 4787b48f] v1.0.93 - Fix version codes to 93
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> cd $env:USERPROFILE\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Install all dependencies (this will take 2-3 minutes)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm install
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated lodash.get@4.4.2: This package is deprecated. Use the optional chaining (?.) operator instead.
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated rimraf@2.4.5: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated @oclif/screen@3.0.8: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated glob@6.0.4: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated sudo-prompt@9.1.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
+npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
+npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
