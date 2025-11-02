@@ -1,0 +1,98 @@
+ient\src\pages\Settings.tsx:296:
+{gymMembership && (
+client\src\pages\Settings.tsx:300:                <span
+className="font-semibold text-gray-800
+dark:text-white">{gymMembership.name}</span>
+client\src\pages\Settings.tsx:303:                Code:
+<span className="font-mono
+font-bold">{gymMembership.code}</span>
+client\src\pages\Settings.tsx:313:
+{gymMembership ? 'Join another gym community' : 'Join a
+gym community to share notes with your training
+partners'}
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Build and commit
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 13 modules transformed.
+x Build failed in 2.04s
+error during build:
+[vite:esbuild] Transform failed with 1 error:
+C:/Users/joe/Documents/JitsplannerPro27/FRESH3/client/src/pages/Settings.tsx:90:42: ERROR: Expected "}" but found "?."
+file: C:/Users/joe/Documents/JitsplannerPro27/FRESH3/client/src/pages/Settings.tsx:90:42
+
+Expected "}" but found "?."
+88 |    // Fetch gym members if user is admin
+89 |    const { data: gymMembers } = useQuery<Array<{ userId: number; email: string; firstName: string; lastName: string; role: string; joinedAt: string }>>({
+90 |      queryKey: [/api/gyms/+$+{gymMembership?.id+}+/members],
+   |                                            ^
+91 |      enabled: !!gymMembership && (gymMembership.role === 'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
+92 |    });
+
+    at failureErrorWithLog (C:\Users\joe\Documents\JitsplannerPro27\FRESH3\node_modules\vite\node_modules\esbuild\lib\main.js:1472:15)
+    at C:\Users\joe\Documents\JitsplannerPro27\FRESH3\node_modules\vite\node_modules\esbuild\lib\main.js:755:50
+    at responseCallbacks.<computed> (C:\Users\joe\Documents\JitsplannerPro27\FRESH3\node_modules\vite\node_modules\esbuild\lib\main.js:622:9)
+    at handleIncomingPacket (C:\Users\joe\Documents\JitsplannerPro27\FRESH3\node_modules\vite\node_modules\esbuild\lib\main.js:677:12)
+    at Socket.readFromStdout (C:\Users\joe\Documents\JitsplannerPro27\FRESH3\node_modules\vite\node_modules\esbuild\lib\main.js:600:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 47.99ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 5.31ms
+√ copy android in 170.87ms
+√ Updating Android plugins in 28.79ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 207.90ms
+√ Copying web assets from public to ios\App\App\public in 26.56ms
+√ Creating capacitor.config.json in ios\App\App in 1.59ms
+√ copy ios in 174.97ms
+√ Updating iOS plugins in 28.44ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 38.43ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 256.50ms
+√ copy web in 66.50ms
+√ update web in 89.06ms
+[info] Sync finished in 1.336s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add client/src/pages/Settings.tsx capacitor.config.ts
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Add gym members management code"
+Auto packing the repository for optimum performance.
+See "git help gc" for manual housekeeping.
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Checking connectivity: 37731, done.
+warning: There are too many unreachable loose objects; run 'git prune' to remove them.
+[replit-agent 3fcaa01b] v1.0.100 - Add gym members management code
+ 1 file changed, 27 insertions(+)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 11, done.
+Counting objects: 100% (11/11), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 885 bytes | 295.00 KiB/s, done.
+Total 6 (delta 5), reused 1 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (5/5), completed with 5 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   9f59d3c7..3fcaa01b  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
