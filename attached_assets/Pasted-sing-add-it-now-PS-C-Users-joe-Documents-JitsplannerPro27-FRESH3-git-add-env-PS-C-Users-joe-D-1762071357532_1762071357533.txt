@@ -1,0 +1,78 @@
+sing, add it now
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git status
+On branch replit-agent
+Your branch is up to date with 'origin/replit-agent'.
+
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> curl https://jitsjournal-backend.onrender.com/api/health
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"status":"ok","timestamp":"2025-11-
+                    02T08:03:05.025Z","version":"v1.0.75
+                    "}
+RawContent        : HTTP/1.1 200 OK
+                    Transfer-Encoding: chunked
+                    Connection: keep-alive
+                    CF-RAY: 99821d039f09a81a-SYD
+                    access-control-allow-headers:
+                    Origin, X-Requested-With,
+                    Content-Type, Accept, Authorization
+                    access-c...
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked],
+                    [Connection, keep-alive], [CF-RAY,
+                    99821d039f09a81a-SYD],
+                    [access-control-allow-headers,
+                    Origin, X-Requested-With,
+                    Content-Type, Accept,
+                    Authorization]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 74
+
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # This should work after the deployment
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> curl https://jitsjournal-backend.onrender.com/api/gyms/1/members
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : <!DOCTYPE html>
+                    <html lang="en-US" dir="ltr">
+                      <head>
+                        <meta charset="UTF-8" />
+                        <meta name="viewport"
+                    content="width=device-width,
+                    initial-scale=1.0, maximum-scale=1,
+                    user-scalable=no, viewpor...
+RawContent        : HTTP/1.1 200 OK
+                    Transfer-Encoding: chunked
+                    Connection: keep-alive
+                    CF-RAY: 99822f64094de7c4-SYD
+                    access-control-allow-headers:
+                    Origin, X-Requested-With,
+                    Content-Type, Accept, Authorization
+                    access-c...
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked],
+                    [Connection, keep-alive], [CF-RAY,
+                    99822f64094de7c4-SYD],
+                    [access-control-allow-headers,
+                    Origin, X-Requested-With,
+                    Content-Type, Accept,
+                    Authorization]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 3074
+
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
