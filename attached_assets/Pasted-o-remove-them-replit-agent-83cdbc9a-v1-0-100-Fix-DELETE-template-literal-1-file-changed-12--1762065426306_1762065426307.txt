@@ -1,0 +1,119 @@
+o remove them.
+[replit-agent 83cdbc9a] v1.0.100 - Fix DELETE template literal
+ 1 file changed, 12 insertions(+), 11 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Fix line 120 with backticks
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $lines = Get-Content client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> $lines[119] = '      return await apiRequest(' + "'DELETE', " + '`/api/gyms/${gymMembership?.id}/members/${userId}`);'
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Set-Content client/src/pages/Settings.tsx -Value $lines -Encoding UTF8
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Get-Content client/src/pages/Settings.tsx | Select-Object -Skip 119 -First 1
+      return await apiRequest('DELETE', `/api/gyms/${gymMembership?.id}/members/${userId}`);
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Build
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (3) src\main.tsxBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2773 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-3886ofBq.css   99.82 kB │ gzip:  16.17 kB
+../dist/public/assets/web-DS42QxN8.js       1.25 kB │ gzip:   0.58 kB
+../dist/public/assets/index-CSWzlHJm.js   890.80 kB │ gzip: 250.73 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.07s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 22ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # If successful, commit and push
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Add backticks to template literal"
+Auto packing the repository for optimum performance.
+See "git help gc" for manual housekeeping.
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), done.
+Total 6 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Checking connectivity: 37749, done.
+warning: There are too many unreachable loose objects; run 'git prune' to remove them.
+[replit-agent f6705b42] v1.0.100 - Add backticks to template literal
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Sync Capacitor
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 36.32ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.08ms
+√ copy android in 141.36ms
+√ Updating Android plugins in 34.40ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 235.83ms
+√ Copying web assets from public to ios\App\App\public in 31.82ms
+√ Creating capacitor.config.json in ios\App\App in 2.15ms
+√ copy ios in 186.65ms
+√ Updating iOS plugins in 30.35ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 32.68ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 288.21ms
+√ copy web in 61.67ms
+√ update web in 62.84ms
+[info] Sync finished in 1.329s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Push to GitHub
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 23, done.
+Counting objects: 100% (23/23), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (18/18), done.
+Writing objects: 100% (18/18), 1.67 KiB | 142.00 KiB/s, done.
+Total 18 (delta 15), reused 3 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (15/15), completed with 5 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   3fcaa01b..f6705b42  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify it's on GitHub
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show HEAD:client/src/pages/Settings.tsx | Select-String "gymMembers|removeMemberMutation"
+
+  const { data: gymMembership } = useQuery<{ id:
+number; name: string; code: string } | null>({
+  const { data: gymMembers } = useQuery<Array<{ userId:
+number; email: string; firstName: string; lastName:
+string; role: string; joinedAt: string }>>({
+    queryKey:
+[`/api/gyms/${gymMembership?.id}/members`],
+    enabled: !!gymMembership && (gymMembership.role ===
+'admin' || user?.email === 'bjjjitsjournal@gmail.com'),
+  const removeMemberMutation = useMutation({
+      return await apiRequest('DELETE',
+`/api/gyms/${gymMembership?.id}/members/${userId}`);
+      queryClient.invalidateQueries({ queryKey:
+['/api/gyms', gymMembership?.id, 'members'] });
+          {gymMembership && (
+                <span className="font-semibold
+text-gray-800
+dark:text-white">{gymMembership.name}</span>
+                Code: <span className="font-mono
+font-bold">{gymMembership.code}</span>
+              {gymMembership ? 'Join another gym
+community' : 'Join a gym community to share notes with
+your training partners'}
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
