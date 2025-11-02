@@ -1,0 +1,34 @@
+Host "`n✨ Features included:" -ForegroundColor Cyan
+
+✨ Features included:
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "   ✅ AI-powered game plans with color-coded suggestions" -ForegroundColor White
+   ✅ AI-powered game plans with color-coded suggestions
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "   ✅ Gym member management (view/remove)" -ForegroundColor White
+   ✅ Gym member management (view/remove)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "   ✅ Version 1.0.96 across all platforms`n" -ForegroundColor White
+   ✅ Version 1.0.96 across all platforms
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> cd $env:USERPROFILE\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check what was pushed
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git log --oneline -3
+a0d863f8 (HEAD -> replit-agent, origin/replit-agent) v1.0.96 - Complete: AI GamePlans + Gym Management
+2c7a216e v1.0.95 - Add GamePlans and AI features
+be923d5e v1.0.95 - Complete app with AI GamePlans and Gym Management
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify files exist
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "`n=== FILES CHECK ===" -ForegroundColor Cyan
+
+=== FILES CHECK ===
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> if (Test-Path "client\src\pages\GamePlans.tsx") { Write-Host "✅ GamePlans.tsx" -ForegroundColor Green } else { Write-Host "❌ GamePlans.tsx MISSING" -ForegroundColor Red }
+✅ GamePlans.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> if (Test-Path "server\openaiService.ts") { Write-Host "✅ openaiService.ts" -ForegroundColor Green } else { Write-Host "❌ openaiService.ts MISSING" -ForegroundColor Red }
+✅ openaiService.ts
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check version
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Write-Host "`n=== VERSION CHECK ===" -ForegroundColor Cyan
+
+=== VERSION CHECK ===
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Get-Content capacitor.config.ts | Select-String "version"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
