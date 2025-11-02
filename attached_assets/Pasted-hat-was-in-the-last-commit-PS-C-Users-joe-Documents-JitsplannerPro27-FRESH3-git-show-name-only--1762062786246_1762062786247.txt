@@ -1,0 +1,108 @@
+hat was in the last commit
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show --name-only HEAD
+commit a0d863f83a6665ce70b5c73b0b3d839ca447c71d (HEAD -> replit-agent, origin/replit-agent)
+Author: bjjjitsjournal-oss <bjjjitsjournal@gmail.com>
+Date:   Sun Nov 2 16:37:17 2025 +1100
+
+    v1.0.96 - Complete: AI GamePlans + Gym Management
+
+android/app/build.gradle
+client/src/pages/GamePlans.tsx
+ios/App/App.xcodeproj/project.pbxproj
+server/openaiService.ts
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> cd $env:USERPROFILE\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check if game plan routes exist in routes.ts
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "server\routes.ts" -Pattern "game-plans/ai-suggest" -Context 2,2
+
+  server\routes.ts:2038:
+  server\routes.ts:2039:  // AI Counter Move Suggestions
+> server\routes.ts:2040:
+app.post("/api/game-plans/ai-suggest",
+authenticateToken, async (req, res) => {
+  server\routes.ts:2041:    try {
+  server\routes.ts:2042:      const { currentMove,
+position, context } = req.body;
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "server\routes.ts" -Pattern "/api/game-plans" -Context 0,1
+
+> server\routes.ts:1950:  app.get("/api/game-plans",
+authenticateToken, async (req, res) => {
+  server\routes.ts:1951:    try {
+> server\routes.ts:1961:
+app.get("/api/game-plans/names", authenticateToken,
+async (req, res) => {
+  server\routes.ts:1962:    try {
+> server\routes.ts:1972:
+app.get("/api/game-plans/:planName", authenticateToken,
+async (req, res) => {
+  server\routes.ts:1973:    try {
+> server\routes.ts:1984:  app.post("/api/game-plans",
+authenticateToken, async (req, res) => {
+  server\routes.ts:1985:    try {
+> server\routes.ts:2000:
+app.put("/api/game-plans/:id", authenticateToken, async
+(req, res) => {
+  server\routes.ts:2001:    try {
+> server\routes.ts:2022:
+app.delete("/api/game-plans/:id", authenticateToken,
+async (req, res) => {
+  server\routes.ts:2023:    try {
+> server\routes.ts:2040:
+app.post("/api/game-plans/ai-suggest",
+authenticateToken, async (req, res) => {
+  server\routes.ts:2041:    try {
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check if App.tsx imports GamePlans
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client\src\App.tsx" -Pattern "GamePlans"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check if BottomNav has Game Plans icon
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client\src\components\BottomNav.tsx" -Pattern "game-plans|Game Plans"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check if Settings has gym member management
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client\src\pages\Settings.tsx" -Pattern "Remove Member|gym.*members" -Context 1,1
+
+  client\src\pages\Settings.tsx:82:
+> client\src\pages\Settings.tsx:83:  // Fetch user's
+gym membership
+> client\src\pages\Settings.tsx:84:  const { data:
+gymMembership } = useQuery<{ id: number; name: string;
+code: string } | null>({
+  client\src\pages\Settings.tsx:85:    queryKey:
+['/api/my-gym'],
+  client\src\pages\Settings.tsx:268:        <div
+className="space-y-4">
+> client\src\pages\Settings.tsx:269:
+{gymMembership && (
+  client\src\pages\Settings.tsx:270:            <div
+className="bg-blue-50 dark:bg-blue-900/20 border
+border-blue-200 dark:border-blue-800 rounded-lg p-4">
+  client\src\pages\Settings.tsx:272:
+<Users className="w-5 h-5 text-blue-600" />
+> client\src\pages\Settings.tsx:273:
+<span className="font-semibold text-gray-800
+dark:text-white">{gymMembership.name}</span>
+  client\src\pages\Settings.tsx:274:              </div>
+  client\src\pages\Settings.tsx:275:              <p
+className="text-sm text-gray-600 dark:text-gray-400">
+> client\src\pages\Settings.tsx:276:
+Code: <span className="font-mono
+font-bold">{gymMembership.code}</span>
+  client\src\pages\Settings.tsx:277:              </p>
+  client\src\pages\Settings.tsx:285:            <p
+className="text-sm text-gray-600 dark:text-gray-400
+mb-3">
+> client\src\pages\Settings.tsx:286:
+{gymMembership ? 'Join another gym community' : 'Join a
+gym community to share notes with your training
+partners'}
+  client\src\pages\Settings.tsx:287:            </p>
+  client\src\pages\Settings.tsx:491:
+<li>Competition game plans</li>
+> client\src\pages\Settings.tsx:492:
+<li>Gym memberships</li>
+  client\src\pages\Settings.tsx:493:
+</ul>
+
