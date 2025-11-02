@@ -1,0 +1,50 @@
+.58 kB
+../dist/public/assets/index-C0tVviaZ.js   890.28 kB │ gzip: 250.63 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.43s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 29ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 35.82ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.04ms
+√ copy android in 165.95ms
+√ Updating Android plugins in 28.28ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 227.12ms
+√ Copying web assets from public to ios\App\App\public in 24.19ms
+√ Creating capacitor.config.json in ios\App\App in 1.18ms
+√ copy ios in 170.49ms
+√ Updating iOS plugins in 30.57ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+[warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 29.04ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 252.76ms
+√ copy web in 59.93ms
+√ update web in 68.06ms
+[info] Sync finished in 1.28s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add client/src/pages/Settings.tsx
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add capacitor.config.ts android/app/build.gradle ios/App/App.xcodeproj/project.pbxproj
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Add Gym Members admin UI to Settings"
+
+On branch replit-agent
+Your branch is up to date with 'origin/replit-agent'.
+
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Everything up-to-date
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Verify it's there
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git show HEAD:client/src/pages/Settings.tsx | Select-String "Gym Members.*Admin|Remove Member"
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
