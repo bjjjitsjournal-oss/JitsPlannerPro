@@ -1,0 +1,88 @@
+splannerPro27\FRESH3> git show 9575f2b1:client/src/pages/Settings.tsx | Select-String "appVersion"
+
+  const appVersion = '1.0.100'; // Will be auto-updated
+by build process
+            <span>{appVersion}</span>
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Update .env to point to the new Render service
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> (Get-Content .env) -replace 'bjj-jits-journal.onrender.com', 'jitsjournal-backend.onrender.com' | Set-Content .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Build
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 13 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2773 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-3886ofBq.css   99.82 kB │ gzip:  16.17 kB
+../dist/public/assets/web-CzTbwFqL.js       1.25 kB │ gzip:   0.59 kB
+../dist/public/assets/index-0QAUOASO.js   890.78 kB │ gzip: 250.70 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.92s
+
+  dist\index.js  139.9kb
+
+⚡ Done in 30ms
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Sync
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> npx cap sync
+\ Copying web assets from public to android\app\src\main\√ Copying web assets from public to android\app\src\main\assets\public in 39.78ms
+\ Creating capacitor.config.json in android\app\src\main\√ Creating capacitor.config.json in android\app\src\main\assets in 3.05ms
+√ copy android in 152.71ms
+√ Updating Android plugins in 31.56ms
+[info] Found 2 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update android in 235.36ms
+√ Copying web assets from public to ios\App\App\public in 34.99ms
+√ Creating capacitor.config.json in ios\App\App in 2.01ms
+√ copy ios in 199.31ms
+√ Updating iOS plugins in 31.72ms
+/ update ios [warn] Skipping pod install because CocoaPods is not installed
+- update ios [warn] Unable to find "xcodebuild". Skipping xcodebuild clean step...
+√ Updating iOS native dependencies with pod install in 43.91ms
+[info] Found 2 Capacitor plugins for ios:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+√ update ios in 286.39ms
+√ copy web in 58.52ms
+√ update web in 66.84ms
+[info] Sync finished in 1.348s
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Commit and push
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.100 - Update API URL to jitsjournal-backend"
+Auto packing the repository for optimum performance.
+See "git help gc" for manual housekeeping.
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Checking connectivity: 37768, done.
+warning: There are too many unreachable loose objects; run 'git prune' to remove them.
+[replit-agent dee37ad3] v1.0.100 - Update API URL to jitsjournal-backend
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 346 bytes | 346.00 KiB/s, done.
+Total 3 (delta 2), reused 1 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+   9575f2b1..dee37ad3  replit-agent -> replit-agent
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
