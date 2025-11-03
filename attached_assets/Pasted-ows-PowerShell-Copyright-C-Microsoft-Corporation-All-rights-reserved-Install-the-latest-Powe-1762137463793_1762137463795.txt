@@ -1,0 +1,55 @@
+ows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\joe> cd C:\Users\joe\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Edit .env file
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> notepad .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Change line 3 from:
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # VITE_API_BASE_URL=https://bjj-jits-journal.onrender.com
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # To:
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # VITE_API_BASE_URL=https://jitsjournal-backend.onrender.com
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Save and close notepad
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Commit and push
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git add .env
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git commit -m "v1.0.104 - Fix .env backend URL"
+On branch replit-agent
+nothing to commit, working tree clean
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> cd C:\Users\joe\Documents\JitsplannerPro27\FRESH3
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> # Check what's in YOUR local files
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client/src/contexts/AuthContext.tsx" -Pattern "onrender.com"
+
+client\src\contexts\AuthContext.tsx:9:  ?
+'https://jitsjournal-backend.onrender.com'
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client/src/pages/Auth.tsx" -Pattern "onrender.com"
+
+client\src\pages\Auth.tsx:19:  ?
+'https://jitsjournal-backend.onrender.com'
+client\src\pages\Auth.tsx:124:          ?
+'https://jitsjournal-backend.onrender.com/'
+
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> Select-String -Path "client/src/lib/queryClient.tsx" -Pattern "onrender.com"
+Select-String : Cannot find path 'C:\Users\joe\Documents\Jitspl
+annerPro27\FRESH3\client\src\lib\queryClient.tsx' because it
+does not exist.
+At line:1 char:1
++ Select-String -Path "client/src/lib/queryClient.tsx"
+-Pattern "onrend ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\joe\Do
+   ...queryClient.tsx:String) [Select-String], ItemNotFoundEx
+  ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShel
+   l.Commands.SelectStringCommand
+
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3>
