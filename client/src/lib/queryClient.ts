@@ -5,7 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 
 // Get API base URL - use Render for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
-  ? 'https://bjj-jits-journal.onrender.com'
+  ? 'https://jitsjournal-backend.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
 // In-memory cache for fast access (but cleared on app restart)

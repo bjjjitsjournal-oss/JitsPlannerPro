@@ -16,7 +16,7 @@ import { Capacitor } from '@capacitor/core';
 
 // Get API base URL - use Render for mobile, env var for web
 const API_BASE_URL = Capacitor.isNativePlatform() 
-  ? 'https://bjj-jits-journal.onrender.com'
+  ? 'https://jitsjournal-backend.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
 const loginSchema = z.object({
@@ -121,7 +121,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
         
         // Use production URL for email verification redirect (works on mobile)
         const redirectUrl = Capacitor.isNativePlatform()
-          ? 'https://bjj-jits-journal.onrender.com/'
+          ? 'https://jitsjournal-backend.onrender.com/'
           : `${window.location.origin}/`;
         
         const { data: authData, error: signupError } = await supabase.auth.signUp({
