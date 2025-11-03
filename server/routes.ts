@@ -1176,7 +1176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).json({ 
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "v1.0.75"
+      version: "v1.0.108"
     });
   });
 
@@ -1187,7 +1187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       accessKeyId: !!process.env.R2_ACCESS_KEY_ID,
       secretAccessKey: !!process.env.R2_SECRET_ACCESS_KEY,
       bucketName: !!process.env.R2_BUCKET_NAME,
-      version: "v1.0.75",
+      version: "v1.0.108",
       deployedAt: new Date().toISOString()
     };
     res.json(r2Status);
