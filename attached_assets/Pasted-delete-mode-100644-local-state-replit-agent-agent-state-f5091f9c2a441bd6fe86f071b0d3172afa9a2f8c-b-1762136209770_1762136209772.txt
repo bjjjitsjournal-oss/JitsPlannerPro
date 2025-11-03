@@ -1,0 +1,49 @@
+delete mode 100644 .local/state/replit/agent/.agent_state_f5091f9c2a441bd6fe86f071b0d3172afa9a2f8c.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f5359e6122b720447e9e26ce58f2db2516623cfd.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f61dcafa476fe4dfd2815b176c738ddd52c88876.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f63556a51ddbd808eb9412d842e3093ece26f4e7.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f6416b4460fe16130bb214ee0751451577e198ae.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f643619f32890c3f4438965e769870c4f42325b1.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f7019b50c479d6452063ec664a7ef06b09beb1c8.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f777609ddd5be7462f0b8e6dfffb803c9aa1ada2.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f78e67b19ad9d5c10709246e54356b8f2a36c775.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f7bf477bffb9b45f2e5a3c1fa1d6d456cddfde6b.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f8ca683bda28607e89ae5669c4a6feea74f42e2b.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_f953c7ecc827fb4d28481a8da8337c00cc6bddc7.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fa4189ffc54619f1f16ca8ce96b47836b8a246d5.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fa4fc311fcf10c23940a14223d304173d8cf4f3d.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fa7332e16debc910b2ed94db0e91ee2362d53b1d.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fa7b73c614fd60526c11d5607c522cb5ff1b2cdc.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fb67b64dc92e4e9c3defe3719641b2481ba6e99e.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fba71bfb01676fb656063ee2f39b39e0713c8f8d.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fc4a6ba1167290311bb6aded621423a785191a0c.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fd4190a015f34160ca8d6a79a3e5a44a2cc9e81c.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fd7af71b0f0ce037e30cf281452d7f5183b2b30a.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fe2fe7b73285b0b1f3ebbd1126c02ff48982efde.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fe665abe380112b32724716b8e1b39951f2cc1e7.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fee626c01ea179b1e6d326f723ee3d6e7a4cb8fd.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fee99d19bbcf6ed5b90fa3d30a6b4761a7866fbe.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_ff53951f4994b4e84e8689015b0680da85357cdb.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_ff8d8d702fd7218d155bce4d0f091c890cafd609.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fff68b3e5f651fbfbccf2d9ae118d1158ae61d96.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_fff693ec37f8213b2a00be862eaba19c41b5a54b.bin
+ delete mode 100644 .local/state/replit/agent/.agent_state_main.bin
+ delete mode 100644 .local/state/replit/agent/.latest.json
+ delete mode 100644 .local/state/replit/agent/.repl_state.bin.rZWCButDpN6KhGLycnATz~
+ delete mode 100644 .local/state/replit/agent/design_reference/c2797ca9-8887-4ee6-ae45-7d7f64763ef9/af515f90-b37b-4a72-97d8-26014b3c9425.html
+ delete mode 100644 .local/state/replit/agent/design_reference/c2797ca9-8887-4ee6-ae45-7d7f64763ef9/dac7fb37-580e-415a-8774-201f63b22e2d.html
+ delete mode 100644 .local/state/replit/agent/filesystem/filesystem_state.json
+ delete mode 100644 .local/state/replit/agent/rapid_build_started
+ delete mode 100644 .local/state/replit/agent/rapid_build_success
+ delete mode 100644 .local/state/replit/agent/repl_state.bin
+ delete mode 100644 .replit
+ mode change 100755 => 100644 android/gradlew
+ delete mode 100644 final-android-package/android-studio/build/reports/problems/problems-report.html
+PS C:\Users\joe\Documents\JitsplannerPro27\FRESH3> git push origin replit-agent
+To https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git
+ ! [rejected]          replit-agent -> replit-agent (non-fast-forward)
+error: failed to push some refs to 'https://github.com/bjjjitsjournal-oss/JitsPlannerPro.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
