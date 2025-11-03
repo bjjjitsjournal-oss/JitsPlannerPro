@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.jitsjournal.app',
   appName: 'Jits Journal',
   webDir: 'dist/public',
-  version: '1.0.102',
+  version: '1.0.106',
   // IMPORTANT: server.url should be commented out for production builds
   // Uncomment only for development/testing
   // server: {
