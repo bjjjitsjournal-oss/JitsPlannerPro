@@ -356,6 +356,7 @@ export type InsertNoteLike = z.infer<typeof insertNoteLikeSchema>;
 
 export const insertGamePlanSchema = createInsertSchema(gamePlans).omit({
   id: true,
+  userId: true, // Backend adds this from auth
   createdAt: true,
   updatedAt: true,
 }).extend({
