@@ -361,7 +361,7 @@ export const insertGamePlanSchema = createInsertSchema(gamePlans).omit({
   updatedAt: true,
 }).extend({
   description: z.string().optional(),
-  parentId: z.string().optional(),
+  parentId: z.string().nullable().optional(),
   moveOrder: z.number().optional(),
 });
 
