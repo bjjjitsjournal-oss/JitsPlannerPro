@@ -6,7 +6,7 @@ import { Capacitor } from '@capacitor/core';
 
 // Get API base URL - use Render for mobile, env var for web
 const API_BASE_URL = Capacitor.isNativePlatform() 
-  ? 'https://bjj-jits-journal.onrender.com'
+  ? 'https://jitsjournal-backend.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
 interface User {
