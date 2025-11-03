@@ -1,0 +1,116 @@
+ getSupabaseId from cache in 0.0ms
+index-BdfijmL_.js:87 ⚡ getAccessToken from cache in 0.0ms
+index-BdfijmL_.js:87 🔑 Query with Authorization header (fast path!)
+index-BdfijmL_.js:87 ⚡ getSupabaseId from cache in 0.0ms
+index-BdfijmL_.js:87 ⚡ getAccessToken from cache in 0.0ms
+index-BdfijmL_.js:87 🔑 Query with Authorization header (fast path!)
+index-BdfijmL_.js:87 ⚡ getSupabaseId from cache in 0.0ms
+index-BdfijmL_.js:87 ⚡ getAccessToken from cache in 0.0ms
+index-BdfijmL_.js:87 🔑 Query with Authorization header (fast path!)
+bjj-jits-journal.onrender.com/api/classes?supabaseId=5727fda2-3783-4b36-b6f2-0a643f764f29:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+index-BdfijmL_.js:87 🔄 Auth failed - may need to refresh
+bjj-jits-journal.onrender.com/api/user-stats?supabaseId=5727fda2-3783-4b36-b6f2-0a643f764f29:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+index-BdfijmL_.js:87 🔄 Auth failed - may need to refresh
+index-BdfijmL_.js:87 🔔 Auth state change: TOKEN_REFRESHED isSigningUp: false
+index-BdfijmL_.js:87 💾 Persisted Supabase ID to localStorage
+index-BdfijmL_.js:87 🔑 Persisted access token to localStorage
+5/settings:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+index-BdfijmL_.js:87 🔔 Auth state change: SIGNED_IN isSigningUp: false
+index-BdfijmL_.js:87 💾 Persisted Supabase ID to localStorage
+index-BdfijmL_.js:87 🔑 Persisted access token to localStorage
+index-BdfijmL_.js:337 Current belt data: undefined
+index-BdfijmL_.js:337 ProfileDropdown - Fetching belt for user ID: 1
+index-BdfijmL_.js:87 WeeklyGoals user object: Object
+index-BdfijmL_.js:87 getCurrent - Looking for week: 2025-11-02
+index-BdfijmL_.js:337 Current belt data: undefined
+index-BdfijmL_.js:87 getCurrent - Found: Object Error: null
+index-BdfijmL_.js:337 Current belt data: Object
+index-BdfijmL_.js:337 ProfileDropdown - Belt data received: Object
+umotigprfosrrjwpxlnp.supabase.co/auth/v1/logout?scope=global:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+index-BdfijmL_.js:87 🗑️ Cleared Supabase ID from localStorage
+index-BdfijmL_.js:87 🗑️ Cleared access token from localStorage
+index-BdfijmL_.js:87 🚦 Setting signup in progress: true
+index-BdfijmL_.js:396 Signup attempt for: apple@test.com
+index-BdfijmL_.js:396 Step 1: Creating Supabase auth account...
+umotigprfosrrjwpxlnp.supabase.co/auth/v1/signup?redirect_to=https%3A%2F%2Fjitsjournal-backend.onrender.com%2F:1  Failed to load resource: the server responded with a status of 422 ()Understand this error
+index-BdfijmL_.js:396 Supabase signup error: AuthApiError: User already registered
+    at Ex (index-BdfijmL_.js:71:8269)
+    at async vL (index-BdfijmL_.js:71:9258)
+    at async ve (index-BdfijmL_.js:71:8919)
+    at async KL.signUp (index-BdfijmL_.js:86:17984)
+    at async Object.mutationFn (index-BdfijmL_.js:396:295578)
+mutationFn @ index-BdfijmL_.js:396Understand this error
+index-BdfijmL_.js:87 🚦 Setting signup in progress: false
+index-BdfijmL_.js:396 Registration mutation error: AuthApiError: User already registered
+    at Ex (index-BdfijmL_.js:71:8269)
+    at async vL (index-BdfijmL_.js:71:9258)
+    at async ve (index-BdfijmL_.js:71:8919)
+    at async KL.signUp (index-BdfijmL_.js:86:17984)
+    at async Object.mutationFn (index-BdfijmL_.js:396:295578)
+onError @ index-BdfijmL_.js:396Understand this error
+index-BdfijmL_.js:87 🚦 Setting signup in progress: true
+index-BdfijmL_.js:396 Signup attempt for: apple@test.com.au
+index-BdfijmL_.js:396 Step 1: Creating Supabase auth account...
+index-BdfijmL_.js:87 🔔 Auth state change: SIGNED_IN isSigningUp: true
+index-BdfijmL_.js:87 ⏭️ Ignoring auth state change during signup
+index-BdfijmL_.js:396 ✅ Supabase account created: e62f3c4e-b3af-4910-97fe-23c5c388620f
+index-BdfijmL_.js:87 🔔 Auth state change: SIGNED_OUT isSigningUp: true
+index-BdfijmL_.js:87 ⏭️ Ignoring auth state change during signup
+index-BdfijmL_.js:396 ✅ Signed out to prevent race condition
+index-BdfijmL_.js:396 Step 2: Creating user profile in PostgreSQL database...
+index-BdfijmL_.js:396 API URL: https://bjj-jits-journal.onrender.com/api/auth/register
+index-BdfijmL_.js:396  POST https://bjj-jits-journal.onrender.com/api/auth/register 500 (Internal Server Error)
+mutationFn @ index-BdfijmL_.js:396
+await in mutationFn
+fn @ index-BdfijmL_.js:48
+p @ index-BdfijmL_.js:48
+start @ index-BdfijmL_.js:48
+execute @ index-BdfijmL_.js:48
+await in execute
+mutate @ index-BdfijmL_.js:48
+(anonymous) @ index-BdfijmL_.js:48
+p @ index-BdfijmL_.js:396
+(anonymous) @ index-BdfijmL_.js:396
+await in (anonymous)
+vR @ index-BdfijmL_.js:37
+wR @ index-BdfijmL_.js:37
+bR @ index-BdfijmL_.js:37
+x0 @ index-BdfijmL_.js:37
+aN @ index-BdfijmL_.js:37
+(anonymous) @ index-BdfijmL_.js:37
+gy @ index-BdfijmL_.js:40
+Tk @ index-BdfijmL_.js:37
+Mh @ index-BdfijmL_.js:37
+Wg @ index-BdfijmL_.js:37
+LR @ index-BdfijmL_.js:37Understand this error
+index-BdfijmL_.js:71  DELETE https://umotigprfosrrjwpxlnp.supabase.co/auth/v1/admin/users/e62f3c4e-b3af-4910-97fe-23c5c388620f 403 (Forbidden)
+(anonymous) @ index-BdfijmL_.js:71
+vL @ index-BdfijmL_.js:71
+ve @ index-BdfijmL_.js:71
+deleteUser @ index-BdfijmL_.js:71
+mutationFn @ index-BdfijmL_.js:396
+await in mutationFn
+fn @ index-BdfijmL_.js:48
+p @ index-BdfijmL_.js:48
+start @ index-BdfijmL_.js:48
+execute @ index-BdfijmL_.js:48
+await in execute
+mutate @ index-BdfijmL_.js:48
+(anonymous) @ index-BdfijmL_.js:48
+p @ index-BdfijmL_.js:396
+(anonymous) @ index-BdfijmL_.js:396
+await in (anonymous)
+vR @ index-BdfijmL_.js:37
+wR @ index-BdfijmL_.js:37
+bR @ index-BdfijmL_.js:37
+x0 @ index-BdfijmL_.js:37
+aN @ index-BdfijmL_.js:37
+(anonymous) @ index-BdfijmL_.js:37
+gy @ index-BdfijmL_.js:40
+Tk @ index-BdfijmL_.js:37
+Mh @ index-BdfijmL_.js:37
+Wg @ index-BdfijmL_.js:37
+LR @ index-BdfijmL_.js:37Understand this error
+index-BdfijmL_.js:87 🚦 Setting signup in progress: false
+index-BdfijmL_.js:396 Registration mutation error: Error: Failed to create user
+    at Object.mutationFn (index-BdfijmL_.js:396:296685)
