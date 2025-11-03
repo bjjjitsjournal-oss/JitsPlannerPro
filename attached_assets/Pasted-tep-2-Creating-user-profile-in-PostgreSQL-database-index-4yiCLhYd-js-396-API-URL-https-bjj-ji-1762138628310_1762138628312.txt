@@ -1,0 +1,57 @@
+tep 2: Creating user profile in PostgreSQL database...
+index-4yiCLhYd.js:396 API URL: https://bjj-jits-journal.onrender.com/api/auth/register
+index-4yiCLhYd.js:396  POST https://bjj-jits-journal.onrender.com/api/auth/register 500 (Internal Server Error)
+mutationFn @ index-4yiCLhYd.js:396
+await in mutationFn
+fn @ index-4yiCLhYd.js:48
+p @ index-4yiCLhYd.js:48
+start @ index-4yiCLhYd.js:48
+execute @ index-4yiCLhYd.js:48
+await in execute
+mutate @ index-4yiCLhYd.js:48
+(anonymous) @ index-4yiCLhYd.js:48
+p @ index-4yiCLhYd.js:396
+(anonymous) @ index-4yiCLhYd.js:396
+await in (anonymous)
+vR @ index-4yiCLhYd.js:37
+wR @ index-4yiCLhYd.js:37
+bR @ index-4yiCLhYd.js:37
+x0 @ index-4yiCLhYd.js:37
+aN @ index-4yiCLhYd.js:37
+(anonymous) @ index-4yiCLhYd.js:37
+gy @ index-4yiCLhYd.js:40
+Tk @ index-4yiCLhYd.js:37
+Mh @ index-4yiCLhYd.js:37
+Wg @ index-4yiCLhYd.js:37
+LR @ index-4yiCLhYd.js:37Understand this error
+index-4yiCLhYd.js:71  DELETE https://umotigprfosrrjwpxlnp.supabase.co/auth/v1/admin/users/7d5ea88e-566d-448a-8714-b29f53951d36 403 (Forbidden)
+(anonymous) @ index-4yiCLhYd.js:71
+vL @ index-4yiCLhYd.js:71
+ve @ index-4yiCLhYd.js:71
+deleteUser @ index-4yiCLhYd.js:71
+mutationFn @ index-4yiCLhYd.js:396
+await in mutationFn
+fn @ index-4yiCLhYd.js:48
+p @ index-4yiCLhYd.js:48
+start @ index-4yiCLhYd.js:48
+execute @ index-4yiCLhYd.js:48
+await in execute
+mutate @ index-4yiCLhYd.js:48
+(anonymous) @ index-4yiCLhYd.js:48
+p @ index-4yiCLhYd.js:396
+(anonymous) @ index-4yiCLhYd.js:396
+await in (anonymous)
+vR @ index-4yiCLhYd.js:37
+wR @ index-4yiCLhYd.js:37
+bR @ index-4yiCLhYd.js:37
+x0 @ index-4yiCLhYd.js:37
+aN @ index-4yiCLhYd.js:37
+(anonymous) @ index-4yiCLhYd.js:37
+gy @ index-4yiCLhYd.js:40
+Tk @ index-4yiCLhYd.js:37
+Mh @ index-4yiCLhYd.js:37
+Wg @ index-4yiCLhYd.js:37
+LR @ index-4yiCLhYd.js:37Understand this error
+index-4yiCLhYd.js:87 🚦 Setting signup in progress: false
+index-4yiCLhYd.js:396 Registration mutation error: Error: Failed to create user
+    at Object.mutationFn (index-4yiCLhYd.js:396:296729)
