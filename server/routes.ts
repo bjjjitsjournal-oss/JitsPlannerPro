@@ -106,7 +106,19 @@ const authenticateToken = async (req: any, res: any, next: any) => {
     
     if (isSupabaseToken) {
       // For Supabase tokens, look up by email or supabase_uid
-      user = await storage.getUserByEmail(decoded.email);
+            user = await storage.getUserByEmail(decoded.email);
+      
+      if (user && user.supabaseUid !== decoded.supabaseId) {
+        // User exists but supabase_uid doesn't match - this is a re-registration
+        console.log('Linking re-registered user to existing data:', decoded.email);
+        console.log('  Old supabase_uid:', user.supabaseUid);
+        console.log('  New supabase_uid:', decoded.supabaseId);
+        
+        await storage.updateUser(user.id, { supabaseUid: decoded.supabaseId });
+        user.supabaseUid = decoded.supabaseId;
+        
+        console.log('Successfully linked new auth to existing user data');
+      }
       
       if (!user) {
         console.log('Supabase user not found in database, auto-creating:', decoded.email);
