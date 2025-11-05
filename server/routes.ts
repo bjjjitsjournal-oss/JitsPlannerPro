@@ -1806,9 +1806,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Weekly Commitments routes - with proper authentication
-  app.get("/api/weekly-commitments", authenticateToken, async (req: any, res) => {
+    app.get("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const commitments = await storage.getWeeklyCommitments(userId);
       res.json(commitments);
     } catch (error) {
@@ -1816,9 +1816,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/weekly-commitments/current", authenticateToken, async (req: any, res) => {
+    app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       console.log('ðŸ” GET /api/weekly-commitments/current called for userId:', userId);
       const commitment = await storage.getCurrentWeekCommitment(userId);
       console.log('ðŸ” getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
@@ -1837,9 +1837,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/weekly-commitments", authenticateToken, async (req: any, res) => {
+    app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       console.log('ðŸ”¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
       const commitmentData = insertWeeklyCommitmentSchema.parse({ ...req.body, userId });
       const newCommitment = await storage.createWeeklyCommitment(commitmentData);
@@ -1863,9 +1863,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/weekly-commitments/:id", authenticateToken, async (req: any, res) => {
+    app.put("/api/weekly-commitments/:id", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = req.userId;
       const id = parseInt(req.params.id);
       const commitmentData = insertWeeklyCommitmentSchema.partial().parse(req.body);
       const updatedCommitment = await storage.updateWeeklyCommitment(id, commitmentData);
