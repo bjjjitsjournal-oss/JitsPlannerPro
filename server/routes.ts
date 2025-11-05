@@ -1690,9 +1690,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Belt routes
-  app.get("/api/belts", authenticateToken, async (req, res) => {
+    app.get("/api/belts", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = req.userId;
       const belts = await storage.getBelts(userId);
       res.json(belts);
     } catch (error) {
@@ -1700,9 +1700,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/belts/current", authenticateToken, async (req, res) => {
+    app.get("/api/belts/current", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = req.userId;
       const currentBelt = await storage.getCurrentBelt(userId);
       res.json(currentBelt);
     } catch (error) {
@@ -1710,9 +1710,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/belts", authenticateToken, async (req, res) => {
+    app.post("/api/belts", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = req.userId;
       const beltData = insertBeltSchema.parse({ ...req.body, userId });
       const newBelt = await storage.createBelt(beltData);
       res.status(201).json(newBelt);

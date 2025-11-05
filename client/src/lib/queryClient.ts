@@ -411,5 +411,10 @@ export async function apiRequest(method: string, url: string, data?: any) {
     throw new Error(errorMessage);
   }
 
+    // Handle 204 No Content responses (e.g., DELETE operations)
+  if (response.status === 204) {
+    return null;
+  }
+
   return response.json();
 }
