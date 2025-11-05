@@ -13,10 +13,8 @@ workflows:
           - jits_journal_appstore_profile
         certificates:
           - jits_journal_dist_cert
-      
-      groups:
-        - app_store_credentials
-      
+    
+    
       xcode: 15.0
       
       vars:
