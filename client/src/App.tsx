@@ -49,8 +49,6 @@ function AuthenticatedApp() {
           <Route path="/drawing" component={Drawing} />
           <Route path="/contact" component={Contact} />
           <Route path="/admin" component={Admin} />
-          <Route path="/forgot-password" component={ForgotPassword} />
-          <Route path="/reset-password" component={ResetPassword} />
           <Route path="/subscribe" component={Subscribe} />
           <Route path="/subscribe/success" component={SubscribeSuccess} />
           <Route path="/privacy" component={PrivacyPolicy} />
@@ -74,6 +72,10 @@ function AuthenticatedApp() {
 function Router() {
   const { isAuthenticated, isLoading, loadingMessage, login } = useAuth();
 
+  // Check if user is trying to access public routes (password reset, forgot password)
+  const currentPath = window.location.pathname;
+  const isPublicRoute = currentPath === '/reset-password' || currentPath === '/forgot-password';
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-red-600 flex items-center justify-center p-4">
@@ -84,6 +86,19 @@ function Router() {
           <p className="text-white text-lg font-medium">{loadingMessage}</p>
           <p className="text-white/70 text-sm mt-2">This may take a moment if the server is starting up...</p>
         </div>
+      </div>
+    );
+  }
+
+  // Allow public routes even when not authenticated
+  if (isPublicRoute) {
+    return (
+      <div className="min-h-screen">
+        <Switch>
+          <Route path="/forgot-password" component={ForgotPassword} />
+          <Route path="/reset-password" component={ResetPassword} />
+        </Switch>
+        <Toaster />
       </div>
     );
   }
