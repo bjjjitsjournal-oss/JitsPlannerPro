@@ -168,8 +168,7 @@ export const sendWelcomeEmail = async (userEmail: string, firstName: string): Pr
         </ol>
         
         <div style="text-align: center;">
-          <a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'https://jitsjournal.com'}" class="cta-button">Start Training Now</a>
-        </div>
+          <a href="https://jitsjournal-backend.onrender.com" class="cta-button">Start Training Now</a>
         
         <p>Need help getting started? Just reply to this email and our team will be happy to assist you!</p>
         
@@ -198,8 +197,7 @@ export const sendWelcomeEmail = async (userEmail: string, firstName: string): Pr
     - Technique Notes: Record insights and technique breakdowns
     - Belt Progress: Track promotions and stripe achievements
     
-    Ready to start? Visit ${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'https://jitsjournal.com'} and begin your journey!
-    
+    Ready to start? Visit https://jitsjournal-backend.onrender.com and begin your journey!
     Need help? Just reply to this email.
     
     Train hard and stay consistent!
@@ -220,8 +218,7 @@ export const sendInvitationEmail = async (
   recipientEmail: string,
   senderName: string
 ): Promise<boolean> => {
-  const signupUrl = `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'https://jitsjournal.com'}/signup`;
-  const subject = `${senderName} invited you to BJJ Jits Journal`;
+  const signupUrl = `https://jitsjournal-backend.onrender.com/signup`;
   
   const html = `
     <!DOCTYPE html>
@@ -377,8 +374,7 @@ export const sendPasswordResetEmail = async (
   resetToken: string
 ): Promise<boolean> => {
   const subject = "Reset Your Jits Journal Password";
-  const resetUrl = `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'https://jitsjournal.com'}/reset-password?token=${resetToken}`;
-  
+ const resetUrl = `https://jitsjournal-backend.onrender.com/reset-password?token=${resetToken}`;
   const html = `
     <!DOCTYPE html>
     <html>
