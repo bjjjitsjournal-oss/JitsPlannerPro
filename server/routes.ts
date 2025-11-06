@@ -141,7 +141,15 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           role: isAdmin ? 'admin' : 'user',
         });
         
-        console.log('âœ… Auto-created user account for Supabase user:', decoded.email);
+                console.log('✅ Auto-created user account for Supabase user:', decoded.email);
+        
+        // Send welcome email to new user
+        try {
+          await sendWelcomeEmail(user.email, user.firstName || user.email.split('@')[0]);
+          console.log(`📧 Welcome email sent to ${user.email}`);
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+        }
       }
     } else {
       // For legacy JWT, use userId from token
