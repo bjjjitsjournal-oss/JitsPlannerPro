@@ -17,8 +17,8 @@ export default function ResetPassword() {
   const { toast } = useToast();
   const [location] = useLocation();
 
-  // Extract token from URL params
-  const token = new URLSearchParams(location.split('?')[1] || '').get('token');
+  // Extract token from URL params using window.location.search
+  const token = new URLSearchParams(window.location.search).get('token');
 
   useEffect(() => {
     if (!token) {
