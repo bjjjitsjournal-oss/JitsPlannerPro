@@ -169,6 +169,7 @@ export const sendWelcomeEmail = async (userEmail: string, firstName: string): Pr
         
         <div style="text-align: center;">
           <a href="https://jitsjournal-backend.onrender.com" class="cta-button">Start Training Now</a>
+        </div>
         
         <p>Need help getting started? Just reply to this email and our team will be happy to assist you!</p>
         
@@ -198,6 +199,7 @@ export const sendWelcomeEmail = async (userEmail: string, firstName: string): Pr
     - Belt Progress: Track promotions and stripe achievements
     
     Ready to start? Visit https://jitsjournal-backend.onrender.com and begin your journey!
+    
     Need help? Just reply to this email.
     
     Train hard and stay consistent!
@@ -219,6 +221,7 @@ export const sendInvitationEmail = async (
   senderName: string
 ): Promise<boolean> => {
   const signupUrl = `https://jitsjournal-backend.onrender.com/signup`;
+  const subject = `${senderName} invited you to BJJ Jits Journal`;
   
   const html = `
     <!DOCTYPE html>
@@ -374,7 +377,8 @@ export const sendPasswordResetEmail = async (
   resetToken: string
 ): Promise<boolean> => {
   const subject = "Reset Your Jits Journal Password";
- const resetUrl = `https://jitsjournal-backend.onrender.com/reset-password?token=${resetToken}`;
+  const resetUrl = `https://jitsjournal-backend.onrender.com/reset-password?token=${resetToken}`;
+  
   const html = `
     <!DOCTYPE html>
     <html>
@@ -501,6 +505,131 @@ export const sendPasswordResetEmail = async (
 
   return await sendEmail({
     to: userEmail,
+    subject,
+    html,
+    text,
+  });
+};
+
+export const sendAdminSignupNotification = async (
+  userEmail: string,
+  userName: string
+): Promise<boolean> => {
+  const adminEmail = 'bjjjitsjournal@gmail.com';
+  const subject = `🎉 New User Signup: ${userEmail}`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New User Signup</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+          color: white;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px;
+          margin-bottom: 30px;
+        }
+        .content {
+          background: #f8fafc;
+          padding: 30px;
+          border-radius: 10px;
+          border-left: 4px solid #10b981;
+        }
+        .info-box {
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          border: 2px solid #e5e7eb;
+          margin: 20px 0;
+        }
+        .info-row {
+          display: flex;
+          padding: 10px 0;
+          border-bottom: 1px solid #e5e7eb;
+        }
+        .info-row:last-child {
+          border-bottom: none;
+        }
+        .info-label {
+          font-weight: bold;
+          color: #1e3a8a;
+          min-width: 120px;
+        }
+        .info-value {
+          color: #333;
+        }
+        .footer {
+          text-align: center;
+          margin-top: 30px;
+          padding-top: 20px;
+          border-top: 1px solid #e5e7eb;
+          color: #6b7280;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>🎉 New User Signup!</h1>
+        <p>Someone just joined Jits Journal</p>
+      </div>
+      
+      <div class="content">
+        <h2>New Registration Alert</h2>
+        
+        <p>A new user has successfully registered on Jits Journal!</p>
+        
+        <div class="info-box">
+          <div class="info-row">
+            <div class="info-label">User Name:</div>
+            <div class="info-value">${userName}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Email:</div>
+            <div class="info-value">${userEmail}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Signup Time:</div>
+            <div class="info-value">${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })}</div>
+          </div>
+        </div>
+        
+        <p>The user has been sent a welcome email and can now start tracking their BJJ journey!</p>
+      </div>
+      
+      <div class="footer">
+        <p>© 2025 Jits Journal - Admin Notification</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+    New User Signup - Jits Journal
+    
+    A new user has successfully registered!
+    
+    Name: ${userName}
+    Email: ${userEmail}
+    Time: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })}
+    
+    The user has been sent a welcome email.
+  `;
+
+  return await sendEmail({
+    to: adminEmail,
     subject,
     html,
     text,

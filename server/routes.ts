@@ -1,4 +1,4 @@
-﻿import type { Express } from "express";
+﻿﻿import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -16,7 +16,7 @@ import * as nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail } from "./emailService";
+import { sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail, sendAdminSignupNotification } from "./emailService";
 import Stripe from "stripe";
 import multer from "multer";
 
@@ -106,7 +106,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
     
     if (isSupabaseToken) {
       // For Supabase tokens, look up by email or supabase_uid
-            user = await storage.getUserByEmail(decoded.email);
+      user = await storage.getUserByEmail(decoded.email);
       
       if (user && user.supabaseUid !== decoded.supabaseId) {
         // User exists but supabase_uid doesn't match - this is a re-registration
@@ -141,15 +141,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           role: isAdmin ? 'admin' : 'user',
         });
         
-                console.log('✅ Auto-created user account for Supabase user:', decoded.email);
-        
-        // Send welcome email to new user
-        try {
-          await sendWelcomeEmail(user.email, user.firstName || user.email.split('@')[0]);
-          console.log(`📧 Welcome email sent to ${user.email}`);
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
-        }
+        console.log('âœ… Auto-created user account for Supabase user:', decoded.email);
       }
     } else {
       // For legacy JWT, use userId from token
@@ -347,6 +339,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (error) {
         console.error("Failed to send welcome email:", error);
         // Continue with registration even if email fails
+      }
+      
+      // Send admin signup notification
+      try {
+        const userName = `${newUser.firstName || ''} ${newUser.lastName || ''}`.trim() || 'New User';
+        await sendAdminSignupNotification(newUser.email, userName);
+        console.log(`Admin notification sent for new user: ${newUser.email}`);
+      } catch (error) {
+        console.error("Failed to send admin notification:", error);
+        // Continue with registration even if notification fails
       }
       
       // Create JWT token (30 days for better mobile experience)
@@ -1196,7 +1198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).json({ 
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "v1.0.108"
+      version: "v1.0.107"
     });
   });
 
@@ -1207,7 +1209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       accessKeyId: !!process.env.R2_ACCESS_KEY_ID,
       secretAccessKey: !!process.env.R2_SECRET_ACCESS_KEY,
       bucketName: !!process.env.R2_BUCKET_NAME,
-      version: "v1.0.108",
+      version: "v1.0.107",
       deployedAt: new Date().toISOString()
     };
     res.json(r2Status);
@@ -1361,13 +1363,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Remove video from note - deletes from R2 or Supabase Storage and updates storage quota
-  app.delete("/api/notes/:id/video", async (req, res) => {
+  app.delete("/api/notes/:id/video", flexibleAuth, async (req, res) => {
     try {
       const noteId = req.params.id; // UUID string
-      const userId = parseInt(req.query.userId as string);
+      const userId = req.userId;
 
-      if (!userId || isNaN(userId)) {
-        return res.status(401).json({ message: 'User ID required' });
+      if (!userId) {
+        return res.status(401).json({ message: 'Authentication required' });
       }
 
       // First, get the note to retrieve video info
@@ -1698,7 +1700,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Belt routes
-    app.get("/api/belts", flexibleAuth, async (req, res) => {
+  app.get("/api/belts", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const belts = await storage.getBelts(userId);
@@ -1708,7 +1710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    app.get("/api/belts/current", flexibleAuth, async (req, res) => {
+  app.get("/api/belts/current", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const currentBelt = await storage.getCurrentBelt(userId);
@@ -1718,7 +1720,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    app.post("/api/belts", flexibleAuth, async (req, res) => {
+  app.post("/api/belts", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
       const beltData = insertBeltSchema.parse({ ...req.body, userId });
@@ -1728,6 +1730,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid belt data", errors: error.errors });
       } else {
+        console.error("Error creating belt:", error);
         res.status(500).json({ message: "Failed to create belt" });
       }
     }
@@ -1814,7 +1817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Weekly Commitments routes - with proper authentication
-    app.get("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
+  app.get("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
       const commitments = await storage.getWeeklyCommitments(userId);
@@ -1824,7 +1827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
+  app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
       console.log('ðŸ” GET /api/weekly-commitments/current called for userId:', userId);
@@ -1845,7 +1848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
+  app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
       console.log('ðŸ”¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
@@ -1871,7 +1874,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-    app.put("/api/weekly-commitments/:id", flexibleAuth, async (req: any, res) => {
+  app.put("/api/weekly-commitments/:id", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
       const id = parseInt(req.params.id);
