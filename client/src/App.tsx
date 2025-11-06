@@ -1,4 +1,4 @@
-import { Route, Switch } from 'wouter';
+import { Route, Switch, useLocation } from 'wouter';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -71,10 +71,10 @@ function AuthenticatedApp() {
 
 function Router() {
   const { isAuthenticated, isLoading, loadingMessage, login } = useAuth();
+  const [location] = useLocation();
 
   // Check if user is trying to access public routes (password reset, forgot password)
-  const currentPath = window.location.pathname;
-  const isPublicRoute = currentPath === '/reset-password' || currentPath === '/forgot-password';
+  const isPublicRoute = location === '/reset-password' || location === '/forgot-password';
 
   if (isLoading) {
     return (
