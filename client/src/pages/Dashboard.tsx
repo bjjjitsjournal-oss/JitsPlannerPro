@@ -191,6 +191,7 @@ export default function Dashboard() {
           <Link
             to="/classes"
             className="bg-gradient-to-br from-red-500 to-red-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200 block"
+            data-testid="link-log-class"
           >
             <div className="text-2xl mb-2">📝</div>
             <div className="font-bold text-lg mb-1">Log Class</div>
@@ -199,10 +200,29 @@ export default function Dashboard() {
           <Link
             to="/notes"
             className="bg-gradient-to-br from-violet-500 to-violet-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200 block"
+            data-testid="link-new-note"
           >
             <div className="text-2xl mb-2">📚</div>
             <div className="font-bold text-lg mb-1">New Note</div>
             <div className="text-sm opacity-90">Save techniques</div>
+          </Link>
+          <Link
+            to="/videos"
+            className="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200 block"
+            data-testid="link-videos"
+          >
+            <div className="text-2xl mb-2">🎬</div>
+            <div className="font-bold text-lg mb-1">Find Videos</div>
+            <div className="text-sm opacity-90">Search on YouTube</div>
+          </Link>
+          <Link
+            to="/game-plans"
+            className="bg-gradient-to-br from-amber-500 to-amber-600 text-white p-6 rounded-2xl shadow-lg hover-scale transition-all duration-200 block"
+            data-testid="link-game-plans"
+          >
+            <div className="text-2xl mb-2">🎯</div>
+            <div className="font-bold text-lg mb-1">Game Plans</div>
+            <div className="text-sm opacity-90">Strategy for comps</div>
           </Link>
         </div>
       </div>

@@ -1,4 +1,4 @@
-﻿﻿import type { Express } from "express";
+﻿﻿﻿import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -2665,7 +2665,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         getStorageTierInfo 
       } = await import('./storageUtils');
       
-      const subscriptionTier = user.subscriptionTier || 'free';
+      // Check for unlimited access emails and treat them as gym_pro (150GB)
+      const UNLIMITED_ACCESS_EMAILS = [
+        'Joe@cleancutconstructions.com.au',
+        'joe833360@gmail.com',
+        'Bjjjitsjournal@gmail.com',
+        'bjjjitsjournal@gmail.com',
+        'admin@apexbjj.com.au'
+      ];
+      
+      const hasUnlimitedAccess = UNLIMITED_ACCESS_EMAILS.includes(user.email);
+      const subscriptionTier = hasUnlimitedAccess ? 'gym_pro' : (user.subscriptionTier || 'free');
+      
       const storageUsed = user.storageUsed || 0;
       const quota = getStorageQuota(subscriptionTier);
       const remaining = getRemainingStorage(storageUsed, subscriptionTier);
