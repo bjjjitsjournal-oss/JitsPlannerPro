@@ -3,9 +3,9 @@ import { supabase } from './supabase';
 import { Capacitor } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
 
-// Get API base URL - use Render for mobile app, env var for web, or relative path
+// Get API base URL - use Singapore Render backend for mobile app, env var for web, or relative path
 const API_BASE_URL = Capacitor.isNativePlatform() 
-  ? 'https://jitsjournal-backend.onrender.com'
+  ? 'https://jitsplannerpro-s2.onrender.com'
   : (import.meta.env.VITE_API_BASE_URL || '');
 
 // In-memory cache for fast access (but cleared on app restart)
@@ -411,7 +411,7 @@ export async function apiRequest(method: string, url: string, data?: any) {
     throw new Error(errorMessage);
   }
 
-    // Handle 204 No Content responses (e.g., DELETE operations)
+  // Handle 204 No Content responses (e.g., DELETE operations)
   if (response.status === 204) {
     return null;
   }
