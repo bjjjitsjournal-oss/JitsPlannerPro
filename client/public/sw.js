@@ -1,6 +1,6 @@
 // BJJ Journal Service Worker
-const CACHE_NAME = 'jits-journal-v1.0';
-const API_CACHE_NAME = 'jits-journal-api-v1.0';
+const CACHE_NAME = 'jits-journal-v1.0.117-singapore';
+const API_CACHE_NAME = 'jits-journal-api-v1.0.117-singapore';
 
 // Resources to cache for offline functionality
 const STATIC_CACHE_URLS = [
