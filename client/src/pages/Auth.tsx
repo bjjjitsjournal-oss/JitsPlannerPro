@@ -178,7 +178,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           throw new Error(`Network error: ${fetchError.message || 'Could not connect to server'}`);
         }
 
-          if (!profileResponse.ok) {
+        if (!profileResponse.ok) {
           const errorData = await profileResponse.json();
           // Note: If profile creation fails, the Supabase auth account remains.
           // Backend will handle cleanup if user tries to register again.
