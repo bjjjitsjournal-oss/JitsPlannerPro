@@ -1,0 +1,1164 @@
+import { 
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens,
+  type Class, type InsertClass,
+  type Video, type InsertVideo,
+  type Note, type InsertNote,
+  type Drawing, type InsertDrawing,
+  type Belt, type InsertBelt,
+  type WeeklyCommitment, type InsertWeeklyCommitment,
+  type TrainingVideo, type InsertTrainingVideo,
+  type User, type InsertUser,
+  type PasswordResetToken, type InsertPasswordResetToken
+} from "@shared/schema";
+// Database temporarily disabled
+// import { db } from "./db";
+import { eq, desc, asc, ilike, and } from "drizzle-orm";
+
+export interface IStorage {
+  // Users
+  getUser(id: number): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(userData: InsertUser): Promise<User>;
+  updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined>;
+  
+  // Classes
+  getClasses(userId?: number): Promise<Class[]>;
+  getClass(id: number): Promise<Class | undefined>;
+  createClass(classData: InsertClass): Promise<Class>;
+  updateClass(id: number, classData: Partial<InsertClass>): Promise<Class | undefined>;
+  deleteClass(id: number): Promise<boolean>;
+
+  // Videos
+  getVideos(): Promise<Video[]>;
+  getVideo(id: number): Promise<Video | undefined>;
+  getVideosByCategory(category: string): Promise<Video[]>;
+  searchVideos(query: string): Promise<Video[]>;
+  createVideo(videoData: InsertVideo): Promise<Video>;
+  updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined>;
+  deleteVideo(id: number): Promise<boolean>;
+
+  // Notes with user support
+  getNotes(userId?: number): Promise<Note[]>;
+  getNote(id: number): Promise<Note | undefined>;
+  searchNotes(query: string, userId?: number): Promise<Note[]>;
+  createNote(noteData: InsertNote): Promise<Note>;
+  updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined>;
+  deleteNote(id: number): Promise<boolean>;
+  shareNote(noteId: number, targetUserId: number): Promise<boolean>;
+
+  // Drawings
+  getDrawings(): Promise<Drawing[]>;
+  getDrawing(id: number): Promise<Drawing | undefined>;
+  createDrawing(drawingData: InsertDrawing): Promise<Drawing>;
+  updateDrawing(id: number, drawingData: Partial<InsertDrawing>): Promise<Drawing | undefined>;
+  deleteDrawing(id: number): Promise<boolean>;
+
+  // Belts
+  getBelts(userId?: number): Promise<Belt[]>;
+  getBelt(id: number): Promise<Belt | undefined>;
+  getCurrentBelt(userId?: number): Promise<Belt | undefined>;
+  createBelt(beltData: InsertBelt): Promise<Belt>;
+  updateBelt(id: number, beltData: Partial<InsertBelt>): Promise<Belt | undefined>;
+  deleteBelt(id: number): Promise<boolean>;
+
+  // Statistics
+  getClassStats(): Promise<{
+    weeklyClasses: number;
+    totalHours: number;
+    monthlyClasses: number;
+  }>;
+
+  // Weekly Commitments
+  getWeeklyCommitments(userId?: number): Promise<WeeklyCommitment[]>;
+  getCurrentWeekCommitment(userId?: number): Promise<WeeklyCommitment | undefined>;
+  createWeeklyCommitment(commitmentData: InsertWeeklyCommitment): Promise<WeeklyCommitment>;
+  updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined>;
+  deleteWeeklyCommitment(id: number): Promise<boolean>;
+
+  // Training Videos
+  getTrainingVideos(): Promise<TrainingVideo[]>;
+  getTrainingVideo(id: number): Promise<TrainingVideo | undefined>;
+  createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo>;
+  updateTrainingVideo(id: number, videoData: Partial<InsertTrainingVideo>): Promise<TrainingVideo | undefined>;
+  deleteTrainingVideo(id: number): Promise<boolean>;
+
+  // Enhanced Note Sharing
+  toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined>;
+  getSharedNotes(userId: number): Promise<Note[]>;
+
+  // Password Reset Tokens
+  createPasswordResetToken(userId: number, token: string, expiresAt: Date): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenAsUsed(tokenId: number): Promise<void>;
+  deleteExpiredPasswordResetTokens(): Promise<void>;
+}
+
+// Using in-memory storage as primary storage (database endpoint disabled)
+class MemStoragePrimary implements IStorage {
+  private users: User[] = [];
+  private classes: Class[] = [];
+  private videos: Video[] = [];
+  private notes: Note[] = [];
+  private drawings: Drawing[] = [];
+  private belts: Belt[] = [];
+  private weeklyCommitments = new Map<number, WeeklyCommitment>();
+  private trainingVideos: TrainingVideo[] = [];
+  private passwordResetTokens: PasswordResetToken[] = [];
+  private nextId = 1;
+  private currentCommitmentId = 1;
+
+  constructor() {
+    // Pre-seed with a test user for easier development
+    this.initializeTestData();
+  }
+
+  private async initializeTestData() {
+    try {
+      // Import bcrypt dynamically for ES modules
+      const bcrypt = await import('bcrypt');
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      
+      const testUser: User = {
+        id: this.nextId++,
+        email: 'test@example.com',
+        password: hashedPassword,
+        firstName: 'Test',
+        lastName: 'User',
+        revenueCatCustomerId: null,
+        subscriptionExpiresAt: null,
+        createdAt: new Date(),
+      };
+      
+      this.users.push(testUser);
+      console.log('✅ Test user initialized: test@example.com / password123');
+    } catch (error) {
+      console.error('Failed to initialize test data:', error);
+    }
+  }
+
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.find(user => user.id === id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.users.find(user => user.email === email);
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const user: User = {
+      id: this.nextId++,
+      ...userData,
+      revenueCatCustomerId: userData.revenueCatCustomerId || null,
+      subscriptionExpiresAt: userData.subscriptionExpiresAt || null,
+      createdAt: new Date(),
+    };
+    this.users.push(user);
+    return user;
+  }
+
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) return undefined;
+    
+    this.users[index] = {
+      ...this.users[index],
+      ...userData,
+    };
+    return this.users[index];
+  }
+
+  // Classes - basic implementations
+  async getClasses(userId?: number): Promise<Class[]> {
+    return userId ? this.classes.filter(c => c.userId === userId) : this.classes;
+  }
+  async getClass(id: number): Promise<Class | undefined> {
+    return this.classes.find(c => c.id === id);
+  }
+  async createClass(classData: InsertClass): Promise<Class> {
+    const newClass: Class = { id: this.nextId++, ...classData, createdAt: new Date(), updatedAt: new Date() };
+    this.classes.push(newClass);
+    return newClass;
+  }
+  async updateClass(id: number, classData: Partial<InsertClass>): Promise<Class | undefined> {
+    const index = this.classes.findIndex(c => c.id === id);
+    if (index === -1) return undefined;
+    this.classes[index] = { ...this.classes[index], ...classData, updatedAt: new Date() };
+    return this.classes[index];
+  }
+  async deleteClass(id: number): Promise<boolean> {
+    const index = this.classes.findIndex(c => c.id === id);
+    if (index === -1) return false;
+    this.classes.splice(index, 1);
+    return true;
+  }
+
+  // Videos
+  async getVideos(): Promise<Video[]> { return this.videos; }
+  async getVideo(id: number): Promise<Video | undefined> { return this.videos.find(v => v.id === id); }
+  async getVideosByCategory(category: string): Promise<Video[]> { return this.videos.filter(v => v.category === category); }
+  async searchVideos(query: string): Promise<Video[]> { return this.videos.filter(v => v.title.includes(query)); }
+  async createVideo(videoData: InsertVideo): Promise<Video> {
+    const video: Video = { id: this.nextId++, ...videoData, createdAt: new Date(), updatedAt: new Date() };
+    this.videos.push(video);
+    return video;
+  }
+  async updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined> {
+    const index = this.videos.findIndex(v => v.id === id);
+    if (index === -1) return undefined;
+    this.videos[index] = { ...this.videos[index], ...videoData, updatedAt: new Date() };
+    return this.videos[index];
+  }
+  async deleteVideo(id: number): Promise<boolean> {
+    const index = this.videos.findIndex(v => v.id === id);
+    if (index === -1) return false;
+    this.videos.splice(index, 1);
+    return true;
+  }
+
+  // Notes
+  async getNotes(userId?: number): Promise<Note[]> {
+    return userId ? this.notes.filter(n => n.userId === userId) : this.notes;
+  }
+  async getNote(id: number): Promise<Note | undefined> { return this.notes.find(n => n.id === id); }
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
+    let filtered = this.notes.filter(n => n.content.includes(query));
+    return userId ? filtered.filter(n => n.userId === userId) : filtered;
+  }
+  async createNote(noteData: InsertNote): Promise<Note> {
+    const note: Note = { id: this.nextId++, ...noteData, createdAt: new Date(), updatedAt: new Date() };
+    this.notes.push(note);
+    return note;
+  }
+  async updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined> {
+    const index = this.notes.findIndex(n => n.id === id);
+    if (index === -1) return undefined;
+    this.notes[index] = { ...this.notes[index], ...noteData, updatedAt: new Date() };
+    return this.notes[index];
+  }
+  async deleteNote(id: number): Promise<boolean> {
+    const index = this.notes.findIndex(n => n.id === id);
+    if (index === -1) return false;
+    this.notes.splice(index, 1);
+    return true;
+  }
+  async shareNote(noteId: number, targetUserId: number): Promise<boolean> { return true; }
+
+  // Other methods - minimal implementations
+  async getDrawings(): Promise<Drawing[]> { return this.drawings; }
+  async getDrawing(id: number): Promise<Drawing | undefined> { return this.drawings.find(d => d.id === id); }
+  async createDrawing(drawingData: InsertDrawing): Promise<Drawing> {
+    const drawing: Drawing = { id: this.nextId++, ...drawingData, createdAt: new Date() };
+    this.drawings.push(drawing);
+    return drawing;
+  }
+  async updateDrawing(id: number, drawingData: Partial<InsertDrawing>): Promise<Drawing | undefined> {
+    const index = this.drawings.findIndex(d => d.id === id);
+    if (index === -1) return undefined;
+    this.drawings[index] = { ...this.drawings[index], ...drawingData };
+    return this.drawings[index];
+  }
+  async deleteDrawing(id: number): Promise<boolean> {
+    const index = this.drawings.findIndex(d => d.id === id);
+    if (index === -1) return false;
+    this.drawings.splice(index, 1);
+    return true;
+  }
+
+  async getBelts(userId: number): Promise<Belt[]> { return this.belts.filter(b => b.userId === userId); }
+  async getCurrentBelt(userId: number): Promise<Belt | undefined> { return this.belts.filter(b => b.userId === userId).sort((a, b) => b.promotionDate.getTime() - a.promotionDate.getTime())[0]; }
+  async createBelt(beltData: InsertBelt): Promise<Belt> {
+    const belt: Belt = { id: this.nextId++, ...beltData, createdAt: new Date() };
+    this.belts.push(belt);
+    return belt;
+  }
+  async updateBelt(id: number, beltData: Partial<InsertBelt>): Promise<Belt | undefined> {
+    const index = this.belts.findIndex(b => b.id === id);
+    if (index === -1) return undefined;
+    this.belts[index] = { ...this.belts[index], ...beltData };
+    return this.belts[index];
+  }
+  async deleteBelt(id: number): Promise<boolean> {
+    const index = this.belts.findIndex(b => b.id === id);
+    if (index === -1) return false;
+    this.belts.splice(index, 1);
+    return true;
+  }
+
+  async getWeeklyCommitments(userId: number): Promise<WeeklyCommitment[]> { return this.weeklyCommitments.filter(w => w.userId === userId); }
+  async getCurrentWeeklyCommitment(userId: number): Promise<WeeklyCommitment | undefined> { return this.weeklyCommitments.find(w => w.userId === userId && w.isActive); }
+  // createWeeklyCommitment moved to proper Map-based implementation below (MemStoragePrimary class)
+  async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
+    const index = this.weeklyCommitments.findIndex(w => w.id === id);
+    if (index === -1) return undefined;
+    this.weeklyCommitments[index] = { ...this.weeklyCommitments[index], ...commitmentData, updatedAt: new Date() };
+    return this.weeklyCommitments[index];
+  }
+  async deleteWeeklyCommitment(id: number): Promise<boolean> {
+    const index = this.weeklyCommitments.findIndex(w => w.id === id);
+    if (index === -1) return false;
+    this.weeklyCommitments.splice(index, 1);
+    return true;
+  }
+
+  async getTrainingVideos(): Promise<TrainingVideo[]> { return this.trainingVideos; }
+  async createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo> {
+    const video: TrainingVideo = { id: this.nextId++, ...videoData, createdAt: new Date() };
+    this.trainingVideos.push(video);
+    return video;
+  }
+  async deleteTrainingVideo(id: number): Promise<boolean> {
+    const index = this.trainingVideos.findIndex(v => v.id === id);
+    if (index === -1) return false;
+    this.trainingVideos.splice(index, 1);
+    return true;
+  }
+
+  async createPasswordResetToken(tokenData: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    const token: PasswordResetToken = { id: this.nextId++, ...tokenData, createdAt: new Date() };
+    this.passwordResetTokens.push(token);
+    return token;
+  }
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    return this.passwordResetTokens.find(t => t.token === token);
+  }
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    const token = this.passwordResetTokens.find(t => t.id === tokenId);
+    if (token) token.isUsed = true;
+  }
+  async deleteExpiredPasswordResetTokens(): Promise<void> {
+    this.passwordResetTokens = this.passwordResetTokens.filter(t => t.expiresAt > new Date());
+  }
+
+  // Missing methods to complete interface - getCurrentWeekCommitment moved to proper location below
+  async getTrainingVideo(id: number): Promise<TrainingVideo | undefined> {
+    return this.trainingVideos.find(v => v.id === id);
+  }
+  async updateTrainingVideo(id: number, videoData: Partial<InsertTrainingVideo>): Promise<TrainingVideo | undefined> {
+    const index = this.trainingVideos.findIndex(v => v.id === id);
+    if (index === -1) return undefined;
+    this.trainingVideos[index] = { ...this.trainingVideos[index], ...videoData };
+    return this.trainingVideos[index];
+  }
+  async toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined> {
+    const note = this.notes.find(n => n.id === noteId);
+    if (note) {
+      note.isShared = !note.isShared;
+    }
+    return note;
+  }
+  async getSharedNotes(userId: number): Promise<Note[]> {
+    return this.notes.filter(n => n.isShared && n.userId !== userId);
+  }
+  async createPasswordResetToken(userId: number, token: string, expiresAt: Date): Promise<PasswordResetToken> {
+    const resetToken: PasswordResetToken = {
+      id: this.nextId++,
+      userId,
+      token,
+      expiresAt,
+      isUsed: false,
+      createdAt: new Date()
+    };
+    this.passwordResetTokens.push(resetToken);
+    return resetToken;
+  }
+}
+
+// All database storage methods removed. Only MemStoragePrimary class remains.
+  async getNotes(userId?: number): Promise<Note[]> {
+    if (userId) {
+      return await db
+        .select()
+        .from(notes)
+        .where(eq(notes.userId, userId))
+        .orderBy(desc(notes.createdAt));
+    }
+    return await db.select().from(notes).orderBy(desc(notes.createdAt));
+  }
+
+  async getNote(id: number): Promise<Note | undefined> {
+    const [note] = await db.select().from(notes).where(eq(notes.id, id));
+    return note;
+  }
+
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
+    const condition = userId 
+      ? and(ilike(notes.title, `%${query}%`), eq(notes.userId, userId))
+      : ilike(notes.title, `%${query}%`);
+    return await db.select().from(notes).where(condition);
+  }
+
+  async createNote(noteData: InsertNote): Promise<Note> {
+    const [note] = await db.insert(notes).values(noteData).returning();
+    return note;
+  }
+
+  async updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined> {
+    const [note] = await db
+      .update(notes)
+      .set(noteData)
+      .where(eq(notes.id, id))
+      .returning();
+    return note;
+  }
+
+  async deleteNote(id: number): Promise<boolean> {
+    const result = await db.delete(notes).where(eq(notes.id, id));
+    return result.rowCount > 0;
+  }
+
+  async shareNote(noteId: number, targetUserId: number): Promise<boolean> {
+    const [note] = await db
+      .update(notes)
+      .set({ 
+        isShared: 1,
+        sharedWithUsers: [targetUserId.toString()]
+      })
+      .where(eq(notes.id, noteId))
+      .returning();
+    return !!note;
+  }
+
+  // Drawings
+  async getDrawings(): Promise<Drawing[]> {
+    return await db.select().from(drawings).orderBy(desc(drawings.createdAt));
+  }
+
+  async getDrawing(id: number): Promise<Drawing | undefined> {
+    const [drawing] = await db.select().from(drawings).where(eq(drawings.id, id));
+    return drawing;
+  }
+
+  async createDrawing(drawingData: InsertDrawing): Promise<Drawing> {
+    const [drawing] = await db.insert(drawings).values(drawingData).returning();
+    return drawing;
+  }
+
+  async updateDrawing(id: number, drawingData: Partial<InsertDrawing>): Promise<Drawing | undefined> {
+    const [drawing] = await db
+      .update(drawings)
+      .set(drawingData)
+      .where(eq(drawings.id, id))
+      .returning();
+    return drawing;
+  }
+
+  async deleteDrawing(id: number): Promise<boolean> {
+    const result = await db.delete(drawings).where(eq(drawings.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Belts
+  async getBelts(userId?: number): Promise<Belt[]> {
+    if (userId) {
+      return await db.select().from(belts).where(eq(belts.userId, userId)).orderBy(desc(belts.promotionDate));
+    }
+    return await db.select().from(belts).orderBy(desc(belts.promotionDate));
+  }
+
+  async getBelt(id: number): Promise<Belt | undefined> {
+    const [belt] = await db.select().from(belts).where(eq(belts.id, id));
+    return belt;
+  }
+
+  async getCurrentBelt(userId?: number): Promise<Belt | undefined> {
+    if (userId) {
+      const [belt] = await db.select().from(belts).where(eq(belts.userId, userId)).orderBy(desc(belts.promotionDate)).limit(1);
+      return belt;
+    }
+    const [belt] = await db.select().from(belts).orderBy(desc(belts.promotionDate)).limit(1);
+    return belt;
+  }
+
+  async createBelt(beltData: InsertBelt): Promise<Belt> {
+    const [belt] = await db.insert(belts).values(beltData).returning();
+    return belt;
+  }
+
+  async updateBelt(id: number, beltData: Partial<InsertBelt>): Promise<Belt | undefined> {
+    const [belt] = await db
+      .update(belts)
+      .set(beltData)
+      .where(eq(belts.id, id))
+      .returning();
+    return belt;
+  }
+
+  async deleteBelt(id: number): Promise<boolean> {
+    const result = await db.delete(belts).where(eq(belts.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Statistics
+  async getClassStats(): Promise<{
+    weeklyClasses: number;
+    totalHours: number;
+    monthlyClasses: number;
+  }> {
+    const now = new Date();
+    const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const allClasses = await db.select().from(classes);
+    
+    const weeklyClasses = allClasses.filter(cls => 
+      cls.date >= weekStart
+    ).length;
+
+    const monthlyClasses = allClasses.filter(cls => 
+      cls.date >= monthStart
+    ).length;
+
+    const totalHours = allClasses.reduce((sum, cls) => sum + cls.duration, 0) / 60;
+
+    return {
+      weeklyClasses,
+      totalHours,
+      monthlyClasses
+    };
+  }
+
+  // Weekly Commitments
+  async getWeeklyCommitments(userId?: number): Promise<WeeklyCommitment[]> {
+    if (userId) {
+      return await db.select().from(weeklyCommitments)
+        .where(eq(weeklyCommitments.userId, userId))
+        .orderBy(desc(weeklyCommitments.weekStartDate));
+    }
+    return await db.select().from(weeklyCommitments).orderBy(desc(weeklyCommitments.weekStartDate));
+  }
+
+  async getCurrentWeekCommitment(userId?: number): Promise<WeeklyCommitment | undefined> {
+    const now = new Date();
+    const weekStart = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - now.getUTCDay());
+    weekStart.setUTCHours(0, 0, 0, 0);
+
+    let query;
+    if (userId) {
+      query = db
+        .select()
+        .from(weeklyCommitments)
+        .where(and(
+          eq(weeklyCommitments.weekStartDate, weekStart),
+          eq(weeklyCommitments.userId, userId)
+        ))
+        .limit(1);
+    } else {
+      query = db
+        .select()
+        .from(weeklyCommitments)
+        .where(eq(weeklyCommitments.weekStartDate, weekStart))
+        .limit(1);
+    }
+
+    const [commitment] = await query;
+    return commitment;
+  }
+
+  async createWeeklyCommitment(commitmentData: InsertWeeklyCommitment): Promise<WeeklyCommitment> {
+    const [commitment] = await db.insert(weeklyCommitments).values(commitmentData).returning();
+    return commitment;
+  }
+
+  async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
+    const [commitment] = await db
+      .update(weeklyCommitments)
+      .set(commitmentData)
+      .where(eq(weeklyCommitments.id, id))
+      .returning();
+    return commitment;
+  }
+
+  async deleteWeeklyCommitment(id: number): Promise<boolean> {
+    const result = await db.delete(weeklyCommitments).where(eq(weeklyCommitments.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Training Videos
+  async getTrainingVideos(): Promise<TrainingVideo[]> {
+    return await db.select().from(trainingVideos).orderBy(desc(trainingVideos.createdAt));
+  }
+
+  async getTrainingVideo(id: number): Promise<TrainingVideo | undefined> {
+    const [video] = await db.select().from(trainingVideos).where(eq(trainingVideos.id, id));
+    return video;
+  }
+
+  async createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo> {
+    const [video] = await db.insert(trainingVideos).values(videoData).returning();
+    return video;
+  }
+
+  async updateTrainingVideo(id: number, videoData: Partial<InsertTrainingVideo>): Promise<TrainingVideo | undefined> {
+    const [video] = await db
+      .update(trainingVideos)
+      .set(videoData)
+      .where(eq(trainingVideos.id, id))
+      .returning();
+    return video;
+  }
+
+  async deleteTrainingVideo(id: number): Promise<boolean> {
+    const result = await db.delete(trainingVideos).where(eq(trainingVideos.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Enhanced Note Sharing
+  async toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined> {
+    try {
+      const note = await this.getNote(noteId);
+      if (!note || note.userId !== userId) {
+        return undefined;
+      }
+
+      const newSharedStatus = note.isShared === 1 ? 0 : 1;
+      const [updatedNote] = await db
+        .update(notes)
+        .set({ 
+          isShared: newSharedStatus,
+          updatedAt: new Date()
+        })
+        .where(eq(notes.id, noteId))
+        .returning();
+
+      return updatedNote;
+    } catch (error) {
+      console.error("Error toggling note sharing:", error);
+      return undefined;
+    }
+  }
+
+  async getSharedNotes(userId: number): Promise<Note[]> {
+    try {
+      const sharedNotes = await db
+        .select()
+        .from(notes)
+        .where(eq(notes.isShared, 1))
+        .orderBy(desc(notes.createdAt));
+
+      return sharedNotes;
+    } catch (error) {
+      console.error("Error fetching shared notes:", error);
+      return [];
+    }
+  }
+
+  // Password Reset Tokens
+  async createPasswordResetToken(userId: number, token: string, expiresAt: Date): Promise<PasswordResetToken> {
+    const [resetToken] = await db
+      .insert(passwordResetTokens)
+      .values({
+        userId,
+        token,
+        expiresAt,
+      })
+      .returning();
+    return resetToken;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const [resetToken] = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.token, token));
+    return resetToken;
+  }
+
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    await db
+      .update(passwordResetTokens)
+      .set({ used: 1 })
+      .where(eq(passwordResetTokens.id, tokenId));
+  }
+
+  async deleteExpiredPasswordResetTokens(): Promise<void> {
+    await db
+      .delete(passwordResetTokens)
+      .where(eq(passwordResetTokens.used, 0));
+  }
+}
+
+export class MemStorage implements IStorage {
+  private users: Map<number, User> = new Map();
+  private classes: Map<number, Class> = new Map();
+  private videos: Map<number, Video> = new Map();
+  private notes: Map<number, Note> = new Map();
+  private drawings: Map<number, Drawing> = new Map();
+  private belts: Map<number, Belt> = new Map();
+  private weeklyCommitments: Map<number, WeeklyCommitment> = new Map();
+  private trainingVideos: Map<number, TrainingVideo> = new Map();
+  private currentUserId = 1;
+  private currentClassId = 1;
+  private currentVideoId = 1;
+  private currentNoteId = 1;
+  private currentDrawingId = 1;
+  private currentBeltId = 1;
+  private currentCommitmentId = 1;
+  private currentTrainingVideoId = 1;
+
+  constructor() {
+    this.initializeDefaultData().catch(console.error);
+  }
+
+  private async initializeDefaultData() {
+    // Create a default test user for development
+    const hashedPassword = await import('bcrypt').then(bcrypt => bcrypt.hash('password123', 10));
+    
+    const testUser: User = {
+      id: 1,
+      email: 'test@example.com',
+      firstName: 'Joe',
+      lastName: 'BJJ',
+      password: await hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+
+    };
+    
+    this.users.set(1, testUser);
+    this.currentUserId = 2;
+    this.currentClassId = 1;
+    this.currentNoteId = 1;
+  }
+
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.email === email);
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const newUser: User = {
+      id: this.currentUserId++,
+      ...userData,
+      createdAt: new Date(),
+    };
+    this.users.set(newUser.id, newUser);
+    return newUser;
+  }
+
+  async updateUser(id: number, userData: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+
+    const updatedUser = { ...user, ...userData };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  // Class methods
+  async getClasses(userId?: number): Promise<Class[]> {
+    let classes = Array.from(this.classes.values());
+    if (userId) {
+      classes = classes.filter(cls => cls.userId === userId);
+    }
+    return classes.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  async getClass(id: number): Promise<Class | undefined> {
+    return this.classes.get(id);
+  }
+
+  async createClass(classData: InsertClass): Promise<Class> {
+    const newClass: Class = {
+      id: this.currentClassId++,
+      ...classData,
+      createdAt: new Date(),
+    };
+    this.classes.set(newClass.id, newClass);
+    return newClass;
+  }
+
+  async updateClass(id: number, classData: Partial<InsertClass>): Promise<Class | undefined> {
+    const cls = this.classes.get(id);
+    if (!cls) return undefined;
+
+    const updatedClass = { ...cls, ...classData };
+    this.classes.set(id, updatedClass);
+    return updatedClass;
+  }
+
+  async deleteClass(id: number): Promise<boolean> {
+    return this.classes.delete(id);
+  }
+
+  // Video methods
+  async getVideos(): Promise<Video[]> {
+    return Array.from(this.videos.values());
+  }
+
+  async getVideo(id: number): Promise<Video | undefined> {
+    return this.videos.get(id);
+  }
+
+  async getVideosByCategory(category: string): Promise<Video[]> {
+    return Array.from(this.videos.values()).filter(video => video.category === category);
+  }
+
+  async searchVideos(query: string): Promise<Video[]> {
+    const searchTerm = query.toLowerCase();
+    return Array.from(this.videos.values()).filter(video => 
+      video.title.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  async createVideo(videoData: InsertVideo): Promise<Video> {
+    const newVideo: Video = {
+      id: this.currentVideoId++,
+      ...videoData,
+      createdAt: new Date(),
+    };
+    this.videos.set(newVideo.id, newVideo);
+    return newVideo;
+  }
+
+  async updateVideo(id: number, videoData: Partial<InsertVideo>): Promise<Video | undefined> {
+    const video = this.videos.get(id);
+    if (!video) return undefined;
+
+    const updatedVideo = { ...video, ...videoData };
+    this.videos.set(id, updatedVideo);
+    return updatedVideo;
+  }
+
+  async deleteVideo(id: number): Promise<boolean> {
+    return this.videos.delete(id);
+  }
+
+  // Note methods
+  async getNotes(userId?: number): Promise<Note[]> {
+    let notes = Array.from(this.notes.values());
+    if (userId) {
+      notes = notes.filter(note => note.userId === userId);
+    }
+    return notes.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getNote(id: number): Promise<Note | undefined> {
+    return this.notes.get(id);
+  }
+
+  async searchNotes(query: string, userId?: number): Promise<Note[]> {
+    const searchTerm = query.toLowerCase();
+    let notes = Array.from(this.notes.values()).filter(note => 
+      note.title.toLowerCase().includes(searchTerm)
+    );
+    if (userId) {
+      notes = notes.filter(note => note.userId === userId);
+    }
+    return notes;
+  }
+
+  async createNote(noteData: InsertNote): Promise<Note> {
+    const newNote: Note = {
+      id: this.currentNoteId++,
+      ...noteData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.notes.set(newNote.id, newNote);
+    return newNote;
+  }
+
+  async updateNote(id: number, noteData: Partial<InsertNote>): Promise<Note | undefined> {
+    const note = this.notes.get(id);
+    if (!note) return undefined;
+
+    const updatedNote = { ...note, ...noteData, updatedAt: new Date() };
+    this.notes.set(id, updatedNote);
+    return updatedNote;
+  }
+
+  async deleteNote(id: number): Promise<boolean> {
+    return this.notes.delete(id);
+  }
+
+  async shareNote(noteId: number, targetUserId: number): Promise<boolean> {
+    const note = this.notes.get(noteId);
+    if (!note) return false;
+
+    const sharedUsers = note.sharedWithUsers || [];
+    if (!sharedUsers.includes(targetUserId.toString())) {
+      sharedUsers.push(targetUserId.toString());
+    }
+
+    note.isShared = 1;
+    note.sharedWithUsers = sharedUsers;
+    this.notes.set(noteId, note);
+    return true;
+  }
+
+  // Drawing methods
+  async getDrawings(): Promise<Drawing[]> {
+    return Array.from(this.drawings.values());
+  }
+
+  async getDrawing(id: number): Promise<Drawing | undefined> {
+    return this.drawings.get(id);
+  }
+
+  async createDrawing(drawingData: InsertDrawing): Promise<Drawing> {
+    const newDrawing: Drawing = {
+      id: this.currentDrawingId++,
+      ...drawingData,
+      createdAt: new Date(),
+    };
+    this.drawings.set(newDrawing.id, newDrawing);
+    return newDrawing;
+  }
+
+  async updateDrawing(id: number, drawingData: Partial<InsertDrawing>): Promise<Drawing | undefined> {
+    const drawing = this.drawings.get(id);
+    if (!drawing) return undefined;
+
+    const updatedDrawing = { ...drawing, ...drawingData };
+    this.drawings.set(id, updatedDrawing);
+    return updatedDrawing;
+  }
+
+  async deleteDrawing(id: number): Promise<boolean> {
+    return this.drawings.delete(id);
+  }
+
+  // Belt methods
+  async getBelts(): Promise<Belt[]> {
+    return Array.from(this.belts.values()).sort((a, b) => 
+      b.promotionDate.getTime() - a.promotionDate.getTime()
+    );
+  }
+
+  async getBelt(id: number): Promise<Belt | undefined> {
+    return this.belts.get(id);
+  }
+
+  async getCurrentBelt(): Promise<Belt | undefined> {
+    const belts = await this.getBelts();
+    return belts[0];
+  }
+
+  async createBelt(beltData: InsertBelt): Promise<Belt> {
+    const newBelt: Belt = {
+      id: this.currentBeltId++,
+      ...beltData,
+      createdAt: new Date(),
+    };
+    this.belts.set(newBelt.id, newBelt);
+    return newBelt;
+  }
+
+  async updateBelt(id: number, beltData: Partial<InsertBelt>): Promise<Belt | undefined> {
+    const belt = this.belts.get(id);
+    if (!belt) return undefined;
+
+    const updatedBelt = { ...belt, ...beltData };
+    this.belts.set(id, updatedBelt);
+    return updatedBelt;
+  }
+
+  async deleteBelt(id: number): Promise<boolean> {
+    return this.belts.delete(id);
+  }
+
+  // Statistics
+  async getClassStats(): Promise<{
+    weeklyClasses: number;
+    totalHours: number;
+    monthlyClasses: number;
+  }> {
+    const now = new Date();
+    const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const allClasses = Array.from(this.classes.values());
+    
+    const weeklyClasses = allClasses.filter(cls => 
+      cls.date >= weekStart
+    ).length;
+
+    const monthlyClasses = allClasses.filter(cls => 
+      cls.date >= monthStart
+    ).length;
+
+    const totalHours = allClasses.reduce((sum, cls) => sum + cls.duration, 0) / 60;
+
+    return {
+      weeklyClasses,
+      totalHours,
+      monthlyClasses
+    };
+  }
+
+  // Weekly Commitments - IMPROVED IN-MEMORY STORAGE
+  async getWeeklyCommitments(userId?: number): Promise<WeeklyCommitment[]> {
+    const commitments = Array.from(this.weeklyCommitments.values());
+    console.log(`📊 getWeeklyCommitments: Found ${commitments.length} total commitments`);
+    
+    if (userId) {
+      const userCommitments = commitments
+        .filter(commitment => commitment.userId === userId)
+        .sort((a, b) => b.weekStartDate.getTime() - a.weekStartDate.getTime());
+      console.log(`👤 User ${userId} has ${userCommitments.length} commitments`);
+      return userCommitments;
+    }
+    return commitments.sort((a, b) => 
+      b.weekStartDate.getTime() - a.weekStartDate.getTime()
+    );
+  }
+
+  async getCurrentWeekCommitment(userId?: number): Promise<WeeklyCommitment | undefined> {
+    if (!userId) return undefined;
+    
+    const now = new Date();
+    const dayOfWeek = now.getUTCDay();
+    const daysToSunday = dayOfWeek === 0 ? 0 : -dayOfWeek;
+    const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysToSunday, 0, 0, 0, 0));
+
+    const commitments = Array.from(this.weeklyCommitments.values());
+    const targetWeekString = weekStart.toISOString();
+    
+    console.log(`🔍 SEARCH for week: ${targetWeekString}, user: ${userId}`);
+    console.log(`📊 Total storage: ${this.weeklyCommitments.size} commitments`);
+    
+    if (commitments.length > 0) {
+      console.log('📋 All commitments:');
+      commitments.forEach((c, index) => {
+        const cWeekString = new Date(c.weekStartDate).toISOString();
+        const match = cWeekString === targetWeekString && c.userId === userId;
+        console.log(`  ${index + 1}. ID:${c.id} Week:${cWeekString} User:${c.userId} ${match ? '✅ MATCH' : ''}`);
+      });
+    }
+    
+    // Find exact match
+    for (const commitment of commitments) {
+      const commitmentWeekString = new Date(commitment.weekStartDate).toISOString();
+      
+      if (commitmentWeekString === targetWeekString && commitment.userId === userId) {
+        console.log(`✅ FOUND MATCH: Commitment ID ${commitment.id}`);
+        return commitment;
+      }
+    }
+    
+    console.log(`❌ NO MATCH FOUND`);
+    return undefined;
+  }
+
+  async createWeeklyCommitment(commitmentData: InsertWeeklyCommitment): Promise<WeeklyCommitment> {
+    const newCommitment: WeeklyCommitment = {
+      id: this.currentCommitmentId++,
+      ...commitmentData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    this.weeklyCommitments.set(newCommitment.id, newCommitment);
+    
+    console.log('✅ CREATED:', newCommitment);
+    console.log(`📊 Total now: ${this.weeklyCommitments.size} commitments`);
+    console.log('📋 All stored commitments:');
+    Array.from(this.weeklyCommitments.values()).forEach((c, index) => {
+      console.log(`  ${index + 1}. ID:${c.id} Week:${new Date(c.weekStartDate).toISOString()} User:${c.userId}`);
+    });
+
+    return newCommitment;
+  }
+
+  async updateWeeklyCommitment(id: number, commitmentData: Partial<InsertWeeklyCommitment>): Promise<WeeklyCommitment | undefined> {
+    const commitment = this.weeklyCommitments.get(id);
+    if (!commitment) return undefined;
+
+    const updatedCommitment = { ...commitment, ...commitmentData, updatedAt: new Date() };
+    this.weeklyCommitments.set(id, updatedCommitment);
+
+    return updatedCommitment;
+  }
+
+  async deleteWeeklyCommitment(id: number): Promise<boolean> {
+    return this.weeklyCommitments.delete(id);
+  }
+
+  // Training Videos
+  async getTrainingVideos(): Promise<TrainingVideo[]> {
+    return Array.from(this.trainingVideos.values()).sort((a, b) => 
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async getTrainingVideo(id: number): Promise<TrainingVideo | undefined> {
+    return this.trainingVideos.get(id);
+  }
+
+  async createTrainingVideo(videoData: InsertTrainingVideo): Promise<TrainingVideo> {
+    const newVideo: TrainingVideo = {
+      id: this.currentTrainingVideoId++,
+      ...videoData,
+      createdAt: new Date(),
+    };
+    this.trainingVideos.set(newVideo.id, newVideo);
+    return newVideo;
+  }
+
+  async updateTrainingVideo(id: number, videoData: Partial<InsertTrainingVideo>): Promise<TrainingVideo | undefined> {
+    const video = this.trainingVideos.get(id);
+    if (!video) return undefined;
+
+    const updatedVideo = { ...video, ...videoData };
+    this.trainingVideos.set(id, updatedVideo);
+    return updatedVideo;
+  }
+
+  async deleteTrainingVideo(id: number): Promise<boolean> {
+    return this.trainingVideos.delete(id);
+  }
+
+  // Enhanced Note Sharing
+  async toggleNoteSharing(noteId: number, userId: number): Promise<Note | undefined> {
+    const note = this.notes.get(noteId);
+    if (!note || note.userId !== userId) {
+      return undefined;
+    }
+
+    const updatedNote = {
+      ...note,
+      isShared: note.isShared === 1 ? 0 : 1,
+      updatedAt: new Date()
+    };
+    
+    this.notes.set(noteId, updatedNote);
+    return updatedNote;
+  }
+
+  async getSharedNotes(userId: number): Promise<Note[]> {
+    return Array.from(this.notes.values())
+      .filter(note => note.isShared === 1)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  // Password Reset Tokens (stub methods for MemStorage)
+  async createPasswordResetToken(userId: number, token: string, expiresAt: Date): Promise<PasswordResetToken> {
+    return {
+      id: 1,
+      userId,
+      token,
+      expiresAt,
+      used: 0,
+      createdAt: new Date(),
+    };
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    return undefined;
+  }
+
+  async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
+    // No-op for MemStorage
+  }
+
+  async deleteExpiredPasswordResetTokens(): Promise<void> {
+    // No-op for MemStorage
+  }
+}
+
+export const storage = new MemStoragePrimary();
