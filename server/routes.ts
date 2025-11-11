@@ -742,9 +742,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Classes routes
-  app.get("/api/classes", authenticateToken, async (req, res) => {
+  app.get("/api/classes", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = (req as any).userId;
       const classes = await storage.getClasses(userId);
       res.json(classes);
     } catch (error) {
@@ -752,9 +752,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/classes", authenticateToken, async (req, res) => {
+  app.post("/api/classes", flexibleAuth, async (req, res) => {
     try {
-      const userId = (req as any).user.userId;
+      const userId = (req as any).userId;
       
       // Load full user record to check subscription tier
       const user = await storage.getUser(userId);
@@ -795,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/classes/:id", async (req, res) => {
+  app.put("/api/classes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const classData = insertClassSchema.partial().parse(req.body);
@@ -815,7 +815,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/classes/:id", async (req, res) => {
+  app.delete("/api/classes/:id", flexibleAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const deleted = await storage.deleteClass(id);
