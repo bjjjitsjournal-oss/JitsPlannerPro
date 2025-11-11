@@ -756,9 +756,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = (req as any).userId;
       
+      console.log('📝 Class creation request:', {
+        userId,
+        hasAuth: !!req.headers['authorization'],
+        bodyKeys: Object.keys(req.body),
+        supabaseId: req.body.supabaseId
+      });
+      
       // Load full user record to check subscription tier
       const user = await storage.getUser(userId);
       if (!user) {
+        console.error('❌ User not found for userId:', userId);
         return res.status(404).json({ message: "User not found" });
       }
       
@@ -788,9 +796,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newClass);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error('❌ Class creation validation error:', error.errors);
         res.status(400).json({ message: "Invalid class data", errors: error.errors });
       } else {
-        res.status(500).json({ message: "Failed to create class" });
+        console.error('❌ Class creation error:', error);
+        console.error('Request body:', req.body);
+        console.error('User ID:', (req as any).userId);
+        res.status(500).json({ 
+          message: "Failed to create class",
+          error: error instanceof Error ? error.message : String(error)
+        });
       }
     }
   });
