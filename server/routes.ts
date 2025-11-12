@@ -609,6 +609,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Sync RevenueCat subscription to database
+  app.post("/api/sync-subscription", authenticateToken, async (req, res) => {
+    try {
+      const userId = (req as any).userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // SECURITY: Verify subscription with RevenueCat server-side API
+      // DO NOT trust client-provided entitlement data!
+      
+      const revenuecatApiKey = process.env.REVENUECAT_API_KEY;
+      if (!revenuecatApiKey) {
+        console.error('❌ REVENUECAT_API_KEY not configured');
+        return res.status(500).json({ message: "RevenueCat not configured" });
+      }
+      
+      // Use user ID as RevenueCat customer ID
+      const appUserId = user.id.toString();
+      
+      try {
+        // Fetch subscriber info from RevenueCat server
+        const response = await fetch(
+          `https://api.revenuecat.com/v1/subscribers/${appUserId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${revenuecatApiKey}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            // User not found in RevenueCat = free tier
+            console.log('User not found in RevenueCat, setting to free tier');
+            
+            const updatedUser = await storage.updateUser(userId, {
+              subscriptionTier: 'free',
+              subscriptionStatus: 'free',
+              subscriptionExpiresAt: undefined,
+            });
+            
+            return res.json({
+              success: true,
+              subscription: {
+                tier: 'free',
+                status: 'free',
+                expiresAt: null,
+              }
+            });
+          }
+          
+          throw new Error(`RevenueCat API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Extract VERIFIED entitlements from RevenueCat
+        const activeEntitlements = data.subscriber?.entitlements || {};
+        const hasActiveSubscription = Object.keys(activeEntitlements).length > 0;
+        
+        // Determine tier from VERIFIED entitlements
+        let tier: 'free' | 'bjj_enthusiast' | 'gym_pro' = 'free';
+        
+        if (activeEntitlements['gym_pro']) {
+          tier = 'gym_pro';
+        } else if (activeEntitlements['enthusiast']) {
+          tier = 'bjj_enthusiast';
+        }
+        
+        const subscriptionStatus = hasActiveSubscription ? 'active' : 'free';
+        const subscriptionExpiresAt = hasActiveSubscription ? new Date('2099-12-31') : undefined;
+        
+        console.log('🔄 Syncing VERIFIED subscription for user:', userId, {
+          tier,
+          status: subscriptionStatus,
+          verifiedEntitlements: Object.keys(activeEntitlements),
+        });
+        
+        // Update user with VERIFIED subscription status
+        const updatedUser = await storage.updateUser(userId, {
+          subscriptionTier: tier,
+          subscriptionStatus,
+          subscriptionExpiresAt,
+          revenuecatCustomerId: appUserId,
+        });
+        
+        if (!updatedUser) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        
+        console.log('✅ Subscription synced successfully (VERIFIED):', {
+          userId,
+          tier,
+          status: subscriptionStatus,
+        });
+        
+        res.json({ 
+          success: true, 
+          subscription: {
+            tier,
+            status: subscriptionStatus,
+            expiresAt: subscriptionExpiresAt,
+          }
+        });
+      } catch (revenuecatError) {
+        console.error('❌ RevenueCat verification error:', revenuecatError);
+        
+        // On error, default to free tier for security
+        await storage.updateUser(userId, {
+          subscriptionTier: 'free',
+          subscriptionStatus: 'free',
+          subscriptionExpiresAt: undefined,
+        });
+        
+        throw revenuecatError;
+      }
+    } catch (error) {
+      console.error('❌ Subscription sync error:', error);
+      res.status(500).json({ message: "Failed to sync subscription" });
+    }
+  });
+
   // Manual premium upgrade endpoint
   app.post("/api/users/:id/upgrade-premium", async (req, res) => {
     try {

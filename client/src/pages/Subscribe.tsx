@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Crown, Zap, Shield, Smartphone, ExternalLink } from 'lucide-react';
+import { Check, Crown, Zap, Shield, Smartphone, ExternalLink, RefreshCw } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { getPlatform, isWebPlatform } from '@/lib/platform';
+import { nativeRevenueCatService } from '@/lib/nativeRevenueCatService';
+import type { PurchasesOfferings } from '@revenuecat/purchases-capacitor';
 
 export default function Subscribe() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [offerings, setOfferings] = useState<PurchasesOfferings | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
@@ -22,28 +26,82 @@ export default function Subscribe() {
 
   const currentTier = subscriptionStatus?.tier || 'free';
 
-  const openAppStore = () => {
-    const appId = 'com.jitsjournal.app';
-    
-    if (platform === 'android') {
-      // Open Play Store app or web page
-      window.location.href = `market://details?id=${appId}`;
+  useEffect(() => {
+    if (platform === 'ios' && user) {
+      initializeRevenueCat();
+    }
+  }, [platform, user]);
+
+  const initializeRevenueCat = async () => {
+    if (!user) return;
+
+    try {
+      await nativeRevenueCatService.initialize(user.id.toString());
+      const offers = await nativeRevenueCatService.getOfferings();
+      setOfferings(offers);
       
-      // Fallback to web if Play Store app not available
-      setTimeout(() => {
-        window.location.href = `https://play.google.com/store/apps/details?id=${appId}`;
-      }, 500);
-    } else if (platform === 'ios') {
-      // When iOS app is published, we'll add the App Store ID
-      // window.location.href = `itms-apps://apps.apple.com/app/id<YOUR_APP_ID>`;
+      await nativeRevenueCatService.syncSubscriptionToBackend();
+    } catch (error) {
+      console.error('Failed to initialize RevenueCat:', error);
       toast({
-        title: 'Coming Soon',
-        description: 'iOS App Store version coming soon!',
+        title: 'Error',
+        description: 'Failed to load subscription options. Please try again.',
+        variant: 'destructive',
       });
     }
   };
 
-  const handleSubscribe = (tier: string) => {
+  const openAppStore = () => {
+    const appId = 'com.jitsjournal.app';
+    
+    if (platform === 'android') {
+      window.location.href = `market://details?id=${appId}`;
+      
+      setTimeout(() => {
+        window.location.href = `https://play.google.com/store/apps/details?id=${appId}`;
+      }, 500);
+    } else if (platform === 'ios') {
+      toast({
+        title: 'Subscribe Below',
+        description: 'Select a plan below to purchase directly in the app!',
+      });
+    }
+  };
+
+  const handleRestorePurchases = async () => {
+    setIsRestoring(true);
+    
+    try {
+      const customerInfo = await nativeRevenueCatService.restorePurchases();
+      
+      await nativeRevenueCatService.syncSubscriptionToBackend();
+      
+      const hasActive = Object.keys(customerInfo.entitlements.active).length > 0;
+      
+      if (hasActive) {
+        toast({
+          title: 'Success!',
+          description: 'Your purchases have been restored.',
+        });
+      } else {
+        toast({
+          title: 'No Purchases Found',
+          description: 'No active subscriptions to restore.',
+        });
+      }
+    } catch (error) {
+      console.error('Restore failed:', error);
+      toast({
+        title: 'Restore Failed',
+        description: 'Failed to restore purchases. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
+  const handleSubscribe = async (tier: string) => {
     if (isWeb) {
       toast({
         title: 'Subscribe via App Store',
@@ -53,12 +111,68 @@ export default function Subscribe() {
       return;
     }
 
-    // Open the app store subscription page
+    if (platform === 'ios') {
+      setLoadingTier(tier);
+      
+      try {
+        if (!offerings || !offerings.current) {
+          throw new Error('No offerings available');
+        }
+
+        const packageIdentifier = tier === 'enthusiast' ? '$rc_monthly' : null;
+        
+        if (!packageIdentifier) {
+          toast({
+            title: 'Contact Required',
+            description: 'Please contact us for Gym Pro subscription.',
+          });
+          return;
+        }
+
+        const pkg = offerings.current.availablePackages.find(
+          p => p.identifier === packageIdentifier
+        );
+
+        if (!pkg) {
+          throw new Error('Package not found');
+        }
+
+        const customerInfo = await nativeRevenueCatService.purchasePackage(pkg);
+        
+        await nativeRevenueCatService.syncSubscriptionToBackend();
+        
+        toast({
+          title: 'Success!',
+          description: `Welcome to ${tier === 'enthusiast' ? 'BJJ Enthusiast' : 'Gym Pro'}!`,
+        });
+        
+        window.location.reload();
+      } catch (error: any) {
+        if (error.message === 'Purchase cancelled by user') {
+          toast({
+            title: 'Purchase Cancelled',
+            description: 'You can subscribe anytime.',
+          });
+        } else {
+          console.error('Purchase failed:', error);
+          toast({
+            title: 'Purchase Failed',
+            description: error.message || 'Something went wrong. Please try again.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setLoadingTier(null);
+      }
+      
+      return;
+    }
+
     setLoadingTier(tier);
     
     toast({
       title: 'Opening Store...',
-      description: `Subscribe to ${tier === 'enthusiast' ? 'BJJ Enthusiast' : 'Gym Pro'} in the ${platform === 'android' ? 'Play' : 'App'} Store`,
+      description: `Subscribe to ${tier === 'enthusiast' ? 'BJJ Enthusiast' : 'Gym Pro'} in the Play Store`,
     });
 
     setTimeout(() => {
@@ -135,18 +249,36 @@ export default function Subscribe() {
           <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
             <div className="flex items-start gap-3">
               <ExternalLink className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
                   Subscribe via {platform === 'android' ? 'Google Play Store' : 'Apple App Store'}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  Click "Get Started" on any plan below to open the {platform === 'android' ? 'Play' : 'App'} Store where you can complete your subscription.
+                  {platform === 'ios' 
+                    ? 'Click "Get Started" below to purchase directly in the app!'
+                    : 'Click "Get Started" on any plan below to open the Play Store where you can complete your subscription.'}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 italic">
                   💡 Your subscription will sync automatically after purchase!
                 </p>
               </div>
             </div>
+            {platform === 'ios' && (
+              <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
+                <Button
+                  variant="outline"
+                  onClick={handleRestorePurchases}
+                  disabled={isRestoring}
+                  className="w-full sm:w-auto"
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isRestoring ? 'animate-spin' : ''}`} />
+                  {isRestoring ? 'Restoring...' : 'Restore Purchases'}
+                </Button>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  Already subscribed? Restore your purchases here.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
