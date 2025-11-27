@@ -6,22 +6,32 @@ const R2_BUCKET = process.env.R2_BUCKET_NAME || 'itsjournal-videos';
 
 // Initialize R2 client (lazy initialization to provide better error messages)
 function getR2Client(): S3Client {
-  if (!process.env.R2_ENDPOINT) {
+  const endpoint = process.env.R2_ENDPOINT;
+  const accessKey = process.env.R2_ACCESS_KEY_ID;
+  const secretKey = process.env.R2_SECRET_ACCESS_KEY;
+  
+  console.log('🔐 R2 Client initialization:');
+  console.log('  ✓ Endpoint configured:', !!endpoint);
+  console.log('  ✓ Access Key configured:', !!accessKey);
+  console.log('  ✓ Secret Key configured:', !!secretKey);
+  console.log('  ✓ Bucket name:', R2_BUCKET);
+  
+  if (!endpoint) {
     throw new Error('R2_ENDPOINT environment variable is not set');
   }
-  if (!process.env.R2_ACCESS_KEY_ID) {
+  if (!accessKey) {
     throw new Error('R2_ACCESS_KEY_ID environment variable is not set');
   }
-  if (!process.env.R2_SECRET_ACCESS_KEY) {
+  if (!secretKey) {
     throw new Error('R2_SECRET_ACCESS_KEY environment variable is not set');
   }
 
   return new S3Client({
     region: 'auto',
-    endpoint: process.env.R2_ENDPOINT,
+    endpoint: endpoint,
     credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+      accessKeyId: accessKey,
+      secretAccessKey: secretKey,
     },
   });
 }

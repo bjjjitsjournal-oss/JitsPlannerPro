@@ -54,7 +54,7 @@ services:
         sync: false  # Set this in Render dashboard
       
       - key: R2_BUCKET_NAME
-        value: jitsjournal-videos
+        value: itsjournal-videos
       
       # Stripe Payment Configuration
       - key: STRIPE_SECRET_KEY
