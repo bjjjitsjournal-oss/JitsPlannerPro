@@ -2,7 +2,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-const R2_BUCKET = process.env.R2_BUCKET_NAME || 'itsjournal-videos';
+const R2_BUCKET = process.env.R2_BUCKET_NAME || 'jitsjournal-videos';
 
 // Initialize R2 client (lazy initialization to provide better error messages)
 function getR2Client(): S3Client {
@@ -46,8 +46,14 @@ export async function uploadToR2(
     })
   );
 
-  // Generate public URL using R2.dev public endpoint
-  const publicUrl = process.env.R2_PUBLIC_URL || 'https://pub-d4f8dc9cccab4b579387a4fe9c0abf18.r2.dev';
+  // Generate public URL from R2 endpoint (construct from bucket name + account ID)
+  const publicUrl = process.env.R2_PUBLIC_URL || (() => {
+    // Extract account ID from endpoint: https://[account-id].r2.cloudflarestorage.com
+    const endpoint = process.env.R2_ENDPOINT || '';
+    const accountMatch = endpoint.match(/https:\/\/([^.]+)\.r2\.cloudflarestorage\.com/);
+    const accountId = accountMatch ? accountMatch[1] : 'pub-xxx';
+    return `https://${R2_BUCKET}.${accountId}.r2.dev`;
+  })();
   const url = `${publicUrl}/${key}`;
 
   return { url, key };
