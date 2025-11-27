@@ -2,7 +2,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-const R2_BUCKET = process.env.R2_BUCKET_NAME || 'jitsjournal-videos';
+const R2_BUCKET = process.env.R2_BUCKET_NAME || 'itsjournal-videos';
 
 // Initialize R2 client (lazy initialization to provide better error messages)
 function getR2Client(): S3Client {
