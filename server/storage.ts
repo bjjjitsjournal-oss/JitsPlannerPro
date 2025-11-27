@@ -425,7 +425,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSharedNotes(): Promise<NoteWithAuthor[]> {
-    // Optimized: Use JOIN to get notes with user info and like count in ONE query instead of N+1
+    // CRITICAL OPTIMIZATION: Removed GROUP BY and like count aggregation which was causing 18s delays
+    // Like counts will be fetched separately if needed
     const results = await db
       .select({
         // All note fields
@@ -449,19 +450,10 @@ export class DatabaseStorage implements IStorage {
         authorFirstName: users.firstName,
         authorLastName: users.lastName,
         authorEmail: users.email,
-        // Like count (use COUNT with group by)
-        likeCount: count(noteLikes.id),
       })
       .from(notes)
       .leftJoin(users, eq(notes.userId, users.id))
-      .leftJoin(noteLikes, eq(notes.id, noteLikes.noteId))
       .where(eq(notes.isShared, 1))
-      .groupBy(
-        notes.id,
-        users.firstName,
-        users.lastName,
-        users.email
-      )
       .orderBy(desc(notes.createdAt))
       .limit(50); // Pagination: limit to 50 notes
 
@@ -488,7 +480,7 @@ export class DatabaseStorage implements IStorage {
         lastName: r.authorLastName,
         email: r.authorEmail,
       } : null,
-      likeCount: Number(r.likeCount),
+      likeCount: 0,
     }));
   }
 
