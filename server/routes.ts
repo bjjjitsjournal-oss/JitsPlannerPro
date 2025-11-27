@@ -44,6 +44,35 @@ const upload = multer({
   },
 });
 
+// Response caching for notes endpoints - 60 second TTL
+const responseCache = new Map<string, { data: any; timestamp: number; }>();
+const CACHE_TTL = 60000; // 60 seconds
+
+function getCacheKey(userId: number | null, type: string, offset: number = 0): string {
+  return `${type}_${userId}_${offset}`;
+}
+
+function getFromCache(key: string): any {
+  const cached = responseCache.get(key);
+  if (!cached) return null;
+  if (Date.now() - cached.timestamp > CACHE_TTL) {
+    responseCache.delete(key);
+    return null;
+  }
+  return cached.data;
+}
+
+function setInCache(key: string, data: any): void {
+  responseCache.set(key, { data, timestamp: Date.now() });
+}
+
+function invalidateCache(pattern: string): void {
+  for (const key of responseCache.keys()) {
+    if (key.startsWith(pattern)) {
+      responseCache.delete(key);
+    }
+  }
+}
 
 // Authentication middleware
 const authenticateToken = async (req: any, res: any, next: any) => {
@@ -1047,13 +1076,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const startTime = Date.now();
     try {
       const userId = (req as any).user.id; // Integer user ID
-      const { search } = req.query;
+      const { search, offset = 0, limit = 15 } = req.query;
+      const offsetNum = Math.max(0, parseInt(offset as string) || 0);
+      const limitNum = Math.min(50, Math.max(1, parseInt(limit as string) || 15));
       
       let notes;
       if (search) {
         notes = await storage.searchNotes(search as string, userId);
       } else {
-        notes = await storage.getNotes(userId);
+        // Check cache first for non-search queries
+        const cacheKey = getCacheKey(userId, 'notes', offsetNum);
+        const cachedNotes = getFromCache(cacheKey);
+        
+        if (cachedNotes) {
+          const duration = Date.now() - startTime;
+          console.log(`⏱️ GET /api/notes completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
+          return res.json(cachedNotes);
+        }
+        
+        // Fetch from DB
+        notes = await storage.getNotes(userId, offsetNum, limitNum);
+        setInCache(cacheKey, notes);
       }
       
       const duration = Date.now() - startTime;
@@ -1084,6 +1127,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       const newNote = await storage.createNote(noteData);
+      
+      // Invalidate cache when new note is created
+      invalidateCache(`notes_${userId}`);
+      invalidateCache('shared_');
+      
       console.log("Note created successfully:", newNote);
       res.status(201).json(newNote);
     } catch (error: any) {
@@ -1097,6 +1145,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.id; // Integer user ID
       const noteData = req.body; // Parse as partial appNote data
+      
+      // Invalidate cache when note is updated
+      invalidateCache(`notes_${userId}`);
+      invalidateCache('shared_');
+      
       console.log("✏️ PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
       
       // Check if note belongs to the user

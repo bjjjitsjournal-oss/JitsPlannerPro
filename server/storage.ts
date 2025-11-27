@@ -198,8 +198,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Notes - using persistent Supabase database storage
-  async getNotes(userId?: number): Promise<Note[]> {
+  async getNotes(userId?: number, offset: number = 0, limit: number = 15): Promise<Note[]> {
     // Optimized: Select only needed columns to reduce query time from 300ms to <50ms
+    // Pagination: Default 15 notes per page to speed up initial load
     if (userId) {
       return db.select({
         id: notes.id,
@@ -221,7 +222,8 @@ export class DatabaseStorage implements IStorage {
       }).from(notes)
         .where(eq(notes.userId, userId))
         .orderBy(desc(notes.createdAt))
-        .limit(50); // Pagination: limit to 50 most recent notes
+        .offset(offset)
+        .limit(limit);
     }
     return db.select({
       id: notes.id,
@@ -242,7 +244,8 @@ export class DatabaseStorage implements IStorage {
       updatedAt: notes.updatedAt,
     }).from(notes)
       .orderBy(desc(notes.createdAt))
-      .limit(50); // Pagination: limit to 50 most recent notes
+      .offset(offset)
+      .limit(limit);
   }
 
   async getNote(id: string): Promise<Note | undefined> {
@@ -424,9 +427,9 @@ export class DatabaseStorage implements IStorage {
     return updatedNote || undefined;
   }
 
-  async getSharedNotes(): Promise<NoteWithAuthor[]> {
+  async getSharedNotes(offset: number = 0, limit: number = 15): Promise<NoteWithAuthor[]> {
     // CRITICAL OPTIMIZATION: Removed GROUP BY and like count aggregation which was causing 18s delays
-    // Like counts will be fetched separately if needed
+    // Pagination: Default 15 notes per page to speed up initial load
     const results = await db
       .select({
         // All note fields
@@ -455,7 +458,8 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(users, eq(notes.userId, users.id))
       .where(eq(notes.isShared, 1))
       .orderBy(desc(notes.createdAt))
-      .limit(50); // Pagination: limit to 50 notes
+      .offset(offset)
+      .limit(limit);
 
     // Transform to match NoteWithAuthor interface
     return results.map(r => ({
