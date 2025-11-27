@@ -1,0 +1,154 @@
+query,rolname,calls,mean_time,min_time,max_time,total_time,rows_read,cache_hit_rate,prop_total_time,index_advisor_result
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""gym_id"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_file_size"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" order by ""notes"".""created_at"" desc",postgres,416,307.596409103365,23.26124,1758.714996,127960.106187,1241,100.0000000000000000,22.663905996811184,null
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""gym_id"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_file_size"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" where ""notes"".""user_id"" = $1 order by ""notes"".""created_at"" desc limit $2",postgres,180,335.570963266667,0.020856,1757.920059,60402.773388,380,100.0000000000000000,10.698356064285598,null
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" where ""notes"".""user_id"" = $1 order by ""notes"".""created_at"" desc",postgres,408,147.471098889706,0.015343,1671.280381,60168.208347,622,100.0000000000000000,10.656810615490851,null
+"SELECT t.oid, t.typname, t.typsend, t.typreceive, t.typoutput, t.typinput,
+       coalesce(d.typelem, t.typelem), coalesce(r.rngsubtype, $1), ARRAY (
+  SELECT a.atttypid
+  FROM pg_attribute AS a
+  WHERE a.attrelid = t.typrelid AND a.attnum > $2 AND NOT a.attisdropped
+  ORDER BY a.attnum
+)
+
+FROM pg_type AS t
+LEFT JOIN pg_type AS d ON t.typbasetype = d.oid
+LEFT JOIN pg_range AS r ON r.rngtypid = t.oid OR r.rngmultitypid = t.oid OR (t.typbasetype <> $3 AND r.rngtypid = t.typbasetype)
+WHERE (t.typrelid = $4)
+AND (t.typelem = $5 OR NOT EXISTS (SELECT $6 FROM pg_catalog.pg_type s WHERE s.typrelid != $7 AND s.oid = t.typelem))",pgbouncer,676,56.1273676760355,4.253839,693.812706,37942.100549,146150,99.9999433955001687,6.720189798118943,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".* FROM ""public"".""notes"" WHERE  ""public"".""notes"".""user_id"" = $1  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $2 OFFSET $3 )  SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $5) AS body, nullif(current_setting($6, $7), $8) AS response_headers, nullif(current_setting($9, $10), $11) AS response_status, $12 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,248,145.83884371371,0.019372,814.624117,36168.033241,248,100.0000000000000000,6.40597237599701,null
+"with f as (
+      
+-- CTE with sane arg_modes, arg_names, and arg_types.
+-- All three are always of the same length.
+-- All three include all args, including OUT and TABLE args.
+with functions as (
+  select
+    *,
+    -- proargmodes is null when all arg modes are IN
+    coalesce(
+      p.proargmodes,
+      array_fill($1::text, array[cardinality(coalesce(p.proallargtypes, p.proargtypes))])
+    ) as arg_modes,
+    -- proargnames is null when all args are unnamed
+    coalesce(
+      p.proargnames,
+      array_fill($2::text, array[cardinality(coalesce(p.proallargtypes, p.proargtypes))])
+    ) as arg_names,
+    -- proallargtypes is null when all arg modes are IN
+    coalesce(p.proallargtypes, p.proargtypes) as arg_types,
+    array_cat(
+      array_fill($3, array[pronargs - pronargdefaults]),
+      array_fill($4, array[pronargdefaults])) as arg_has_defaults
+  from
+    pg_proc as p
+  where
+    p.prokind = $5
+)
+select
+  f.oid as id,
+  n.nspname as schema,
+  f.proname as name,
+  l.lanname as language,
+  case
+    when l.lanname = $6 then $7
+    else f.prosrc
+  end as definition,
+  case
+    when l.lanname = $8 then f.prosrc
+    else pg_get_functiondef(f.oid)
+  end as complete_statement,
+  coalesce(f_args.args, $9) as args,
+  pg_get_function_arguments(f.oid) as argument_types,
+  pg_get_function_identity_arguments(f.oid) as identity_argument_types,
+  f.prorettype as return_type_id,
+  pg_get_function_result(f.oid) as return_type,
+  nullif(rt.typrelid, $10) as return_type_relation_id,
+  f.proretset as is_set_returning_function,
+  case
+    when f.provolatile = $11 then $12
+    when f.provolatile = $13 then $14
+    when f.provolatile = $15 then $16
+  end as behavior,
+  f.prosecdef as security_definer,
+  f_config.config_params as config_params
+from
+  functions f
+  left join pg_namespace n on f.pronamespace = n.oid
+  left join pg_language l on f.prolang = l.oid
+  left join pg_type rt on rt.oid = f.prorettype
+  left join (
+    select
+      oid,
+      jsonb_object_agg(param, value) filter (where param is not null) as config_params
+    from
+      (
+        select
+          oid,
+          (string_to_array(unnest(proconfig), $17))[$18] as param,
+          (string_to_array(unnest(proconfig), $19))[$20] as value
+        from
+          functions
+      ) as t
+    group by
+      oid
+  ) f_config on f_config.oid = f.oid
+  left join (
+    select
+      oid,
+      jsonb_agg(jsonb_build_object(
+        $21, t2.mode,
+        $22, name,
+        $23, type_id,
+        -- Cast null into false boolean
+        $24, COALESCE(has_default, $25)
+      )) as args
+    from
+      (
+        select
+          oid,
+          unnest(arg_modes) as mode,
+          unnest(arg_names) as name,
+          -- Coming from: coalesce(p.proallargtypes, p.proargtypes) postgres won't automatically assume
+          -- integer, we need to cast it to be properly parsed
+          unnest(arg_types)::int8 as type_id,
+          unnest(arg_has_defaults) as has_default
+        from
+          functions
+      ) as t1,
+      lateral (
+        select
+          case
+            when t1.mode = $26 then $27
+            when t1.mode = $28 then $29
+            when t1.mode = $30 then $31
+            when t1.mode = $32 then $33
+            else $34
+          end as mode
+      ) as t2
+    group by
+      t1.oid
+  ) f_args on f_args.oid = f.oid
+
+    )
+    select
+      f.*
+    from f
+   where schema NOT IN ($35,$36,$37)
+
+-- source: dashboard
+-- user: bb5786d0-3082-4e3c-9c1f-8c3390898fd2
+-- date: 2025-09-11T04:48:36.681Z",postgres,133,228.009106300752,135.942581,648.279116,30325.211138,14134,100.0000000000000000,5.371109442193538,null
+SELECT name FROM pg_timezone_names,authenticator,126,230.146771460317,52.564965,1002.709457,28998.493204,150444,0,5.136125184705369,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".*, row_to_json(""notes_users_1"".*)::jsonb AS ""users"" FROM ""public"".""notes"" INNER JOIN LATERAL ( SELECT ""users_1"".""first_name"", ""users_1"".""last_name"", ""users_1"".""email"" FROM ""public"".""users"" AS ""users_1"" WHERE ""users_1"".""id"" = ""public"".""notes"".""user_id""   LIMIT $1 OFFSET $2 ) AS ""notes_users_1"" ON $6 WHERE  ""public"".""notes"".""is_shared"" = $3  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $4 OFFSET $5 )  SELECT $7::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $8) AS body, nullif(current_setting($9, $10), $11) AS response_headers, nullif(current_setting($12, $13), $14) AS response_status, $15 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,81,308.728412790123,5.560999,1011.963271,25007.001436,81,100.0000000000000000,4.429164266082841,null
+"select ""notes"".""id"", ""notes"".""title"", ""notes"".""content"", ""notes"".""tags"", ""notes"".""linked_class_id"", ""notes"".""linked_video_id"", ""notes"".""user_id"", ""notes"".""is_shared"", ""notes"".""gym_id"", ""notes"".""shared_with_users"", ""notes"".""video_url"", ""notes"".""video_file_name"", ""notes"".""video_file_size"", ""notes"".""video_thumbnail"", ""notes"".""created_at"", ""notes"".""updated_at"", ""users"".""first_name"", ""users"".""last_name"", ""users"".""email"", count(""note_likes"".""id"") from ""notes"" left join ""users"" on ""notes"".""user_id"" = ""users"".""id"" left join ""note_likes"" on ""notes"".""id"" = ""note_likes"".""note_id"" where ""notes"".""is_shared"" = $1 group by ""notes"".""id"", ""users"".""first_name"", ""users"".""last_name"", ""users"".""email"" order by ""notes"".""created_at"" desc limit $2",postgres,75,302.53335148,32.080015,1586.66753,22690.001361,75,100.0000000000000000,4.018784238594717,null
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""gym_id"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_file_size"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" where ""notes"".""user_id"" = $1 order by ""notes"".""created_at"" desc",postgres,104,193.461024230769,0.016624,1483.492309,20119.94652,161,100.0000000000000000,3.5635839182858926,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".* FROM ""public"".""notes"" WHERE  ""public"".""notes"".""user_id"" = $1  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $2 OFFSET $3 )  SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $5) AS body, nullif(current_setting($6, $7), $8) AS response_headers, nullif(current_setting($9, $10), $11) AS response_status, $12 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,56,326.272325553572,0.023146,1037.779119,18271.250231,56,100.0000000000000000,3.2361484373453,null
+"select ""notes"".""id"", ""notes"".""title"", ""notes"".""content"", ""notes"".""tags"", ""notes"".""linked_class_id"", ""notes"".""linked_video_id"", ""notes"".""user_id"", ""notes"".""is_shared"", ""notes"".""gym_id"", ""notes"".""shared_with_users"", ""notes"".""video_url"", ""notes"".""video_file_name"", ""notes"".""video_file_size"", ""notes"".""video_thumbnail"", ""notes"".""created_at"", ""notes"".""updated_at"", ""users"".""id"", ""users"".""email"", ""users"".""password"", ""users"".""first_name"", ""users"".""last_name"", ""users"".""subscription_tier"", ""users"".""stripe_customer_id"", ""users"".""stripe_subscription_id"", ""users"".""subscription_status"", ""users"".""subscription_plan"", ""users"".""revenuecat_customer_id"", ""users"".""subscription_expires_at"", ""users"".""gym_approval_status"", ""users"".""class_count"", ""users"".""note_count"", ""users"".""weekly_share_count"", ""users"".""share_reset_date"", ""users"".""storage_used"", ""users"".""role"", ""users"".""created_at"", ""users"".""supabase_uid"" from ""notes"" inner join ""users"" on ""notes"".""user_id"" = ""users"".""id"" where ""notes"".""gym_id"" = $1 order by ""notes"".""created_at"" desc",postgres,126,141.869728023809,0.024385,1026.932805,17875.585731,233,100.0000000000000000,3.1660695408713426,null
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" where ""notes"".""is_shared"" = $1 order by ""notes"".""created_at"" desc",postgres,41,399.701312682927,0.017181,1537.749476,16387.75382,43,100.0000000000000000,2.9025492643198243,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".* FROM ""public"".""notes"" WHERE  ""public"".""notes"".""user_id"" = $1  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $2 OFFSET $3 )  SELECT $4::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $5) AS body, nullif(current_setting($6, $7), $8) AS response_headers, nullif(current_setting($9, $10), $11) AS response_status, $12 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,52,256.778557423077,0.027249,1979.799373,13352.484986,52,100.0000000000000000,2.3649516522305065,null
+SELECT * FROM pgbouncer.get_auth($1),pgbouncer,10739,1.23747537191545,0.043167,111.046769,13289.248019,10739,100.0000000000000000,2.3537513123877356,null
+"select ""id"", ""title"", ""content"", ""tags"", ""linked_class_id"", ""linked_video_id"", ""user_id"", ""is_shared"", ""gym_id"", ""shared_with_users"", ""video_url"", ""video_file_name"", ""video_file_size"", ""video_thumbnail"", ""created_at"", ""updated_at"" from ""notes"" where ""notes"".""is_shared"" = $1 order by ""notes"".""created_at"" desc",postgres,64,192.376591765625,0.019562,806.095205,12312.101873,61,100.0000000000000000,2.1806821499901488,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".*, row_to_json(""notes_users_1"".*)::jsonb AS ""users"" FROM ""public"".""notes"" INNER JOIN LATERAL ( SELECT ""users_1"".""first_name"", ""users_1"".""last_name"", ""users_1"".""email"" FROM ""public"".""users"" AS ""users_1"" WHERE ""users_1"".""id"" = ""public"".""notes"".""user_id""   LIMIT $1 OFFSET $2 ) AS ""notes_users_1"" ON $6 WHERE  ""public"".""notes"".""is_shared"" = $3  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $4 OFFSET $5 )  SELECT $7::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $8) AS body, nullif(current_setting($9, $10), $11) AS response_headers, nullif(current_setting($12, $13), $14) AS response_status, $15 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,27,243.302362296296,67.404161,565.130423,6569.163782,27,100.0000000000000000,1.1635103695157003,null
+"select set_config('search_path', $1, true), set_config($2, $3, true), set_config('role', $4, true), set_config('request.jwt.claims', $5, true), set_config('request.method', $6, true), set_config('request.path', $7, true), set_config('request.headers', $8, true), set_config('request.cookies', $9, true)",authenticated,64184,0.0914619501121777,0.016943,108.460715,5870.39380599996,64184,100.0000000000000000,1.0397463502336672,null
+"INSERT INTO ""audit_log_entries"" (""created_at"", ""id"", ""instance_id"", ""ip_address"", ""payload"") VALUES ($1, $2, $3, $4, $5)",supabase_auth_admin,1574,3.51820653621347,0.017838,72.972222,5537.657088,1574,99.9916770703287557,0.9808130316928241,null
+"WITH pgrst_source AS ( SELECT ""public"".""notes"".*, row_to_json(""notes_users_1"".*)::jsonb AS ""users"" FROM ""public"".""notes"" INNER JOIN LATERAL ( SELECT ""users_1"".""first_name"", ""users_1"".""last_name"", ""users_1"".""email"" FROM ""public"".""users"" AS ""users_1"" WHERE ""users_1"".""id"" = ""public"".""notes"".""user_id""   LIMIT $1 OFFSET $2 ) AS ""notes_users_1"" ON $6 WHERE  ""public"".""notes"".""is_shared"" = $3  ORDER BY ""public"".""notes"".""created_at"" DESC  LIMIT $4 OFFSET $5 )  SELECT $7::bigint AS total_result_set, pg_catalog.count(_postgrest_t) AS page_total, coalesce(json_agg(_postgrest_t), $8) AS body, nullif(current_setting($9, $10), $11) AS response_headers, nullif(current_setting($12, $13), $14) AS response_status, $15 AS response_inserted FROM ( SELECT * FROM pgrst_source ) _postgrest_t",authenticated,23,232.657843608696,62.098115,766.010744,5351.130403,23,100.0000000000000000,0.947775990846993,null
