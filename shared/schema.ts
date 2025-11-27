@@ -56,6 +56,8 @@ export const notes = pgTable("notes", {
     isSharedIdx: index("notes_is_shared_idx").on(table.isShared),
     userIdIdx: index("notes_user_id_idx").on(table.userId),
     gymIdIdx: index("notes_gym_id_idx").on(table.gymId),
+    userIdCreatedAtIdx: index("notes_user_id_created_at_idx").on(table.userId, table.createdAt),
+    gymIdCreatedAtIdx: index("notes_gym_id_created_at_idx").on(table.gymId, table.createdAt),
   };
 });
 
