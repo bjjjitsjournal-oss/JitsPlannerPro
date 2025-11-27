@@ -57,12 +57,12 @@ export default function BottomNav() {
         paddingBottom: `max(${bottomInset}px, env(safe-area-inset-bottom), 0.25rem)` 
       }}
     >
-      <div className="flex justify-around py-1">
+      <div className="flex justify-around py-3">
         {navItems.map((item, index) => (
           <Link
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center p-3 transition-all duration-200 ${
+            className={`flex flex-col items-center p-4 transition-all duration-200 min-w-12 min-h-12 justify-center ${
               location === item.path
                 ? 'text-yellow-300 font-bold'
                 : 'text-white/80 hover:text-white'
