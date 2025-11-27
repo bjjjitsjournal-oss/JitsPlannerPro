@@ -36,13 +36,27 @@ This guide walks you through setting up in-app purchases for Jits Journal on iOS
 
 6. Click **Save**
 
-### Create Gym Pro Subscription (Optional - Contact-Only)
+### Create Gym Pro Subscription
 
-Since Gym Pro requires manual approval, you can either:
-- Create it as a separate product with higher price
-- Keep it contact-only (current approach)
+1. Select **Auto-Renewable Subscription**
+2. **Subscription Group**: Use the same group "Jits Journal Premium" (this is important!)
+3. Fill in subscription details:
+   - **Reference Name**: Gym Pro Monthly
+   - **Product ID**: `com.jitsjournal.app.gym_pro.monthly`
+   - **Subscription Duration**: 1 Month
+   - **Price**: $99.99 USD (select all countries)
 
-For now, we'll keep it contact-only since it requires approval.
+4. **Subscription Localization**:
+   - **Display Name**: Gym Pro
+   - **Description**: Full gym management tools, unlimited member access, video sharing, team analytics, and priority support.
+
+5. **Review Information**:
+   - Upload a screenshot showing gym management features
+   - Add review notes if needed
+
+6. Click **Save**
+
+**Important**: Both subscriptions should be in the SAME subscription group ("Jits Journal Premium"). This ensures users can upgrade/downgrade between tiers seamlessly.
 
 ## Step 2: Set Up RevenueCat
 
@@ -62,7 +76,13 @@ For now, we'll keep it contact-only since it requires approval.
 4. **Configure Products**:
    - Go to **Products** in RevenueCat dashboard
    - Click **+ New**
-   - **Product ID**: `com.jitsjournal.app.enthusiast.monthly` (must match App Store Connect)
+   - **Product ID**: `com.jitsjournal.app.enthusiast.monthly`
+   - **Type**: Subscription
+   - Click **Save**
+   
+   - Repeat for Gym Pro:
+   - Click **+ New**
+   - **Product ID**: `com.jitsjournal.app.gym_pro.monthly`
    - **Type**: Subscription
    - Click **Save**
 
@@ -71,13 +91,22 @@ For now, we'll keep it contact-only since it requires approval.
    - Create entitlement: `enthusiast`
    - Attach product: `com.jitsjournal.app.enthusiast.monthly`
    - Click **Save**
+   
+   - Create entitlement: `gym_pro`
+   - Attach product: `com.jitsjournal.app.gym_pro.monthly`
+   - Click **Save**
 
-6. **Create Offering**:
+6. **Create Offerings**:
    - Go to **Offerings**
    - The "Current" offering is created by default
    - Click **+ Add Package**
    - **Package Type**: Monthly ($rc_monthly)
    - **Product**: Select `com.jitsjournal.app.enthusiast.monthly`
+   - Click **Save**
+   
+   - Click **+ Add Package** again
+   - **Package Type**: Monthly ($rc_monthly)
+   - **Product**: Select `com.jitsjournal.app.gym_pro.monthly`
    - Click **Save**
    - Make sure offering is set to **Current**
 
@@ -216,6 +245,26 @@ RevenueCat provides:
 
 Access at: https://app.revenuecat.com/overview
 
+## Changing Gym Pro Price Later
+
+Since you want to adjust the Gym Pro price ($99.99/month) later, here's how:
+
+1. **Create a new product in App Store Connect** with the new price:
+   - **Reference Name**: Gym Pro Monthly (Updated)
+   - **Product ID**: `com.jitsjournal.app.gym_pro.monthly.v2` (or similar)
+   - **New Price**: Whatever you want (e.g., $149.99)
+
+2. **Add to RevenueCat**:
+   - Go to **Products** in RevenueCat
+   - Add the new product ID
+   - Go to **Entitlements** and update `gym_pro` to point to the new product
+
+3. **Update Offering**:
+   - Go to **Offerings** > **Current**
+   - Update the package to use the new product
+
+**Important**: Existing subscribers keep their old price, new subscribers get the new price. This is Apple's standard behavior.
+
 ## Support
 
 - RevenueCat Docs: https://www.revenuecat.com/docs
@@ -225,17 +274,20 @@ Access at: https://app.revenuecat.com/overview
 ## Summary
 
 ✅ **What we built**:
-- Native iOS in-app purchase flow
+- Native iOS in-app purchase flow with 2 tiers
 - RevenueCat integration for cross-platform subscriptions
 - Automatic sync to backend database
 - Restore Purchases functionality
 - Subscription status tracking
+- Price adjustment capability for future updates
 
 ✅ **What you need to do**:
-1. Create subscription products in App Store Connect
-2. Configure RevenueCat with products and entitlements
-3. Add `VITE_REVENUECAT_IOS_SDK_KEY` to environment
+1. Create both subscription products in App Store Connect:
+   - BJJ Enthusiast: $9.99/month
+   - Gym Pro: $99.99/month
+2. Configure RevenueCat with both products and entitlements
+3. Add `VITE_REVENUECAT_IOS_SDK_KEY` and `REVENUECAT_API_KEY` to environment
 4. Test with sandbox tester account
 5. Submit for App Store review
 
-🎉 Your iOS app is ready for paid subscriptions!
+🎉 Your iOS app is ready for paid subscriptions with flexible pricing!
