@@ -1184,6 +1184,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const deleted = await storage.deleteNote(id);
       
+      // Invalidate cache when note is deleted
+      invalidateCache(`notes_${userId}`);
+      invalidateCache('shared_');
+      
       if (!deleted) {
         return res.status(404).json({ message: "Note not found" });
       }
@@ -1209,6 +1213,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Admin can delete any note regardless of owner
       const deleted = await storage.deleteNote(id);
       
+      // Invalidate all caches when admin deletes a note
+      responseCache.clear();
+      
       if (!deleted) {
         return res.status(404).json({ message: "Note not found" });
       }
@@ -1223,10 +1230,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     const startTime = Date.now();
     try {
-      const userId = (req as any).user.id;
+      const { offset = 0, limit = 15 } = req.query;
+      const offsetNum = Math.max(0, parseInt(offset as string) || 0);
+      const limitNum = Math.min(50, Math.max(1, parseInt(limit as string) || 15));
       
-      // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1
-      const sharedNotes = await storage.getSharedNotes();
+      // Check cache first
+      const cacheKey = getCacheKey(null, 'shared', offsetNum);
+      const cachedNotes = getFromCache(cacheKey);
+      
+      if (cachedNotes) {
+        const duration = Date.now() - startTime;
+        console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
+        return res.json(cachedNotes.map(note => ({
+          ...note,
+          isLikedByUser: false
+        })));
+      }
+      
+      // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1 with pagination
+      const sharedNotes = await storage.getSharedNotes(offsetNum, limitNum);
+      setInCache(cacheKey, sharedNotes);
       
       const totalDuration = Date.now() - startTime;
       console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
