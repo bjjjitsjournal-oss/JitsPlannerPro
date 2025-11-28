@@ -428,15 +428,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSharedNotes(offset: number = 0, limit: number = 5): Promise<NoteWithAuthor[]> {
-    // CRITICAL OPTIMIZATION: Fetch ONLY essential columns for feed performance
-    // Removed content, video fields, sharedWithUsers, linkedClassId, linkedVideoId - these bloat the response
+    // CRITICAL OPTIMIZATION: Fetch essential columns + content for feed performance
+    // Removed video fields, sharedWithUsers, linkedClassId, linkedVideoId - these bloat the response
     // Reduced initial load to 5 notes (users scroll for more)
-    // This reduces payload from ~500KB to ~50KB per request = 6s → 1-2s
+    // This reduces payload while keeping content visible
     const results = await db
       .select({
         // MINIMAL fields only for feed display
         id: notes.id,
         title: notes.title,
+        content: notes.content, // Include content for display
         tags: notes.tags,
         userId: notes.userId,
         isShared: notes.isShared,
@@ -459,7 +460,7 @@ export class DatabaseStorage implements IStorage {
     return results.map(r => ({
       id: r.id,
       title: r.title,
-      content: '', // Empty for feed - users click to read full content
+      content: r.content || '', // Show note content in feed
       tags: r.tags,
       linkedClassId: null,
       linkedVideoId: null,
