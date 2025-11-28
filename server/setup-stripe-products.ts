@@ -35,7 +35,7 @@ async function setupStripeProducts() {
     });
 
     const gymProPrice = await stripe.prices.create({
-      unit_amount: 1999, // $19.99
+      unit_amount: 14999, // $149.99
       currency: 'usd',
       recurring: { interval: 'month' },
       product: gymProProduct.id,
@@ -44,7 +44,7 @@ async function setupStripeProducts() {
     console.log('✅ Gym Pro created:');
     console.log(`   Product ID: ${gymProProduct.id}`);
     console.log(`   Price ID: ${gymProPrice.id}`);
-    console.log(`   Amount: $19.99/month\n`);
+    console.log(`   Amount: $149.99/month\n`);
 
     console.log('📋 Add these to your .env file:');
     console.log(`STRIPE_ENTHUSIAST_PRICE_ID=${enthusiastPrice.id}`);
