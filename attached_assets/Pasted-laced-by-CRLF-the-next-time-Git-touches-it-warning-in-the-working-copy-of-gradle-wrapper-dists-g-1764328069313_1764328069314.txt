@@ -1,0 +1,42 @@
+laced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/delete.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/exec.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/file-tree.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/file.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/files.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/javaexec.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/logger.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/logging.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/mkdir.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/relative-path.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/resources.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/tar-tree.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/uri.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-script/zip-tree.html', LF will be replaced by CRLF the next time Git touches it
+error: open(".gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-settings-script-template-compilation-configuration/-kotlin-settings-script-template-compilation-configuration.html"): Filename too long
+error: unable to index file '.gradle/wrapper/dists/gradle-8.11.1-all/2qik7nd48slq1ooc2496ixf4i/gradle-8.11.1/docs/kotlin-dsl/gradle/org.gradle.kotlin.dsl/-kotlin-settings-script-template-compilation-configuration/-kotlin-settings-script-template-compilation-configuration.html'
+fatal: adding files failed
+
+git add -A exited with non-zero code: 128
+    Error: build command failed.
+PS C:\Users\joe>
+PS C:\Users\joe> jtg
+jtg : The term 'jtg' is not recognized as
+the name of a cmdlet, function, script file,
+or operable program. Check the spelling of
+the name, or if a path was included, verify
+that the path is correct and try again.
+At line:1 char:1
++ jtg
++ ~~~
+    + CategoryInfo          : ObjectNotFound
+   : (jtg:String) [], CommandNotFoundExcept
+  ion
+    + FullyQualifiedErrorId : CommandNotFoun
+   dException
+
+PS C:\Users\joe>
+PS C:\Users\joe>
+PS C:\Users\joe>
+PS C:\Users\joe>
