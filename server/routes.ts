@@ -1333,6 +1333,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Note not found or unauthorized" });
       }
       
+      // Clear ALL shared notes cache (all pagination pages) when sharing status changes
+      for (let page = 0; page < 100; page++) {
+        const cacheKey = getCacheKey(null, 'shared', page * 15);
+        responseCache.delete(cacheKey);
+      }
+      // Also clear user's personal notes cache since sharing affects visibility
+      invalidateCache(`notes_${userId}`);
+      
       res.json({
         ...updatedNote,
         message: updatedNote.isShared === 1 ? "Note shared with community!" : "Note made private"
