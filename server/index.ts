@@ -1,7 +1,10 @@
 ﻿import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 const app = express();
+// Enable gzip compression for all responses - reduces payload 60-70%
+app.use(compression());
 // CORS configuration - allow requests from Vercel frontend
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Allow all origins in production
