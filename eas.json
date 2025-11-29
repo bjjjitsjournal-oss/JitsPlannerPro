@@ -1,4 +1,4 @@
-{
+﻿{
   "cli": {
     "version": ">= 5.0.0"
   },
@@ -7,12 +7,14 @@
       "android": {
         "buildType": "app-bundle",
         "gradleCommand": ":app:bundleRelease"
-      }
+      },
+      "env": "production"
     },
     "preview": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "env": "production"
     }
   },
   "submit": {
