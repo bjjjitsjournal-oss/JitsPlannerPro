@@ -27,7 +27,7 @@ export default function Subscribe() {
   const currentTier = subscriptionStatus?.tier || 'free';
 
   useEffect(() => {
-    if (platform === 'ios' && user) {
+    if ((platform === 'ios' || platform === 'android') && user) {
       initializeRevenueCat();
     }
   }, [platform, user]);
