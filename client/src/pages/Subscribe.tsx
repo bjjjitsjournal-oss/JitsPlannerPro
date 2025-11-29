@@ -27,7 +27,7 @@ export default function Subscribe() {
   const currentTier = subscriptionStatus?.tier || 'free';
 
   useEffect(() => {
-    if (platform === 'ios' && user) {
+    if ((platform === 'ios' || platform === 'android') && user) {
       initializeRevenueCat();
     }
   }, [platform, user]);
@@ -155,6 +155,64 @@ export default function Subscribe() {
           });
         } else {
           console.error('Purchase failed:', error);
+          toast({
+            title: 'Purchase Failed',
+            description: error.message || 'Something went wrong. Please try again.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setLoadingTier(null);
+      }
+      
+      return;
+    }
+
+    if (platform === 'android') {
+      setLoadingTier(tier);
+      
+      try {
+        if (!offerings || !offerings.current) {
+          throw new Error('No offerings available');
+        }
+
+        const packageIdentifier = tier === 'enthusiast' ? '$rc_monthly' : null;
+        
+        if (!packageIdentifier) {
+          toast({
+            title: 'Contact Required',
+            description: 'Please contact us for Gym Pro subscription.',
+          });
+          setLoadingTier(null);
+          return;
+        }
+
+        const pkg = offerings.current.availablePackages.find(
+          p => p.identifier === packageIdentifier
+        );
+
+        if (!pkg) {
+          throw new Error('Package not found');
+        }
+
+        const customerInfo = await nativeRevenueCatService.purchasePackage(pkg);
+        
+        await nativeRevenueCatService.syncSubscriptionToBackend();
+        
+        toast({
+          title: 'Success!',
+          description: `Welcome to ${tier === 'enthusiast' ? 'BJJ Enthusiast' : 'Gym Pro'}!`,
+        });
+        
+        window.location.reload();
+      } catch (error: any) {
+        if (error.message === 'Purchase cancelled by user') {
+          toast({
+            title: 'Purchase Cancelled',
+            description: 'You can subscribe anytime.',
+          });
+        } else {
+          console.error('Android purchase failed:', error);
           toast({
             title: 'Purchase Failed',
             description: error.message || 'Something went wrong. Please try again.',
