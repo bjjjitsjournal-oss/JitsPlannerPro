@@ -1,5 +1,7 @@
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import type { CustomerInfo, PurchasesOfferings, PurchasesPackage } from '@revenuecat/purchases-capacitor';
+import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 
 class NativeRevenueCatService {
   private isInitialized = false;
@@ -10,11 +12,14 @@ class NativeRevenueCatService {
       return;
     }
 
-    const apiKey = import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY;
+    const platform = Capacitor.getPlatform();
+    const apiKey = platform === 'ios' 
+      ? import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY 
+      : import.meta.env.VITE_REVENUECAT_PUBLIC_SDK_KEY;
     
     if (!apiKey) {
-      console.error('❌ VITE_REVENUECAT_IOS_SDK_KEY not found in environment');
-      throw new Error('RevenueCat iOS SDK key not configured');
+      console.error(`❌ RevenueCat SDK key not found for platform: ${platform}`);
+      throw new Error('RevenueCat SDK key not configured');
     }
 
     try {
@@ -125,13 +130,25 @@ class NativeRevenueCatService {
     try {
       console.log('🔄 Syncing subscription to backend (server will verify with RevenueCat)');
 
+      // Get access token from Capacitor Preferences (works on iOS/Android)
+      const tokenResult = await Preferences.get({ key: 'supabase_access_token' });
+      const accessToken = tokenResult.value;
+      
+      if (!accessToken) {
+        console.error('❌ No access token found for sync');
+        return;
+      }
+
+      // Get the correct backend URL for native platforms
+      const API_BASE_URL = 'https://jitsjournal-backend.onrender.com';
+
       // SECURITY: Backend verifies subscription server-side with RevenueCat API
       // No client-provided entitlement data is trusted
-      const response = await fetch('/api/sync-subscription', {
+      const response = await fetch(`${API_BASE_URL}/api/sync-subscription`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({}), // Empty body - server verifies directly with RevenueCat
       });

@@ -1,6 +1,6 @@
 workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.75
+    name: Jits Journal iOS v1.0.135
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -13,14 +13,15 @@ workflows:
           - jits_journal_appstore_profile
         certificates:
           - jits_journal_dist_cert
-    
-    
+      
+      groups:
+        - jits_journal_env
+      
       xcode: 15.0
       
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        # APP_STORE_APP_ID: 1234567890  # TODO: Add your App ID from App Store Connect
       
       node: latest
       xcode: latest
@@ -46,6 +47,17 @@ workflows:
         script: |
           echo "📦 Installing dependencies..."
           npm install
+      
+      - name: Inject environment variables
+        script: |
+          echo "🔐 Injecting environment variables..."
+          cat > .env << EOF
+          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
+          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
+          EOF
+          echo "✅ Environment variables injected"
       
       - name: Build web application
         script: |
@@ -106,13 +118,16 @@ workflows:
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.84
+    name: Jits Journal Android v1.0.135
     max_build_duration: 120
     instance_type: mac_mini_m2
     
     environment:
       android_signing:
         - jits-journal-final
+      
+      groups:
+        - jits_journal_env
       
       vars:
         PACKAGE_NAME: "com.jitsjournal.app"
@@ -140,6 +155,17 @@ workflows:
         script: |
           echo "📦 Installing dependencies..."
           npm install
+      
+      - name: Inject environment variables
+        script: |
+          echo "🔐 Injecting environment variables..."
+          cat > .env << EOF
+          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
+          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
+          EOF
+          echo "✅ Environment variables injected"
       
       - name: Build web application
         script: |
