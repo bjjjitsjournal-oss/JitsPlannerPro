@@ -102,7 +102,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - your-email@example.com  # TODO: Replace with your email
+          - bjjjitsjournal@gmail.com
         notify:
           success: true
           failure: true
