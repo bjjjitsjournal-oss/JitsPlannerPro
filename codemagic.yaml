@@ -1,6 +1,6 @@
-workflows:
+﻿workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.75
+    name: Jits Journal iOS v1.0.135
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -13,14 +13,15 @@ workflows:
           - jits_journal_appstore_profile
         certificates:
           - jits_journal_dist_cert
-    
-    
+      
+      groups:
+        - jits_journal_env
+      
       xcode: 15.0
       
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        # APP_STORE_APP_ID: 1234567890  # TODO: Add your App ID from App Store Connect
       
       node: latest
       xcode: latest
@@ -44,75 +45,81 @@ workflows:
     scripts:
       - name: Install npm dependencies
         script: |
-          echo "📦 Installing dependencies..."
+          echo "Installing dependencies..."
           npm install
+      
+      - name: Inject environment variables
+        script: |
+          echo "Injecting environment variables..."
+          cat > .env << EOF
+          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
+          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
+          EOF
+          echo "Environment variables injected"
       
       - name: Build web application
         script: |
-          echo "🏗️  Building React app..."
+          echo "Building React app..."
           npm run build
       
       - name: Sync Capacitor iOS
         script: |
-          echo "🔄 Syncing Capacitor to iOS..."
+          echo "Syncing Capacitor to iOS..."
           npx cap sync ios
       
       - name: Install CocoaPods dependencies
         script: |
-          echo "📱 Installing CocoaPods..."
+          echo "Installing CocoaPods..."
           cd ios/App && pod install
       
       - name: Set up code signing
         script: |
-          echo "✅ Applying code signing to Xcode project..."
+          echo "Applying code signing to Xcode project..."
           xcode-project use-profiles
       
       - name: Increment build number
         script: |
-          echo "🔢 Auto-incrementing build number..."
+          echo "Auto-incrementing build number..."
           cd $CM_BUILD_DIR/ios/App
-          BUILD_NUM=$((BUILD_NUMBER + 43))
+          BUILD_NUM=$(($BUILD_NUMBER + 43))
           echo "Setting build number to $BUILD_NUM"
           agvtool new-version -all $BUILD_NUM
       
       - name: Build IPA
         script: |
-          echo "🎨 Building IPA..."
-          xcode-project build-ipa \
-            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+          echo "Building IPA..."
+          xcode-project build-ipa --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
     
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
     
     publishing:
       email:
         recipients:
-          - your-email@example.com  # TODO: Replace with your email
+          - bjjjitsjournal@gmail.com
         notify:
           success: true
           failure: true
       
       app_store_connect:
-        # Use credentials from integration "Codemagic"
         auth: integration
-        
-        # Submit to TestFlight
         submit_to_testflight: true
-        
-        # Submit to App Store (change to true when ready)
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.84
+    name: Jits Journal Android v1.0.135
     max_build_duration: 120
     instance_type: mac_mini_m2
     
     environment:
       android_signing:
         - jits-journal-final
+      
+      groups:
+        - jits_journal_env
       
       vars:
         PACKAGE_NAME: "com.jitsjournal.app"
@@ -138,22 +145,33 @@ workflows:
     scripts:
       - name: Install npm dependencies
         script: |
-          echo "📦 Installing dependencies..."
+          echo "Installing dependencies..."
           npm install
+      
+      - name: Inject environment variables
+        script: |
+          echo "Injecting environment variables..."
+          cat > .env << EOF
+          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
+          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
+          EOF
+          echo "Environment variables injected"
       
       - name: Build web application
         script: |
-          echo "🏗️  Building React app..."
+          echo "Building React app..."
           npm run build
       
       - name: Sync Capacitor Android
         script: |
-          echo "🔄 Syncing Capacitor to Android..."
+          echo "Syncing Capacitor to Android..."
           npx cap sync android
       
       - name: Build Android AAB
         script: |
-          echo "🤖 Building Android AAB..."
+          echo "Building Android AAB..."
           cd android
           chmod +x ./gradlew
           ./gradlew clean
