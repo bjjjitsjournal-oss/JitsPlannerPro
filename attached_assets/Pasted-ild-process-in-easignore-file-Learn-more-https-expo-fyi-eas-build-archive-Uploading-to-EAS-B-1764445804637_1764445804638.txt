@@ -1,0 +1,113 @@
+ild process in .easignore file. Learn more: https://expo.fyi/eas-build-archive
+× Uploading to EAS Build (173 MB / 596 MB)
+Failed to upload the project tarball to EAS Build
+
+Reason: request to https://storage.googleapis.com/turtle-v2-projects/production/46fe2364-b980-4db5-9018-acaa2a164349/c1f79397-0b8b-4943-8acb-42d3b6ddaadb?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20251128%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20251128T111321Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host%3Bx-goog-content-length-range&X-Goog-Signature=9e0915890735ae78d3b5a5f5508aacafdec66a5e393979e9af404c38899496d0e48c8a830553d712ffce1812a8439e8bf45af29295a1b66c41ca26ecfcd31084a21b3e18f53b86aa81b8eae3c8392e290d1ae04b6ace3085eeefeecfe4af12f5014fab0bcdd52d81a5bd2f3cc10f1b16f67e022b090f0dc3a14ea68da9bdf78fddbc1cfa0ecafa267ace3b17c2078ff02a2efa467ccb95bde1c7b4f748380d645294066a76969a67134bbfb436d2364bee3114b4bfffcac2fb571c3afda24f73a6250ea7b82fcaf65d62fd9a21d8a3baa81c359a79fcc0c5c6d78ac8010876e65f6002532d2a96e7b83b721fa54563933bf8c7330a1cbf9557a8783e2f88f91d failed, reason: read ECONNRESET
+    Error: build command failed.
+PS C:\Users\joe\Downloads\JitsPlannerPro> eas build --platform android --profile preview
+★ eas-cli@16.28.0 is now available.
+To upgrade, run:
+npm install -g eas-cli
+Proceeding with outdated version.
+
+Found eas-cli in your project dependencies.
+It's recommended to use the "cli.version" field in eas.json to enforce the eas-cli version for your project.
+Learn more: https://github.com/expo/eas-cli#enforcing-eas-cli-version-for-your-project
+
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+Resolved "production" environment for the build. Learn more: https://docs.expo.dev/eas/environment-variables/#setting-the-environment-for-your-builds
+No environment variables with visibility "Plain text" and "Sensitive" found for the "production" environment on EAS.
+
+The field "cli.appVersionSource" is not set, but it will be required in the future. Learn more: https://docs.expo.dev/build-reference/app-versions/
+√ Using remote Android credentials (Expo server)
+√ Using Keystore from configuration: Build Credentials aO1yHgLfOM (default)
+
+Compressing project files and uploading to EAS Build. Learn more: https://expo.fyi/eas-build-archive
+√ Compressed project files 1m 26s (596 MB)
+Your project archive is 596 MB. You can reduce its size and the time it takes to upload by excluding files that are unnecessary for the build process in .easignore file. Learn more: https://expo.fyi/eas-build-archive
+× Uploading to EAS Build (247 MB / 596 MB)
+Failed to upload the project tarball to EAS Build
+
+Reason: request to https://storage.googleapis.com/turtle-v2-projects/production/46fe2364-b980-4db5-9018-acaa2a164349/d1771f07-ed3f-4cc3-bcea-ff192c08f166?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=www-production%40exponentjs.iam.gserviceaccount.com%2F20251129%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20251129T071220Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host%3Bx-goog-content-length-range&X-Goog-Signature=b2eda408438e3d00fedd96ad0a5a54b741165b02ce4c2439890b006ebe3b8dfb936a754c856fca6e54c003bf3a7f9350d57f06b02f9d9102fb60ca802f5871861b0fca67fe15cc59d030875947a101b95a947ab87f34a2bca0eb9fb18896a19d2072d453100d443fe395a466c04039d94007d7843988d40bc6fd505c2676031d5039a3d9d47c0e02922834ee499be8f5cbbe9a468b61fe4f5d007731ccdd11d71c44ca2a24cb0e0f6d43228c5b4a2c0df904e2e35c52a54e1ede374e0ee8c8bc9574f5828bf84abcaf59aeb8794b98c5f40e1560ee4f6db3a7a2a083ab142e29769f24f91c1b5176b522c47de2903d82ef93ff2ccee4bbcb2d7cec27d1be1a2e failed, reason: read ECONNRESET
+    Error: build command failed.
+PS C:\Users\joe\Downloads\JitsPlannerPro> @echo node_modules > .easignore
+At line:1 char:7
++ @echo node_modules > .easignore
++       ~~~~~~~~~~~~
+Unexpected token 'node_modules' in
+expression or statement.
+At line:1 char:1
++ @echo node_modules > .easignore
++ ~~~~~
+The splatting operator '@' cannot be used to
+reference variables in an expression.
+'@echo' can be used only as an argument to a
+command. To reference variables in an
+expression use '$echo'.
+    + CategoryInfo          : ParserError: (
+   :) [], ParentContainsErrorRecordExceptio
+  n
+    + FullyQualifiedErrorId : UnexpectedToke
+   n
+
+PS C:\Users\joe\Downloads\JitsPlannerPro> @echo .git >> .easignore
+At line:1 char:7
++ @echo .git >> .easignore
++       ~~~~
+Unexpected token '.git' in expression or
+statement.
+At line:1 char:1
++ @echo .git >> .easignore
++ ~~~~~
+The splatting operator '@' cannot be used to
+reference variables in an expression.
+'@echo' can be used only as an argument to a
+command. To reference variables in an
+expression use '$echo'.
+    + CategoryInfo          : ParserError: (
+   :) [], ParentContainsErrorRecordExceptio
+  n
+    + FullyQualifiedErrorId : UnexpectedToke
+   n
+
+PS C:\Users\joe\Downloads\JitsPlannerPro> @echo .gradle >> .easignore
+At line:1 char:7
++ @echo .gradle >> .easignore
++       ~~~~~~~
+Unexpected token '.gradle' in expression or
+statement.
+At line:1 char:1
++ @echo .gradle >> .easignore
++ ~~~~~
+The splatting operator '@' cannot be used to
+reference variables in an expression.
+'@echo' can be used only as an argument to a
+command. To reference variables in an
+expression use '$echo'.
+    + CategoryInfo          : ParserError: (
+   :) [], ParentContainsErrorRecordExceptio
+  n
+    + FullyQualifiedErrorId : UnexpectedToke
+   n
+
+PS C:\Users\joe\Downloads\JitsPlannerPro> @echo build >> .easignore
+At line:1 char:7
++ @echo build >> .easignore
++       ~~~~~
+Unexpected token 'build' in expression or
+statement.
+At line:1 char:1
++ @echo build >> .easignore
++ ~~~~~
+The splatting operator '@' cannot be used to
+reference variables in an expression.
+'@echo' can be used only as an argument to a
+command. To reference variables in an
+expression use '$echo'.
+    + CategoryInfo          : ParserError: (
+   :) [], ParentContainsErrorRecordExceptio
+  n
+    + FullyQualifiedErrorId : UnexpectedToke
+   n
+
+PS C:\Users\joe\Downloads\JitsPlannerPro>
