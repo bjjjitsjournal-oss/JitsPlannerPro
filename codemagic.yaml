@@ -1,4 +1,4 @@
-﻿workflows:
+workflows:
   ios-release:
     name: Jits Journal iOS v1.0.135
     max_build_duration: 120
@@ -17,8 +17,6 @@
       groups:
         - jits_journal_env
       
-      xcode: 15.0
-      
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
@@ -30,67 +28,47 @@
     triggering:
       events:
         - push
-        - tag
       branch_patterns:
         - pattern: 'main'
-          include: true
-          source: true
-        - pattern: 'replit-agent'
-          include: true
-          source: true
-        - pattern: 'release/*'
           include: true
           source: true
     
     scripts:
       - name: Install npm dependencies
-        script: |
-          echo "Installing dependencies..."
-          npm install
+        script: npm install
       
       - name: Inject environment variables
         script: |
-          echo "Injecting environment variables..."
           cat > .env << EOF
           VITE_SUPABASE_URL=$VITE_SUPABASE_URL
           VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
           VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
           VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
           EOF
-          echo "Environment variables injected"
       
       - name: Build web application
-        script: |
-          echo "Building React app..."
-          npm run build
+        script: npm run build
       
       - name: Sync Capacitor iOS
-        script: |
-          echo "Syncing Capacitor to iOS..."
-          npx cap sync ios
+        script: npx cap sync ios
       
       - name: Install CocoaPods dependencies
-        script: |
-          echo "Installing CocoaPods..."
-          cd ios/App && pod install
+        script: cd ios/App && pod install
       
       - name: Set up code signing
-        script: |
-          echo "Applying code signing to Xcode project..."
-          xcode-project use-profiles
+        script: xcode-project use-profiles
       
       - name: Increment build number
         script: |
-          echo "Auto-incrementing build number..."
           cd $CM_BUILD_DIR/ios/App
           BUILD_NUM=$(($BUILD_NUMBER + 43))
-          echo "Setting build number to $BUILD_NUM"
           agvtool new-version -all $BUILD_NUM
       
       - name: Build IPA
         script: |
-          echo "Building IPA..."
-          xcode-project build-ipa --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
     
     artifacts:
       - build/ios/ipa/*.ipa
@@ -130,48 +108,32 @@
     triggering:
       events:
         - push
-        - tag
       branch_patterns:
         - pattern: 'main'
-          include: true
-          source: true
-        - pattern: 'replit-agent'
-          include: true
-          source: true
-        - pattern: 'release/*'
           include: true
           source: true
     
     scripts:
       - name: Install npm dependencies
-        script: |
-          echo "Installing dependencies..."
-          npm install
+        script: npm install
       
       - name: Inject environment variables
         script: |
-          echo "Injecting environment variables..."
           cat > .env << EOF
           VITE_SUPABASE_URL=$VITE_SUPABASE_URL
           VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
           VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
           VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
           EOF
-          echo "Environment variables injected"
       
       - name: Build web application
-        script: |
-          echo "Building React app..."
-          npm run build
+        script: npm run build
       
       - name: Sync Capacitor Android
-        script: |
-          echo "Syncing Capacitor to Android..."
-          npx cap sync android
+        script: npx cap sync android
       
       - name: Build Android AAB
         script: |
-          echo "Building Android AAB..."
           cd android
           chmod +x ./gradlew
           ./gradlew clean
