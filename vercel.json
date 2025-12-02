@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://bjj-jits-journal.onrender.com/api/:path*"
+      "destination": "https://jitsjournal-backend.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
