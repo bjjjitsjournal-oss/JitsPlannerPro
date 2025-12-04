@@ -317,6 +317,122 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // PUBLIC Privacy Policy page for Google Play / App Store (no auth required)
+  app.get("/privacy", (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Jits Journal</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
+    h1 { color: #1e3a8a; }
+    h2 { color: #1e40af; margin-top: 30px; }
+    h3 { color: #3b82f6; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    .highlight { background: #eff6ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    .contact { background: #f0fdf4; padding: 15px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p><strong>Jits Journal - BJJ Training Companion</strong></p>
+  <p>Last Updated: October 16, 2025</p>
+
+  <h2>1. Information We Collect</h2>
+  <h3>Personal Information</h3>
+  <ul>
+    <li><strong>Account Information:</strong> Name, email address, password (encrypted)</li>
+    <li><strong>Profile Data:</strong> Belt rank, gym affiliation, training preferences</li>
+    <li><strong>User IDs:</strong> Internal user ID and authentication tokens</li>
+  </ul>
+
+  <h3>Training Data</h3>
+  <ul>
+    <li><strong>Class Records:</strong> Training sessions, techniques learned, rolling partners</li>
+    <li><strong>Notes:</strong> User-created technique notes, video links, training insights</li>
+    <li><strong>Progress Tracking:</strong> Belt promotions, stripes, weekly goals</li>
+    <li><strong>Competition Data:</strong> Game plans and strategy notes</li>
+  </ul>
+
+  <h3>Subscription Information</h3>
+  <ul>
+    <li><strong>Subscription Status:</strong> Current plan, subscription dates</li>
+    <li><strong>Payment Processing:</strong> Handled securely by Google Play or Apple (we do not store payment card details)</li>
+  </ul>
+
+  <h2>2. How We Use Your Information</h2>
+  <ul>
+    <li>Provide and maintain Jits Journal services</li>
+    <li>Track your training progress and achievements</li>
+    <li>Enable community features (shared notes, gym communities)</li>
+    <li>Process subscription payments and manage account access</li>
+    <li>Send service-related emails (welcome, password reset)</li>
+    <li>Improve app functionality and user experience</li>
+  </ul>
+
+  <h2>3. Data Sharing</h2>
+  <p>We DO NOT sell your personal data to third parties. We only share data with:</p>
+  <ul>
+    <li><strong>Payment Processors:</strong> Google Play, Apple (for subscription processing)</li>
+    <li><strong>Cloud Services:</strong> Supabase (database hosting), Render (application hosting)</li>
+    <li><strong>Community Features:</strong> Notes you choose to share are visible to your gym community or public community</li>
+  </ul>
+
+  <h2>4. Data Security</h2>
+  <ul>
+    <li><strong>Encryption in Transit:</strong> All data transmitted using HTTPS/TLS encryption</li>
+    <li><strong>Encryption at Rest:</strong> Database stored on secure infrastructure</li>
+    <li><strong>Password Security:</strong> Passwords are hashed using bcrypt</li>
+    <li><strong>Access Controls:</strong> Role-based permissions for admin features</li>
+  </ul>
+
+  <h2>5. Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li><strong>Access Your Data:</strong> View all personal information we have about you</li>
+    <li><strong>Update Your Data:</strong> Modify your profile, training records, and preferences</li>
+    <li><strong>Delete Your Data:</strong> Request complete account and data deletion</li>
+    <li><strong>Export Your Data:</strong> Download your training records and notes</li>
+    <li><strong>Control Sharing:</strong> Choose which notes to share publicly or with your gym</li>
+  </ul>
+
+  <h2>6. Data Retention</h2>
+  <p>We retain your data for as long as your account is active. When you delete your account:</p>
+  <ul>
+    <li>All personal information is permanently deleted within 30 days</li>
+    <li>Training records, notes, and progress data are permanently removed</li>
+    <li>Shared community notes are anonymized or deleted based on your preference</li>
+    <li>Subscription records are retained for legal/tax compliance (7 years)</li>
+  </ul>
+
+  <h2>7. Children's Privacy</h2>
+  <p>Jits Journal is not intended for children under 13. We do not knowingly collect data from children under 13. If you believe a child has provided us with personal information, please contact us immediately.</p>
+
+  <h2>8. International Users</h2>
+  <p>Your data may be processed and stored in Australia, United States, or other countries where our service providers operate. By using Jits Journal, you consent to this transfer of data.</p>
+
+  <h2>9. Changes to Privacy Policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will notify you of significant changes via email or in-app notification. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
+
+  <h2>10. Contact Us</h2>
+  <div class="contact">
+    <p>For privacy-related questions, data deletion requests, or concerns, contact us at:</p>
+    <p><strong>Email:</strong> bjjjitsjournal@gmail.com</p>
+  </div>
+
+  <div class="highlight">
+    <h3>Data Deletion</h3>
+    <p>To delete your account and all associated data, go to Settings → Delete Account within the app. This action is permanent and cannot be undone.</p>
+  </div>
+</body>
+</html>
+    `);
+  });
+
   // Add cache control headers to prevent aggressive caching
   app.use((req, res, next) => {
     // Never cache API responses - this prevents login/auth issues
