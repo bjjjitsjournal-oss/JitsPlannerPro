@@ -68,8 +68,8 @@ dependencies {
     implementation "androidx.core:core-splashscreen:1.0.0"
     implementation project(':capacitor-android')
     
-    // Google Play Billing Library 7.0.0+ required by Google Play Store (Aug 2025)
-    implementation "com.android.billingclient:billing:7.0.0"
+    // Google Play Billing Library 8.1.0 (latest stable - Dec 2024)
+    implementation "com.android.billingclient:billing:8.1.0"
     
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
