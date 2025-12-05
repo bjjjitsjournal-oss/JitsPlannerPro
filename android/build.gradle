@@ -17,6 +17,14 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    // Force Google Play Billing Library 8.1.0 across ALL dependencies (including RevenueCat)
+    configurations.all {
+        resolutionStrategy {
+            force 'com.android.billingclient:billing:8.1.0'
+            force 'com.android.billingclient:billing-ktx:8.1.0'
+        }
+    }
 }
 
 task clean(type: Delete) {
