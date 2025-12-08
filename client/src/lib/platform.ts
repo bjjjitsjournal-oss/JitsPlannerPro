@@ -7,20 +7,33 @@ export type Platform = 'web' | 'android' | 'ios';
  * - web: Browser access via Render URL
  * - android: Android app via Google Play Store
  * - ios: iOS app via App Store
+ * 
+ * IMPORTANT: Check getPlatform() FIRST because isNativePlatform() can return false
+ * in some Android WebView configurations even when running as a native app.
  */
 export function getPlatform(): Platform {
-  if (!Capacitor.isNativePlatform()) {
-    return 'web';
-  }
-  
+  // Check Capacitor.getPlatform() first - this is more reliable
   const platform = Capacitor.getPlatform();
   
+  // If Capacitor reports android or ios, trust it
   if (platform === 'android') {
     return 'android';
   }
   
   if (platform === 'ios') {
     return 'ios';
+  }
+  
+  // Additional check: if isNativePlatform is true but platform name wasn't recognized
+  if (Capacitor.isNativePlatform()) {
+    // Try to detect from user agent as fallback
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('android')) {
+      return 'android';
+    }
+    if (ua.includes('iphone') || ua.includes('ipad')) {
+      return 'ios';
+    }
   }
   
   // Fallback to web
