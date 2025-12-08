@@ -17,6 +17,8 @@ class NativeRevenueCatService {
       ? import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY 
       : import.meta.env.VITE_REVENUECAT_PUBLIC_SDK_KEY;
     
+    console.log(`🔧 RevenueCat init - Platform: ${platform}, API Key exists: ${!!apiKey}, Key prefix: ${apiKey?.substring(0, 8) || 'NONE'}`);
+    
     if (!apiKey) {
       console.error(`❌ RevenueCat SDK key not found for platform: ${platform}`);
       throw new Error('RevenueCat SDK key not configured');
