@@ -19,8 +19,6 @@ export default function Subscribe() {
   const platform = getPlatform();
   const isWeb = isWebPlatform();
 
-  const [debugInfo, setDebugInfo] = useState<string>('');
-  
   const { data: subscriptionStatus } = useQuery<{ tier: string; status: string }>({
     queryKey: ['/api/stripe/subscription-status'],
     enabled: !!user && isWeb, // Only fetch Stripe status on web
@@ -38,26 +36,13 @@ export default function Subscribe() {
     if (!user) return;
 
     try {
-      setDebugInfo('Initializing RevenueCat...');
-      console.log('🚀 Starting RevenueCat init for user:', user.id);
       await nativeRevenueCatService.initialize(user.id.toString());
-      
-      setDebugInfo('Fetching offerings...');
       const offers = await nativeRevenueCatService.getOfferings();
-      console.log('📦 Offerings received:', JSON.stringify(offers, null, 2));
-      
-      const currentOffering = offers?.current?.identifier || 'NONE';
-      const packages = offers?.current?.availablePackages?.map(p => p.identifier) || [];
-      console.log('📦 Current offering:', currentOffering);
-      console.log('📦 Available packages:', packages);
-      
-      setDebugInfo(`Ready! Offering: ${currentOffering}, Packages: ${packages.join(', ') || 'none'}`);
       setOfferings(offers);
       
       await nativeRevenueCatService.syncSubscriptionToBackend();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to initialize RevenueCat:', error);
-      setDebugInfo(`ERROR: ${error.message || 'Unknown error'}`);
       toast({
         title: 'Error',
         description: 'Failed to load subscription options. Please try again.',
@@ -317,15 +302,6 @@ export default function Subscribe() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Debug Info for Mobile */}
-        {!isWeb && debugInfo && (
-          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3">
-            <p className="text-sm font-mono text-yellow-800 dark:text-yellow-200">
-              🔧 Debug: {debugInfo}
-            </p>
-          </div>
-        )}
-
         {/* App Store Notice for Mobile */}
         {!isWeb && (
           <div className="mb-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
