@@ -1,7 +1,0 @@
-﻿node_modules
-.gradle
-.git
-build
-dist
-.expo
-.DS_Store

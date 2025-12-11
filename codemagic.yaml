@@ -17,6 +17,8 @@ workflows:
       groups:
         - jits_journal_env
       
+      xcode: 15.0
+      
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
@@ -28,23 +30,23 @@ workflows:
     triggering:
       events:
         - push
+        - tag
       branch_patterns:
         - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'replit-agent'
+          include: true
+          source: true
+        - pattern: 'release/*'
           include: true
           source: true
     
     scripts:
       - name: Install npm dependencies
-        script: npm install
-      
-      - name: Inject environment variables
         script: |
-          cat > .env << EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
-          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
-          EOF
+          echo "📦 Installing dependencies..."
+          npm install
       
       - name: Inject environment variables
         script: |
@@ -58,25 +60,36 @@ workflows:
           echo "✅ Environment variables injected"
       
       - name: Build web application
-        script: npm run build
+        script: |
+          echo "🏗️  Building React app..."
+          npm run build
       
       - name: Sync Capacitor iOS
-        script: npx cap sync ios
+        script: |
+          echo "🔄 Syncing Capacitor to iOS..."
+          npx cap sync ios
       
       - name: Install CocoaPods dependencies
-        script: cd ios/App && pod install
+        script: |
+          echo "📱 Installing CocoaPods..."
+          cd ios/App && pod install
       
       - name: Set up code signing
-        script: xcode-project use-profiles
+        script: |
+          echo "✅ Applying code signing to Xcode project..."
+          xcode-project use-profiles
       
       - name: Increment build number
         script: |
+          echo "🔢 Auto-incrementing build number..."
           cd $CM_BUILD_DIR/ios/App
-          BUILD_NUM=$(($BUILD_NUMBER + 43))
+          BUILD_NUM=$((BUILD_NUMBER + 43))
+          echo "Setting build number to $BUILD_NUM"
           agvtool new-version -all $BUILD_NUM
       
       - name: Build IPA
         script: |
+          echo "🎨 Building IPA..."
           xcode-project build-ipa \
             --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME"
@@ -84,6 +97,7 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
     
     publishing:
       email:
@@ -94,8 +108,13 @@ workflows:
           failure: true
       
       app_store_connect:
+        # Use credentials from integration "Codemagic"
         auth: integration
+        
+        # Submit to TestFlight
         submit_to_testflight: true
+        
+        # Submit to App Store (change to true when ready)
         submit_to_app_store: false
 
   android-release:
@@ -119,23 +138,23 @@ workflows:
     triggering:
       events:
         - push
+        - tag
       branch_patterns:
         - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'replit-agent'
+          include: true
+          source: true
+        - pattern: 'release/*'
           include: true
           source: true
     
     scripts:
       - name: Install npm dependencies
-        script: npm install
-      
-      - name: Inject environment variables
         script: |
-          cat > .env << EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
-          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
-          EOF
+          echo "📦 Installing dependencies..."
+          npm install
       
       - name: Inject environment variables
         script: |
@@ -149,13 +168,18 @@ workflows:
           echo "✅ Environment variables injected"
       
       - name: Build web application
-        script: npm run build
+        script: |
+          echo "🏗️  Building React app..."
+          npm run build
       
       - name: Sync Capacitor Android
-        script: npx cap sync android
+        script: |
+          echo "🔄 Syncing Capacitor to Android..."
+          npx cap sync android
       
       - name: Build Android AAB
         script: |
+          echo "🤖 Building Android AAB..."
           cd android
           chmod +x ./gradlew
           ./gradlew clean
