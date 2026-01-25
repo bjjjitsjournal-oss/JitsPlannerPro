@@ -119,9 +119,7 @@ export default function Subscribe() {
           throw new Error('No offerings available');
         }
 
-        const packageIdentifier = tier === 'enthusiast' ? '$rc_monthly' : null;
-        
-        if (!packageIdentifier) {
+        if (tier === 'gym_pro') {
           toast({
             title: 'Contact Required',
             description: 'Please contact us for Gym Pro subscription.',
@@ -129,13 +127,15 @@ export default function Subscribe() {
           return;
         }
 
-        const pkg = offerings.current.availablePackages.find(
-          p => p.identifier === packageIdentifier
-        );
+        // Find the first available package in the current offering (Premium)
+        const pkg = offerings.current.availablePackages[0];
 
         if (!pkg) {
-          throw new Error('Package not found');
+          console.error('Available packages:', offerings.current.availablePackages);
+          throw new Error('No subscription package found in offering');
         }
+        
+        console.log('📦 Purchasing package:', pkg.identifier, pkg);
 
         const customerInfo = await nativeRevenueCatService.purchasePackage(pkg);
         
@@ -176,9 +176,7 @@ export default function Subscribe() {
           throw new Error('No offerings available');
         }
 
-        const packageIdentifier = tier === 'enthusiast' ? '$rc_monthly' : null;
-        
-        if (!packageIdentifier) {
+        if (tier === 'gym_pro') {
           toast({
             title: 'Contact Required',
             description: 'Please contact us for Gym Pro subscription.',
@@ -187,13 +185,15 @@ export default function Subscribe() {
           return;
         }
 
-        const pkg = offerings.current.availablePackages.find(
-          p => p.identifier === packageIdentifier
-        );
+        // Find the first available package in the current offering (Premium)
+        const pkg = offerings.current.availablePackages[0];
 
         if (!pkg) {
-          throw new Error('Package not found');
+          console.error('Available packages:', offerings.current.availablePackages);
+          throw new Error('No subscription package found in offering');
         }
+        
+        console.log('📦 Purchasing package:', pkg.identifier, pkg);
 
         const customerInfo = await nativeRevenueCatService.purchasePackage(pkg);
         

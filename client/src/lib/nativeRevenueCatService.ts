@@ -13,9 +13,14 @@ class NativeRevenueCatService {
     }
 
     const platform = Capacitor.getPlatform();
-    const apiKey = platform === 'ios' 
-      ? import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY 
-      : import.meta.env.VITE_REVENUECAT_PUBLIC_SDK_KEY;
+    let apiKey: string;
+    if (platform === 'ios') {
+      apiKey = import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY;
+    } else if (platform === 'android') {
+      apiKey = import.meta.env.VITE_REVENUECAT_ANDROID_SDK_KEY;
+    } else {
+      apiKey = import.meta.env.VITE_REVENUECAT_PUBLIC_SDK_KEY;
+    }
     
     if (!apiKey) {
       console.error(`❌ RevenueCat SDK key not found for platform: ${platform}`);
