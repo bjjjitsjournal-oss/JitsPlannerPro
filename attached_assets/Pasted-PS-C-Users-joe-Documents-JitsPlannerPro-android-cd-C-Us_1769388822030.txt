@@ -1,0 +1,102 @@
+PS C:\Users\joe\Documents\JitsPlannerPro\android> cd C:\Users\joe\Documents\JitsPlannerPro
+PS C:\Users\joe\Documents\JitsPlannerPro> npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 15 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2788 modules transformed.
+../dist/public/index.html                   3.12 kB │ gzip:   1.09 kB
+../dist/public/assets/index-Bl9brAIt.css  101.41 kB │ gzip:  16.36 kB
+../dist/public/assets/web-DeI_hmVH.js       1.25 kB │ gzip:   0.58 kB
+../dist/public/assets/web-4OK6SHKd.js       9.67 kB │ gzip:   1.94 kB
+../dist/public/assets/index-CxcbuZZt.js   911.07 kB │ gzip: 256.29 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 9.44s
+
+  dist\index.js  160.9kb
+
+Done in 240ms
+PS C:\Users\joe\Documents\JitsPlannerPro> dir dist\public
+
+
+    Directory: C:\Users\joe\Documents\JitsPlannerPro\dist\public
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        26/01/2026  11:49 AM                assets
+-a----        26/01/2026  11:27 AM           5697 feature-graphic.png
+-a----        26/01/2026  11:27 AM           3517 feature-graphic.svg
+-a----        26/01/2026  11:27 AM             53 googlee540b2803b09b
+                                                  cba.html
+-a----        26/01/2026  11:27 AM           5549 icon-128x128.png
+-a----        26/01/2026  11:27 AM           6647 icon-144x144.png
+-a----        26/01/2026  11:27 AM           6747 icon-152x152.png
+-a----        26/01/2026  11:27 AM           6087 icon-192x192.png
+-a----        26/01/2026  11:27 AM           1092 icon-192x192.svg
+-a----        26/01/2026  11:27 AM          20177 icon-384x384.png
+-a----        26/01/2026  11:27 AM          22959 icon-512x512.png
+-a----        26/01/2026  11:27 AM           1426 icon-512x512.svg
+-a----        26/01/2026  11:27 AM           3353 icon-72x72.png
+-a----        26/01/2026  11:27 AM           4271 icon-96x96.png
+-a----        26/01/2026  11:49 AM           3124 index.html
+-a----        26/01/2026  11:27 AM           3478 manifest.json
+-a----        26/01/2026  11:27 AM           4574 screenshot-classes.
+                                                  svg
+-a----        26/01/2026  11:27 AM           4088 screenshot-dashboar
+                                                  d.svg
+-a----        26/01/2026  11:27 AM           4914 screenshot-notes.sv
+                                                  g
+-a----        26/01/2026  11:27 AM           5213 screenshot-subscrip
+                                                  tion.svg
+-a----        26/01/2026  11:27 AM           8763 sw.js
+
+
+PS C:\Users\joe\Documents\JitsPlannerPro> npx cap sync android
+\ Copying web assets from public to android\app\src\main\assets\public√ Copying web assets from public to android\app\src\main\assets\public in 40.43ms
+√ Creating capacitor.config.json in android\app\src\main\assets in 3.83ms
+√ copy android in 152.25ms
+√ Updating Android plugins in 31.10ms
+[info] Found 3 Capacitor plugins for android:
+       @capacitor/app@7.1.0
+       @capacitor/preferences@7.0.2
+       @revenuecat/purchases-capacitor@11.2.12
+√ update android in 253.24ms
+[info] Sync finished in 0.573s
+PS C:\Users\joe\Documents\JitsPlannerPro> cd android
+PS C:\Users\joe\Documents\JitsPlannerPro\android> .\gradlew bundleRelease --stacktrace
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :capacitor-cordova-android-plugins
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Task :capacitor-android:compileReleaseJavaWithJavac
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :revenuecat-purchases-capacitor:compileReleaseKotlin
+'compileReleaseJavaWithJavac' task (current target is 17) and 'compileReleaseKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.
+Consider using JVM toolchain: https://kotl.in/gradle/jvm/toolchain
+
+
+[Incubating] Problems report is available at: file:///C:/Users/joe/Documents/JitsPlannerPro/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 16s
+230 actionable tasks: 230 executed
+PS C:\Users\joe\Documents\JitsPlannerPro\android>
