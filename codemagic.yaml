@@ -39,15 +39,6 @@ workflows:
       
       - name: Inject environment variables
         script: |
-          cat > .env << EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
-          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
-          EOF
-      
-      - name: Inject environment variables
-        script: |
           echo "🔐 Injecting environment variables..."
           cat > .env << EOF
           VITE_SUPABASE_URL=$VITE_SUPABASE_URL
