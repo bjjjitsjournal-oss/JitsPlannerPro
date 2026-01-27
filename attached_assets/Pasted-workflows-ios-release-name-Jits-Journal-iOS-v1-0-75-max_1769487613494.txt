@@ -1,0 +1,174 @@
+workflows:
+  ios-release:
+    name: Jits Journal iOS v1.0.75
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    
+    integrations:
+      app_store_connect: Codemagic
+    
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - jits_journal_appstore_profile
+        certificates:
+          - jits_journal_dist_cert
+      
+      groups:
+        - app_store_credentials
+      
+      xcode: 15.0
+      
+      vars:
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+        # APP_STORE_APP_ID: 1234567890  # TODO: Add your App ID from App Store Connect
+      
+      node: latest
+      xcode: latest
+      cocoapods: default
+    
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'release/*'
+          include: true
+          source: true
+    
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          echo "📦 Installing dependencies..."
+          npm install
+      
+      - name: Build web application
+        script: |
+          echo "🏗️  Building React app..."
+          npm run build
+      
+      - name: Sync Capacitor iOS
+        script: |
+          echo "🔄 Syncing Capacitor to iOS..."
+          npx cap sync ios
+      
+      - name: Install CocoaPods dependencies
+        script: |
+          echo "📱 Installing CocoaPods..."
+          cd ios/App && pod install
+      
+      - name: Set up code signing
+        script: |
+          echo "✅ Applying code signing to Xcode project..."
+          xcode-project use-profiles
+      
+      - name: Increment build number
+        script: |
+          echo "🔢 Auto-incrementing build number..."
+          cd $CM_BUILD_DIR/ios/App
+          BUILD_NUM=$((BUILD_NUMBER + 43))
+          echo "Setting build number to $BUILD_NUM"
+          agvtool new-version -all $BUILD_NUM
+      
+      - name: Build IPA
+        script: |
+          echo "🎨 Building IPA..."
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com  # TODO: Replace with your email
+        notify:
+          success: true
+          failure: true
+      
+      app_store_connect:
+        # Use credentials from integration "Codemagic"
+        auth: integration
+        
+        # Submit to TestFlight
+        submit_to_testflight: true
+        
+        # Submit to App Store (change to true when ready)
+        submit_to_app_store: false
+
+  android-release:
+    name: Jits Journal Android v1.0.75
+    max_build_duration: 120
+    instance_type: linux_x2
+    
+    environment:
+      android_signing:
+        - jits-journal-final
+      
+      groups:
+        - google_play_credentials
+      
+      vars:
+        PACKAGE_NAME: "com.jitsjournal.app"
+      
+      node: latest
+      java: 17
+    
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+        - pattern: 'release/*'
+          include: true
+          source: true
+    
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          echo "📦 Installing dependencies..."
+          npm install
+      
+      - name: Build web application
+        script: |
+          echo "🏗️  Building React app..."
+          npm run build
+      
+      - name: Sync Capacitor Android
+        script: |
+          echo "🔄 Syncing Capacitor to Android..."
+          npx cap sync android
+      
+      - name: Build Android AAB
+        script: |
+          echo "🤖 Building Android AAB..."
+          cd android
+          ./gradlew clean bundleRelease
+    
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+      - android/app/build/outputs/**/*.apk
+    
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com  # TODO: Replace with your email
+        notify:
+          success: true
+          failure: true
+      
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
