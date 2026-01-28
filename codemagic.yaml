@@ -40,13 +40,13 @@ workflows:
       - name: Inject environment variables
         script: |
           echo "🔐 Injecting environment variables..."
-          cat > .env << EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
-          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
-          EOF
+          echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" > .env
+          echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> .env
+          echo "VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY" >> .env
+          echo "VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY" >> .env
           echo "✅ Environment variables injected"
+          echo "📋 .env contents:"
+          cat .env
       
       - name: Build web application
         script: npm run build
@@ -122,14 +122,14 @@ workflows:
       - name: Inject environment variables
         script: |
           echo "🔐 Injecting environment variables..."
-          cat > .env << EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-          VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY
-          VITE_REVENUECAT_ANDROID_SDK_KEY=$VITE_REVENUECAT_ANDROID_SDK_KEY
-          VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY
-          EOF
+          echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" > .env
+          echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> .env
+          echo "VITE_REVENUECAT_IOS_SDK_KEY=$VITE_REVENUECAT_IOS_SDK_KEY" >> .env
+          echo "VITE_REVENUECAT_ANDROID_SDK_KEY=$VITE_REVENUECAT_ANDROID_SDK_KEY" >> .env
+          echo "VITE_REVENUECAT_PUBLIC_SDK_KEY=$VITE_REVENUECAT_PUBLIC_SDK_KEY" >> .env
           echo "✅ Environment variables injected"
+          echo "📋 .env contents:"
+          cat .env
       
       - name: Build web application
         script: npm run build
