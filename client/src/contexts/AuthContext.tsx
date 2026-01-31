@@ -219,6 +219,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             loadedSupabaseIdRef.current = session.user.id;
             setIsLoading(false);
           } else {
+            console.error('❌ User profile not found in database for:', session.user.email);
+            console.error('❌ Supabase ID:', session.user.id);
+            alert(`Account issue: Your Supabase account exists but your profile wasn't found in the database. Please contact support. Email: ${session.user.email}`);
             await supabase.auth.signOut();
             await Promise.all([
               setCachedSupabaseId(null),
