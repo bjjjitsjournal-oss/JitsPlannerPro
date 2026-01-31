@@ -1,4 +1,4 @@
-?import type { Express } from "express";
+import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -29,7 +29,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
+  console.warn('âš ï¸ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
 }
 
 const supabaseAdmin = supabaseUrl && supabaseServiceKey 
@@ -122,7 +122,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   if (!decoded) {
     try {
       decoded = jwt.verify(token, JWT_SECRET) as any;
-      console.log('✅ Legacy JWT verified for:', decoded.email);
+      console.log('âœ… Legacy JWT verified for:', decoded.email);
     } catch (error: any) {
       console.error('Token verification error:', error.message);
       return res.status(403).json({ message: 'Invalid or expired token' });
@@ -170,7 +170,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           role: isAdmin ? 'admin' : 'user',
         });
         
-        console.log('✅ Auto-created user account for Supabase user:', decoded.email);
+        console.log('âœ… Auto-created user account for Supabase user:', decoded.email);
       }
     } else {
       // For legacy JWT, use userId from token
@@ -185,7 +185,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         
         const existingUser = await storage.getUserByEmail(decoded.email);
         if (existingUser) {
-          console.log('✅ Found existing user by email, using that account:', decoded.email);
+          console.log('âœ… Found existing user by email, using that account:', decoded.email);
           user = existingUser;
         } else {
           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -198,7 +198,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
             subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
           });
           
-          console.log('✅ Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
+          console.log('âœ… Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
         }
       }
     }
@@ -690,7 +690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           subscriptionStatus: 'premium',
           subscriptionExpiresAt: new Date('2099-12-31')
         });
-        console.log(`✅ Auto-upgraded ${email} to premium access`);
+        console.log(`âœ… Auto-upgraded ${email} to premium access`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -705,7 +705,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const updatedUser = await storage.updateUser(user.id, {
           role: 'admin'
         });
-        console.log(`✅ Auto-assigned admin role to ${email}`);
+        console.log(`âœ… Auto-assigned admin role to ${email}`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -893,7 +893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      console.log(`✅ Manually upgraded user ${userId} to premium access`);
+      console.log(`âœ… Manually upgraded user ${userId} to premium access`);
       const { password, ...userWithoutPassword } = updatedUser;
       res.json(userWithoutPassword);
     } catch (error) {
@@ -924,11 +924,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       console.log('\n=== NEW CONTACT FORM SUBMISSION ===');
-      console.log(`📧 From: ${name} (${email})`);
-      console.log(`📝 Subject: ${subject}`);
-      console.log(`💬 Message: ${message}`);
-      console.log(`⏰ Time: ${timestamp}`);
-      console.log(`🌍 IP: ${contactData.ip}`);
+      console.log(`ðŸ“§ From: ${name} (${email})`);
+      console.log(`ðŸ“ Subject: ${subject}`);
+      console.log(`ðŸ’¬ Message: ${message}`);
+      console.log(`â° Time: ${timestamp}`);
+      console.log(`ðŸŒ IP: ${contactData.ip}`);
       console.log('====================================\n');
       
       // Store in a simple JSON file for backup (free alternative to database)
@@ -943,7 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         contacts.push(contactData);
         fs.writeFileSync(contactsFile, JSON.stringify(contacts, null, 2));
-        console.log(`💾 Contact saved to ${contactsFile}`);
+        console.log(`ðŸ’¾ Contact saved to ${contactsFile}`);
       } catch (fileError) {
         console.error('Error saving contact to file:', fileError);
       }
@@ -979,7 +979,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('📧 Email sent successfully to joe833360@gmail.com');
+        console.log('ðŸ“§ Email sent successfully to joe833360@gmail.com');
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
         // Continue with success response even if email fails
@@ -1904,7 +1904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`✅ Auto-assigned admin role to ${user.email}`);
+          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
           
           // Return updated user
           if (updatedUser) {
@@ -2171,9 +2171,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('🔍 GET /api/weekly-commitments/current called for userId:', userId);
+      console.log('ðŸ” GET /api/weekly-commitments/current called for userId:', userId);
       const commitment = await storage.getCurrentWeekCommitment(userId);
-      console.log('🔍 getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
+      console.log('ðŸ” getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
       
       // Ensure no caching by setting appropriate headers
       res.set({
@@ -2184,7 +2184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(commitment || null);
     } catch (error) {
-      console.error('❌ Error in GET /api/weekly-commitments/current:', error);
+      console.error('âŒ Error in GET /api/weekly-commitments/current:', error);
       res.status(500).json({ message: "Failed to fetch current week commitment" });
     }
   });
@@ -2192,10 +2192,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('🔥 POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
+      console.log('ðŸ”¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
       const commitmentData = insertWeeklyCommitmentSchema.parse({ ...req.body, userId });
       const newCommitment = await storage.createWeeklyCommitment(commitmentData);
-      console.log('✅ Created new commitment:', newCommitment.id);
+      console.log('âœ… Created new commitment:', newCommitment.id);
       
       // Ensure no caching
       res.set({
@@ -2206,7 +2206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(newCommitment);
     } catch (error) {
-      console.error('❌ Error in POST /api/weekly-commitments:', error);
+      console.error('âŒ Error in POST /api/weekly-commitments:', error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid commitment data", errors: error.errors });
       } else {
