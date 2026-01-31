@@ -1886,12 +1886,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
     try {
       const { supabaseId } = req.params;
-      console.log('Looking up user by Supabase ID:', supabaseId);
+      const email = req.query.email as string | undefined;
+      console.log('Looking up user by Supabase ID:', supabaseId, 'email:', email);
       
-      const result = await pool.query(
+      let result = await pool.query(
         'SELECT * FROM users WHERE supabase_uid = $1',
         [supabaseId]
       );
+      
+      // If not found by supabase_uid but email is provided, try to find and link by email
+      if (result.rows.length === 0 && email) {
+        console.log('User not found by Supabase ID, trying email lookup:', email);
+        const emailResult = await pool.query(
+          'SELECT * FROM users WHERE email = $1',
+          [email]
+        );
+        
+        if (emailResult.rows.length > 0) {
+          const existingUser = emailResult.rows[0];
+          console.log('Found user by email, linking Supabase ID:', existingUser.id);
+          
+          // Update the user's supabase_uid to link their account
+          await pool.query(
+            'UPDATE users SET supabase_uid = $1 WHERE id = $2',
+            [supabaseId, existingUser.id]
+          );
+          console.log('✅ Linked Supabase ID to existing user:', existingUser.email);
+          
+          // Fetch the updated user
+          result = await pool.query(
+            'SELECT * FROM users WHERE id = $1',
+            [existingUser.id]
+          );
+        }
+      }
       
       if (result.rows.length > 0) {
         console.log('Found user:', result.rows[0].id);
@@ -1904,7 +1932,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
+          console.log(`✅ Auto-assigned admin role to ${user.email}`);
           
           // Return updated user
           if (updatedUser) {

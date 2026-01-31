@@ -62,7 +62,12 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       console.log('🔑 Including Supabase access token in request');
     }
     
-    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`, {
+    const url = new URL(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
+    if (email) {
+      url.searchParams.set('email', email);
+    }
+    
+    const response = await fetch(url.toString(), {
       signal: controller.signal,
       headers,
     });
