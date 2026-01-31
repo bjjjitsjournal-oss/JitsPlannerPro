@@ -1,4 +1,4 @@
-﻿﻿import type { Express } from "express";
+?import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -29,7 +29,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn('âš ï¸ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
+  console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
 }
 
 const supabaseAdmin = supabaseUrl && supabaseServiceKey 
@@ -122,7 +122,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   if (!decoded) {
     try {
       decoded = jwt.verify(token, JWT_SECRET) as any;
-      console.log('âœ… Legacy JWT verified for:', decoded.email);
+      console.log('✅ Legacy JWT verified for:', decoded.email);
     } catch (error: any) {
       console.error('Token verification error:', error.message);
       return res.status(403).json({ message: 'Invalid or expired token' });
@@ -170,7 +170,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           role: isAdmin ? 'admin' : 'user',
         });
         
-        console.log('âœ… Auto-created user account for Supabase user:', decoded.email);
+        console.log('✅ Auto-created user account for Supabase user:', decoded.email);
       }
     } else {
       // For legacy JWT, use userId from token
@@ -185,7 +185,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         
         const existingUser = await storage.getUserByEmail(decoded.email);
         if (existingUser) {
-          console.log('âœ… Found existing user by email, using that account:', decoded.email);
+          console.log('✅ Found existing user by email, using that account:', decoded.email);
           user = existingUser;
         } else {
           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -198,7 +198,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
             subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
           });
           
-          console.log('âœ… Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
+          console.log('✅ Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
         }
       }
     }
@@ -230,7 +230,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     if (supabaseJwtSecret) {
       try {
         const supabaseDecoded = jwt.verify(token, supabaseJwtSecret) as any;
-        console.log('⚡ FAST: Local Supabase token verified for:', supabaseDecoded.email);
+        console.log('? FAST: Local Supabase token verified for:', supabaseDecoded.email);
         decoded = {
           email: supabaseDecoded.email,
           supabaseId: supabaseDecoded.sub,
@@ -247,7 +247,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
         const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
         
         if (supabaseUser && !error) {
-          console.log('🐌 SLOW: API Supabase token verified for:', supabaseUser.email);
+          console.log('?? SLOW: API Supabase token verified for:', supabaseUser.email);
           decoded = {
             email: supabaseUser.email,
             supabaseId: supabaseUser.id,
@@ -263,7 +263,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
     if (!decoded) {
       try {
         decoded = jwt.verify(token, JWT_SECRET) as any;
-        console.log('✅ Legacy JWT verified for:', decoded.email);
+        console.log('? Legacy JWT verified for:', decoded.email);
       } catch (error: any) {
         // Token invalid, fall through to supabaseId check
       }
@@ -292,7 +292,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
   // Fallback: Check for supabaseId in body or query params (mobile workaround)
   const supabaseId = req.body?.supabaseId || req.query?.supabaseId;
   if (supabaseId) {
-    console.log('📱 Mobile auth: Using supabaseId from', req.body?.supabaseId ? 'body' : 'query', ':', supabaseId);
+    console.log('?? Mobile auth: Using supabaseId from', req.body?.supabaseId ? 'body' : 'query', ':', supabaseId);
     
     try {
       // Look up user by Supabase UID
@@ -305,7 +305,7 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
         const user = result.rows[0];
         req.userId = user.id;
         req.user = user;
-        console.log('✅ Mobile auth successful for user:', user.id);
+        console.log('? Mobile auth successful for user:', user.id);
         return next();
       }
     } catch (error) {
@@ -426,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   <div class="highlight">
     <h3>Data Deletion</h3>
-    <p>To delete your account and all associated data, go to Settings → Delete Account within the app. This action is permanent and cannot be undone.</p>
+    <p>To delete your account and all associated data, go to Settings ? Delete Account within the app. This action is permanent and cannot be undone.</p>
   </div>
 </body>
 </html>
@@ -623,7 +623,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid Supabase token" });
       }
       
-      console.log('✅ Supabase token verified for:', supabaseUser.email);
+      console.log('? Supabase token verified for:', supabaseUser.email);
       
       // Find or create user in database
       let user = await storage.getUserByEmail(supabaseUser.email!);
@@ -648,7 +648,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           role: isAdmin ? 'admin' : 'user',
         });
         
-        console.log('✅ Created user account for Supabase user:', supabaseUser.email);
+        console.log('? Created user account for Supabase user:', supabaseUser.email);
       }
       
       // Create server-signed JWT (30 days)
@@ -658,7 +658,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { expiresIn: '30d' }
       );
       
-      console.log('🔐 Issued server JWT for:', user.email);
+      console.log('?? Issued server JWT for:', user.email);
       
       res.json({ token });
     } catch (error) {
@@ -690,7 +690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           subscriptionStatus: 'premium',
           subscriptionExpiresAt: new Date('2099-12-31')
         });
-        console.log(`âœ… Auto-upgraded ${email} to premium access`);
+        console.log(`✅ Auto-upgraded ${email} to premium access`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -705,7 +705,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const updatedUser = await storage.updateUser(user.id, {
           role: 'admin'
         });
-        console.log(`âœ… Auto-assigned admin role to ${email}`);
+        console.log(`✅ Auto-assigned admin role to ${email}`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -769,7 +769,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const revenuecatApiKey = process.env.REVENUECAT_API_KEY;
       if (!revenuecatApiKey) {
-        console.error('❌ REVENUECAT_API_KEY not configured');
+        console.error('? REVENUECAT_API_KEY not configured');
         return res.status(500).json({ message: "RevenueCat not configured" });
       }
       
@@ -830,7 +830,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const subscriptionStatus = hasActiveSubscription ? 'active' : 'free';
         const subscriptionExpiresAt = hasActiveSubscription ? new Date('2099-12-31') : undefined;
         
-        console.log('🔄 Syncing VERIFIED subscription for user:', userId, {
+        console.log('?? Syncing VERIFIED subscription for user:', userId, {
           tier,
           status: subscriptionStatus,
           verifiedEntitlements: Object.keys(activeEntitlements),
@@ -848,7 +848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(404).json({ message: "User not found" });
         }
         
-        console.log('✅ Subscription synced successfully (VERIFIED):', {
+        console.log('? Subscription synced successfully (VERIFIED):', {
           userId,
           tier,
           status: subscriptionStatus,
@@ -863,7 +863,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         });
       } catch (revenuecatError) {
-        console.error('❌ RevenueCat verification error:', revenuecatError);
+        console.error('? RevenueCat verification error:', revenuecatError);
         
         // On error, default to free tier for security
         await storage.updateUser(userId, {
@@ -875,7 +875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         throw revenuecatError;
       }
     } catch (error) {
-      console.error('❌ Subscription sync error:', error);
+      console.error('? Subscription sync error:', error);
       res.status(500).json({ message: "Failed to sync subscription" });
     }
   });
@@ -893,7 +893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      console.log(`âœ… Manually upgraded user ${userId} to premium access`);
+      console.log(`✅ Manually upgraded user ${userId} to premium access`);
       const { password, ...userWithoutPassword } = updatedUser;
       res.json(userWithoutPassword);
     } catch (error) {
@@ -924,11 +924,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       console.log('\n=== NEW CONTACT FORM SUBMISSION ===');
-      console.log(`ðŸ“§ From: ${name} (${email})`);
-      console.log(`ðŸ“ Subject: ${subject}`);
-      console.log(`ðŸ’¬ Message: ${message}`);
-      console.log(`â° Time: ${timestamp}`);
-      console.log(`ðŸŒ IP: ${contactData.ip}`);
+      console.log(`📧 From: ${name} (${email})`);
+      console.log(`📝 Subject: ${subject}`);
+      console.log(`💬 Message: ${message}`);
+      console.log(`⏰ Time: ${timestamp}`);
+      console.log(`🌍 IP: ${contactData.ip}`);
       console.log('====================================\n');
       
       // Store in a simple JSON file for backup (free alternative to database)
@@ -943,7 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         contacts.push(contactData);
         fs.writeFileSync(contactsFile, JSON.stringify(contacts, null, 2));
-        console.log(`ðŸ’¾ Contact saved to ${contactsFile}`);
+        console.log(`💾 Contact saved to ${contactsFile}`);
       } catch (fileError) {
         console.error('Error saving contact to file:', fileError);
       }
@@ -979,7 +979,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('ðŸ“§ Email sent successfully to joe833360@gmail.com');
+        console.log('📧 Email sent successfully to joe833360@gmail.com');
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
         // Continue with success response even if email fails
@@ -1027,7 +1027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = (req as any).userId;
       
-      console.log('📝 Class creation request:', {
+      console.log('?? Class creation request:', {
         userId,
         hasAuth: !!req.headers['authorization'],
         bodyKeys: Object.keys(req.body),
@@ -1037,12 +1037,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Load full user record to check subscription tier
       const user = await storage.getUser(userId);
       if (!user) {
-        console.error('❌ User not found for userId:', userId);
+        console.error('? User not found for userId:', userId);
         return res.status(404).json({ message: "User not found" });
       }
       
       // Debug: Log user subscription info
-      console.log('📊 Class creation - User subscription info:', {
+      console.log('?? Class creation - User subscription info:', {
         userId: user.id,
         subscriptionTier: user.subscriptionTier,
         subscriptionStatus: user.subscriptionStatus,
@@ -1067,10 +1067,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newClass);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error('❌ Class creation validation error:', error.errors);
+        console.error('? Class creation validation error:', error.errors);
         res.status(400).json({ message: "Invalid class data", errors: error.errors });
       } else {
-        console.error('❌ Class creation error:', error);
+        console.error('? Class creation error:', error);
         console.error('Request body:', req.body);
         console.error('User ID:', (req as any).userId);
         res.status(500).json({ 
@@ -1206,7 +1206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (cachedNotes) {
           const duration = Date.now() - startTime;
-          console.log(`⏱️ GET /api/notes completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
+          console.log(`?? GET /api/notes completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
           return res.json(cachedNotes);
         }
         
@@ -1216,12 +1216,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const duration = Date.now() - startTime;
-      console.log(`⏱️ GET /api/notes completed in ${duration}ms for user ${userId} (${notes.length} notes)`);
+      console.log(`?? GET /api/notes completed in ${duration}ms for user ${userId} (${notes.length} notes)`);
       
       res.json(notes);
     } catch (error) {
       const duration = Date.now() - startTime;
-      console.error(`❌ GET /api/notes failed after ${duration}ms:`, error);
+      console.error(`? GET /api/notes failed after ${duration}ms:`, error);
       res.status(500).json({ message: "Failed to fetch notes" });
     }
   });
@@ -1229,7 +1229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notes", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.id; // Integer user ID
-      console.log("📝 POST /api/notes - Creating note with data:", req.body, "for user:", userId);
+      console.log("?? POST /api/notes - Creating note with data:", req.body, "for user:", userId);
       
       const noteData = {
         title: req.body.title,
@@ -1266,7 +1266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       invalidateCache(`notes_${userId}`);
       invalidateCache('shared_');
       
-      console.log("✏️ PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
+      console.log("?? PUT /api/notes/:id - Updating note:", id, "for user:", userId, "with data:", noteData);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -1290,7 +1290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = req.params.id; // UUID string
       const userId = (req as any).user.id; // Integer user ID
-      console.log("🗑️ DELETE /api/notes/:id - Deleting note:", id, "for user:", userId, "body:", req.body);
+      console.log("??? DELETE /api/notes/:id - Deleting note:", id, "for user:", userId, "body:", req.body);
       
       // Check if note belongs to the user
       const existingNote = await storage.getNote(id);
@@ -1356,7 +1356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (cachedNotes) {
         const duration = Date.now() - startTime;
-        console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
+        console.log(`?? GET /api/notes/shared completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
         return res.json(cachedNotes.map(note => ({
           ...note,
           isLikedByUser: false
@@ -1368,7 +1368,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       setInCache(cacheKey, sharedNotes);
       
       const totalDuration = Date.now() - startTime;
-      console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
+      console.log(`?? GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
       
       // Notes already include author info and like count from the JOIN query
       res.json(sharedNotes.map(note => ({
@@ -1377,7 +1377,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       })));
     } catch (error) {
       const duration = Date.now() - startTime;
-      console.error(`❌ GET /api/notes/shared failed after ${duration}ms:`, error);
+      console.error(`? GET /api/notes/shared failed after ${duration}ms:`, error);
       res.status(500).json({ message: "Failed to fetch shared notes" });
     }
   });
@@ -1477,7 +1477,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Try mobile auth first (supabaseId from query or body)
       const supabaseId = (req.query.supabaseId || req.body.supabaseId) as string;
       if (supabaseId) {
-        console.log('📱 Mobile auth: Using supabaseId:', supabaseId);
+        console.log('?? Mobile auth: Using supabaseId:', supabaseId);
         
         // Use direct database query (same as /api/user/by-supabase-id endpoint)
         const result = await pool.query(
@@ -1487,14 +1487,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (result.rows.length > 0) {
           userId = result.rows[0].id;
-          console.log('✅ Mobile auth successful for user:', userId);
+          console.log('? Mobile auth successful for user:', userId);
         }
       }
       
       // If no mobile auth, try token auth
       if (!userId && (req as any).user) {
         userId = (req as any).user.userId;
-        console.log('🔐 Web auth successful for user:', userId);
+        console.log('?? Web auth successful for user:', userId);
       }
 
       if (!userId) {
@@ -1519,13 +1519,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const success = await sendInvitationEmail(email, senderName);
       
       if (success) {
-        console.log(`✅ Invitation email sent to ${email} from ${senderName}`);
+        console.log(`? Invitation email sent to ${email} from ${senderName}`);
         res.json({ 
           message: "Invitation sent successfully",
           invitedEmail: email 
         });
       } else {
-        console.error(`❌ Failed to send invitation email to ${email}`);
+        console.error(`? Failed to send invitation email to ${email}`);
         res.status(500).json({ message: "Failed to send invitation" });
       }
     } catch (error) {
@@ -1561,7 +1561,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Wrap multer middleware to catch errors and return JSON
     upload.single('video')(req, res, (err) => {
       if (err) {
-        console.error('❌ Multer error:', err.message);
+        console.error('? Multer error:', err.message);
         return res.status(400).json({ 
           message: err.message || 'File upload failed',
           error: 'UPLOAD_ERROR'
@@ -1571,7 +1571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }, async (req, res) => {
     try {
-      console.log('📹 Video upload started');
+      console.log('?? Video upload started');
       console.log('Request body keys:', Object.keys(req.body));
       console.log('File present:', !!req.file);
       
@@ -1580,37 +1580,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { fileName, fileSize, userId, thumbnail } = req.body;
       
       if (!userId) {
-        console.error('❌ No userId in request');
+        console.error('? No userId in request');
         return res.status(401).json({ message: 'User ID required' });
       }
 
       if (!file) {
-        console.error('❌ No video file in request');
+        console.error('? No video file in request');
         return res.status(400).json({ message: "No video file provided" });
       }
       
       const parsedUserId = parseInt(userId);
       const parsedFileSize = parseInt(fileSize) || file.size;
       
-      console.log(`📹 Video upload request for note ${noteId} by user ${parsedUserId}`);
-      console.log(`📹 File name: ${fileName || file.originalname}`);
-      console.log(`📹 File size: ${parsedFileSize} bytes (${(parsedFileSize / 1024 / 1024).toFixed(2)} MB)`);
-      console.log(`📹 MIME type: ${file.mimetype}`);
+      console.log(`?? Video upload request for note ${noteId} by user ${parsedUserId}`);
+      console.log(`?? File name: ${fileName || file.originalname}`);
+      console.log(`?? File size: ${parsedFileSize} bytes (${(parsedFileSize / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`?? MIME type: ${file.mimetype}`);
 
       // Get user's subscription tier and current storage usage
-      console.log('📹 Checking user and storage quota...');
+      console.log('?? Checking user and storage quota...');
       const [user] = await db.select()
         .from(users)
         .where(eq(users.id, parsedUserId))
         .limit(1);
 
       if (!user) {
-        console.error('❌ User not found in database');
+        console.error('? User not found in database');
         return res.status(404).json({ message: "User not found" });
       }
 
-      console.log(`📹 User subscription tier: ${user.subscriptionTier || 'free'}`);
-      console.log(`📹 Current storage used: ${user.storageUsed || 0} bytes`);
+      console.log(`?? User subscription tier: ${user.subscriptionTier || 'free'}`);
+      console.log(`?? Current storage used: ${user.storageUsed || 0} bytes`);
 
       // Check storage quota and per-video limits
       const { hasStorageQuota, formatBytes, getStorageTierInfo, getPerVideoLimit } = await import('./storageUtils');
@@ -1618,7 +1618,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check per-video file size limit
       const perVideoLimit = getPerVideoLimit(user.subscriptionTier || 'free');
       if (parsedFileSize > perVideoLimit) {
-        console.error(`❌ Video file too large: ${formatBytes(parsedFileSize)} exceeds limit of ${formatBytes(perVideoLimit)}`);
+        console.error(`? Video file too large: ${formatBytes(parsedFileSize)} exceeds limit of ${formatBytes(perVideoLimit)}`);
         return res.status(413).json({
           message: `Video file too large. Maximum ${formatBytes(perVideoLimit)} per video for your plan.`,
           fileSize: formatBytes(parsedFileSize),
@@ -1629,7 +1629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!hasStorageQuota(user.storageUsed || 0, parsedFileSize, user.subscriptionTier || 'free')) {
         const tierInfo = getStorageTierInfo(user.subscriptionTier || 'free');
-        console.error('❌ Storage quota exceeded');
+        console.error('? Storage quota exceeded');
         return res.status(413).json({ 
           message: `Storage quota exceeded. ${tierInfo.tierName} plan allows ${tierInfo.quotaFormatted}.`,
           currentUsage: formatBytes(user.storageUsed || 0),
@@ -1639,7 +1639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Upload to R2
-      console.log('📹 Starting upload to R2...');
+      console.log('?? Starting upload to R2...');
       let url, key;
       try {
         const { uploadToR2 } = await import('./r2Storage');
@@ -1648,11 +1648,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           fileName || file.originalname,
           file.mimetype
         ));
-        console.log('✅ Upload to R2 successful');
-        console.log(`📹 R2 URL: ${url}`);
-        console.log(`📹 R2 Key: ${key}`);
+        console.log('? Upload to R2 successful');
+        console.log(`?? R2 URL: ${url}`);
+        console.log(`?? R2 Key: ${key}`);
       } catch (r2Error: any) {
-        console.error('❌ R2 upload failed:', r2Error.message);
+        console.error('? R2 upload failed:', r2Error.message);
         return res.status(500).json({ 
           message: r2Error.message || 'R2 storage configuration error',
           error: 'R2_CONFIG_ERROR'
@@ -1660,7 +1660,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Update note in database with video URL from R2
-      console.log('📹 Updating note in database...');
+      console.log('?? Updating note in database...');
       const [updatedNote] = await db.update(notes)
         .set({
           videoUrl: url,
@@ -1676,12 +1676,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .returning();
 
       if (!updatedNote) {
-        console.error('❌ Note not found or access denied');
+        console.error('? Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
       }
 
       // Update user's storage usage
-      console.log('📹 Updating storage usage...');
+      console.log('?? Updating storage usage...');
       await db.update(users)
         .set({
           storageUsed: (user.storageUsed || 0) + parsedFileSize
@@ -1689,16 +1689,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(eq(users.id, parsedUserId));
 
       const newStorageUsed = (user.storageUsed || 0) + parsedFileSize;
-      console.log(`✅ Video uploaded successfully! New storage usage: ${formatBytes(newStorageUsed)}`);
+      console.log(`? Video uploaded successfully! New storage usage: ${formatBytes(newStorageUsed)}`);
       res.json({ 
         message: "Video uploaded successfully",
         note: updatedNote,
         storageUsed: newStorageUsed
       });
     } catch (error: any) {
-      console.error("❌ Error uploading video to note:", error);
-      console.error("❌ Error stack:", error.stack);
-      console.error("❌ Error message:", error.message);
+      console.error("? Error uploading video to note:", error);
+      console.error("? Error stack:", error.stack);
+      console.error("? Error message:", error.message);
       res.status(500).json({ message: "Failed to upload video", error: error.message });
     }
   });
@@ -1741,7 +1741,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const pathParts = urlObj.pathname.substring(1).split('/'); // Remove leading slash and split
             const key = pathParts.slice(1).join('/'); // Skip bucket name, get the rest as key
             await deleteFromR2(key);
-            console.log('✅ File deleted from R2');
+            console.log('? File deleted from R2');
           } else if (videoUrl.includes('supabase.co') && supabaseAdmin) {
             // Delete from Supabase Storage (legacy videos)
             // URL format: https://{project}.supabase.co/storage/v1/object/public/videos/{path}
@@ -1761,7 +1761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               if (deleteError) {
                 console.error('Error deleting from Supabase Storage:', deleteError);
               } else {
-                console.log('✅ File deleted from Supabase Storage');
+                console.log('? File deleted from Supabase Storage');
               }
             }
           }
@@ -1904,7 +1904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
+          console.log(`✅ Auto-assigned admin role to ${user.email}`);
           
           // Return updated user
           if (updatedUser) {
@@ -1956,7 +1956,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = (req as any).user.userId;
       
-      console.log(`🗑️ Deleting account for user ID: ${userId}`);
+      console.log(`??? Deleting account for user ID: ${userId}`);
       
       // Delete all user data from database
       await pool.query('DELETE FROM classes WHERE user_id = $1', [userId]);
@@ -1970,7 +1970,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Finally delete the user
       await pool.query('DELETE FROM users WHERE id = $1', [userId]);
       
-      console.log(`✅ Successfully deleted account for user ID: ${userId}`);
+      console.log(`? Successfully deleted account for user ID: ${userId}`);
       
       res.json({ message: "Account and all data successfully deleted" });
     } catch (error: any) {
@@ -2171,9 +2171,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('ðŸ” GET /api/weekly-commitments/current called for userId:', userId);
+      console.log('🔍 GET /api/weekly-commitments/current called for userId:', userId);
       const commitment = await storage.getCurrentWeekCommitment(userId);
-      console.log('ðŸ” getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
+      console.log('🔍 getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
       
       // Ensure no caching by setting appropriate headers
       res.set({
@@ -2184,7 +2184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(commitment || null);
     } catch (error) {
-      console.error('âŒ Error in GET /api/weekly-commitments/current:', error);
+      console.error('❌ Error in GET /api/weekly-commitments/current:', error);
       res.status(500).json({ message: "Failed to fetch current week commitment" });
     }
   });
@@ -2192,10 +2192,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('ðŸ”¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
+      console.log('🔥 POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
       const commitmentData = insertWeeklyCommitmentSchema.parse({ ...req.body, userId });
       const newCommitment = await storage.createWeeklyCommitment(commitmentData);
-      console.log('âœ… Created new commitment:', newCommitment.id);
+      console.log('✅ Created new commitment:', newCommitment.id);
       
       // Ensure no caching
       res.set({
@@ -2206,7 +2206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(newCommitment);
     } catch (error) {
-      console.error('âŒ Error in POST /api/weekly-commitments:', error);
+      console.error('❌ Error in POST /api/weekly-commitments:', error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid commitment data", errors: error.errors });
       } else {
@@ -2572,22 +2572,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/gym-notes", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
-      console.log('🔍 GET /api/gym-notes - userId:', userId);
+      console.log('?? GET /api/gym-notes - userId:', userId);
       
       // Get user's gym memberships
       const userGyms = await storage.getUserGyms(userId);
-      console.log('🏋️ User gyms found:', userGyms.length, userGyms);
+      console.log('??? User gyms found:', userGyms.length, userGyms);
       
       if (userGyms.length === 0) {
-        console.log('⚠️ User not in any gym');
+        console.log('?? User not in any gym');
         return res.json([]);
       }
       
       // Get notes for the first gym (users can only be in one gym for now)
       const gymId = userGyms[0].id;
-      console.log('📝 Fetching notes for gym ID:', gymId);
+      console.log('?? Fetching notes for gym ID:', gymId);
       const gymNotes = await storage.getGymNotes(gymId);
-      console.log('✅ Gym notes found:', gymNotes.length);
+      console.log('? Gym notes found:', gymNotes.length);
       
       res.json(gymNotes);
     } catch (error) {
@@ -2896,7 +2896,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     
     if (!webhookSecret) {
-      console.error("⚠️ STRIPE_WEBHOOK_SECRET not configured");
+      console.error("?? STRIPE_WEBHOOK_SECRET not configured");
       return res.status(500).send('Webhook secret not configured');
     }
     
@@ -2906,7 +2906,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err: any) {
-      console.error('⚠️ Webhook signature verification failed:', err.message);
+      console.error('?? Webhook signature verification failed:', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
     
@@ -2925,7 +2925,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             subscriptionStatus: 'active',
           });
           
-          console.log(`✅ Subscription activated for user ${userId}, tier: ${tier}`);
+          console.log(`? Subscription activated for user ${userId}, tier: ${tier}`);
           break;
           
         case 'customer.subscription.updated':
@@ -2936,7 +2936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             await storage.updateUserSubscription(updateUserId, {
               subscriptionStatus: subscription.status === 'active' ? 'active' : 'paused',
             });
-            console.log(`✅ Subscription updated for user ${updateUserId}, status: ${subscription.status}`);
+            console.log(`? Subscription updated for user ${updateUserId}, status: ${subscription.status}`);
           }
           break;
           
@@ -2950,7 +2950,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               subscriptionStatus: 'free',
               stripeSubscriptionId: null,
             });
-            console.log(`✅ Subscription canceled for user ${cancelUserId}`);
+            console.log(`? Subscription canceled for user ${cancelUserId}`);
           }
           break;
           
@@ -3043,8 +3043,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Global error handler - ensures all errors return JSON instead of HTML
   app.use((err: any, req: any, res: any, next: any) => {
-    console.error('❌ Global error handler caught:', err.message);
-    console.error('❌ Error stack:', err.stack);
+    console.error('? Global error handler caught:', err.message);
+    console.error('? Error stack:', err.stack);
     
     // If headers already sent, delegate to Express default error handler
     if (res.headersSent) {
