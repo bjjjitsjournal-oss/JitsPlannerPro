@@ -49,14 +49,9 @@ export default function Classes() {
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
-  // Fetch classes from Supabase
+    // Fetch classes from backend API
   const { data: classes = [], isLoading } = useQuery({
-    queryKey: ['classes', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      return await classesQueries.getAll(user.id);
-    },
-    enabled: !!user?.id,
+    queryKey: ['/api/classes'],
   });
 
   // Ensure classes is always an array
@@ -96,7 +91,7 @@ export default function Classes() {
       }
       
       if (details.length > 0) {
-        description = `${originalFormData.type} class logged - ${details.join(' • ')}`;
+        description = `${originalFormData.type} class logged - ${details.join(' â€¢ ')}`;
       }
       
       toast({
@@ -270,7 +265,7 @@ export default function Classes() {
             onClick={resetForm}
             className="text-muted-foreground hover:text-foreground"
           >
-            ✕
+            âœ•
           </button>
         </div>
 
@@ -473,7 +468,7 @@ export default function Classes() {
               >
                 <div className="flex items-center gap-2 flex-1">
                   <span className="text-blue-600 dark:text-blue-400 font-semibold">{classItem.classType}</span>
-                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-400">â€¢</span>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(classItem.date).toLocaleDateString()}
                     {classItem.time && ` @ ${classItem.time}`}
@@ -521,11 +516,11 @@ export default function Classes() {
                       {classItem.cardioRating && (
                         <span>
                           <strong>Cardio:</strong> {classItem.cardioRating}/5 
-                          {classItem.cardioRating === 1 && ' 😵'}
-                          {classItem.cardioRating === 2 && ' 😓'}
-                          {classItem.cardioRating === 3 && ' 😐'}
-                          {classItem.cardioRating === 4 && ' 😊'}
-                          {classItem.cardioRating === 5 && ' 💪'}
+                          {classItem.cardioRating === 1 && ' ðŸ˜µ'}
+                          {classItem.cardioRating === 2 && ' ðŸ˜“'}
+                          {classItem.cardioRating === 3 && ' ðŸ˜'}
+                          {classItem.cardioRating === 4 && ' ðŸ˜Š'}
+                          {classItem.cardioRating === 5 && ' ðŸ’ª'}
                         </span>
                       )}
                     </div>
