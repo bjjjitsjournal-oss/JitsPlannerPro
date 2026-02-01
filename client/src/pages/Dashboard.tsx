@@ -45,22 +45,14 @@ const BJJQuoteBanner = () => {
 export default function Dashboard() {
   const { user } = useAuth();
 
-  // Fetch current belt
-  const { data: currentBelt } = useQuery<Belt>({
-    queryKey: ['belts', 'current', user?.id],
-    queryFn: () => beltsQueries.getCurrent(user!.id),
-    enabled: !!user?.id,
-    staleTime: 60000, // Cache for 1 minute
+    // Fetch current belt from backend API
+  const { data: currentBelt } = useQuery({
+    queryKey: ['/api/belts/current'],
   });
 
-  console.log('Current belt data:', currentBelt);
-
-  // Fetch user's classes for statistics  
+  // Fetch classes from backend API
   const { data: classes = [] } = useQuery({
-    queryKey: ['classes', user?.id],
-    queryFn: () => classesQueries.getAll(user!.id),
-    enabled: !!user?.id,
-    staleTime: 60000, // Cache for 1 minute
+    queryKey: ['/api/classes'],
   });
   
 

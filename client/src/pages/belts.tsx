@@ -25,16 +25,14 @@ export default function Belts() {
   const [editingBelt, setEditingBelt] = useState<Belt | null>(null);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
-  const { data: belts = [], isLoading } = useQuery<Belt[]>({
-    queryKey: ["belts", user?.id],
-    queryFn: () => beltsQueries.getAll(user!.id),
-    enabled: !!user?.id,
+   // Fetch belts from backend API
+  const { data: belts = [], isLoading } = useQuery({
+    queryKey: ['/api/belts'],
   });
 
-  const { data: currentBelt } = useQuery<Belt>({
-    queryKey: ["belts", "current", user?.id],
-    queryFn: () => beltsQueries.getCurrent(user!.id),
-    enabled: !!user?.id,
+  // Fetch current belt
+  const { data: currentBelt } = useQuery({
+    queryKey: ['/api/belts/current'],
   });
 
   const form = useForm<InsertBelt>({
