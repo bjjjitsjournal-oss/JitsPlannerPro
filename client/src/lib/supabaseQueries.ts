@@ -1,5 +1,17 @@
 import { supabase } from './supabase';
 
+import { Capacitor } from '@capacitor/core';
+
+const API_BASE_URL = Capacitor.isNativePlatform()
+  ? 'https://jitsjournal-backend.onrender.com'
+  : '';
+
+// Helper to get auth token for API calls
+async function getAuthToken(): Promise<string | null> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token || null;
+}
+
 // Helper to get integer user ID from Supabase UUID
 export async function getUserId(supabaseUid: string): Promise<number | null> {
   const { data, error } = await supabase
@@ -246,83 +258,206 @@ export const notesQueries = {
   },
 };
 
-// Belts queries
+// Belts queries - using backend API
 export const beltsQueries = {
   async getCurrent(userId: number) {
-    const { data, error } = await supabase
-      .from('belts')
-      .select('*')
-      .eq('user_id', userId)
-      .order('promotion_date', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
-    return data;
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/belts/current`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('Failed to fetch current belt');
+    }
+    const data = await response.json();
+    return data ? {
+      ...data,
+      promotionDate: data.promotion_date,
+    } : null;
   },
 
   async getAll(userId: number) {
-    const { data, error } = await supabase
-      .from('belts')
-      .select('*')
-      .eq('user_id', userId)
-      .order('promotion_date', { ascending: false });
-
-    if (error) throw error;
-    return data || [];
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/belts`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Failed to fetch belts');
+    const data = await response.json();
+    return (data || []).map((belt: any) => ({
+      ...belt,
+      promotionDate: belt.promotion_date,
+    }));
   },
 
   async create(userId: number, beltData: any) {
-    const { data, error } = await supabase
-      .from('belts')
-      .insert({
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/belts`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         belt: beltData.belt,
         stripes: beltData.stripes,
         promotion_date: beltData.promotionDate,
         instructor: beltData.instructor,
         notes: beltData.notes,
-        user_id: userId,
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to create belt');
+    const data = await response.json();
+    return {
+      ...data,
+      promotionDate: data.promotion_date,
+    };
   },
 
   async update(beltId: number, userId: number, beltData: any) {
-    const { data, error } = await supabase
-      .from('belts')
-      .update({
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/belts/${beltId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         belt: beltData.belt,
         stripes: beltData.stripes,
         promotion_date: beltData.promotionDate,
         instructor: beltData.instructor,
         notes: beltData.notes,
-      })
-      .eq('id', beltId)
-      .eq('user_id', userId)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to update belt');
+    const data = await response.json();
+    return {
+      ...data,
+      promotionDate: data.promotion_date,
+    };
   },
 
   async delete(beltId: number, userId: number) {
-    const { error } = await supabase
-      .from('belts')
-      .delete()
-      .eq('id', beltId)
-      .eq('user_id', userId);
-
-    if (error) throw error;
+    const token = await getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/api/belts/${beltId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error('Failed to delete belt');
   },
 };
 
-// Weekly commitments queries
+// Weekly commitments queries - using backend API
 export const weeklyCommitmentsQueries = {
   async getCurrent(userId: number) {
+    const token = await getAuthToken();
+    console.log('getCurrent - Fetching from backend API');
+    
+    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments/current`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      throw new Error('Failed to fetch current weekly commitment');
+    }
+    
+    const data = await response.json();
+    console.log('getCurrent - Found:', data);
+    
+    return data ? {
+      ...data,
+      weekStartDate: data.week_start_date,
+      targetClasses: data.target_classes,
+      completedClasses: data.completed_classes,
+      isCompleted: data.is_completed,
+    } : null;
+  },
+
+  async create(userId: number, commitmentData: any) {
+    const token = await getAuthToken();
+    console.log('Creating weekly commitment via backend API:', commitmentData);
+    
+    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        week_start_date: commitmentData.weekStartDate,
+        target_classes: commitmentData.targetClasses,
+        completed_classes: commitmentData.completedClasses || 0,
+        is_completed: commitmentData.isCompleted || 0,
+      }),
+    });
+    
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Weekly commitment creation error:', error);
+      throw new Error('Failed to create weekly commitment');
+    }
+    
+    const data = await response.json();
+    console.log('Weekly commitment created successfully:', data);
+    
+    return {
+      ...data,
+      weekStartDate: data.week_start_date,
+      targetClasses: data.target_classes,
+      completedClasses: data.completed_classes,
+      isCompleted: data.is_completed,
+    };
+  },
+
+  async update(commitmentId: number, userId: number, commitmentData: any) {
+    const token = await getAuthToken();
+    console.log('Updating weekly commitment via backend API:', commitmentId, commitmentData);
+    
+    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments/${commitmentId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        week_start_date: commitmentData.weekStartDate,
+        target_classes: commitmentData.targetClasses,
+        completed_classes: commitmentData.completedClasses,
+        is_completed: commitmentData.isCompleted,
+      }),
+    });
+    
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Weekly commitment update error:', error);
+      throw new Error('Failed to update weekly commitment');
+    }
+    
+    const data = await response.json();
+    console.log('Weekly commitment updated successfully:', data);
+    
+    return {
+      ...data,
+      weekStartDate: data.week_start_date,
+      targetClasses: data.target_classes,
+      completedClasses: data.completed_classes,
+      isCompleted: data.is_completed,
+    };
+  },
+};
     // Get the start of the current week (Sunday) in UTC
     const today = new Date();
     const dayOfWeek = today.getUTCDay();
