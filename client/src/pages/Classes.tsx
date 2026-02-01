@@ -91,8 +91,9 @@ export default function Classes() {
       }
       
       if (details.length > 0) {
-        description = `${originalFormData.type} class logged - ${details.join(' - ')}`;
-      
+                description = `${originalFormData.type} class logged - ${details.join(' - ')}`;
+      }
+
       toast({
         title: 'Class Logged!',
         description: description,
