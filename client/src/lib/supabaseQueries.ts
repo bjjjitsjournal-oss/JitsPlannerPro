@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-
 import { Capacitor } from '@capacitor/core';
 
 const API_BASE_URL = Capacitor.isNativePlatform()
@@ -57,13 +56,13 @@ export const classesQueries = {
       date: classData.date,
       time: classData.time,
       duration: classData.duration,
-      class_type: classData.classType, // Map to snake_case
-      instructor: classData.instructor || '', // Ensure not undefined
-      techniques_focused: classData.techniquesFocused || '', // Ensure not undefined
-      rolling_partners: classData.rollingPartners || [], // Already an array
-      your_submissions: classData.yourSubmissions || 0, // Map to snake_case
-      partner_submissions: classData.partnerSubmissions || 0, // Map to snake_case
-      cardio_rating: classData.cardioRating || 3, // Map to snake_case
+      class_type: classData.classType,
+      instructor: classData.instructor || '',
+      techniques_focused: classData.techniquesFocused || '',
+      rolling_partners: classData.rollingPartners || [],
+      your_submissions: classData.yourSubmissions || 0,
+      partner_submissions: classData.partnerSubmissions || 0,
+      cardio_rating: classData.cardioRating || 3,
       user_id: userId,
     };
 
@@ -456,80 +455,6 @@ export const weeklyCommitmentsQueries = {
       completedClasses: data.completed_classes,
       isCompleted: data.is_completed,
     };
-  },
-};
-    // Get the start of the current week (Sunday) in UTC
-    const today = new Date();
-    const dayOfWeek = today.getUTCDay();
-    const daysToSunday = dayOfWeek === 0 ? 0 : -dayOfWeek;
-    const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + daysToSunday, 0, 0, 0, 0));
-    const weekStartStr = weekStart.toISOString().split('T')[0]; // Just the date part
-    
-    console.log('getCurrent - Looking for week:', weekStartStr);
-
-    const { data, error } = await supabase
-      .from('weekly_commitments')
-      .select('*')
-      .eq('user_id', userId)
-      .gte('week_start_date', weekStartStr)
-      .lt('week_start_date', new Date(weekStart.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0])
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    console.log('getCurrent - Found:', data, 'Error:', error);
-    if (error && error.code !== 'PGRST116') throw error;
-    return data;
-  },
-
-  async create(userId: number, commitmentData: any) {
-    console.log('Creating weekly commitment with userId:', userId, 'data:', commitmentData);
-    const { data, error } = await supabase
-      .from('weekly_commitments')
-      .insert({
-        week_start_date: commitmentData.weekStartDate,
-        target_classes: commitmentData.targetClasses,
-        completed_classes: commitmentData.completedClasses || 0,
-        is_completed: commitmentData.isCompleted || 0,
-        user_id: userId,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Weekly commitment creation error:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-      throw error;
-    }
-    console.log('Weekly commitment created successfully:', data);
-    return data;
-  },
-
-  async update(commitmentId: number, userId: number, commitmentData: any) {
-    console.log('Updating weekly commitment:', commitmentId, 'userId:', userId, 'data:', commitmentData);
-    
-    // Map camelCase to snake_case for database
-    const dbData: any = {};
-    if (commitmentData.weekStartDate !== undefined) dbData.week_start_date = commitmentData.weekStartDate;
-    if (commitmentData.targetClasses !== undefined) dbData.target_classes = commitmentData.targetClasses;
-    if (commitmentData.completedClasses !== undefined) dbData.completed_classes = commitmentData.completedClasses;
-    if (commitmentData.isCompleted !== undefined) dbData.is_completed = commitmentData.isCompleted;
-    
-    const { data, error } = await supabase
-      .from('weekly_commitments')
-      .update(dbData)
-      .eq('id', commitmentId)
-      .eq('user_id', userId)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Weekly commitment update error:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-      throw error;
-    }
-    console.log('Weekly commitment updated successfully:', data);
-    return data;
   },
 };
 
