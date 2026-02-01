@@ -29,7 +29,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn('âš ï¸ SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
+  console.warn('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
 }
 
 const supabaseAdmin = supabaseUrl && supabaseServiceKey 
@@ -122,7 +122,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   if (!decoded) {
     try {
       decoded = jwt.verify(token, JWT_SECRET) as any;
-      console.log('âœ… Legacy JWT verified for:', decoded.email);
+      console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Legacy JWT verified for:', decoded.email);
     } catch (error: any) {
       console.error('Token verification error:', error.message);
       return res.status(403).json({ message: 'Invalid or expired token' });
@@ -170,7 +170,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
           role: isAdmin ? 'admin' : 'user',
         });
         
-        console.log('âœ… Auto-created user account for Supabase user:', decoded.email);
+        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Auto-created user account for Supabase user:', decoded.email);
       }
     } else {
       // For legacy JWT, use userId from token
@@ -185,7 +185,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         
         const existingUser = await storage.getUserByEmail(decoded.email);
         if (existingUser) {
-          console.log('âœ… Found existing user by email, using that account:', decoded.email);
+          console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Found existing user by email, using that account:', decoded.email);
           user = existingUser;
         } else {
           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -198,7 +198,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
             subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
           });
           
-          console.log('âœ… Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
+          console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
         }
       }
     }
@@ -690,7 +690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           subscriptionStatus: 'premium',
           subscriptionExpiresAt: new Date('2099-12-31')
         });
-        console.log(`âœ… Auto-upgraded ${email} to premium access`);
+        console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Auto-upgraded ${email} to premium access`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -705,7 +705,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const updatedUser = await storage.updateUser(user.id, {
           role: 'admin'
         });
-        console.log(`âœ… Auto-assigned admin role to ${email}`);
+        console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Auto-assigned admin role to ${email}`);
         
         // Update the user object for the response
         if (updatedUser) {
@@ -893,7 +893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      console.log(`âœ… Manually upgraded user ${userId} to premium access`);
+      console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Manually upgraded user ${userId} to premium access`);
       const { password, ...userWithoutPassword } = updatedUser;
       res.json(userWithoutPassword);
     } catch (error) {
@@ -924,11 +924,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       console.log('\n=== NEW CONTACT FORM SUBMISSION ===');
-      console.log(`ðŸ“§ From: ${name} (${email})`);
-      console.log(`ðŸ“ Subject: ${subject}`);
-      console.log(`ðŸ’¬ Message: ${message}`);
-      console.log(`â° Time: ${timestamp}`);
-      console.log(`ðŸŒ IP: ${contactData.ip}`);
+      console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â§ From: ${name} (${email})`);
+      console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â Subject: ${subject}`);
+      console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¬ Message: ${message}`);
+      console.log(`ÃƒÂ¢Ã‚ÂÃ‚Â° Time: ${timestamp}`);
+      console.log(`ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â IP: ${contactData.ip}`);
       console.log('====================================\n');
       
       // Store in a simple JSON file for backup (free alternative to database)
@@ -943,7 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         contacts.push(contactData);
         fs.writeFileSync(contactsFile, JSON.stringify(contacts, null, 2));
-        console.log(`ðŸ’¾ Contact saved to ${contactsFile}`);
+        console.log(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ Contact saved to ${contactsFile}`);
       } catch (fileError) {
         console.error('Error saving contact to file:', fileError);
       }
@@ -979,7 +979,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('ðŸ“§ Email sent successfully to joe833360@gmail.com');
+        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â§ Email sent successfully to joe833360@gmail.com');
       } catch (emailError) {
         console.error('Email sending failed:', emailError);
         // Continue with success response even if email fails
@@ -1882,21 +1882,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Get user by Supabase UID - No auth required for login
+    // Get user by Supabase UID - No auth required for login
   app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
     try {
       const { supabaseId } = req.params;
-      console.log('Looking up user by Supabase ID:', supabaseId);
-      
-      const result = await pool.query(
+      const email = req.query.email as string | undefined;
+      console.log('Looking up user by Supabase ID:', supabaseId, 'email:', email);
+
+      let result = await pool.query(
         'SELECT * FROM users WHERE supabase_uid = $1',
         [supabaseId]
       );
-      
+
+      // If not found by supabase_uid but email provided, try to find and link by email
+      if (result.rows.length === 0 && email) {
+        console.log('User not found by Supabase ID, trying email lookup:', email);
+        const emailResult = await pool.query(
+          'SELECT * FROM users WHERE email = $1',
+          [email]
+        );
+        
+        if (emailResult.rows.length > 0) {
+          const existingUser = emailResult.rows[0];
+          console.log('Found user by email, linking Supabase ID:', existingUser.id);
+          
+          await pool.query(
+            'UPDATE users SET supabase_uid = $1 WHERE id = $2',
+            [supabaseId, existingUser.id]
+          );
+          console.log('Linked Supabase ID to existing user:', existingUser.email);
+          
+          result = await pool.query(
+            'SELECT * FROM users WHERE id = $1',
+            [existingUser.id]
+          );
+        }
+      }
+
       if (result.rows.length > 0) {
         console.log('Found user:', result.rows[0].id);
         let user = result.rows[0];
-        
+
         // Auto-assign admin role for specific emails
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const isAdmin = adminEmails.includes(user.email);
@@ -1904,14 +1930,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
-          
-          // Return updated user
+          console.log(`Auto-assigned admin role to ${user.email}`);
+
           if (updatedUser) {
             user = updatedUser;
           }
         }
-        
+
         res.json(user);
       } else {
         console.log('User not found');
@@ -2171,9 +2196,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/weekly-commitments/current", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('ðŸ” GET /api/weekly-commitments/current called for userId:', userId);
+      console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â GET /api/weekly-commitments/current called for userId:', userId);
       const commitment = await storage.getCurrentWeekCommitment(userId);
-      console.log('ðŸ” getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
+      console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â getCurrentWeekCommitment returned:', commitment ? commitment.id : 'null');
       
       // Ensure no caching by setting appropriate headers
       res.set({
@@ -2184,7 +2209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(commitment || null);
     } catch (error) {
-      console.error('âŒ Error in GET /api/weekly-commitments/current:', error);
+      console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Error in GET /api/weekly-commitments/current:', error);
       res.status(500).json({ message: "Failed to fetch current week commitment" });
     }
   });
@@ -2192,10 +2217,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/weekly-commitments", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.userId;
-      console.log('ðŸ”¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
+      console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ POST /api/weekly-commitments called with data:', req.body, 'userId:', userId);
       const commitmentData = insertWeeklyCommitmentSchema.parse({ ...req.body, userId });
       const newCommitment = await storage.createWeeklyCommitment(commitmentData);
-      console.log('âœ… Created new commitment:', newCommitment.id);
+      console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Created new commitment:', newCommitment.id);
       
       // Ensure no caching
       res.set({
@@ -2206,7 +2231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(newCommitment);
     } catch (error) {
-      console.error('âŒ Error in POST /api/weekly-commitments:', error);
+      console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Error in POST /api/weekly-commitments:', error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid commitment data", errors: error.errors });
       } else {
