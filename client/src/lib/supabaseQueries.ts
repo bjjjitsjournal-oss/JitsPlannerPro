@@ -5,10 +5,22 @@ const API_BASE_URL = Capacitor.isNativePlatform()
   ? 'https://jitsjournal-backend.onrender.com'
   : '';
 
-// Helper to get auth token for API calls
-async function getAuthToken(): Promise<string | null> {
+// Helper to get auth token and supabase user ID for API calls
+async function getAuthInfo(): Promise<{ token: string | null; supabaseId: string | null }> {
   const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token || null;
+  return {
+    token: session?.access_token || null,
+    supabaseId: session?.user?.id || null,
+  };
+}
+
+// Build URL with supabaseId query param for mobile auth
+function buildUrl(endpoint: string, supabaseId: string | null): string {
+  const base = `${API_BASE_URL}${endpoint}`;
+  if (supabaseId && Capacitor.isNativePlatform()) {
+    return `${base}${base.includes('?') ? '&' : '?'}supabaseId=${supabaseId}`;
+  }
+  return base;
 }
 
 // Helper to get integer user ID from Supabase UUID
@@ -260,8 +272,9 @@ export const notesQueries = {
 // Belts queries - using backend API
 export const beltsQueries = {
   async getCurrent(userId: number) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/belts/current`, {
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl('/api/belts/current', supabaseId);
+    const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -279,8 +292,9 @@ export const beltsQueries = {
   },
 
   async getAll(userId: number) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/belts`, {
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl('/api/belts', supabaseId);
+    const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -295,8 +309,9 @@ export const beltsQueries = {
   },
 
   async create(userId: number, beltData: any) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/belts`, {
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl('/api/belts', supabaseId);
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -319,8 +334,9 @@ export const beltsQueries = {
   },
 
   async update(beltId: number, userId: number, beltData: any) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/belts/${beltId}`, {
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl(`/api/belts/${beltId}`, supabaseId);
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -343,8 +359,9 @@ export const beltsQueries = {
   },
 
   async delete(beltId: number, userId: number) {
-    const token = await getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/api/belts/${beltId}`, {
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl(`/api/belts/${beltId}`, supabaseId);
+    const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -358,10 +375,11 @@ export const beltsQueries = {
 // Weekly commitments queries - using backend API
 export const weeklyCommitmentsQueries = {
   async getCurrent(userId: number) {
-    const token = await getAuthToken();
-    console.log('getCurrent - Fetching from backend API');
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl('/api/weekly-commitments/current', supabaseId);
+    console.log('getCurrent - Fetching from backend API:', url);
     
-    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments/current`, {
+    const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -386,10 +404,11 @@ export const weeklyCommitmentsQueries = {
   },
 
   async create(userId: number, commitmentData: any) {
-    const token = await getAuthToken();
-    console.log('Creating weekly commitment via backend API:', commitmentData);
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl('/api/weekly-commitments', supabaseId);
+    console.log('Creating weekly commitment via backend API:', url, commitmentData);
     
-    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -422,10 +441,11 @@ export const weeklyCommitmentsQueries = {
   },
 
   async update(commitmentId: number, userId: number, commitmentData: any) {
-    const token = await getAuthToken();
-    console.log('Updating weekly commitment via backend API:', commitmentId, commitmentData);
+    const { token, supabaseId } = await getAuthInfo();
+    const url = buildUrl(`/api/weekly-commitments/${commitmentId}`, supabaseId);
+    console.log('Updating weekly commitment via backend API:', url, commitmentData);
     
-    const response = await fetch(`${API_BASE_URL}/api/weekly-commitments/${commitmentId}`, {
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
