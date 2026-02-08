@@ -1,0 +1,6 @@
+node_modules/
+react-native-apk-package/
+simple-build/
+attached_assets/
+.git/
+*.backup

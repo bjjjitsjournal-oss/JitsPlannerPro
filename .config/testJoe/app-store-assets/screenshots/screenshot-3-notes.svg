@@ -1,0 +1,94 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect width="1080" height="120" fill="#1e3a8a"/>
+  <text x="40" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">Notes</text>
+  <circle cx="980" cy="60" r="30" fill="white" opacity="0.2"/>
+  <text x="965" y="70" font-family="Arial, sans-serif" font-size="24" fill="white">👤</text>
+  
+  <!-- Search Bar -->
+  <rect x="40" y="160" width="1000" height="50" rx="25" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="70" y="190" font-family="Arial, sans-serif" font-size="16" fill="#64748b">🔍 Search techniques...</text>
+  
+  <!-- Add Note Button -->
+  <rect x="40" y="230" width="1000" height="60" rx="30" fill="#dc2626"/>
+  <text x="540" y="265" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">+ Add New Note</text>
+  
+  <!-- Notes List -->
+  <text x="40" y="340" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a">Recent Notes</text>
+  
+  <!-- Note Item 1 -->
+  <rect x="40" y="370" width="1000" height="150" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="400" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Armbar from Guard</text>
+  <text x="60" y="425" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Today • Guard, Submissions</text>
+  <text x="60" y="450" font-family="Arial, sans-serif" font-size="14" fill="#374151">Key points: Control the wrist, hip escape, angle change...</text>
+  <text x="60" y="475" font-family="Arial, sans-serif" font-size="14" fill="#374151">Remember to keep elbow tight and use leg leverage</text>
+  <rect x="60" y="490" width="80" height="20" rx="10" fill="#10b981" opacity="0.2"/>
+  <text x="100" y="505" font-family="Arial, sans-serif" font-size="12" fill="#10b981" text-anchor="middle">Video</text>
+  <rect x="950" y="490" width="60" height="20" rx="10" fill="#dc2626" opacity="0.2"/>
+  <text x="980" y="505" font-family="Arial, sans-serif" font-size="12" fill="#dc2626" text-anchor="middle">🔗</text>
+  
+  <!-- Note Item 2 -->
+  <rect x="40" y="540" width="1000" height="150" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="570" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Triangle Choke Setup</text>
+  <text x="60" y="595" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Yesterday • Guard, Submissions</text>
+  <text x="60" y="620" font-family="Arial, sans-serif" font-size="14" fill="#374151">Works great when opponent postures up from guard</text>
+  <text x="60" y="645" font-family="Arial, sans-serif" font-size="14" fill="#374151">1. Control sleeve 2. Angle 3. Leg over 4. Adjust</text>
+  <rect x="60" y="660" width="80" height="20" rx="10" fill="#3b82f6" opacity="0.2"/>
+  <text x="100" y="675" font-family="Arial, sans-serif" font-size="12" fill="#3b82f6" text-anchor="middle">Shared</text>
+  
+  <!-- Note Item 3 -->
+  <rect x="40" y="710" width="1000" height="150" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="740" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Single Leg Takedown</text>
+  <text x="60" y="765" font-family="Arial, sans-serif" font-size="14" fill="#64748b">2 days ago • Takedowns, Standing</text>
+  <text x="60" y="790" font-family="Arial, sans-serif" font-size="14" fill="#374151">Level change, penetration step, drive through</text>
+  <text x="60" y="815" font-family="Arial, sans-serif" font-size="14" fill="#374151">Keep head on outside, finish with lift or trip</text>
+  <rect x="60" y="830" width="80" height="20" rx="10" fill="#fbbf24" opacity="0.2"/>
+  <text x="100" y="845" font-family="Arial, sans-serif" font-size="12" fill="#f59e0b" text-anchor="middle">Practice</text>
+  
+  <!-- Note Item 4 -->
+  <rect x="40" y="880" width="1000" height="150" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="60" y="910" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e3a8a">Butterfly Guard Sweep</text>
+  <text x="60" y="935" font-family="Arial, sans-serif" font-size="14" fill="#64748b">3 days ago • Guard, Sweeps</text>
+  <text x="60" y="960" font-family="Arial, sans-serif" font-size="14" fill="#374151">Underhook, butterfly hook, lift and turn</text>
+  <text x="60" y="985" font-family="Arial, sans-serif" font-size="14" fill="#374151">Works well when opponent is heavy on top</text>
+  <rect x="60" y="1000" width="80" height="20" rx="10" fill="#10b981" opacity="0.2"/>
+  <text x="100" y="1015" font-family="Arial, sans-serif" font-size="12" fill="#10b981" text-anchor="middle">Video</text>
+  
+  <!-- Categories -->
+  <text x="40" y="1090" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a">Categories</text>
+  
+  <div>
+    <rect x="40" y="1120" width="230" height="60" rx="30" fill="#dc2626" opacity="0.1" stroke="#dc2626" stroke-width="1"/>
+    <text x="155" y="1155" font-family="Arial, sans-serif" font-size="16" fill="#dc2626" text-anchor="middle">🛡️ Guard (12)</text>
+    
+    <rect x="290" y="1120" width="230" height="60" rx="30" fill="#3b82f6" opacity="0.1" stroke="#3b82f6" stroke-width="1"/>
+    <text x="405" y="1155" font-family="Arial, sans-serif" font-size="16" fill="#3b82f6" text-anchor="middle">🤼 Submissions (8)</text>
+    
+    <rect x="540" y="1120" width="230" height="60" rx="30" fill="#10b981" opacity="0.1" stroke="#10b981" stroke-width="1"/>
+    <text x="655" y="1155" font-family="Arial, sans-serif" font-size="16" fill="#10b981" text-anchor="middle">🔄 Sweeps (6)</text>
+    
+    <rect x="790" y="1120" width="230" height="60" rx="30" fill="#f59e0b" opacity="0.1" stroke="#f59e0b" stroke-width="1"/>
+    <text x="905" y="1155" font-family="Arial, sans-serif" font-size="16" fill="#f59e0b" text-anchor="middle">🏃 Takedowns (4)</text>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <rect x="0" y="1750" width="1080" height="100" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="108" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🏠</text>
+  <text x="108" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Home</text>
+  
+  <text x="324" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">📚</text>
+  <text x="324" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Classes</text>
+  
+  <rect x="432" y="1760" width="216" height="80" fill="#dc2626" opacity="0.1"/>
+  <text x="540" y="1785" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">📝</text>
+  <text x="540" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#dc2626" text-anchor="middle">Notes</text>
+  
+  <text x="756" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🎥</text>
+  <text x="756" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Videos</text>
+  
+  <text x="972" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">👥</text>
+  <text x="972" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Social</text>
+</svg>

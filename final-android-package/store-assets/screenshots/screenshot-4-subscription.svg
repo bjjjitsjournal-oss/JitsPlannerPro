@@ -1,0 +1,98 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect width="1080" height="120" fill="#1e3a8a"/>
+  <text x="40" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">Upgrade to Premium</text>
+  <circle cx="980" cy="60" r="30" fill="white" opacity="0.2"/>
+  <text x="965" y="70" font-family="Arial, sans-serif" font-size="24" fill="white">👤</text>
+  
+  <!-- Hero Section -->
+  <rect x="40" y="180" width="1000" height="150" rx="20" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="540" y="220" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Unlock Your Full Potential</text>
+  <text x="540" y="250" font-family="Arial, sans-serif" font-size="16" fill="#64748b" text-anchor="middle">Get unlimited access to all features</text>
+  <text x="540" y="280" font-family="Arial, sans-serif" font-size="16" fill="#64748b" text-anchor="middle">Perfect for serious BJJ practitioners</text>
+  <text x="540" y="310" font-family="Arial, sans-serif" font-size="14" fill="#10b981" text-anchor="middle">🥋 Used by over 10,000 martial artists worldwide</text>
+  
+  <!-- Current Plan -->
+  <rect x="40" y="360" width="1000" height="80" rx="10" fill="#fbbf24" opacity="0.1" stroke="#f59e0b" stroke-width="2"/>
+  <text x="60" y="385" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#92400e">Free Plan</text>
+  <text x="60" y="410" font-family="Arial, sans-serif" font-size="14" fill="#92400e">7 of 10 classes used this month</text>
+  <text x="60" y="430" font-family="Arial, sans-serif" font-size="14" fill="#92400e">Limited features • Basic progress tracking</text>
+  
+  <!-- Pricing Plans -->
+  <text x="40" y="500" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1e3a8a">Choose Your Plan</text>
+  
+  <!-- Monthly Plan -->
+  <rect x="40" y="540" width="480" height="280" rx="20" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="280" y="580" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Monthly</text>
+  <text x="280" y="620" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#dc2626" text-anchor="middle">$14.99</text>
+  <text x="280" y="645" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">per month</text>
+  <text x="280" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Unlimited class logging</text>
+  <text x="280" y="705" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Video attachments</text>
+  <text x="280" y="730" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Advanced analytics</text>
+  <text x="280" y="755" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Social features</text>
+  <rect x="80" y="780" width="400" height="40" rx="20" fill="#dc2626"/>
+  <text x="280" y="805" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Choose Monthly</text>
+  
+  <!-- Annual Plan -->
+  <rect x="560" y="540" width="480" height="280" rx="20" fill="white" stroke="#10b981" stroke-width="3"/>
+  <rect x="580" y="550" width="80" height="30" rx="15" fill="#10b981"/>
+  <text x="620" y="570" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">BEST VALUE</text>
+  <text x="800" y="600" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Annual</text>
+  <text x="800" y="640" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#10b981" text-anchor="middle">$165</text>
+  <text x="800" y="665" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">per year</text>
+  <text x="800" y="690" font-family="Arial, sans-serif" font-size="12" fill="#10b981" text-anchor="middle">Save $15/month!</text>
+  <text x="800" y="720" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Everything in Monthly</text>
+  <text x="800" y="745" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Priority support</text>
+  <text x="800" y="770" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">✓ Early access features</text>
+  <rect x="600" y="780" width="400" height="40" rx="20" fill="#10b981"/>
+  <text x="800" y="805" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Choose Annual</text>
+  
+  <!-- Features Comparison -->
+  <text x="40" y="880" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e3a8a">Premium Features</text>
+  
+  <rect x="40" y="910" width="1000" height="60" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="935" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">🥋 Unlimited Class Logging</text>
+  <text x="60" y="955" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Log as many classes as you want</text>
+  <text x="980" y="945" font-family="Arial, sans-serif" font-size="20" fill="#10b981" text-anchor="middle">✓</text>
+  
+  <rect x="40" y="980" width="1000" height="60" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="1005" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">📹 Video Attachments</text>
+  <text x="60" y="1025" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Attach videos to technique notes</text>
+  <text x="980" y="1015" font-family="Arial, sans-serif" font-size="20" fill="#10b981" text-anchor="middle">✓</text>
+  
+  <rect x="40" y="1050" width="1000" height="60" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="1075" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">📊 Advanced Analytics</text>
+  <text x="60" y="1095" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Detailed progress tracking and insights</text>
+  <text x="980" y="1085" font-family="Arial, sans-serif" font-size="20" fill="#10b981" text-anchor="middle">✓</text>
+  
+  <rect x="40" y="1120" width="1000" height="60" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="1145" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">👥 Social Features</text>
+  <text x="60" y="1165" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Share notes and connect with training partners</text>
+  <text x="980" y="1155" font-family="Arial, sans-serif" font-size="20" fill="#10b981" text-anchor="middle">✓</text>
+  
+  <!-- Footer -->
+  <rect x="40" y="1200" width="1000" height="80" rx="10" fill="#1e3a8a" opacity="0.1"/>
+  <text x="540" y="1225" font-family="Arial, sans-serif" font-size="14" fill="#1e3a8a" text-anchor="middle">🔒 Secure payments • Cancel anytime</text>
+  <text x="540" y="1245" font-family="Arial, sans-serif" font-size="14" fill="#1e3a8a" text-anchor="middle">Join thousands of BJJ practitioners improving their game</text>
+  <text x="540" y="1265" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">30-day money-back guarantee</text>
+  
+  <!-- Bottom Navigation -->
+  <rect x="0" y="1750" width="1080" height="100" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="108" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🏠</text>
+  <text x="108" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Home</text>
+  
+  <text x="324" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">📚</text>
+  <text x="324" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Classes</text>
+  
+  <text x="540" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">📝</text>
+  <text x="540" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Notes</text>
+  
+  <text x="756" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">🎥</text>
+  <text x="756" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Videos</text>
+  
+  <text x="972" y="1785" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">👥</text>
+  <text x="972" y="1810" font-family="Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">Social</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="48" fill="#1e3a8a"/>
+  <rect x="12" y="12" width="168" height="168" rx="36" fill="#2563eb"/>
+  
+  <!-- BJJ Belt Design -->
+  <rect x="24" y="72" width="144" height="48" rx="24" fill="#ffffff"/>
+  <rect x="32" y="80" width="128" height="32" rx="16" fill="#1e3a8a"/>
+  
+  <!-- Stripes -->
+  <rect x="40" y="84" width="8" height="24" rx="4" fill="#dc2626"/>
+  <rect x="56" y="84" width="8" height="24" rx="4" fill="#dc2626"/>
+  <rect x="72" y="84" width="8" height="24" rx="4" fill="#dc2626"/>
+  
+  <!-- Text -->
+  <text x="96" y="100" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="12" font-weight="bold">JITS</text>
+  
+  <!-- Martial Arts Symbol -->
+  <circle cx="96" cy="45" r="12" fill="#dc2626"/>
+  <circle cx="96" cy="45" r="8" fill="#ffffff"/>
+  <circle cx="96" cy="45" r="4" fill="#dc2626"/>
+  
+  <!-- Bottom accent -->
+  <rect x="60" y="144" width="72" height="4" rx="2" fill="#dc2626"/>
+</svg>
