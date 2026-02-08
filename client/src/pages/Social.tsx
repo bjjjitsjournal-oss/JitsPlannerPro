@@ -455,10 +455,49 @@ export default function Social() {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Find Training Partners</h3>
-            <div className="text-center py-6 text-gray-500">
-              <p>Feature coming soon!</p>
-              <p className="text-sm">Soon you'll be able to find training partners near you.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Share2 className="w-5 h-5 text-blue-600" />
+              Invite Training Partners
+            </h3>
+            <div className="text-center py-6">
+              <p className="text-gray-600 mb-4">Share Jits Journal with your training partners so you can connect and share notes together!</p>
+              <button
+                onClick={async () => {
+                  const shareData = {
+                    title: 'Jits Journal - BJJ Training Companion',
+                    text: 'Track your BJJ training, share notes, and connect with training partners! Download Jits Journal:',
+                    url: 'https://play.google.com/store/apps/details?id=com.jitsjournal.app',
+                  };
+                  try {
+                    if (navigator.share) {
+                      await navigator.share(shareData);
+                    } else {
+                      await navigator.clipboard.writeText(
+                        `${shareData.text}\n${shareData.url}`
+                      );
+                      toast({
+                        title: "Link copied!",
+                        description: "Share link copied to clipboard. Send it to your training partners!",
+                      });
+                    }
+                  } catch (err: any) {
+                    if (err.name !== 'AbortError') {
+                      await navigator.clipboard.writeText(
+                        `${shareData.text}\n${shareData.url}`
+                      );
+                      toast({
+                        title: "Link copied!",
+                        description: "Share link copied to clipboard. Send it to your training partners!",
+                      });
+                    }
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                <Share2 className="w-5 h-5" />
+                Share App Link
+              </button>
+              <p className="text-xs text-gray-400 mt-3">Opens your share menu to send via text, email, or any app</p>
             </div>
           </div>
         </div>
