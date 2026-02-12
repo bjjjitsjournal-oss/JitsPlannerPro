@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { useAuth } from '../contexts/AuthContext';
-import { Users, UserPlus, Share2, MessageCircle, Heart, Eye, Trash2 } from 'lucide-react';
+import { Users, UserPlus, Share2, MessageCircle, Heart, Eye, Trash2, Flag } from 'lucide-react';
 
 export default function Social() {
   // Auto-scroll to top when component mounts
@@ -11,6 +11,8 @@ export default function Social() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
   const [activeTab, setActiveTab] = useState<'community' | 'friends' | 'invite' | 'my-gym'>('community');
+  const [reportingNoteId, setReportingNoteId] = useState<string | null>(null);
+  const [reportReason, setReportReason] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -24,32 +26,85 @@ export default function Social() {
   // Fetch shared notes from the community
   const { data: sharedNotes = [], isLoading: notesLoading } = useQuery<any[]>({
     queryKey: ['/api/notes/shared'],
-    staleTime: 30000, // Cache for 30 seconds (more dynamic content)
+    staleTime: 60000,
   });
 
   // Fetch gym notes
   const { data: gymNotes = [], isLoading: gymNotesLoading } = useQuery<any[]>({
     queryKey: ['/api/gym-notes'],
     enabled: !!gymMembership,
-    staleTime: 30000, // Cache for 30 seconds
+    staleTime: 60000,
   });
 
   // Like/unlike mutation
   const likeMutation = useMutation({
-    mutationFn: async ({ noteId, isLiked }: { noteId: number; isLiked: boolean }) => {
+    mutationFn: async ({ noteId, isLiked }: { noteId: string; isLiked: boolean }) => {
       if (isLiked) {
         return await apiRequest("DELETE", `/api/notes/${noteId}/like`);
       } else {
         return await apiRequest("POST", `/api/notes/${noteId}/like`);
       }
     },
-    onSuccess: () => {
+    onMutate: async ({ noteId, isLiked }) => {
+      await queryClient.cancelQueries({ queryKey: ['/api/notes/shared'] });
+      await queryClient.cancelQueries({ queryKey: ['/api/gym-notes'] });
+
+      const previousShared = queryClient.getQueryData<any[]>(['/api/notes/shared']);
+      const previousGym = queryClient.getQueryData<any[]>(['/api/gym-notes']);
+
+      const updateNotes = (notes: any[] | undefined) =>
+        notes?.map((note: any) =>
+          note.id === noteId
+            ? {
+                ...note,
+                isLikedByUser: !isLiked,
+                likeCount: (note.likeCount || 0) + (isLiked ? -1 : 1),
+              }
+            : note
+        );
+
+      if (previousShared) {
+        queryClient.setQueryData(['/api/notes/shared'], updateNotes(previousShared));
+      }
+      if (previousGym) {
+        queryClient.setQueryData(['/api/gym-notes'], updateNotes(previousGym));
+      }
+
+      return { previousShared, previousGym, hasSnapshot: true };
+    },
+    onError: (error: any, variables, context) => {
+      if (context?.hasSnapshot) {
+        queryClient.setQueryData(['/api/notes/shared'], context.previousShared);
+        queryClient.setQueryData(['/api/gym-notes'], context.previousGym);
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update like status",
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
+    },
+  });
+
+  const reportMutation = useMutation({
+    mutationFn: async ({ noteId, reason }: { noteId: string; reason: string }) => {
+      return await apiRequest("POST", `/api/notes/${noteId}/report`, { reason });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Report submitted",
+        description: "Thank you for helping keep the community safe. We'll review this note.",
+      });
+      setReportingNoteId(null);
+      setReportReason('');
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: "Failed to update like status",
+        description: error.message || "Failed to submit report",
         variant: "destructive",
       });
     },
@@ -241,6 +296,13 @@ export default function Social() {
                             <Eye className="w-4 h-4" />
                             <span>0</span>
                           </div>
+                          <button
+                            onClick={() => setReportingNoteId(note.id)}
+                            className="flex items-center gap-1 text-gray-400 hover:text-orange-500 transition-colors"
+                            title="Report inappropriate content"
+                          >
+                            <Flag className="w-4 h-4" />
+                          </button>
                           {/* Admin delete button for moderation */}
                           {isAdmin && (
                             <button 
@@ -337,28 +399,60 @@ export default function Social() {
                         </div>
                       )}
                       
-                      {/* Footer with date and admin actions */}
+                      {/* Footer with date, likes, and admin actions */}
                       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                         <div className="text-xs text-gray-400">
                           Shared {new Date(note.createdAt).toLocaleDateString()}
                         </div>
-                        {/* Admin delete button for gym notes */}
-                        {(isAdmin || gymMembership?.role === 'admin') && (
-                          <button
-                            onClick={() => {
-                              if (confirm('Are you sure you want to delete this gym note? This action cannot be undone.')) {
-                                deleteGymNoteMutation.mutate(note.id);
-                              }
-                            }}
-                            disabled={deleteGymNoteMutation.isPending}
-                            className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-colors"
-                            title="Delete gym note"
-                            data-testid={`button-delete-gym-note-${note.id}`}
+                        <div className="flex items-center gap-3 text-gray-500 text-sm">
+                          <button 
+                            onClick={() => likeMutation.mutate({ 
+                              noteId: note.id, 
+                              isLiked: note.isLikedByUser || false 
+                            })}
+                            disabled={likeMutation.isPending}
+                            className={`flex items-center gap-1 transition-colors ${
+                              note.isLikedByUser 
+                                ? 'text-red-500 hover:text-red-600' 
+                                : 'hover:text-red-500'
+                            }`}
                           >
-                            <Trash2 className="w-4 h-4" />
-                            <span className="text-xs">Delete</span>
+                            <Heart 
+                              className={`w-4 h-4 ${
+                                note.isLikedByUser ? 'fill-current' : ''
+                              }`} 
+                            />
+                            <span>{note.likeCount || 0}</span>
                           </button>
-                        )}
+                          <div className="flex items-center gap-1">
+                            <Eye className="w-4 h-4" />
+                            <span>0</span>
+                          </div>
+                          <button
+                            onClick={() => setReportingNoteId(note.id)}
+                            className="flex items-center gap-1 text-gray-400 hover:text-orange-500 transition-colors"
+                            title="Report inappropriate content"
+                          >
+                            <Flag className="w-4 h-4" />
+                          </button>
+                          {/* Admin delete button for gym notes */}
+                          {(isAdmin || gymMembership?.role === 'admin') && (
+                            <button
+                              onClick={() => {
+                                if (confirm('Are you sure you want to delete this gym note? This action cannot be undone.')) {
+                                  deleteGymNoteMutation.mutate(note.id);
+                                }
+                              }}
+                              disabled={deleteGymNoteMutation.isPending}
+                              className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-colors"
+                              title="Delete gym note"
+                              data-testid={`button-delete-gym-note-${note.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              <span className="text-xs">Delete</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -392,10 +486,90 @@ export default function Social() {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Find Training Partners</h3>
-            <div className="text-center py-6 text-gray-500">
-              <p>Feature coming soon!</p>
-              <p className="text-sm">Soon you'll be able to find training partners near you.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Share2 className="w-5 h-5 text-blue-600" />
+              Invite Training Partners
+            </h3>
+            <div className="text-center py-6">
+              <p className="text-gray-600 mb-4">Share Jits Journal with your training partners so you can connect and share notes together!</p>
+              <button
+                onClick={async () => {
+                  const shareData = {
+                    title: 'Jits Journal - BJJ Training Companion',
+                    text: 'Track your BJJ training, share notes, and connect with training partners! Download Jits Journal:',
+                    url: 'https://play.google.com/store/apps/details?id=com.jitsjournal.app',
+                  };
+                  try {
+                    if (navigator.share) {
+                      await navigator.share(shareData);
+                    } else {
+                      await navigator.clipboard.writeText(
+                        `${shareData.text}\n${shareData.url}`
+                      );
+                      toast({
+                        title: "Link copied!",
+                        description: "Share link copied to clipboard. Send it to your training partners!",
+                      });
+                    }
+                  } catch (err: any) {
+                    if (err.name !== 'AbortError') {
+                      await navigator.clipboard.writeText(
+                        `${shareData.text}\n${shareData.url}`
+                      );
+                      toast({
+                        title: "Link copied!",
+                        description: "Share link copied to clipboard. Send it to your training partners!",
+                      });
+                    }
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                <Share2 className="w-5 h-5" />
+                Share App Link
+              </button>
+              <p className="text-xs text-gray-400 mt-3">Opens your share menu to send via text, email, or any app</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {reportingNoteId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Report Note</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Please describe why this note is inappropriate. Our team will review your report.
+            </p>
+            <textarea
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              placeholder="Describe the issue..."
+              className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              rows={4}
+            />
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => {
+                  setReportingNoteId(null);
+                  setReportReason('');
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (reportReason.trim()) {
+                    reportMutation.mutate({ noteId: reportingNoteId, reason: reportReason });
+                  }
+                }}
+                disabled={!reportReason.trim() || reportMutation.isPending}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {reportMutation.isPending ? 'Submitting...' : 'Submit Report'}
+              </button>
             </div>
           </div>
         </div>

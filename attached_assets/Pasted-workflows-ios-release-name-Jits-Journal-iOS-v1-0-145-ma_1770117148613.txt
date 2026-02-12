@@ -1,0 +1,168 @@
+workflows:
+  ios-release:
+    name: Jits Journal iOS v1.0.145
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    
+    integrations:
+      app_store_connect: Codemagic
+    
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - jits_journal_appstore_profile
+        certificates:
+          - jits_journal_dist_cert
+      
+      groups:
+        - jits_journal_env
+      
+      vars:
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+      
+      node: latest
+      xcode: latest
+      cocoapods: default
+    
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+    
+    scripts:
+      - name: Install npm dependencies
+        script: npm install
+      
+      - name: Build web application with environment variables
+        script: |
+          echo "Building with environment variables..."
+          echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL"
+          echo "VITE_SUPABASE_ANON_KEY length: ${#VITE_SUPABASE_ANON_KEY}"
+          export VITE_SUPABASE_URL="$VITE_SUPABASE_URL"
+          export VITE_SUPABASE_ANON_KEY="$VITE_SUPABASE_ANON_KEY"
+          export VITE_REVENUECAT_IOS_SDK_KEY="$VITE_REVENUECAT_IOS_SDK_KEY"
+          export VITE_REVENUECAT_PUBLIC_SDK_KEY="$VITE_REVENUECAT_PUBLIC_SDK_KEY"
+          npm run build
+      
+      - name: Sync Capacitor iOS
+        script: npx cap sync ios
+      
+      - name: Add CFBundleIconName to Info.plist
+        script: |
+          set -e
+          cd $CM_BUILD_DIR/ios/App/App
+          echo "Current directory: $(pwd)"
+          echo "Info.plist exists: $(test -f Info.plist && echo 'yes' || echo 'no')"
+          echo "Before modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist 2>/dev/null || echo "CFBundleIconName not found"
+          
+          # Try to add, if exists then set
+          /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" Info.plist 2>/dev/null || \
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" Info.plist
+          
+          echo "After modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist
+          echo "CFBundleIconName successfully set to AppIcon"
+      
+      - name: Install CocoaPods dependencies
+        script: cd ios/App && pod install
+      
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      
+      - name: Increment build number
+        script: |
+          cd $CM_BUILD_DIR/ios/App
+          BUILD_NUM=$(($BUILD_NUMBER + 43))
+          agvtool new-version -all $BUILD_NUM
+      
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    
+    publishing:
+      email:
+        recipients:
+          - bjjjitsjournal@gmail.com
+        notify:
+          success: true
+          failure: true
+      
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+
+  android-release:
+    name: Jits Journal Android v1.0.145
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    
+    environment:
+      android_signing:
+        - jits-journal-final
+      
+      groups:
+        - jits_journal_env
+      
+      vars:
+        PACKAGE_NAME: "com.jitsjournal.app"
+      
+      node: latest
+      java: 17
+    
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
+    
+    scripts:
+      - name: Install npm dependencies
+        script: npm install
+      
+      - name: Build web application with environment variables
+        script: |
+          echo "Building with environment variables..."
+          echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL"
+          echo "VITE_SUPABASE_ANON_KEY length: ${#VITE_SUPABASE_ANON_KEY}"
+          export VITE_SUPABASE_URL="$VITE_SUPABASE_URL"
+          export VITE_SUPABASE_ANON_KEY="$VITE_SUPABASE_ANON_KEY"
+          export VITE_REVENUECAT_IOS_SDK_KEY="$VITE_REVENUECAT_IOS_SDK_KEY"
+          export VITE_REVENUECAT_ANDROID_SDK_KEY="$VITE_REVENUECAT_ANDROID_SDK_KEY"
+          export VITE_REVENUECAT_PUBLIC_SDK_KEY="$VITE_REVENUECAT_PUBLIC_SDK_KEY"
+          npm run build
+      
+      - name: Sync Capacitor Android
+        script: npx cap sync android
+      
+      - name: Build Android AAB
+        script: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew clean
+          ./gradlew bundleRelease --stacktrace
+    
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+      - android/app/build/outputs/**/*.apk
+    
+    publishing:
+      email:
+        recipients:
+          - bjjjitsjournal@gmail.com
+        notify:
+          success: true
+          failure: true

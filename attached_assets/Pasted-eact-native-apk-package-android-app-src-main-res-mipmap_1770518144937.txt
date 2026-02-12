@@ -1,0 +1,91 @@
+eact-native-apk-package/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+ create mode 100644 react-native-apk-package/android/app/src/main/res/values/ic_launcher_background.xml
+ create mode 100644 react-native-apk-package/android/app/src/main/res/values/strings.xml
+ create mode 100644 react-native-apk-package/android/app/src/main/res/values/styles.xml
+ create mode 100644 react-native-apk-package/android/app/src/main/res/xml/config.xml
+ create mode 100644 react-native-apk-package/android/app/src/main/res/xml/file_paths.xml
+ create mode 100644 react-native-apk-package/android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java
+ create mode 100644 react-native-apk-package/android/build.gradle
+ create mode 100644 react-native-apk-package/android/capacitor-cordova-android-plugins/build.gradle
+ create mode 100644 react-native-apk-package/android/capacitor-cordova-android-plugins/cordova.variables.gradle
+ create mode 100644 react-native-apk-package/android/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml
+ create mode 100644 react-native-apk-package/android/capacitor-cordova-android-plugins/src/main/java/.gitkeep
+ create mode 100644 react-native-apk-package/android/capacitor-cordova-android-plugins/src/main/res/.gitkeep
+ create mode 100644 react-native-apk-package/android/capacitor.settings.gradle
+ create mode 100644 react-native-apk-package/android/gradle.properties
+ create mode 100644 react-native-apk-package/android/gradle/wrapper/gradle-wrapper.jar
+ create mode 100644 react-native-apk-package/android/gradle/wrapper/gradle-wrapper.properties
+ create mode 100644 react-native-apk-package/android/gradlew
+ create mode 100644 react-native-apk-package/android/gradlew.bat
+ create mode 100644 react-native-apk-package/android/settings.gradle
+ create mode 100644 react-native-apk-package/android/variables.gradle
+ create mode 100644 react-native-apk-package/package.json
+ create mode 100644 render.yaml
+ create mode 100644 replit.md
+ create mode 100644 scripts/create-game-plans-table.js
+ create mode 100644 scripts/create-game-plans-table.mjs
+ create mode 100644 server/db.ts
+ create mode 100644 server/emailService.ts
+ create mode 100644 server/index.ts
+ create mode 100644 server/openaiService.ts
+ create mode 100644 server/r2Storage.ts
+ create mode 100644 server/routes.ts
+ create mode 100644 server/routes.ts.backup
+ create mode 100644 server/setup-stripe-products.ts
+ create mode 100644 server/storage.ts
+ create mode 100644 server/storage.ts.backup
+ create mode 100644 server/storageUtils.ts
+ create mode 100644 server/vite.ts
+ create mode 100644 shared/schema.ts
+ create mode 100644 shared/shared/schema.ts
+ create mode 100644 simple-build/AndroidManifest.xml
+ create mode 100644 simple-build/assets/www/index.html
+ create mode 100644 simple-build/assets/www/public/assets/index-DcGGSogR.js
+ create mode 100644 simple-build/assets/www/public/assets/index-Dha91UYG.css
+ create mode 100644 simple-build/assets/www/public/feature-graphic.png
+ create mode 100644 simple-build/assets/www/public/feature-graphic.svg
+ create mode 100644 simple-build/assets/www/public/icon-128x128.png
+ create mode 100644 simple-build/assets/www/public/icon-144x144.png
+ create mode 100644 simple-build/assets/www/public/icon-152x152.png
+ create mode 100644 simple-build/assets/www/public/icon-192x192.png
+ create mode 100644 simple-build/assets/www/public/icon-192x192.svg
+ create mode 100644 simple-build/assets/www/public/icon-384x384.png
+ create mode 100644 simple-build/assets/www/public/icon-512x512.png
+ create mode 100644 simple-build/assets/www/public/icon-512x512.svg
+ create mode 100644 simple-build/assets/www/public/icon-72x72.png
+ create mode 100644 simple-build/assets/www/public/icon-96x96.png
+ create mode 100644 simple-build/assets/www/public/index.html
+ create mode 100644 simple-build/assets/www/public/manifest.json
+ create mode 100644 simple-build/assets/www/public/screenshot-classes.svg
+ create mode 100644 simple-build/assets/www/public/screenshot-dashboard.svg
+ create mode 100644 simple-build/assets/www/public/screenshot-notes.svg
+ create mode 100644 simple-build/assets/www/public/screenshot-subscription.svg
+ create mode 100644 simple-build/assets/www/public/sw.js
+ create mode 100644 simple-build/res/drawable/icon.png
+ create mode 100644 simple-build/res/drawable/icon.xml
+ create mode 100644 simple-build/res/values/styles.xml
+ create mode 100644 simple-build/src/main/java/com/jitsjournal/app/MainActivity.java
+ create mode 100644 tailwind.config.ts
+ create mode 100644 tsconfig.json
+ create mode 100644 vercel.json
+ create mode 100644 vite.config.ts
+ create mode 100644 weekly_commitments_backup.json
+ create mode 100644 working-credentials.md
+Enumerating objects: 3372, done.
+Counting objects: 100% (3372/3372), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (3260/3260), done.
+error: RPC failed; HTTP 408 curl 22 The requested URL returned error: 408
+send-pack: unexpected disconnect while reading sideband packet
+Writing objects: 100% (3372/3372), 336.08 MiB | 843.00 KiB/s, done.
+Total 3372 (delta 96), reused 0 (delta 0), pack-reused 0 (from 0)
+fatal: the remote end hung up unexpectedly
+Everything up-to-date
+PS C:\Users\joe\Documents\thefinaljitsjournal\JitsPlannerPro>
+PS C:\Users\joe\Documents\thefinaljitsjournal\JitsPlannerPro>

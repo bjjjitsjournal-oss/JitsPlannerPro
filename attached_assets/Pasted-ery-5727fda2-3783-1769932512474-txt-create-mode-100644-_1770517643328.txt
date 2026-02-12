@@ -1,0 +1,36 @@
+ery-5727fda2-3783-_1769932512474.txt
+ create mode 100644 attached_assets/Pasted--PS-C-Users-joe-Documents-JitsPlannerPro-content-conten_1769904183945.txt
+ create mode 100644 attached_assets/Pasted--PS-C-Users-joe-cd-C-Users-joe-Documents-JitsPlannerPro_1769904114952.txt
+ create mode 100644 attached_assets/Pasted--code-409-message-Validation-failed-underlying-errors--_1770025497477.txt
+ create mode 100644 attached_assets/Pasted--code-409-message-Validation-failed-underlying-errors--_1770025529693.txt
+ create mode 100644 attached_assets/Pasted--code-409-message-Validation-failed-underlying-errors--_1770026480250.txt
+ create mode 100644 attached_assets/Pasted--code-409-message-Validation-failed-underlying-errors--_1770026942701.txt
+ create mode 100644 attached_assets/Pasted--code-409-message-Validation-failed-underlying-errors--_1770028224384.txt
+ create mode 100644 attached_assets/Pasted--render-srv-d3ud62fdiees73e6a19g-5bf5d578d4-j88rg-proje_1770346796342.txt
+ create mode 100644 attached_assets/Pasted--run-npm-fund-for-details-41-vulnerabilities-1-low-10-m_1769920177985.txt
+ create mode 100644 attached_assets/Pasted--run-npm-fund-for-details-41-vulnerabilities-1-low-10-m_1769920184437.txt
+ create mode 100644 attached_assets/Pasted--run-npm-fund-for-details-41-vulnerabilities-1-low-10-m_1769920195469.txt
+ create mode 100644 attached_assets/Pasted--run-npm-fund-for-details-41-vulnerabilities-1-low-10-m_1769920214168.txt
+ create mode 100644 attached_assets/Pasted--run-npm-fund-for-details-Menu-41-vulnerabilities-1-low_1769914444993.txt
+ create mode 100644 attached_assets/Pasted-10-12-17-AM-express-GET-api-health-200-in-1ms-status-ok_1770027500976.txt
+ create mode 100644 attached_assets/Pasted-2b3-02af-4cc3-9408-80a143b0cb13-Kesa-escape-38-1-row-re_1770346536194.txt
+ create mode 100644 attached_assets/Pasted-M-express-GET-api-health-200-in-0ms-status-ok-timestamp_1770116210765.txt
+ create mode 100644 attached_assets/Pasted-Windows-PowerShell-Copyright-C-Microsoft-Corporation-Al_1769904227911.txt
+ create mode 100644 attached_assets/Pasted-Windows-PowerShell-Copyright-C-Microsoft-Corporation-Al_1769904311715.txt
+ create mode 100644 attached_assets/Pasted-he-current-state-first-PS-C-Users-joe-Documents-JitsPla_1769904070847.txt
+ create mode 100644 attached_assets/Pasted-workflows-ios-release-name-Jits-Journal-iOS-v1-0-145-ma_1770117148613.txt
+ create mode 100644 attached_assets/Screenshot_20260203_072459_Jits_Journal_1770063941701.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203159_Jits_Journal_1770111151116.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203159_Jits_Journal_1770111525795.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203159_Jits_Journal_1770111592405.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203358_Jits_Journal_1770111256825.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203358_Jits_Journal_1770111518213.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_203358_Jits_Journal_1770111598082.jpg
+ create mode 100644 attached_assets/Screenshot_20260203_215417_Jits_Journal_1770116086696.jpg
+ create mode 100644 attached_assets/Screenshot_20260208_093024_Jits_Journal_1770503438991.jpg
+ create mode 100644 attached_assets/Screenshot_20260208_093024_Jits_Journal_1770504165031.jpg
+ create mode 100644 attached_assets/classes_rows_1770260849422.csv
+ create mode 100644 attached_assets/notes_rows_1770260513198.csv
+ create mode 100644 attached_assets/notes_rows_1770346705606.csv
+fatal: cannot rename the current branch while not on any
+Everything up-to-date

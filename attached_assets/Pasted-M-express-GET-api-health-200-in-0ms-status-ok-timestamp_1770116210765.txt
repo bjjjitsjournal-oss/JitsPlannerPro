@@ -1,0 +1,149 @@
+M [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:08.0…
+Menu
+Looking up user by Supabase ID: 5727fda2-3783-4b36-b6f2-0a643f764f29 email: bjjjitsjournal@gmail.com
+10:53:13 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:13.0…
+Found user by supabase_uid: 1
+10:53:13 AM [express] GET /api/user/by-supabase-id/5727fda2-3783-4b36-b6f2-0a643f764f29 200 in 1375ms…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:14 AM [express] GET /api/classes 200 in 578ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:15 AM [express] GET /api/classes 200 in 555ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+✅ Mobile auth successful for user: 1
+ðŸ” GET /api/weekly-commitments/current called for userId: 1
+✅ Mobile auth successful for user: 1
+ðŸ” getCurrentWeekCommitment returned: 42
+10:53:15 AM [express] GET /api/weekly-commitments/current 200 in 1787ms :: {"id":42,"weekStartDate":"…
+10:53:15 AM [express] GET /api/belts/current 200 in 1808ms :: {"id":1,"belt":"blue","stripes":2,"prom…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:16 AM [express] GET /api/belts/current 200 in 565ms :: {"id":1,"belt":"blue","stripes":2,"promo…
+10:53:18 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:18.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:23 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:23.0…
+10:53:23 AM [express] PUT /api/weekly-commitments/42 200 in 586ms :: {"id":42,"weekStartDate":"2026-0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+ðŸ” GET /api/weekly-commitments/current called for userId: 1
+10:53:24 AM [express] GET /api/classes 200 in 563ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+ðŸ” getCurrentWeekCommitment returned: 42
+10:53:24 AM [express] GET /api/weekly-commitments/current 200 in 570ms :: {"id":42,"weekStartDate":"2…
+10:53:28 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:28.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+10:53:33 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:33.0…
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:53:33 AM [express] GET /api/classes 200 in 589ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+10:53:33 AM [express] GET /api/belts/current 200 in 587ms :: {"id":1,"belt":"blue","stripes":2,"promo…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:53:34 AM [express] GET /api/belts/current 200 in 564ms :: {"id":1,"belt":"blue","stripes":2,"promo…
+10:53:34 AM [express] GET /api/classes 200 in 564ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:53:37 AM [express] GET /api/my-gym 200 in 724ms :: {"id":7,"name":"Apex Mornings","code":"A8EF753B…
+10:53:38 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:38.0…
+10:53:38 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:38.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+🔍 GET /api/gym-notes - userId: 1
+🏋️ User gyms found: 1 [
+  {
+    id: 7,
+    name: 'Apex Mornings',
+    code: 'A8EF753B',
+    ownerId: 1,
+    createdAt: 2025-10-24T21:24:33.900Z,
+    userRole: 'admin'
+  }
+]
+📝 Fetching notes for gym ID: 7
+⏱️ GET /api/notes/shared completed in 1759ms (1 notes) - OPTIMIZED with JOIN
+10:53:39 AM [express] GET /api/notes/shared 200 in 2153ms :: [{"id":"3c374b4f-259d-497e-8eb6-6900ac50…
+✅ Gym notes found: 4
+10:53:42 AM [express] GET /api/gym-notes 200 in 3507ms :: [{"id":"017ca60a-8bd1-49d1-9d3d-82f92742eff…
+10:53:43 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:43.0…
+10:53:48 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:48.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:50 AM [express] GET /api/classes 200 in 586ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:51 AM [express] GET /api/classes 200 in 556ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+✅ Mobile auth successful for user: 1
+10:53:51 AM [express] GET /api/belts/current 200 in 1829ms :: {"id":1,"belt":"blue","stripes":2,"prom…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:52 AM [express] GET /api/belts/current 200 in 553ms :: {"id":1,"belt":"blue","stripes":2,"promo…
+10:53:53 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:53:53.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+10:53:55 AM [express] GET /api/classes 200 in 557ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+✅ Mobile auth successful for user: 1
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+10:53:55 AM [express] GET /api/user-stats 200 in 922ms :: {"totalClasses":92,"lastPromotionDate":"202…
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:53:56 AM [express] GET /api/storage/usage 200 in 1742ms :: {"storageUsed":151201435,"storageUsedFo…
+10:53:57 AM [express] GET /api/my-gym 200 in 1987ms :: {"id":7,"name":"Apex Mornings","code":"A8EF753…
+10:53:57 AM [express] GET /api/gyms/7/members 200 in 2123ms :: [{"userId":1012,"email":"ashley.sultan…
+⏱️ GET /api/notes completed in 1781ms for user 1 (5 notes)
+10:53:58 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:53:58.0…
+10:53:58 AM [express] GET /api/notes 200 in 3061ms :: [{"id":"e3486d07-e0b5-4994-a952-b67abb48f8af","…
+10:54:03 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:54:03.0…
+10:54:08 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:54:08.0…
+10:54:08 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:54:08.0…
+10:54:13 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:54:13.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:54:15 AM [express] GET /api/belts/current 200 in 1793ms :: {"id":1,"belt":"blue","stripes":2,"prom…
+10:54:15 AM [express] GET /api/classes 200 in 1843ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:54:16 AM [express] GET /api/classes 200 in 558ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+10:54:16 AM [express] GET /api/belts/current 200 in 576ms :: {"id":1,"belt":"blue","stripes":2,"promo…
+10:54:18 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:54:18.0…
+10:54:23 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:54:23.0…
+10:54:28 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:54:28.0…
+10:54:33 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:54:33.0…
+10:54:38 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-03T10:54:38.0…
+10:54:38 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-03T10:54:38.0…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+ðŸ” GET /api/weekly-commitments/current called for userId: 1
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+ðŸ” getCurrentWeekCommitment returned: 42
+10:54:40 AM [express] GET /api/weekly-commitments/current 200 in 1781ms :: {"id":42,"weekStartDate":"…
+10:54:40 AM [express] GET /api/classes 200 in 1787ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","…
+10:54:40 AM [express] GET /api/belts/current 200 in 1821ms :: {"id":1,"belt":"blue","stripes":2,"prom…
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+📱 Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+✅ Mobile auth successful for user: 1
+✅ Mobile auth successful for user: 1
+10:54:41 AM [express] GET /api/classes 200 in 556ms :: [{"id":94,"date":"2026-02-03T00:00:00.000Z","t…
+10:54:41 AM [express] GET /api/belts/current 200 in 581ms :: {"id":1,"belt":"blue","stripes":2,"promo…

@@ -1,0 +1,83 @@
+10:12:17 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:17.1…
+10:12:22 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:22.1…
+10:12:27 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:12:27.1…
+10:12:27 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:27.1…
+10:12:32 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:32.1…
+10:12:37 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:37.1…
+10:12:42 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:12:42.1…
+10:12:47 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:47.1…
+10:12:52 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:12:52.1…
+Menu
+10:12:57 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:57.1…
+10:12:57 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:12:57.1…
+10:13:02 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:13:02.1…
+10:13:07 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:13:07.1…
+10:13:12 AM [express] GET /api/health 200 in 0ms :: {"status":"ok","timestamp":"2026-02-02T10:13:12.1…
+?? Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+?? Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+?? Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+10:13:17 AM [express] GET /api/health 200 in 1ms :: {"status":"ok","timestamp":"2026-02-02T10:13:17.1…
+?? Mobile auth: Using supabaseId from query : 5727fda2-3783-4b36-b6f2-0a643f764f29
+? Mobile auth successful for user: 1
+? Mobile auth successful for user: 1
+ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â GET /api/weekly-commitments/current called for userId: 1
+? Mobile auth successful for user: 1
+10:13:18 AM [express] GET /api/belts/current 200 in 2235ms :: {"id":1,"belt":"blue","stripes":2,"prom…
+ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â getCurrentWeekCommitment returned: null
+10:13:18 AM [express] GET /api/weekly-commitments/current 200 in 2267ms
+10:13:18 AM [express] GET /api/classes 200 in 2281ms :: [{"id":93,"date":"2026-01-29T00:00:00.000Z","…
+? Mobile auth successful for user: 1
+ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ POST /api/weekly-commitments called with data: {
+  week_start_date: '2026-02-01T00:00:00.000Z',
+  target_classes: 3,
+  completed_classes: 0,
+  is_completed: 0
+} userId: 1
+ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Error in POST /api/weekly-commitments: ZodError: [
+  {
+    "code": "invalid_date",
+    "path": [
+      "weekStartDate"
+    ],
+    "message": "Invalid date"
+  },
+  {
+    "code": "invalid_type",
+    "expected": "number",
+    "received": "undefined",
+    "path": [
+      "targetClasses"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/v3/types.js:39:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/v3/types.js:114:22)
+    at file:///opt/render/project/src/dist/index.js:3567:59
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at flexibleAuth (file:///opt/render/project/src/dist/index.js:2069:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  issues: [
+    { code: 'invalid_date', path: [Array], message: 'Invalid date' },
+    {
+      code: 'invalid_type',
+      expected: 'number',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    { code: 'invalid_date', path: [Array], message: 'Invalid date' },
+    {
+      code: 'invalid_type',
+      expected: 'number',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}

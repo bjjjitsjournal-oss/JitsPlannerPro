@@ -315,6 +315,8 @@ export const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 60000,
+      gcTime: 300000,
       queryFn: async ({ queryKey }) => {
         const [supabaseId, accessToken] = await Promise.all([
           getSupabaseId(),

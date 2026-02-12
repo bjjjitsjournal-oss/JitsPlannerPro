@@ -4,7 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users, noteReports } from "@shared/schema";
 import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -19,9 +19,19 @@ import crypto from "crypto";
 import { sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail, sendAdminSignupNotification } from "./emailService";
 import Stripe from "stripe";
 import multer from "multer";
+import rateLimit from "express-rate-limit";
 
 // JWT secret - in production, use a secure environment variable
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-production";
+
+// Consolidated premium emails list - update this one list to manage all premium users
+const PREMIUM_EMAILS = [
+  'joe833360@gmail.com',
+  'Joe@cleancutconstructions.com.au',
+  'bjjjitsjournal@gmail.com',
+  'admin@apexbjj.com.au',
+  'pakeliot@gmail.com',
+];
 
 // Supabase admin client for token verification
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -40,7 +50,7 @@ const supabaseAdmin = supabaseUrl && supabaseServiceKey
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024 * 1024, // 5GB limit
+    fileSize: 1 * 1024 * 1024 * 1024, // 1GB limit
   },
 });
 
@@ -98,10 +108,12 @@ const authenticateToken = async (req: any, res: any, next: any) => {
       };
       isSupabaseToken = true;
     } catch (supabaseError) {
-      console.log('Not a Supabase token, trying legacy JWT...');
+      console.log('Fast Supabase JWT verification failed, trying API fallback...');
     }
-  } else if (supabaseAdmin) {
-    // SLOW: API-based verification (~1500ms) - fallback only
+  }
+
+  // SLOW PATH: API-based Supabase verification (~1500ms) - fallback
+  if (!decoded && supabaseAdmin) {
     try {
       const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
       
@@ -153,9 +165,8 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Supabase user not found in database, auto-creating:', decoded.email);
         
         // Auto-create user account with premium status for known emails
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-        const isPremiumUser = premiumEmails.includes(decoded.email);
+        const isPremiumUser = PREMIUM_EMAILS.includes(decoded.email);
         const isAdmin = adminEmails.includes(decoded.email);
         
         const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -180,8 +191,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
         
         // Auto-restore user account
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-        const isPremiumUser = premiumEmails.includes(decoded.email);
+        const isPremiumUser = PREMIUM_EMAILS.includes(decoded.email);
         
         const existingUser = await storage.getUserByEmail(decoded.email);
         if (existingUser) {
@@ -317,6 +327,48 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Rate limiting for auth endpoints to prevent brute force attacks
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // 20 attempts per 15 minutes
+    message: { message: 'Too many attempts, please try again later' },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  const generalLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 100, // 100 requests per minute
+    message: { message: 'Too many requests, please slow down' },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.use('/api/', generalLimiter);
+  app.use('/api/auth/', authLimiter);
+  app.use('/api/login', authLimiter);
+  app.use('/api/register', authLimiter);
+  app.use('/api/forgot-password', authLimiter);
+
+  // Auto-migrate: create note_reports table if it doesn't exist
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS note_reports (
+        id SERIAL PRIMARY KEY,
+        note_id VARCHAR NOT NULL REFERENCES notes(id),
+        reported_by INTEGER NOT NULL REFERENCES users(id),
+        reason TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS note_reports_note_id_idx ON note_reports(note_id);
+      CREATE INDEX IF NOT EXISTS note_reports_status_idx ON note_reports(status);
+    `);
+    console.log('✅ note_reports table ready');
+  } catch (error) {
+    console.error('Failed to create note_reports table:', error);
+  }
+
   // PUBLIC Privacy Policy page for Google Play / App Store (no auth required)
   app.get("/privacy", (req, res) => {
     res.send(`
@@ -460,8 +512,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
       // Create user with premium access for specific emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-      const isPremiumUser = premiumEmails.includes(userData.email);
+      const isPremiumUser = PREMIUM_EMAILS.includes(userData.email);
       
       // Assign admin role for specific emails
       const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
@@ -631,9 +682,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         console.log('Creating new user for Supabase ID:', supabaseUser.id);
         
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-        const isPremiumUser = premiumEmails.includes(supabaseUser.email!);
+        const isPremiumUser = PREMIUM_EMAILS.includes(supabaseUser.email!);
         const isAdmin = adminEmails.includes(supabaseUser.email!);
         
         const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
@@ -683,8 +733,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Auto-upgrade premium users if they don't already have premium
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-      const isPremiumUser = premiumEmails.includes(email);
+      const isPremiumUser = PREMIUM_EMAILS.includes(email);
       if (isPremiumUser && !user.subscriptionExpiresAt) {
         const updatedUser = await storage.updateUser(user.id, {
           subscriptionStatus: 'premium',
@@ -1117,9 +1166,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Videos routes - with proper authentication and user isolation
-  app.get("/api/videos", authenticateToken, async (req: any, res) => {
+  app.get("/api/videos", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = (req as any).userId;
       const { category, search } = req.query;
       
       let videos;
@@ -1137,9 +1186,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/videos", authenticateToken, async (req: any, res) => {
+  app.post("/api/videos", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = (req as any).userId;
       const videoData = insertVideoSchema.parse({ ...req.body, userId });
       const newVideo = await storage.createVideo(videoData);
       res.status(201).json(newVideo);
@@ -1346,35 +1395,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     const startTime = Date.now();
     try {
+      const userId = (req as any).user?.id;
       const { offset = 0, limit = 15 } = req.query;
       const offsetNum = Math.max(0, parseInt(offset as string) || 0);
       const limitNum = Math.min(50, Math.max(1, parseInt(limit as string) || 15));
       
-      // Check cache first
-      const cacheKey = getCacheKey(null, 'shared', offsetNum);
-      const cachedNotes = getFromCache(cacheKey);
-      
-      if (cachedNotes) {
-        const duration = Date.now() - startTime;
-        console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
-        return res.json(cachedNotes.map(note => ({
-          ...note,
-          isLikedByUser: false
-        })));
-      }
-      
       // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1 with pagination
       const sharedNotes = await storage.getSharedNotes(offsetNum, limitNum);
-      setInCache(cacheKey, sharedNotes);
       
       const totalDuration = Date.now() - startTime;
       console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
       
-      // Notes already include author info and like count from the JOIN query
-      res.json(sharedNotes.map(note => ({
-        ...note,
-        isLikedByUser: false // TODO: Add user-specific like status in future optimization
-      })));
+      // Add user-specific like status
+      const notesWithLikes = await Promise.all(sharedNotes.map(async (note: any) => {
+        const likes = await storage.getNoteLikes(note.id);
+        const isLikedByUser = userId ? await storage.isNoteLikedByUser(note.id, userId) : false;
+        return {
+          ...note,
+          likeCount: likes.length,
+          isLikedByUser,
+        };
+      }));
+      
+      res.json(notesWithLikes);
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(`❌ GET /api/notes/shared failed after ${duration}ms:`, error);
@@ -1809,10 +1852,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Note likes routes
-  app.post("/api/notes/:id/like", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/like", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).user.id;
 
       const success = await storage.likeNote(noteId, userId);
       
@@ -1833,10 +1876,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/notes/:id/like", authenticateToken, async (req, res) => {
+  app.delete("/api/notes/:id/like", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).user.id;
 
       const success = await storage.unlikeNote(noteId, userId);
       
@@ -1857,10 +1900,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/notes/:id/likes", authenticateToken, async (req, res) => {
+  app.get("/api/notes/:id/likes", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).user.id;
 
       const likeCount = (await storage.getNoteLikes(noteId)).length;
       const isLiked = await storage.isNoteLikedByUser(noteId, userId);
@@ -1875,7 +1918,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Report a note
+  app.post("/api/notes/:id/report", flexibleAuth, async (req, res) => {
+    try {
+      const noteId = req.params.id;
+      const userId = (req as any).user.id;
+      const { reason } = req.body;
 
+      if (!reason || reason.trim().length === 0) {
+        return res.status(400).json({ message: "Please provide a reason for reporting" });
+      }
+
+      const existingReports = await storage.getReportsByNoteId(noteId);
+      const alreadyReported = existingReports.some(r => r.reportedBy === userId);
+      if (alreadyReported) {
+        return res.status(400).json({ message: "You have already reported this note" });
+      }
+
+      const report = await storage.reportNote(noteId, userId, reason.trim());
+      res.json({ message: "Note reported successfully. Our team will review it.", report });
+    } catch (error) {
+      console.error("Error reporting note:", error);
+      res.status(500).json({ message: "Failed to report note" });
+    }
+  });
+
+  // Get all reports (admin only)
+  app.get("/api/admin/reports", flexibleAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const status = req.query.status as string | undefined;
+      const reports = await storage.getReports(status);
+      res.json(reports);
+    } catch (error) {
+      console.error("Error getting reports:", error);
+      res.status(500).json({ message: "Failed to get reports" });
+    }
+  });
+
+  // Update report status (admin only - dismiss or mark reviewed)
+  app.put("/api/admin/reports/:id", flexibleAuth, async (req, res) => {
+    try {
+      const userId = (req as any).user.id;
+      const reportId = parseInt(req.params.id);
+      const { status } = req.body;
+
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      if (!['reviewed', 'dismissed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status. Use 'reviewed' or 'dismissed'" });
+      }
+
+      const report = await storage.updateReportStatus(reportId, status);
+      if (!report) {
+        return res.status(404).json({ message: "Report not found" });
+      }
+
+      res.json({ message: `Report ${status}`, report });
+    } catch (error) {
+      console.error("Error updating report:", error);
+      res.status(500).json({ message: "Failed to update report" });
+    }
+  });
 
 
 
@@ -1883,18 +1995,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Get user by Supabase UID - No auth required for login
+  // Supports email-based account linking for cross-platform auth
   app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
     try {
       const { supabaseId } = req.params;
-      console.log('Looking up user by Supabase ID:', supabaseId);
+      const email = req.query.email as string | undefined;
+      console.log('Looking up user by Supabase ID:', supabaseId, 'email:', email);
       
-      const result = await pool.query(
+      // First try to find by supabase_uid
+      let result = await pool.query(
         'SELECT * FROM users WHERE supabase_uid = $1',
         [supabaseId]
       );
       
       if (result.rows.length > 0) {
-        console.log('Found user:', result.rows[0].id);
+        console.log('Found user by supabase_uid:', result.rows[0].id);
         let user = result.rows[0];
         
         // Auto-assign admin role for specific emails
@@ -1904,7 +2019,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
+          console.log(`✅ Auto-assigned admin role to ${user.email}`);
           
           // Return updated user
           if (updatedUser) {
@@ -1913,10 +2028,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         res.json(user);
-      } else {
-        console.log('User not found');
-        res.status(404).json({ message: 'User not found' });
+        return;
       }
+      
+      // If not found by supabase_uid but email is provided, try email-based account linking
+      if (email) {
+        console.log('User not found by supabase_uid, trying email-based account linking...');
+        result = await pool.query(
+          'SELECT * FROM users WHERE LOWER(email) = LOWER($1)',
+          [email]
+        );
+        
+        if (result.rows.length > 0) {
+          let user = result.rows[0];
+          console.log('🔗 Found existing user by email:', user.email, 'Linking to new supabase_uid...');
+          
+          // Update the user's supabase_uid to link the account
+          await pool.query(
+            'UPDATE users SET supabase_uid = $1 WHERE id = $2',
+            [supabaseId, user.id]
+          );
+          console.log('✅ Account linked! Updated supabase_uid for user:', user.id);
+          
+          // Return user with updated supabase_uid
+          user.supabase_uid = supabaseId;
+          
+          // Auto-assign admin role for specific emails
+          const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+          const isAdmin = adminEmails.includes(user.email);
+          if (isAdmin && user.role !== 'admin') {
+            const updatedUser = await storage.updateUser(user.id, {
+              role: 'admin'
+            });
+            console.log(`✅ Auto-assigned admin role to ${user.email}`);
+            if (updatedUser) {
+              user = updatedUser;
+            }
+          }
+          
+          res.json(user);
+          return;
+        }
+      }
+      
+      console.log('User not found by supabase_uid or email');
+      res.status(404).json({ message: 'User not found' });
     } catch (error: any) {
       console.error('Error fetching user by Supabase ID:', error);
       res.status(500).json({ message: 'Error fetching user: ' + error.message });
@@ -1924,7 +2080,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user statistics
-  app.get("/api/user-stats", authenticateToken, async (req, res) => {
+  app.get("/api/user-stats", flexibleAuth, async (req, res) => {
     try {
       const userId = (req as any).user.userId;
       
@@ -1980,7 +2136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Drawings routes - with proper authentication 
-  app.get("/api/drawings", authenticateToken, async (req: any, res) => {
+  app.get("/api/drawings", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.user.userId;
       const drawings = await storage.getDrawings(userId);
@@ -1990,7 +2146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/drawings", authenticateToken, async (req: any, res) => {
+  app.post("/api/drawings", flexibleAuth, async (req: any, res) => {
     try {
       const userId = req.user.userId;
       const drawingData = insertDrawingSchema.parse({ ...req.body, userId });
@@ -2005,8 +2161,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/drawings/:id", async (req, res) => {
+  app.put("/api/drawings/:id", flexibleAuth, async (req: any, res) => {
     try {
+      const userId = req.user.userId;
       const id = parseInt(req.params.id);
       const drawingData = insertDrawingSchema.partial().parse(req.body);
       const updatedDrawing = await storage.updateDrawing(id, drawingData);
@@ -2025,8 +2182,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/drawings/:id", async (req, res) => {
+  app.delete("/api/drawings/:id", flexibleAuth, async (req: any, res) => {
     try {
+      const userId = req.user.userId;
       const id = parseInt(req.params.id);
       const deleted = await storage.deleteDrawing(id);
       
@@ -2064,7 +2222,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/belts", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
-      const beltData = insertBeltSchema.parse({ ...req.body, userId });
+      const body = { ...req.body };
+      if (body.promotion_date && !body.promotionDate) {
+        body.promotionDate = body.promotion_date;
+        delete body.promotion_date;
+      }
+      const beltData = insertBeltSchema.parse({ ...body, userId });
       const newBelt = await storage.createBelt(beltData);
       res.status(201).json(newBelt);
     } catch (error) {
@@ -2080,7 +2243,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/belts/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const beltData = insertBeltSchema.partial().parse(req.body);
+      const body = { ...req.body };
+      if (body.promotion_date && !body.promotionDate) {
+        body.promotionDate = body.promotion_date;
+        delete body.promotion_date;
+      }
+      const beltData = insertBeltSchema.partial().parse(body);
       const updatedBelt = await storage.updateBelt(id, beltData);
       
       if (!updatedBelt) {
@@ -2100,7 +2268,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/belts/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const beltData = insertBeltSchema.partial().parse(req.body);
+      const body = { ...req.body };
+      if (body.promotion_date && !body.promotionDate) {
+        body.promotionDate = body.promotion_date;
+        delete body.promotion_date;
+      }
+      const beltData = insertBeltSchema.partial().parse(body);
       const updatedBelt = await storage.updateBelt(id, beltData);
       
       if (!updatedBelt) {
@@ -2133,9 +2306,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Statistics route - with proper authentication and user isolation
-  app.get("/api/stats", authenticateToken, async (req: any, res) => {
+  app.get("/api/stats", flexibleAuth, async (req: any, res) => {
     try {
-      const userId = req.user.userId;
+      const userId = (req as any).userId;
       // Get user's classes only for stats calculation
       const userClasses = await storage.getClasses(userId);
       const now = new Date();
@@ -2453,6 +2626,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Admin access required" });
       }
       
+      // Check if user already owns a gym (one gym per owner, except super admin)
+      const isSuperAdmin = user.email === 'bjjjitsjournal@gmail.com';
+      if (!isSuperAdmin) {
+        const existingGym = await storage.getGymByOwnerId(userId);
+        if (existingGym) {
+          return res.status(400).json({ message: "You can only create one gym. You already own: " + existingGym.name });
+        }
+      }
+      
       const gymData = insertGymSchema.parse(req.body);
       
       // Generate unique code if not provided
@@ -2571,7 +2753,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get gym notes (only for gym members)
   app.get("/api/gym-notes", flexibleAuth, async (req, res) => {
     try {
-      const userId = req.userId;
+      const userId = (req as any).user?.id || req.userId;
       console.log('🔍 GET /api/gym-notes - userId:', userId);
       
       // Get user's gym memberships
@@ -2589,7 +2771,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const gymNotes = await storage.getGymNotes(gymId);
       console.log('✅ Gym notes found:', gymNotes.length);
       
-      res.json(gymNotes);
+      // Add like data to gym notes
+      const notesWithLikes = await Promise.all(gymNotes.map(async (note: any) => {
+        const likes = await storage.getNoteLikes(note.id);
+        const isLikedByUser = userId ? await storage.isNoteLikedByUser(note.id, userId) : false;
+        return {
+          ...note,
+          likeCount: likes.length,
+          isLikedByUser,
+        };
+      }));
+      
+      res.json(notesWithLikes);
     } catch (error) {
       console.error("Error getting gym notes:", error);
       res.status(500).json({ message: "Failed to get gym notes" });
@@ -2698,9 +2891,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Unshare note from gym (admin only)
-  app.post("/api/notes/:id/unshare-from-gym", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/unshare-from-gym", flexibleAuth, async (req, res) => {
     try {
-      const userId = req.userId;
+      const userId = (req as any).userId;
       const noteId = req.params.id;
       
       // Verify note belongs to user
@@ -2770,9 +2963,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get user's gyms
-  app.get("/api/gyms/my-gyms", authenticateToken, async (req, res) => {
+  app.get("/api/gyms/my-gyms", flexibleAuth, async (req, res) => {
     try {
-      const userId = req.userId;
+      const userId = (req as any).userId;
       const gyms = await storage.getUserGyms(userId);
       res.json(gyms);
     } catch (error) {
@@ -2782,9 +2975,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Get gym-specific shared notes
-  app.get("/api/gyms/:gymId/notes", authenticateToken, async (req, res) => {
+  app.get("/api/gyms/:gymId/notes", flexibleAuth, async (req, res) => {
     try {
-      const userId = req.userId;
+      const userId = (req as any).userId;
       const gymId = parseInt(req.params.gymId);
       
       // Verify user is a member of this gym

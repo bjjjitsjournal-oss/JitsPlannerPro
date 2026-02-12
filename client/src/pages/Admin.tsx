@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card } from '../components/ui/card';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users, Copy, Check, Trash2 } from 'lucide-react';
+import { Building2, Users, Copy, Check, Trash2, AlertTriangle, Flag } from 'lucide-react';
 
 export default function Admin() {
   const { user, supabaseUser } = useAuth();
@@ -65,6 +65,56 @@ export default function Admin() {
       toast({
         title: "Error",
         description: error.message || "Failed to delete gym",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const { data: reports = [], isLoading: reportsLoading, refetch: refetchReports } = useQuery({
+    queryKey: ['/api/admin/reports'],
+    enabled: user?.role === 'admin',
+    staleTime: 30000,
+  });
+
+  const dismissReportMutation = useMutation({
+    mutationFn: async (reportId: number) => {
+      return await apiRequest('PUT', `/api/admin/reports/${reportId}`, { status: 'dismissed' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reports'] });
+      refetchReports();
+      toast({
+        title: "Report dismissed",
+        description: "The report has been dismissed",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to dismiss report",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deleteReportedNoteMutation = useMutation({
+    mutationFn: async ({ noteId, reportId }: { noteId: string; reportId: number }) => {
+      await apiRequest('DELETE', `/api/notes/${noteId}/admin`);
+      await apiRequest('PUT', `/api/admin/reports/${reportId}`, { status: 'reviewed' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reports'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
+      refetchReports();
+      toast({
+        title: "Note deleted",
+        description: "The reported note has been removed",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete note",
         variant: "destructive",
       });
     }
@@ -193,6 +243,83 @@ export default function Admin() {
                         data-testid={`button-delete-${gym.id}`}
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Reported Notes Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-orange-500" />
+            Reported Notes ({reports.filter((r: any) => r.status === 'pending').length} pending)
+          </h2>
+
+          {reportsLoading ? (
+            <div className="text-center py-8 text-gray-500">Loading reports...</div>
+          ) : reports.filter((r: any) => r.status === 'pending').length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No pending reports. All clear!
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reports
+                .filter((r: any) => r.status === 'pending')
+                .map((report: any) => (
+                <Card key={report.id} className="p-4 border-l-4 border-l-orange-500">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Flag className="w-4 h-4 text-orange-500" />
+                          <span className="font-semibold text-sm">
+                            Reported by: {report.reporter?.firstName} {report.reporter?.lastName} ({report.reporter?.email})
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(report.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 rounded-lg p-3">
+                      <p className="text-sm font-medium text-orange-800 mb-1">Reason:</p>
+                      <p className="text-sm text-orange-700">{report.reason}</p>
+                    </div>
+
+                    {report.note && (
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Note Content:</p>
+                        <h4 className="font-semibold text-sm">{report.note.title}</h4>
+                        <p className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">{report.note.content}</p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          if (report.note && confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+                            deleteReportedNoteMutation.mutate({ noteId: report.noteId, reportId: report.id });
+                          }
+                        }}
+                        disabled={deleteReportedNoteMutation.isPending || !report.note}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Delete Note
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => dismissReportMutation.mutate(report.id)}
+                        disabled={dismissReportMutation.isPending}
+                      >
+                        Dismiss Report
                       </Button>
                     </div>
                   </div>

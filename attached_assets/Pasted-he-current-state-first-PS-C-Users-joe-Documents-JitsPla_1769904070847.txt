@@ -1,0 +1,64 @@
+he current state first
+PS C:\Users\joe\Documents\JitsPlannerPro> Get-Content "client/src/contexts/AuthContext.tsx" | Select-Object -Index (60..80)
+      headers['Authorization'] = `Bearer ${accessToken}`;
+      console.log('ðŸ”‘ Including Supabase access token in request');
+    }
+
+    const url = new URL(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`);
+    if (email) {
+      url.searchParams.set('email', email);
+    }
+
+    const response = await fetch(url.toString(), {
+      signal: controller.signal,
+      headers,
+    });
+
+    clearTimeout(timeoutId);
+    console.log('ðŸ“¡ User endpoint response status:', response.status);
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('âœ… User data loaded successfully:', { id: data.id, email: data.email });
+      return {
+PS C:\Users\joe\Documents\JitsPlannerPro> cd C:\Users\joe\Documents\JitsPlannerPro
+PS C:\Users\joe\Documents\JitsPlannerPro> Get-Content "server/routes.ts" | Select-Object -Index (1883..1920)
+
+  // Get user by Supabase UID - No auth required for login
+  app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
+    try {
+      const { supabaseId } = req.params;
+      console.log('Looking up user by Supabase ID:', supabaseId);
+
+      const result = await pool.query(
+        'SELECT * FROM users WHERE supabase_uid = $1',
+        [supabaseId]
+      );
+
+      if (result.rows.length > 0) {
+        console.log('Found user:', result.rows[0].id);
+        let user = result.rows[0];
+
+        // Auto-assign admin role for specific emails
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isAdmin = adminEmails.includes(user.email);
+        if (isAdmin && user.role !== 'admin') {
+          const updatedUser = await storage.updateUser(user.id, {
+            role: 'admin'
+          });
+          console.log(`Ã¢Å“â€¦ Auto-assigned admin role to ${user.email}`);
+
+          // Return updated user
+          if (updatedUser) {
+            user = updatedUser;
+          }
+        }
+
+        res.json(user);
+      } else {
+        console.log('User not found');
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error: any) {
+      console.error('Error fetching user by Supabase ID:', error);
+PS C:\Users\joe\Documents\JitsPlannerPro>

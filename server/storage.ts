@@ -1,5 +1,6 @@
+import crypto from "crypto";
 import { 
-  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities, gamePlans, gyms, gymMemberships,
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, noteReports, appNotes, authIdentities, gamePlans, gyms, gymMemberships,
   type Class, type InsertClass,
   type Video, type InsertVideo,
   type Note, type InsertNote,
@@ -10,6 +11,7 @@ import {
   type User, type InsertUser,
   type PasswordResetToken, type InsertPasswordResetToken,
   type NoteLike, type InsertNoteLike,
+  type NoteReport,
   type AppNote, type InsertAppNote,
   type AuthIdentity, type InsertAuthIdentity,
   type GamePlan, type InsertGamePlan,
@@ -109,12 +111,18 @@ export interface IStorage {
   deleteExpiredPasswordResetTokens(): Promise<void>;
 
   // Note Likes
-  likeNote(noteId: number, userId: number): Promise<boolean>;
-  unlikeNote(noteId: number, userId: number): Promise<boolean>;
+  likeNote(noteId: string, userId: number): Promise<boolean>;
+  unlikeNote(noteId: string, userId: number): Promise<boolean>;
   getNoteLikes(noteId: string): Promise<NoteLike[]>;
   getUserNoteLikes(userId: number): Promise<NoteLike[]>;
   isNoteLikedByUser(noteId: string, userId: number): Promise<boolean>;
   getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
+
+  // Note Reports
+  reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport>;
+  getReports(status?: string): Promise<any[]>;
+  updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined>;
+  getReportsByNoteId(noteId: string): Promise<NoteReport[]>;
 
   // Game Plans
   getGamePlans(userId: number): Promise<GamePlan[]>;
@@ -127,6 +135,7 @@ export interface IStorage {
   // Gyms
   createGym(gymData: InsertGym): Promise<Gym>;
   getGymByCode(code: string): Promise<Gym | undefined>;
+  getGymByOwnerId(ownerId: number): Promise<Gym | undefined>;
   getAllGyms(): Promise<Gym[]>;
   getUserGyms(userId: number): Promise<Gym[]>;
   deleteGym(gymId: number): Promise<boolean>;
@@ -513,7 +522,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Note Likes
-  async likeNote(noteId: number, userId: number): Promise<boolean> {
+  async likeNote(noteId: string, userId: number): Promise<boolean> {
     try {
       await db.insert(noteLikes).values({ noteId, userId });
       return true;
@@ -522,7 +531,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async unlikeNote(noteId: number, userId: number): Promise<boolean> {
+  async unlikeNote(noteId: string, userId: number): Promise<boolean> {
     const result = await db.delete(noteLikes)
       .where(and(eq(noteLikes.noteId, noteId), eq(noteLikes.userId, userId)));
     return (result.rowCount || 0) > 0;
@@ -730,6 +739,11 @@ export class DatabaseStorage implements IStorage {
     return gym || undefined;
   }
 
+  async getGymByOwnerId(ownerId: number): Promise<Gym | undefined> {
+    const [gym] = await db.select().from(gyms).where(eq(gyms.ownerId, ownerId));
+    return gym || undefined;
+  }
+
   async getAllGyms(): Promise<Gym[]> {
     return await db.select().from(gyms).orderBy(desc(gyms.createdAt));
   }
@@ -843,6 +857,56 @@ export class DatabaseStorage implements IStorage {
     return gym || undefined;
   }
   
+  async reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport> {
+    const [report] = await db.insert(noteReports).values({
+      noteId,
+      reportedBy,
+      reason,
+      status: "pending",
+    }).returning();
+    return report;
+  }
+
+  async getReports(status?: string): Promise<any[]> {
+    let query = db.select({
+      report: noteReports,
+      note: notes,
+      reporter: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      }
+    })
+    .from(noteReports)
+    .leftJoin(notes, eq(noteReports.noteId, notes.id))
+    .leftJoin(users, eq(noteReports.reportedBy, users.id))
+    .orderBy(desc(noteReports.createdAt));
+    
+    if (status) {
+      query = query.where(eq(noteReports.status, status));
+    }
+    
+    const results = await query;
+    return results.map(r => ({
+      ...r.report,
+      note: r.note,
+      reporter: r.reporter,
+    }));
+  }
+
+  async updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined> {
+    const [report] = await db.update(noteReports)
+      .set({ status })
+      .where(eq(noteReports.id, reportId))
+      .returning();
+    return report;
+  }
+
+  async getReportsByNoteId(noteId: string): Promise<NoteReport[]> {
+    return await db.select().from(noteReports).where(eq(noteReports.noteId, noteId));
+  }
+
   async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
     const [user] = await db.update(users)
       .set({ stripeCustomerId })
@@ -888,8 +952,8 @@ class MemStoragePrimary implements IStorage {
     try {
       // Import bcrypt dynamically for ES modules
       const bcrypt = await import('bcrypt');
-      const hashedPassword = await bcrypt.hash('password123', 10);
-      const joePassword = await bcrypt.hash('jitsjournal2025', 10);
+      const hashedPassword = await bcrypt.hash(crypto.randomUUID(), 10);
+      const joePassword = await bcrypt.hash(crypto.randomUUID(), 10);
       
       const testUser: User = {
         id: this.nextId++,
@@ -1416,7 +1480,7 @@ class MemStoragePrimary implements IStorage {
   }
 
   // Note Likes Implementation
-  async likeNote(noteId: number, userId: number): Promise<boolean> {
+  async likeNote(noteId: string, userId: number): Promise<boolean> {
     // Check if already liked
     const existingLike = this.noteLikes.find(like => like.noteId === noteId && like.userId === userId);
     if (existingLike) {
@@ -1434,7 +1498,7 @@ class MemStoragePrimary implements IStorage {
     return true;
   }
 
-  async unlikeNote(noteId: number, userId: number): Promise<boolean> {
+  async unlikeNote(noteId: string, userId: number): Promise<boolean> {
     const index = this.noteLikes.findIndex(like => like.noteId === noteId && like.userId === userId);
     if (index === -1) {
       return false; // Not liked
@@ -1504,6 +1568,10 @@ class MemStoragePrimary implements IStorage {
     return undefined;
   }
 
+  async getGymByOwnerId(ownerId: number): Promise<Gym | undefined> {
+    return undefined;
+  }
+
   async getAllGyms(): Promise<Gym[]> {
     return [];
   }
@@ -1544,6 +1612,22 @@ class MemStoragePrimary implements IStorage {
     return undefined;
   }
   
+  async reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport> {
+    return { id: 0, noteId, reportedBy, reason, status: "pending", createdAt: new Date() };
+  }
+
+  async getReports(status?: string): Promise<any[]> {
+    return [];
+  }
+
+  async updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined> {
+    return undefined;
+  }
+
+  async getReportsByNoteId(noteId: string): Promise<NoteReport[]> {
+    return [];
+  }
+
   async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
     throw new Error("Stripe not implemented in memory storage mode");
   }

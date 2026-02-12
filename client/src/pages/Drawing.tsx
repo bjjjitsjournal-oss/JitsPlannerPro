@@ -13,11 +13,12 @@ export default function Drawing() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Fetch saved drawings from Supabase
+  // Fetch saved drawings from backend API
   const { data: drawings = [] } = useQuery({
     queryKey: ['drawings', user?.id],
     queryFn: () => drawingsQueries.getAll(user!.id),
     enabled: !!user?.id,
+    staleTime: 60000, // Cache for 1 minute - prevents refetch on tab switch
   });
 
   // Mutation to save drawing to Supabase

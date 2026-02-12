@@ -1,0 +1,107 @@
+
+PS C:\Users\joe\Documents\JitsPlannerPro> $content = $content.Replace($old, $new)
+PS C:\Users\joe\Documents\JitsPlannerPro> [System.IO.File]::WriteAllText("$PWD\$file", $content, [System.Text.UTF8Encoding]::new($false))
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> Write-Host "Updated server/routes.ts"
+Updated server/routes.ts
+PS C:\Users\joe\Documents\JitsPlannerPro> git diff server/routes.ts | Select-Object -First 50
+diff --git a/server/routes.ts b/server/routes.ts
+index f9afe940..ecd032c1 100644
+--- a/server/routes.ts
++++ b/server/routes.ts
+@@ -29,7 +29,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+ const supabaseJwtSecret = process.env.SUPABASE_JWT_SECRET;
+
+ if (!supabaseUrl || !supabaseServiceKey) {
+-  console.warn('├ó┼í┬á├»┬╕┬Å SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
++  console.warn('├â┬ó├à┬í├é┬á├â┬»├é┬╕├é┬Å SUPABASE_SERVICE_ROLE_KEY not configured - Supabase token verification will be disabled');
+ }
+
+ const supabaseAdmin = supabaseUrl && supabaseServiceKey
+@@ -122,7 +122,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
+   if (!decoded) {
+     try {
+       decoded = jwt.verify(token, JWT_SECRET) as any;
+-      console.log('├ó┼ôΓÇª Legacy JWT verified for:', decoded.email);
++      console.log('├â┬ó├àΓÇ£├óΓé¼┬ª Legacy JWT verified for:', decoded.email);
+     } catch (error: any) {
+       console.error('Token verification error:', error.message);
+       return res.status(403).json({ message: 'Invalid or expired token' });
+@@ -170,7 +170,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
+           role: isAdmin ? 'admin' : 'user',
+         });
+
+-        console.log('├ó┼ôΓÇª Auto-created user account for Supabase user:', decoded.email);
++        console.log('├â┬ó├àΓÇ£├óΓé¼┬ª Auto-created user account for Supabase user:', decoded.email);
+       }
+     } else {
+       // For legacy JWT, use userId from token
+@@ -185,7 +185,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
+
+         const existingUser = await storage.getUserByEmail(decoded.email);
+         if (existingUser) {
+-          console.log('├ó┼ôΓÇª Found existing user by email, using that account:', decoded.email);
++          console.log('├â┬ó├àΓÇ£├óΓé¼┬ª Found existing user by email, using that account:', decoded.email);
+           user = existingUser;
+         } else {
+           const tempPassword = await bcrypt.hash('temp-password-' + Date.now(), 10);
+@@ -198,7 +198,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
+             subscriptionExpiresAt: isPremiumUser ? new Date('2099-12-31') : null,
+           });
+
+-          console.log('├ó┼ôΓÇª Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
++          console.log('├â┬ó├àΓÇ£├óΓé¼┬ª Auto-restored user account for:', decoded.email, isPremiumUser ? '(premium)' : '(free)');
+         }
+       }
+     }
+@@ -690,7 +690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
+PS C:\Users\joe\Documents\JitsPlannerPro> Get-Content "server/routes.ts" | Select-Object -Index (1883..1930)
+
+  // Get user by Supabase UID - No auth required for login
+  app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
+    try {
+      const { supabaseId } = req.params;
+      console.log('Looking up user by Supabase ID:', supabaseId);
+
+      const result = await pool.query(
+        'SELECT * FROM users WHERE supabase_uid = $1',
+        [supabaseId]
+      );
+
+      if (result.rows.length > 0) {
+        console.log('Found user:', result.rows[0].id);
+        let user = result.rows[0];
+
+        // Auto-assign admin role for specific emails
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isAdmin = adminEmails.includes(user.email);
+        if (isAdmin && user.role !== 'admin') {
+          const updatedUser = await storage.updateUser(user.id, {
+            role: 'admin'
+          });
+          console.log(`ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Auto-assigned admin role to ${user.email}`);
+
+          // Return updated user
+          if (updatedUser) {
+            user = updatedUser;
+          }
+        }
+
+        res.json(user);
+      } else {
+        console.log('User not found');
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error: any) {
+      console.error('Error fetching user by Supabase ID:', error);
+      res.status(500).json({ message: 'Error fetching user: ' + error.message });
+    }
+  });
+
+  // Get user statistics
+  app.get("/api/user-stats", authenticateToken, async (req, res) => {
+    try {
+      const userId = (req as any).user.userId;
+
+      // Get total classes count
+PS C:\Users\joe\Documents\JitsPlannerPro>

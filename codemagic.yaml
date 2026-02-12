@@ -1,6 +1,6 @@
 workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.140
+    name: Jits Journal iOS v1.0.151
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -51,6 +51,23 @@ workflows:
       - name: Sync Capacitor iOS
         script: npx cap sync ios
       
+      - name: Add CFBundleIconName to Info.plist
+        script: |
+          set -e
+          cd $CM_BUILD_DIR/ios/App/App
+          echo "Current directory: $(pwd)"
+          echo "Info.plist exists: $(test -f Info.plist && echo 'yes' || echo 'no')"
+          echo "Before modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist 2>/dev/null || echo "CFBundleIconName not found"
+          
+          # Try to add, if exists then set
+          /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" Info.plist 2>/dev/null || \
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" Info.plist
+          
+          echo "After modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist
+          echo "CFBundleIconName successfully set to AppIcon"
+      
       - name: Install CocoaPods dependencies
         script: cd ios/App && pod install
       
@@ -87,7 +104,7 @@ workflows:
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.140
+    name: Jits Journal Android v1.0.151
     max_build_duration: 120
     instance_type: mac_mini_m2
     

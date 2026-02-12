@@ -1,0 +1,54 @@
+   },
+    {
+      "code" : 409,
+      "message" : "Validation failed",
+      "underlying-errors" : [
+        {
+          "code" : -19241,
+          "message" : "Validation failed",
+          "underlying-errors" : [
+
+          ],
+          "user-info" : {
+            "NSLocalizedDescription" : "Validation failed",
+            "NSLocalizedFailureReason" : "Missing Info.plist value. A value for the Info.plist key 'CFBundleIconName' is missing in the bundle 'com.jitsjournal.app'. Apps built with iOS 11 or later SDK must supply app icons in an asset catalog and must also provide a value for this Info.plist key. For more information see http://help.apple.com/xcode/mac/current/#/dev10510b1f7.",
+            "code" : "STATE_ERROR.VALIDATION_ERROR",
+            "detail" : "Missing Info.plist value. A value for the Info.plist key 'CFBundleIconName' is missing in the bundle 'com.jitsjournal.app'. Apps built with iOS 11 or later SDK must supply app icons in an asset catalog and must also provide a value for this Info.plist key. For more information see http://help.apple.com/xcode/mac/current/#/dev10510b1f7.",
+            "id" : "e952e64c-2a11-44b8-8522-da1df1e03a8a",
+            "status" : "409",
+            "title" : "Validation failed"
+          }
+        }
+      ],
+      "user-info" : {
+        "NSLocalizedDescription" : "Validation failed",
+        "NSLocalizedFailureReason" : "Missing Info.plist value. A value for the Info.plist key 'CFBundleIconName' is missing in the bundle 'com.jitsjournal.app'. Apps built with iOS 11 or later SDK must supply app icons in an asset catalog and must also provide a value for this Info.plist key. For more information see http://help.apple.com/xcode/mac/current/#/dev10510b1f7. (ID: e952e64c-2a11-44b8-8522-da1df1e03a8a)",
+        "NSUnderlyingError" : "Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Missing Info.plist value. A value for the Info.plist key 'CFBundleIconName' is missing in the bundle 'com.jitsjournal.app'. Apps built with iOS 11 or later SDK must supply app icons in an asset catalog and must also provide a value for this Info.plist key. For more information see http://help.apple.com/xcode/mac/current/#/dev10510b1f7., id=e952e64c-2a11-44b8-8522-da1df1e03a8a, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Missing Info.plist value. A value for the Info.plist key 'CFBundleIconName' is missing in the bundle 'com.jitsjournal.app'. Apps built with iOS 11 or later SDK must supply app icons in an asset catalog and must also provide a value for this Info.plist key. For more information see http://help.apple.com/xcode/mac/current/#/dev10510b1f7., NSLocalizedDescription=Validation failed}",
+        "iris-code" : "STATE_ERROR.VALIDATION_ERROR"
+      }
+    }
+  ],
+  "tool-path" : "/Applications/Xcode-26.2.app/Contents/SharedFrameworks/ContentDelivery.framework/Resources",
+  "tool-version" : "26.10.1 (171001)"
+}
+
+Failed to upload archive at "/Users/builder/clone/build/ios/ipa/App.ipa":
+Validation failed
+Validation failed
+Validation failed
+Validation failed
+Failed to publish /Users/builder/clone/build/ios/ipa/App.ipa
+
+Failed to publish App.ipa to App Store Connect.
+
+Build failed :|
+
+
+Publishing failed :|
+Failed to publish App.ipa to App Store Connect.
+
+
+Cleaning up
+< 1s
+Publishing failed :|
+Failed to publish App.ipa to App Store Connect.

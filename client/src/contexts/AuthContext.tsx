@@ -49,7 +49,7 @@ interface AuthProviderProps {
 
 async function getUserFromSupabaseId(supabaseId: string, email: string, metadata: any, accessToken?: string, retries = 3): Promise<User | null> {
   const attemptNumber = 4 - retries;
-  console.log('🔍 Loading user data for supabaseId:', supabaseId, `(attempt ${attemptNumber}/3)`);
+  console.log('🔍 Loading user data for supabaseId:', supabaseId, 'email:', email, `(attempt ${attemptNumber}/3)`);
   
   try {
     // Add timeout to fetch (10 seconds should be plenty)
@@ -62,7 +62,9 @@ async function getUserFromSupabaseId(supabaseId: string, email: string, metadata
       console.log('🔑 Including Supabase access token in request');
     }
     
-    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}`, {
+    // Include email for account linking (allows existing users to link their account on new devices)
+    const emailParam = email ? `?email=${encodeURIComponent(email)}` : '';
+    const response = await fetch(`${API_BASE_URL}/api/user/by-supabase-id/${supabaseId}${emailParam}`, {
       signal: controller.signal,
       headers,
     });

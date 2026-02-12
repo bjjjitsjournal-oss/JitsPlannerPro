@@ -25,7 +25,7 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.102'; // Will be auto-updated by build process
+  const appVersion = '1.0.151'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -70,19 +70,23 @@ export default function Settings() {
   // Fetch user's actual stats and classes/notes count
   const { data: userStats } = useQuery({
     queryKey: ['/api/user-stats'],
+    staleTime: 60000, // Cache for 1 minute - prevents refetch on tab switch
   });
 
   const { data: userClasses } = useQuery({
     queryKey: ['/api/classes'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   const { data: userNotes } = useQuery({
     queryKey: ['/api/notes'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch user's gym membership
   const { data: gymMembership } = useQuery<{ id: number; name: string; code: string; role: string } | null>({
     queryKey: ['/api/my-gym'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch gym members if user is admin

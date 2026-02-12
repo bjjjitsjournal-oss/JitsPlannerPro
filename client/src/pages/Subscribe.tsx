@@ -115,9 +115,28 @@ export default function Subscribe() {
       setLoadingTier(tier);
       
       try {
-        if (!offerings || !offerings.current) {
+        // Try current (default) offering first, then look for named offerings
+        let offering = offerings?.current || 
+                       offerings?.all?.['Premium'] || 
+                       offerings?.all?.['premium'] ||
+                       offerings?.all?.['default'];
+        
+        // If still not found, try to get the first available offering
+        if (!offering && offerings?.all) {
+          const offeringKeys = Object.keys(offerings.all);
+          console.log('📦 iOS - Available offering keys:', offeringKeys);
+          if (offeringKeys.length > 0) {
+            offering = offerings.all[offeringKeys[0]];
+            console.log('📦 iOS - Using first available offering:', offeringKeys[0]);
+          }
+        }
+        
+        if (!offering) {
+          console.error('❌ iOS - No offerings found. Full offerings object:', JSON.stringify(offerings, null, 2));
           throw new Error('No offerings available');
         }
+        
+        console.log('📦 iOS - Using offering:', offering);
 
         if (tier === 'gym_pro') {
           toast({
@@ -127,11 +146,11 @@ export default function Subscribe() {
           return;
         }
 
-        // Find the first available package in the current offering (Premium)
-        const pkg = offerings.current.availablePackages[0];
+        // Find the first available package in the offering
+        const pkg = offering.availablePackages[0];
 
         if (!pkg) {
-          console.error('Available packages:', offerings.current.availablePackages);
+          console.error('Available packages:', offering.availablePackages);
           throw new Error('No subscription package found in offering');
         }
         
@@ -172,9 +191,28 @@ export default function Subscribe() {
       setLoadingTier(tier);
       
       try {
-        if (!offerings || !offerings.current) {
+        // Try current (default) offering first, then look for named offerings
+        let offering = offerings?.current || 
+                       offerings?.all?.['Premium'] || 
+                       offerings?.all?.['premium'] ||
+                       offerings?.all?.['default'];
+        
+        // If still not found, try to get the first available offering
+        if (!offering && offerings?.all) {
+          const offeringKeys = Object.keys(offerings.all);
+          console.log('📦 Android - Available offering keys:', offeringKeys);
+          if (offeringKeys.length > 0) {
+            offering = offerings.all[offeringKeys[0]];
+            console.log('📦 Android - Using first available offering:', offeringKeys[0]);
+          }
+        }
+        
+        if (!offering) {
+          console.error('❌ Android - No offerings found. Full offerings object:', JSON.stringify(offerings, null, 2));
           throw new Error('No offerings available');
         }
+        
+        console.log('📦 Android - Using offering:', offering);
 
         if (tier === 'gym_pro') {
           toast({
@@ -185,11 +223,11 @@ export default function Subscribe() {
           return;
         }
 
-        // Find the first available package in the current offering (Premium)
-        const pkg = offerings.current.availablePackages[0];
+        // Find the first available package in the offering
+        const pkg = offering.availablePackages[0];
 
         if (!pkg) {
-          console.error('Available packages:', offerings.current.availablePackages);
+          console.error('Available packages:', offering.availablePackages);
           throw new Error('No subscription package found in offering');
         }
         
@@ -321,22 +359,20 @@ export default function Subscribe() {
                 </p>
               </div>
             </div>
-            {platform === 'ios' && (
-              <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
-                <Button
-                  variant="outline"
-                  onClick={handleRestorePurchases}
-                  disabled={isRestoring}
-                  className="w-full sm:w-auto"
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isRestoring ? 'animate-spin' : ''}`} />
-                  {isRestoring ? 'Restoring...' : 'Restore Purchases'}
-                </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  Already subscribed? Restore your purchases here.
-                </p>
-              </div>
-            )}
+            <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
+              <Button
+                variant="outline"
+                onClick={handleRestorePurchases}
+                disabled={isRestoring}
+                className="w-full sm:w-auto"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isRestoring ? 'animate-spin' : ''}`} />
+                {isRestoring ? 'Restoring...' : 'Restore Purchases'}
+              </Button>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Already subscribed? Restore your purchases here.
+              </p>
+            </div>
           </div>
         )}
 

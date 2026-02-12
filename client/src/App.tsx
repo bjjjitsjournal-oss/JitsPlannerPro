@@ -27,10 +27,26 @@ import BottomNav from './components/BottomNav';
 
 import { Toaster } from './components/ui/toaster';
 import EnvCheck from './components/EnvCheck';
+import { useEffect } from 'react';
+
+function usePrefetchData() {
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) return;
+    const prefetchKeys = [
+      '/api/notes',
+      '/api/notes/shared',
+      '/api/classes',
+    ];
+    prefetchKeys.forEach((key) => {
+      queryClient.prefetchQuery({ queryKey: [key] });
+    });
+  }, [user]);
+}
 
 function AuthenticatedApp() {
-  // Automatically scroll to top when navigating between pages
   useScrollToTop();
+  usePrefetchData();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

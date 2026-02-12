@@ -1,0 +1,98 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\joe> cd C:\Users\joe\Documents\JitsPlannerPro
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> $content = Get-Content "server/routes.ts" -Raw
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> # Find the first query result and add email lookup after it
+PS C:\Users\joe\Documents\JitsPlannerPro> $old = @'
+>>       let result = await pool.query(
+>>         'SELECT * FROM users WHERE supabase_uid = $1',
+>>         [supabaseId]
+>>       );
+>>
+>>       if (result.rows.length > 0) {
+>> '@
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> $new = @'
+>>       let result = await pool.query(
+>>         'SELECT * FROM users WHERE supabase_uid = $1',
+>>         [supabaseId]
+>>       );
+>>
+>>       // If not found by supabase_uid but email provided, try to find and link by email
+>>       if (result.rows.length === 0 && email) {
+>>         console.log('User not found by Supabase ID, trying email lookup:', email);
+>>         const emailResult = await pool.query(
+>>           'SELECT * FROM users WHERE email = $1',
+>>           [email]
+>>         );
+>>
+>>         if (emailResult.rows.length > 0) {
+>>           const existingUser = emailResult.rows[0];
+>>           console.log('Found user by email, linking Supabase ID:', existingUser.id);
+>>
+>>           await pool.query(
+>>             'UPDATE users SET supabase_uid = $1 WHERE id = $2',
+>>             [supabaseId, existingUser.id]
+>>           );
+>>           console.log('Linked Supabase ID to existing user:', existingUser.email);
+>>
+>>           result = await pool.query(
+>>             'SELECT * FROM users WHERE id = $1',
+>>             [existingUser.id]
+>>           );
+>>         }
+>>       }
+>>
+>>       if (result.rows.length > 0) {
+>> '@
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> $content = $content.Replace($old, $new)
+PS C:\Users\joe\Documents\JitsPlannerPro> [System.IO.File]::WriteAllText("$PWD\server\routes.ts", $content, [System.Text.UTF8Encoding]::new($false))
+PS C:\Users\joe\Documents\JitsPlannerPro>
+PS C:\Users\joe\Documents\JitsPlannerPro> Write-Host "Added email lookup block"
+Added email lookup block
+PS C:\Users\joe\Documents\JitsPlannerPro> Get-Content "server/routes.ts" | Select-Object -Index (1888..1925)
+      const email = req.query.email as string | undefined;
+      console.log('Looking up user by Supabase ID:', supabaseId, 'email:', email);
+
+      let result = await pool.query(
+        'SELECT * FROM users WHERE supabase_uid = $1',
+        [supabaseId]
+      );
+
+      if (result.rows.length > 0) {
+        console.log('Found user:', result.rows[0].id);
+        let user = result.rows[0];
+
+        // Auto-assign admin role for specific emails
+        const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const isAdmin = adminEmails.includes(user.email);
+        if (isAdmin && user.role !== 'admin') {
+          const updatedUser = await storage.updateUser(user.id, {
+            role: 'admin'
+          });
+          console.log(`ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ Auto-assigned admin role to ${user.email}`);
+
+          // Return updated user
+          if (updatedUser) {
+            user = updatedUser;
+          }
+        }
+
+        res.json(user);
+      } else {
+        console.log('User not found');
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error: any) {
+      console.error('Error fetching user by Supabase ID:', error);
+      res.status(500).json({ message: 'Error fetching user: ' + error.message });
+    }
+  });
+
+PS C:\Users\joe\Documents\JitsPlannerPro>

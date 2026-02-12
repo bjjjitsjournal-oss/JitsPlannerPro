@@ -1,0 +1,19 @@
+2b3-02af-4cc3-9408-80a143b0cb13 | Kesa escape |      38
+(1 row)
+
+render@srv-d3ud62fdiees73e6a19g-5bf5d578d4-j88rg:~/project/src$ psql $DATABASE_URL -c "SELECT id, date, instructor FROM classes WHERE user_id = 38 ORDER BY date;"
+ id |        date         |       instructor       
+----+---------------------+------------------------
+ 17 | 2025-10-21 00:00:00 | Coach Sid
+ 18 | 2025-10-21 00:00:00 | Coach Spud
+ 19 | 2025-10-23 00:00:00 | Coach Sid
+ 21 | 2025-10-24 00:00:00 | Self Run 
+ 25 | 2025-10-28 00:00:00 | Coach Sid
+ 27 | 2025-10-30 00:00:00 | Coach Sid
+ 29 | 2025-10-31 00:00:00 | Open mat with the boys
+ 31 | 2025-11-01 00:00:00 | Sid & Spud
+(8 rows)
+
+render@srv-d3ud62fdiees73e6a19g-5bf5d578d4-j88rg:~/project/src$ psql $DATABASE_URL -c "INSERT INTO classes (date, time, duration, class_type, instructor, techniques_focused, rolling_partners, your_submissions, partner_submissions, cardio_rating, user_id, created_at) VALUES ('2025-11-07', '06:00', 60, 'Gi', 'Open mat', 'Take downs. Kesa escape.', ARRAY['Andrew. Joey. Joey.'], 0, 0, 3, 38, '2025-11-12 11:13:14'), ('2025-11-11', '06:00', 60, 'No Gi', 'Coach Sid', 'Stand up - chicken wing. Mount escape.', ARRAY['Andrew. Ash. Justin.'], 0, 0, 3, 38, '2025-11-12 11:23:39'), ('2025-11-12', '18:00', 60, 'Gi', 'Coach Sid & Spud', 'Grading. Shark tank. Got my third stripe.', ARRAY['Ziad'], 0, 0, 4, 38, '2025-11-12 11:24:32'), ('2025-11-14', '18:00', 60, 'Gi', 'Open mat', 'Darce attacks. Top and bottom game.', ARRAY[]::text[], 0, 3, 3, 38, '2025-11-13 20:48:33'), ('2025-11-15', '10:00', 60, 'Gi', 'Sid and Spud', 'Scissor sweep.', ARRAY['Kane.'], 0, 0, 4, 38, '2025-11-15 08:28:31'), ('2025-11-18', '18:00', 60, 'No Gi', 'Sid', 'Clinch. Single leg X heel hook.', ARRAY['Joey. Abz. Elliot. Andrew X 2'], 2, 1, 3, 38, '2025-11-19 00:15:43'), ('2025-11-20', '18:00', 60, 'No Gi', 'Sid', 'Breaking collar ties. Leg entries.', ARRAY[]::text[], 0, 0, 3, 38, '2025-11-23 00:38:17'), ('2025-11-21', '18:00', 60, 'Gi', 'Open mat', 'Guard passing and retention.', ARRAY['Joe'], 0, 1, 3, 38, '2025-11-23 00:39:15'), ('2025-11-24', '18:00', 60, 'Gi', 'Open mat', 'Takedowns and guard passing.', ARRAY['Joe and Brendan'], 0, 0, 4, 38, '2025-11-23 22:56:04'), ('2025-11-25', '06:00', 60, 'No Gi', 'Sid', 'Leg locks 4 positions.', ARRAY['Justin. Sid.'], 0, 2, 4, 38, '2025-11-24 20:06:08');"
+INSERT 0 10
+render@srv-d3ud62fdiees73e6a19g-5bf5d578d4-j88rg:~/project/src$ 

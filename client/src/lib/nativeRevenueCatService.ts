@@ -51,7 +51,14 @@ class NativeRevenueCatService {
 
     try {
       const offerings = await Purchases.getOfferings();
-      console.log('📦 RevenueCat offerings:', offerings);
+      console.log('📦 RevenueCat offerings:', JSON.stringify(offerings, null, 2));
+      console.log('📦 Current offering:', offerings?.current);
+      console.log('📦 All offerings keys:', offerings?.all ? Object.keys(offerings.all) : 'none');
+      if (offerings?.all) {
+        Object.keys(offerings.all).forEach(key => {
+          console.log(`📦 Offering "${key}":`, offerings.all[key]);
+        });
+      }
       return offerings;
     } catch (error) {
       console.error('Error fetching offerings:', error);
