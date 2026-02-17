@@ -1,4 +1,4 @@
-﻿﻿import type { Express } from "express";
+﻿﻿﻿﻿import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -479,6 +479,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
   <div class="highlight">
     <h3>Data Deletion</h3>
     <p>To delete your account and all associated data, go to Settings → Delete Account within the app. This action is permanent and cannot be undone.</p>
+  </div>
+</body>
+</html>
+    `);
+  });
+
+  app.get("/terms", (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Use - Jits Journal</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
+    h1 { color: #1e3a8a; }
+    h2 { color: #1e40af; margin-top: 30px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 8px; }
+    .highlight { background: #eff6ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+    .contact { background: #f0fdf4; padding: 15px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Terms of Use</h1>
+  <p><strong>Jits Journal - BJJ Training Companion</strong></p>
+  <p>Last Updated: February 16, 2026</p>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>By downloading, installing, or using Jits Journal, you agree to be bound by these Terms of Use. If you do not agree to these terms, do not use the app.</p>
+
+  <h2>2. Description of Service</h2>
+  <p>Jits Journal is a Brazilian Jiu-Jitsu training companion app that helps practitioners track classes, record techniques, manage belt progression, and connect with their gym community.</p>
+
+  <h2>3. Subscriptions and Payments</h2>
+  <div class="highlight">
+    <p><strong>Jits Journal Premium</strong> is available as a monthly auto-renewable subscription.</p>
+    <ul>
+      <li><strong>Price:</strong> $9.99 AUD/month</li>
+      <li><strong>Billing:</strong> Payment is charged to your Apple ID or Google Play account at confirmation of purchase</li>
+      <li><strong>Renewal:</strong> Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current billing period</li>
+      <li><strong>Renewal Charge:</strong> Your account will be charged for renewal within 24 hours prior to the end of the current period at the same price</li>
+      <li><strong>Management:</strong> You can manage and cancel your subscriptions by going to your account settings on the App Store or Google Play Store after purchase</li>
+      <li><strong>Free Trial:</strong> Any unused portion of a free trial period, if offered, will be forfeited when you purchase a subscription</li>
+    </ul>
+  </div>
+
+  <h2>4. User Accounts</h2>
+  <ul>
+    <li>You must provide accurate information when creating an account</li>
+    <li>You are responsible for maintaining the security of your account credentials</li>
+    <li>You must be at least 13 years old to use Jits Journal</li>
+  </ul>
+
+  <h2>5. User Content</h2>
+  <ul>
+    <li>You retain ownership of content you create (notes, class logs, videos)</li>
+    <li>By sharing content to the community, you grant Jits Journal a license to display it to other users</li>
+    <li>You agree not to post offensive, harmful, or inappropriate content</li>
+    <li>We reserve the right to remove content that violates these terms</li>
+  </ul>
+
+  <h2>6. Acceptable Use</h2>
+  <p>You agree not to:</p>
+  <ul>
+    <li>Use the service for any unlawful purpose</li>
+    <li>Harass, bully, or intimidate other users</li>
+    <li>Attempt to gain unauthorized access to the service</li>
+    <li>Upload malicious software or harmful content</li>
+    <li>Scrape or collect data from other users</li>
+  </ul>
+
+  <h2>7. Termination</h2>
+  <p>We may suspend or terminate your account if you violate these terms. You may delete your account at any time through Settings in the app.</p>
+
+  <h2>8. Disclaimer of Warranties</h2>
+  <p>Jits Journal is provided "as is" without warranties of any kind. We do not guarantee that the service will be uninterrupted or error-free. Training advice and techniques shared within the app are user-generated and should not replace professional instruction.</p>
+
+  <h2>9. Limitation of Liability</h2>
+  <p>Jits Journal shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the service.</p>
+
+  <h2>10. Changes to Terms</h2>
+  <p>We may update these Terms of Use from time to time. Continued use of the service after changes constitutes acceptance of the updated terms.</p>
+
+  <h2>11. Contact Us</h2>
+  <div class="contact">
+    <p>For questions about these Terms of Use, contact us at:</p>
+    <p><strong>Email:</strong> bjjjitsjournal@gmail.com</p>
   </div>
 </body>
 </html>

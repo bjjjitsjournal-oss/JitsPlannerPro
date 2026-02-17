@@ -424,6 +424,11 @@ export default function Subscribe() {
                       <span className="text-gray-600 dark:text-gray-400">/month</span>
                     )}
                   </div>
+                  {tier.tier === 'enthusiast' && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Auto-renewable monthly subscription. Billed at $9.99/month. Cancel anytime.
+                    </p>
+                  )}
                   {tier.tier === 'gym_pro' && (
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                       Email: bjjjitsjournal@gmail.com
@@ -564,6 +569,28 @@ export default function Subscribe() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+
+        {/* Subscription Terms - Required by Apple Guideline 3.1.2 */}
+        <div className="mt-12 max-w-4xl mx-auto">
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Subscription Terms</h3>
+            <div className="space-y-2 text-xs text-gray-500 dark:text-gray-400">
+              <p>
+                <strong>Jits Journal Premium</strong> is available as a monthly auto-renewable subscription at <strong>$9.99 AUD/month</strong>.
+              </p>
+              <p>
+                Payment will be charged to your Apple ID or Google Play account at confirmation of purchase. Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current billing period. Your account will be charged for renewal within 24 hours prior to the end of the current period at the same price. You can manage and cancel your subscriptions by going to your account settings on the App Store or Google Play Store after purchase.
+              </p>
+              <p>
+                Any unused portion of a free trial period, if offered, will be forfeited when you purchase a subscription.
+              </p>
+              <div className="flex gap-4 mt-3">
+                <a href="https://jitsjournal-backend.onrender.com/privacy" className="text-blue-600 dark:text-blue-400 underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <a href="https://jitsjournal-backend.onrender.com/terms" className="text-blue-600 dark:text-blue-400 underline" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
