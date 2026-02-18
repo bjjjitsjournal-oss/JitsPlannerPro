@@ -147,47 +147,53 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    // Check file type
-    if (!file.type.startsWith('video/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select a video file",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check file size (5GB limit)
-    const maxSize = 5 * 1024 * 1024 * 1024; // 5GB
-    if (file.size > maxSize) {
-      toast({
-        title: "File too large",
-        description: "Video must be less than 5GB",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check storage quota
-    if (storageData) {
-      const fileSizeInBytes = file.size;
-      const remainingBytes = storageData.remaining;
-
-      if (fileSizeInBytes > remainingBytes) {
-        const fileSizeMB = (fileSizeInBytes / (1024 * 1024)).toFixed(1);
+      if (!file.type.startsWith('video/')) {
         toast({
-          title: "Storage quota exceeded",
-          description: `This video (${fileSizeMB} MB) exceeds your remaining storage (${storageData.remainingFormatted}). Delete videos or upgrade your plan.`,
+          title: "Invalid file type",
+          description: "Please select a video file",
           variant: "destructive",
         });
         return;
       }
-    }
 
-    uploadVideo(file);
+      const maxSize = 1 * 1024 * 1024 * 1024; // 1GB
+      if (file.size > maxSize) {
+        toast({
+          title: "File too large",
+          description: "Video must be less than 1GB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (storageData) {
+        const fileSizeInBytes = file.size;
+        const remainingBytes = storageData.remaining;
+
+        if (fileSizeInBytes > remainingBytes) {
+          const fileSizeMB = (fileSizeInBytes / (1024 * 1024)).toFixed(1);
+          toast({
+            title: "Storage quota exceeded",
+            description: `This video (${fileSizeMB} MB) exceeds your remaining storage (${storageData.remainingFormatted}). Delete videos or upgrade your plan.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      uploadVideo(file);
+    } catch (error) {
+      console.error('Error selecting video file:', error);
+      toast({
+        title: "Error",
+        description: "Could not access video. Please check your camera and photo library permissions in Settings.",
+        variant: "destructive",
+      });
+    }
   };
 
   const uploadVideo = async (file: File) => {
@@ -352,7 +358,7 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       )}
       
       <p className="text-xs text-gray-500 mt-3 text-center">
-        Supported formats: MP4, MOV, AVI • Maximum file size: 5GB
+        Supported formats: MP4, MOV, AVI • Maximum file size: 1GB
       </p>
     </div>
   );

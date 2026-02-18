@@ -56,34 +56,54 @@ class NativeRevenueCatService {
       console.log('📦 All offerings keys:', offerings?.all ? Object.keys(offerings.all) : 'none');
       if (offerings?.all) {
         Object.keys(offerings.all).forEach(key => {
-          console.log(`📦 Offering "${key}":`, offerings.all[key]);
+          const o = offerings.all[key];
+          console.log(`📦 Offering "${key}":`, o);
+          console.log(`📦 Offering "${key}" packages:`, o?.availablePackages?.map((p: any) => ({ id: p.identifier, product: p.product?.identifier })));
         });
       }
+      if (!offerings?.current && (!offerings?.all || Object.keys(offerings.all).length === 0)) {
+        console.warn('⚠️ No offerings found. Check RevenueCat dashboard: Products → Offerings. Ensure products are attached and offering is set as current.');
+      }
       return offerings;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching offerings:', error);
+      console.error('Offerings error details:', JSON.stringify(error, null, 2));
       return null;
     }
   }
 
   async purchasePackage(pkg: PurchasesPackage): Promise<CustomerInfo> {
     if (!this.isInitialized) {
-      throw new Error('RevenueCat not initialized');
+      throw new Error('RevenueCat not initialized. Please restart the app and try again.');
     }
 
     try {
       console.log('💳 Purchasing package:', pkg.identifier);
+      console.log('💳 Package details:', JSON.stringify(pkg, null, 2));
       const result = await Purchases.purchasePackage({ aPackage: pkg });
       console.log('✅ Purchase successful:', result);
       return result.customerInfo;
     } catch (error: any) {
-      console.error('❌ Purchase failed:', error);
+      console.error('❌ Purchase failed:', JSON.stringify(error, null, 2));
+      console.error('❌ Error code:', error.code, 'Message:', error.message, 'Underlying:', error.underlyingErrorMessage);
       
-      if (error.code === '1') {
+      if (error.code === '1' || error.code === 1 || error.message?.includes('cancelled') || error.message?.includes('canceled')) {
         throw new Error('Purchase cancelled by user');
       }
       
-      throw error;
+      if (error.code === '2' || error.code === 2) {
+        throw new Error('This product is not available for purchase. Please try again later.');
+      }
+
+      if (error.code === '10' || error.code === 10) {
+        throw new Error('There was a network error. Please check your connection and try again.');
+      }
+
+      if (error.code === '3' || error.code === 3) {
+        throw new Error('The purchase could not be completed. Please verify your payment method in Settings.');
+      }
+      
+      throw new Error(error.underlyingErrorMessage || error.message || 'Purchase failed. Please try again.');
     }
   }
 

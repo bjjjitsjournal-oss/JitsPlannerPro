@@ -333,6 +333,7 @@ export default function Classes() {
               <option value="Gi">Gi</option>
               <option value="No Gi">No Gi</option>
               <option value="Open Mat">Open Mat</option>
+              <option value="Wrestling">Wrestling</option>
               <option value="Competition">Competition</option>
               <option value="Drilling">Drilling</option>
             </select>

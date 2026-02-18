@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿﻿import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation, Link } from 'wouter';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -25,7 +25,7 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.151'; // Will be auto-updated by build process
+  const appVersion = '1.0.152'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();

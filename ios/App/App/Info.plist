@@ -50,10 +50,12 @@
         <key>CFBundleIconName</key>
         <string>AppIcon</string>
         <key>NSCameraUsageDescription</key>
-        <string>This app requires access to the camera to record training videos and techniques.</string>
+        <string>Jits Journal needs camera access to record training videos and techniques.</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>Jits Journal needs microphone access to record audio with your training videos.</string>
         <key>NSPhotoLibraryUsageDescription</key>
-        <string>This app needs access to your photo library to upload training videos.</string>
+        <string>Jits Journal needs access to your photo library to upload training videos.</string>
         <key>NSPhotoLibraryAddUsageDescription</key>
-        <string>This app needs permission to save videos to your photo library.</string>
+        <string>Jits Journal needs permission to save videos to your photo library.</string>
 </dict>
 </plist>
