@@ -19,7 +19,7 @@ import {
   type GymMembership, type InsertGymMembership
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, ilike, and, or, lt, sql, count } from "drizzle-orm";
+import { eq, desc, asc, ilike, and, or, lt, sql, count, inArray } from "drizzle-orm";
 
 // DTO for notes with enriched data
 export interface NoteWithAuthor extends Note {
@@ -117,6 +117,7 @@ export interface IStorage {
   getUserNoteLikes(userId: number): Promise<NoteLike[]>;
   isNoteLikedByUser(noteId: string, userId: number): Promise<boolean>;
   getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
+  getBatchNoteLikes(noteIds: string[], userId?: number): Promise<Map<string, { likeCount: number; isLikedByUser: boolean }>>;
 
   // Note Reports
   reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport>;
@@ -563,6 +564,32 @@ export class DatabaseStorage implements IStorage {
       likeCount: likes.length,
       isLikedByUser
     };
+  }
+
+  async getBatchNoteLikes(noteIds: string[], userId?: number): Promise<Map<string, { likeCount: number; isLikedByUser: boolean }>> {
+    const result = new Map<string, { likeCount: number; isLikedByUser: boolean }>();
+    if (noteIds.length === 0) return result;
+
+    const allLikes = await db.select().from(noteLikes).where(inArray(noteLikes.noteId, noteIds));
+
+    const likeCounts = new Map<string, number>();
+    const userLiked = new Set<string>();
+
+    for (const like of allLikes) {
+      likeCounts.set(like.noteId, (likeCounts.get(like.noteId) || 0) + 1);
+      if (userId && like.userId === userId) {
+        userLiked.add(like.noteId);
+      }
+    }
+
+    for (const noteId of noteIds) {
+      result.set(noteId, {
+        likeCount: likeCounts.get(noteId) || 0,
+        isLikedByUser: userLiked.has(noteId),
+      });
+    }
+
+    return result;
   }
 
   // Helper methods

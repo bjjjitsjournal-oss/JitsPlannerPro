@@ -1488,23 +1488,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { offset = 0, limit = 15 } = req.query;
       const offsetNum = Math.max(0, parseInt(offset as string) || 0);
       const limitNum = Math.min(50, Math.max(1, parseInt(limit as string) || 15));
-      
-      // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1 with pagination
+
+      const cacheKey = getCacheKey(userId || 0, 'shared', offsetNum);
+      const cached = getFromCache(cacheKey);
+      if (cached) {
+        const duration = Date.now() - startTime;
+        console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (CACHED - ${cached.length} notes)`);
+        return res.json(cached);
+      }
+
       const sharedNotes = await storage.getSharedNotes(offsetNum, limitNum);
-      
-      const totalDuration = Date.now() - startTime;
-      console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
-      
-      // Add user-specific like status
-      const notesWithLikes = await Promise.all(sharedNotes.map(async (note: any) => {
-        const likes = await storage.getNoteLikes(note.id);
-        const isLikedByUser = userId ? await storage.isNoteLikedByUser(note.id, userId) : false;
-        return {
-          ...note,
-          likeCount: likes.length,
-          isLikedByUser,
-        };
-      }));
+
+      const noteIds = sharedNotes.map((n: any) => n.id);
+      const likesMap = await storage.getBatchNoteLikes(noteIds, userId);
+
+      const notesWithLikes = sharedNotes.map((note: any) => {
+        const likeData = likesMap.get(note.id) || { likeCount: 0, isLikedByUser: false };
+        return { ...note, ...likeData };
+      });
+
+      setInCache(cacheKey, notesWithLikes);
+
+      const duration = Date.now() - startTime;
+      console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (${sharedNotes.length} notes) - BATCH OPTIMIZED`);
       
       res.json(notesWithLikes);
     } catch (error) {
@@ -1952,6 +1958,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Note already liked or not found" });
       }
 
+      invalidateCache('shared_');
+
       const likeCount = (await storage.getNoteLikes(noteId)).length;
       
       res.json({ 
@@ -1975,6 +1983,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!success) {
         return res.status(400).json({ message: "Note not liked or not found" });
       }
+
+      invalidateCache('shared_');
 
       const likeCount = (await storage.getNoteLikes(noteId)).length;
       
@@ -2816,23 +2826,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/my-gym", flexibleAuth, async (req, res) => {
     try {
       const userId = req.userId;
+
+      const cacheKey = getCacheKey(userId, 'my-gym');
+      const cached = getFromCache(cacheKey);
+      if (cached !== null) {
+        return res.json(cached.value);
+      }
       
-      // Get user's gym memberships
       const userGyms = await storage.getUserGyms(userId);
       
       if (userGyms.length === 0) {
+        setInCache(cacheKey, { value: null });
         return res.json(null);
       }
       
-      // Get membership details including role
       const gym = userGyms[0];
       const membership = await storage.getGymMembership(userId, gym.id);
       
-      // Return gym with membership role
-      res.json({
+      const result = {
         ...gym,
         role: membership?.role || 'member'
-      });
+      };
+      setInCache(cacheKey, { value: result });
+      res.json(result);
     } catch (error) {
       console.error("Error getting user gym:", error);
       res.status(500).json({ message: "Failed to get gym membership" });
@@ -2860,16 +2876,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const gymNotes = await storage.getGymNotes(gymId);
       console.log('✅ Gym notes found:', gymNotes.length);
       
-      // Add like data to gym notes
-      const notesWithLikes = await Promise.all(gymNotes.map(async (note: any) => {
-        const likes = await storage.getNoteLikes(note.id);
-        const isLikedByUser = userId ? await storage.isNoteLikedByUser(note.id, userId) : false;
-        return {
-          ...note,
-          likeCount: likes.length,
-          isLikedByUser,
-        };
-      }));
+      const noteIds = gymNotes.map((n: any) => n.id);
+      const likesMap = await storage.getBatchNoteLikes(noteIds, userId);
+
+      const notesWithLikes = gymNotes.map((note: any) => {
+        const likeData = likesMap.get(note.id) || { likeCount: 0, isLikedByUser: false };
+        return { ...note, ...likeData };
+      });
       
       res.json(notesWithLikes);
     } catch (error) {
