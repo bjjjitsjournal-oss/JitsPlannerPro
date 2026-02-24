@@ -138,20 +138,22 @@ export default function Subscribe() {
         
         console.log('📦 iOS - Using offering:', offering);
 
+        let pkg;
+
         if (tier === 'gym_pro') {
-          toast({
-            title: 'Contact Required',
-            description: 'Please contact us for Gym Pro subscription.',
-          });
-          return;
-        }
-
-        // Find the first available package in the offering
-        const pkg = offering.availablePackages[0];
-
-        if (!pkg) {
-          console.error('Available packages:', offering.availablePackages);
-          throw new Error('No subscription package found in offering');
+          const gymProOffering = offerings?.all?.['Gym Pro'] || offerings?.all?.['gym_pro'];
+          if (gymProOffering && gymProOffering.availablePackages.length > 0) {
+            pkg = gymProOffering.availablePackages[0];
+            console.log('📦 iOS - Found Gym Pro package:', pkg.identifier);
+          } else {
+            throw new Error('Gym Pro subscription is not available right now. Please try again later.');
+          }
+        } else {
+          pkg = offering.availablePackages[0];
+          if (!pkg) {
+            console.error('Available packages:', offering.availablePackages);
+            throw new Error('No subscription package found in offering');
+          }
         }
         
         console.log('📦 Purchasing package:', pkg.identifier, pkg);
@@ -214,21 +216,22 @@ export default function Subscribe() {
         
         console.log('📦 Android - Using offering:', offering);
 
+        let pkg;
+
         if (tier === 'gym_pro') {
-          toast({
-            title: 'Contact Required',
-            description: 'Please contact us for Gym Pro subscription.',
-          });
-          setLoadingTier(null);
-          return;
-        }
-
-        // Find the first available package in the offering
-        const pkg = offering.availablePackages[0];
-
-        if (!pkg) {
-          console.error('Available packages:', offering.availablePackages);
-          throw new Error('No subscription package found in offering');
+          const gymProOffering = offerings?.all?.['Gym Pro'] || offerings?.all?.['gym_pro'];
+          if (gymProOffering && gymProOffering.availablePackages.length > 0) {
+            pkg = gymProOffering.availablePackages[0];
+            console.log('📦 Android - Found Gym Pro package:', pkg.identifier);
+          } else {
+            throw new Error('Gym Pro subscription is not available right now. Please try again later.');
+          }
+        } else {
+          pkg = offering.availablePackages[0];
+          if (!pkg) {
+            console.error('Available packages:', offering.availablePackages);
+            throw new Error('No subscription package found in offering');
+          }
         }
         
         console.log('📦 Purchasing package:', pkg.identifier, pkg);
@@ -318,10 +321,9 @@ export default function Subscribe() {
     },
     {
       name: 'Gym Pro',
-      price: 'Contact Us',
+      price: '$99.99',
       tier: 'gym_pro',
       description: 'For gym owners & coaches',
-      contactEmail: 'bjjjitsjournal@gmail.com',
       features: [
         'Everything in Enthusiast',
         'Share to community: 10x/week',
@@ -420,18 +422,18 @@ export default function Subscribe() {
                     <span className="text-4xl font-bold text-gray-900 dark:text-white">
                       {tier.price}
                     </span>
-                    {tier.tier !== 'free' && tier.tier !== 'gym_pro' && (
+                    {tier.tier !== 'free' && (
                       <span className="text-gray-600 dark:text-gray-400">/month</span>
                     )}
                   </div>
                   {tier.tier === 'enthusiast' && (
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      Auto-renewable monthly subscription. Billed at $9.99/month. Cancel anytime.
+                      Auto-renewable monthly subscription. Billed at $9.99 AUD/month. Cancel anytime.
                     </p>
                   )}
                   {tier.tier === 'gym_pro' && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                      Email: bjjjitsjournal@gmail.com
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Auto-renewable monthly subscription. Billed at $99.99 AUD/month. Cancel anytime.
                     </p>
                   )}
                 </CardHeader>
@@ -447,28 +449,15 @@ export default function Subscribe() {
                   </ul>
 
                   {tier.tier !== 'free' && !tier.isCurrent && (
-                    <>
-                      {tier.tier === 'gym_pro' ? (
-                        <Button
-                          className="w-full"
-                          variant="outline"
-                          onClick={() => window.location.href = `mailto:${tier.contactEmail}?subject=Gym Pro Subscription Inquiry&body=Hi, I'm interested in the Gym Pro plan for my gym.`}
-                          data-testid={`button-subscribe-${tier.tier}`}
-                        >
-                          Contact Us
-                        </Button>
-                      ) : (
-                        <Button
-                          className="w-full"
-                          variant={tier.popular ? 'default' : 'outline'}
-                          onClick={() => handleSubscribe(tier.tier)}
-                          disabled={loadingTier === tier.tier}
-                          data-testid={`button-subscribe-${tier.tier}`}
-                        >
-                          {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
-                        </Button>
-                      )}
-                    </>
+                    <Button
+                      className="w-full"
+                      variant={tier.popular ? 'default' : 'outline'}
+                      onClick={() => handleSubscribe(tier.tier)}
+                      disabled={loadingTier === tier.tier}
+                      data-testid={`button-subscribe-${tier.tier}`}
+                    >
+                      {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
+                    </Button>
                   )}
 
                   {tier.isCurrent && (
@@ -578,7 +567,10 @@ export default function Subscribe() {
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Subscription Terms</h3>
             <div className="space-y-2 text-xs text-gray-500 dark:text-gray-400">
               <p>
-                <strong>Jits Journal Premium</strong> is available as a monthly auto-renewable subscription at <strong>$9.99 AUD/month</strong>.
+                <strong>Jits Journal Premium (BJJ Enthusiast)</strong> is available as a monthly auto-renewable subscription at <strong>$9.99 AUD/month</strong>.
+              </p>
+              <p>
+                <strong>Gym Pro</strong> is available as a monthly auto-renewable subscription at <strong>$99.99 AUD/month</strong>.
               </p>
               <p>
                 Payment will be charged to your Apple ID or Google Play account at confirmation of purchase. Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current billing period. Your account will be charged for renewal within 24 hours prior to the end of the current period at the same price. You can manage and cancel your subscriptions by going to your account settings on the App Store or Google Play Store after purchase.
