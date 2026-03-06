@@ -1,29 +1,38 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertBeltSchema, type Belt, type InsertBelt } from "@shared/schema";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Award, Calendar as CalendarIcon, User, Plus, Edit2, Trash2 } from "lucide-react";
+import { Award, Calendar as CalendarIcon, User, Edit2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { beltsQueries } from "@/lib/supabaseQueries";
+import type { Belt } from "@shared/schema";
+
+interface BeltFormData {
+  belt: string;
+  stripes: number;
+  promotionDate: string;
+  instructor: string;
+  notes: string;
+}
 
 export default function Belts() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [editingBelt, setEditingBelt] = useState<Belt | null>(null);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [formData, setFormData] = useState<BeltFormData>({
+    belt: "white",
+    stripes: 0,
+    promotionDate: new Date().toISOString().split('T')[0],
+    instructor: "",
+    notes: "",
+  });
 
   const { data: belts = [], isLoading } = useQuery<Belt[]>({
     queryKey: ["belts", user?.id],
@@ -37,79 +46,48 @@ export default function Belts() {
     enabled: !!user?.id,
   });
 
-  const form = useForm<InsertBelt>({
-    resolver: zodResolver(insertBeltSchema),
-    defaultValues: {
-      belt: "white",
-      stripes: 0,
-      promotionDate: new Date(),
-      instructor: "",
-      notes: "",
-    },
-  });
-
   const createBeltMutation = useMutation({
-    mutationFn: async (data: InsertBelt) => {
+    mutationFn: async (data: BeltFormData) => {
       if (!user?.id) throw new Error('User not authenticated');
-      const beltData = {
+      return await beltsQueries.create(user.id, {
         belt: data.belt,
-        stripes: data.stripes || 0,
-        promotionDate: data.promotionDate.toISOString().split('T')[0],
+        stripes: data.stripes,
+        promotionDate: data.promotionDate,
         instructor: data.instructor || "",
         notes: data.notes || "",
-      };
-      return await beltsQueries.create(user.id, beltData);
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
       queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
-      form.reset();
-      setShowUpdateForm(false);
-      toast({
-        title: "Belt promotion added!",
-        description: "Your belt progression has been recorded.",
-      });
+      setShowDialog(false);
+      toast({ title: "Belt promotion added!", description: "Your belt progression has been recorded." });
     },
-    onError: (error: any) => {
-      console.error("Create belt mutation error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add belt promotion. Please try again.",
-        variant: "destructive",
-      });
+    onError: () => {
+      toast({ title: "Error", description: "Failed to add belt promotion. Please try again.", variant: "destructive" });
     },
   });
 
   const updateBeltMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: InsertBelt }) => {
+    mutationFn: async ({ id, data }: { id: number; data: BeltFormData }) => {
       if (!user?.id) throw new Error('User not authenticated');
-      const beltData = {
+      return await beltsQueries.update(id, user.id, {
         belt: data.belt,
-        stripes: data.stripes || 0,
-        promotionDate: data.promotionDate.toISOString().split('T')[0],
+        stripes: data.stripes,
+        promotionDate: data.promotionDate,
         instructor: data.instructor || "",
         notes: data.notes || "",
-      };
-      return await beltsQueries.update(id, user.id, beltData);
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
       queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
-      form.reset();
-      setShowUpdateForm(false);
+      setShowDialog(false);
       setEditingBelt(null);
-      toast({
-        title: "Belt updated!",
-        description: "Your belt progression has been updated.",
-      });
+      toast({ title: "Belt updated!", description: "Your belt progression has been updated." });
     },
-    onError: (error: any) => {
-      console.error("Update belt mutation error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update belt. Please try again.",
-        variant: "destructive",
-      });
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update belt. Please try again.", variant: "destructive" });
     },
   });
 
@@ -121,120 +99,92 @@ export default function Belts() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["belts", user?.id] });
       queryClient.invalidateQueries({ queryKey: ["belts", "current", user?.id] });
-      toast({
-        title: "Belt promotion deleted",
-        description: "The belt promotion has been removed.",
-      });
+      toast({ title: "Belt promotion deleted", description: "The belt promotion has been removed." });
     },
-    onError: (error: any) => {
-      console.error("Delete belt mutation error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete belt promotion. Please try again.",
-        variant: "destructive",
-      });
+    onError: () => {
+      toast({ title: "Error", description: "Failed to delete belt promotion. Please try again.", variant: "destructive" });
     },
   });
 
-  const onSubmit = (data: InsertBelt) => {
-    if (editingBelt) {
-      updateBeltMutation.mutate({ id: editingBelt.id, data });
-    } else {
-      createBeltMutation.mutate(data);
-    }
-  };
-
-  const handleEdit = (belt: any) => {
+  const openEditDialog = (belt: Belt) => {
+    const promotionDate = (belt as any).promotion_date || belt.promotionDate;
     setEditingBelt(belt);
-    setShowUpdateForm(true);
-    form.setValue("belt", belt.belt);
-    form.setValue("stripes", belt.stripes);
-    // Handle both snake_case and camelCase from database
-    const promotionDate = belt.promotion_date || belt.promotionDate;
-    form.setValue("promotionDate", new Date(promotionDate));
-    form.setValue("instructor", belt.instructor || "");
-    form.setValue("notes", belt.notes || "");
+    setFormData({
+      belt: belt.belt,
+      stripes: belt.stripes,
+      promotionDate: promotionDate ? new Date(promotionDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      instructor: belt.instructor || "",
+      notes: belt.notes || "",
+    });
+    setShowDialog(true);
   };
 
-  const handleCancelEdit = () => {
-    setEditingBelt(null);
-    setShowUpdateForm(false);
-    form.reset();
-  };
-
-  const handleStartUpdate = () => {
+  const openAddDialog = () => {
     if (currentBelt) {
-      handleEdit(currentBelt);
+      openEditDialog(currentBelt);
     } else {
       setEditingBelt(null);
-      setShowUpdateForm(true);
-      form.reset();
+      setFormData({
+        belt: "white",
+        stripes: 0,
+        promotionDate: new Date().toISOString().split('T')[0],
+        instructor: "",
+        notes: "",
+      });
+      setShowDialog(true);
     }
   };
 
-  const formatDate = (date: string | Date | any) => {
-    // Handle both camelCase and snake_case from database
-    const dateValue = date?.promotion_date || date?.promotionDate || date;
-    if (!dateValue) return 'N/A';
-    return format(new Date(dateValue), "MMM d, yyyy");
+  const handleSubmit = () => {
+    if (editingBelt) {
+      updateBeltMutation.mutate({ id: editingBelt.id, data: formData });
+    } else {
+      createBeltMutation.mutate(formData);
+    }
   };
 
-  // Visual belt component with proper belt tip and stripes
+  const formatDate = (belt: any) => {
+    const dateValue = belt?.promotion_date || belt?.promotionDate;
+    if (!dateValue) return 'N/A';
+    try {
+      return format(new Date(dateValue), "MMM d, yyyy");
+    } catch {
+      return 'N/A';
+    }
+  };
+
   const BeltVisual = ({ belt, stripes, size = "md" }: { belt: string; stripes: number; size?: "sm" | "md" | "lg" }) => {
-    const sizeClasses = {
-      sm: "w-16 h-4",
-      md: "w-24 h-6", 
-      lg: "w-32 h-8"
-    };
+    const sizeClasses = { sm: "w-16 h-4", md: "w-24 h-6", lg: "w-32 h-8" };
+    const stripeSizeClasses = { sm: "w-1 h-3", md: "w-1.5 h-4", lg: "w-2 h-5" };
 
-    const stripeSizeClasses = {
-      sm: "w-1 h-3",
-      md: "w-1.5 h-4",
-      lg: "w-2 h-5"
-    };
+    const getBeltColor = (c: string) => ({
+      white: "bg-white border-2 border-gray-400",
+      blue: "bg-blue-600",
+      purple: "bg-purple-600",
+      brown: "bg-amber-800",
+      black: "bg-black"
+    }[c] || "bg-gray-400");
 
-    const getBeltColor = (beltColor: string) => {
-      const colors = {
-        white: "bg-white border-2 border-gray-400",
-        blue: "bg-blue-600",
-        purple: "bg-purple-600", 
-        brown: "bg-amber-800",
-        black: "bg-black"
-      };
-      return colors[beltColor as keyof typeof colors] || "bg-gray-400";
-    };
-
-    const getBeltTipColor = (beltColor: string) => {
-      const colors = {
-        white: "bg-gray-800",
-        blue: "bg-blue-800",
-        purple: "bg-purple-800", 
-        brown: "bg-amber-900",
-        black: "bg-gray-900"
-      };
-      return colors[beltColor as keyof typeof colors] || "bg-gray-600";
-    };
+    const getBeltTipColor = (c: string) => ({
+      white: "bg-gray-800",
+      blue: "bg-blue-800",
+      purple: "bg-purple-800",
+      brown: "bg-amber-900",
+      black: "bg-gray-900"
+    }[c] || "bg-gray-600");
 
     return (
       <div className="flex items-center gap-2">
         <div className={`${getBeltColor(belt)} ${sizeClasses[size]} rounded-sm shadow-md relative flex items-center justify-center`}>
-          {/* Belt tip */}
           <div className={`${getBeltTipColor(belt)} absolute left-0 top-0 bottom-0 w-2 rounded-l-sm`}></div>
-          
-          {/* Belt text */}
-          <span className={`${belt === 'white' ? 'text-black' : 'text-white'} font-bold text-xs`}>
-            BJJ
-          </span>
-          
-          {/* Stripes on belt */}
+          <span className={`${belt === 'white' ? 'text-black' : 'text-white'} font-bold text-xs`}>BJJ</span>
           <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex gap-0.5">
             {Array.from({ length: stripes }).map((_, i) => (
               <div key={i} className={`${stripeSizeClasses[size]} bg-gray-300 rounded-sm`}></div>
             ))}
           </div>
         </div>
-        
-        <div className="text-sm font-medium capitalize text-black">
+        <div className="text-sm font-medium capitalize text-black dark:text-white">
           {belt} Belt {stripes > 0 && `(${stripes} stripe${stripes !== 1 ? 's' : ''})`}
         </div>
       </div>
@@ -260,7 +210,6 @@ export default function Belts() {
         <p className="text-gray-600 dark:text-gray-300">Track your BJJ belt promotions and achievements</p>
       </div>
 
-      {/* Current Belt Status */}
       <Card className="bg-gradient-to-r from-bjj-navy to-blue-800 text-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -282,13 +231,12 @@ export default function Belts() {
         </CardContent>
       </Card>
 
-      {/* Belt History */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
           <Award className="h-6 w-6" />
           Promotion History
         </h2>
-        
+
         {belts.length === 0 ? (
           <Card className="p-8 text-center">
             <Award className="h-16 w-16 text-gray-300 mx-auto mb-4" />
@@ -307,7 +255,7 @@ export default function Belts() {
                         <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                           <span className="flex items-center gap-1">
                             <CalendarIcon className="w-4 h-4" />
-                            {formatDate(belt.promotionDate)}
+                            {formatDate(belt)}
                           </span>
                           {belt.instructor && (
                             <span className="flex items-center gap-1">
@@ -325,14 +273,8 @@ export default function Belts() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleEdit(belt)}
+                        onClick={() => openEditDialog(belt)}
                         className="text-blue-600 hover:text-blue-700 bg-white border-2 border-blue-200 hover:bg-blue-50"
-                        style={{ 
-                          position: 'relative', 
-                          zIndex: 100,
-                          backgroundColor: 'white',
-                          border: '2px solid #dbeafe'
-                        }}
                       >
                         <Edit2 className="w-4 h-4" />
                       </Button>
@@ -345,12 +287,6 @@ export default function Belts() {
                           }
                         }}
                         className="text-red-600 hover:text-red-700 bg-white border-2 border-red-200 hover:bg-red-50"
-                        style={{ 
-                          position: 'relative', 
-                          zIndex: 100,
-                          backgroundColor: 'white',
-                          border: '2px solid #fecaca'
-                        }}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -363,214 +299,112 @@ export default function Belts() {
         )}
       </div>
 
-      {/* Update Button - positioned at bottom */}
       <div className="flex justify-center mt-8">
         <Button
-          onClick={handleStartUpdate}
-          className="bg-bjj-red hover:bg-red-600 text-white px-8 py-3 text-lg border-2 border-bjj-red"
+          onClick={openAddDialog}
+          className="bg-bjj-red hover:bg-red-600 text-white px-8 py-3 text-lg"
           size="lg"
-          style={{ 
-            position: 'relative', 
-            zIndex: 100,
-            backgroundColor: '#dc2626',
-            borderColor: '#dc2626'
-          }}
         >
           {currentBelt ? "Update Belt Status" : "Add First Belt"}
         </Button>
       </div>
 
-      {/* Update Belt Form - Only shown when updating */}
-      {showUpdateForm && (
-        <Card className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 shadow-lg mt-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-white">
-              {editingBelt ? <Edit2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+      <Dialog open={showDialog} onOpenChange={(open) => { setShowDialog(open); if (!open) setEditingBelt(null); }}>
+        <DialogContent className="bg-white max-w-md w-full mx-4">
+          <DialogHeader>
+            <DialogTitle className="text-gray-800">
               {editingBelt ? "Edit Belt Promotion" : "Add Belt Promotion"}
-            </CardTitle>
-            <CardDescription>
-              {editingBelt ? "Update your belt promotion details" : "Record your belt or stripe promotion"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="bg-white relative">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 bg-white relative">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="belt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-black">Belt Color</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="bg-white text-black">
-                              <SelectValue placeholder="Select belt color" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-white text-black">
-                            <SelectItem value="white" className="text-black">White Belt</SelectItem>
-                            <SelectItem value="blue" className="text-black">Blue Belt</SelectItem>
-                            <SelectItem value="purple" className="text-black">Purple Belt</SelectItem>
-                            <SelectItem value="brown" className="text-black">Brown Belt</SelectItem>
-                            <SelectItem value="black" className="text-black">Black Belt</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            </DialogTitle>
+          </DialogHeader>
 
-                  <FormField
-                    control={form.control}
-                    name="stripes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-black">Stripes</FormLabel>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value?.toString()}>
-                          <FormControl>
-                            <SelectTrigger className="bg-white text-black">
-                              <SelectValue placeholder="Number of stripes" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-white text-black">
-                            <SelectItem value="0" className="text-black">No Stripes</SelectItem>
-                            <SelectItem value="1" className="text-black">1 Stripe</SelectItem>
-                            <SelectItem value="2" className="text-black">2 Stripes</SelectItem>
-                            <SelectItem value="3" className="text-black">3 Stripes</SelectItem>
-                            <SelectItem value="4" className="text-black">4 Stripes</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <div className="space-y-4 mt-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Belt Color</label>
+              <select
+                value={formData.belt}
+                onChange={(e) => setFormData({ ...formData, belt: e.target.value })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-800 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="white">White Belt</option>
+                <option value="blue">Blue Belt</option>
+                <option value="purple">Purple Belt</option>
+                <option value="brown">Brown Belt</option>
+                <option value="black">Black Belt</option>
+              </select>
+            </div>
 
-                  <FormField
-                    control={form.control}
-                    name="promotionDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="text-black">Promotion Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal bg-white text-black",
-                                  !field.value && "text-gray-500"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start" side="top" sideOffset={5}>
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stripes</label>
+              <select
+                value={formData.stripes}
+                onChange={(e) => setFormData({ ...formData, stripes: parseInt(e.target.value) })}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-800 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="0">No Stripes</option>
+                <option value="1">1 Stripe</option>
+                <option value="2">2 Stripes</option>
+                <option value="3">3 Stripes</option>
+                <option value="4">4 Stripes</option>
+              </select>
+            </div>
 
-                  <FormField
-                    control={form.control}
-                    name="instructor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-black">Instructor (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Professor who promoted you" className="bg-white text-black" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Promotion Date</label>
+              <input
+                type="date"
+                value={formData.promotionDate}
+                onChange={(e) => setFormData({ ...formData, promotionDate: e.target.value })}
+                max={new Date().toISOString().split('T')[0]}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-800 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-black">Notes (Optional)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Add any notes about this promotion..."
-                          className="resize-none bg-white text-black"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Instructor (Optional)</label>
+              <Input
+                placeholder="Professor who promoted you"
+                value={formData.instructor}
+                onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
+                className="bg-white text-gray-800"
+              />
+            </div>
 
-              </form>
-            </Form>
-          </CardContent>
-          
-          {/* Completely separate button container */}
-          <div className="px-6 pb-6 bg-white">
-            <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
-              <Button 
-                type="button" 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+              <Textarea
+                placeholder="Add any notes about this promotion..."
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                className="resize-none bg-white text-gray-800"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-3 justify-end pt-2 border-t border-gray-200">
+              <Button
+                type="button"
                 variant="outline"
-                onClick={handleCancelEdit}
-                className="px-6 bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                style={{ 
-                  position: 'relative', 
-                  zIndex: 1000,
-                  backgroundColor: 'white',
-                  border: '2px solid #d1d5db'
-                }}
+                onClick={() => { setShowDialog(false); setEditingBelt(null); }}
+                className="px-6 bg-white border-gray-300 text-gray-700"
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 type="button"
-                onClick={() => {
-                  const formData = form.getValues();
-                  if (editingBelt) {
-                    updateBeltMutation.mutate({ id: editingBelt.id, data: formData });
-                  } else {
-                    createBeltMutation.mutate(formData);
-                  }
-                }}
+                onClick={handleSubmit}
                 disabled={createBeltMutation.isPending || updateBeltMutation.isPending}
-                className="px-8 text-white border-2"
-                style={{ 
-                  position: 'relative', 
-                  zIndex: 1000,
-                  backgroundColor: '#dc2626',
-                  borderColor: '#dc2626'
-                }}
+                className="px-8 text-white"
+                style={{ backgroundColor: '#dc2626' }}
               >
-                {editingBelt ? (
-                  updateBeltMutation.isPending ? "Updating..." : "Update Promotion"
-                ) : (
-                  createBeltMutation.isPending ? "Adding..." : "Add Promotion"
-                )}
+                {editingBelt
+                  ? (updateBeltMutation.isPending ? "Updating..." : "Update Promotion")
+                  : (createBeltMutation.isPending ? "Adding..." : "Add Promotion")
+                }
               </Button>
             </div>
           </div>
-        </Card>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
