@@ -74,11 +74,14 @@ workflows:
       - name: Set up code signing
         script: xcode-project use-profiles
       
-      - name: Increment build number
+      - name: Increment build number and version
         script: |
           cd $CM_BUILD_DIR/ios/App
           BUILD_NUM=$(($BUILD_NUMBER + 43))
           agvtool new-version -all $BUILD_NUM
+          MARKETING_VERSION="1.0.$BUILD_NUM"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $MARKETING_VERSION" App/Info.plist
+          echo "Set version to $MARKETING_VERSION (build $BUILD_NUM)"
       
       - name: Build IPA
         script: |
