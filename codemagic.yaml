@@ -151,6 +151,14 @@ workflows:
       - name: Sync Capacitor Android
         script: npx cap sync android
       
+      - name: Increment Android build number and version
+        script: |
+          BUILD_NUM=$(($BUILD_NUMBER + 43))
+          MARKETING_VERSION="1.0.$BUILD_NUM"
+          sed -i "s/versionCode .*/versionCode $BUILD_NUM/" android/app/build.gradle
+          sed -i "s/versionName .*/versionName \"$MARKETING_VERSION\"/" android/app/build.gradle
+          echo "Set Android version to $MARKETING_VERSION (versionCode $BUILD_NUM)"
+
       - name: Build Android AAB
         script: |
           cd android
