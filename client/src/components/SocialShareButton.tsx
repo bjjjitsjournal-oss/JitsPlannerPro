@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Share2, Twitter, Facebook, Download } from 'lucide-react';
+import { Share2, Twitter, Facebook, Download, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
@@ -26,9 +27,13 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
   const [supportsWebShare, setSupportsWebShare] = useState(false);
 
   useEffect(() => {
-    // Check if Web Share API is supported
     setSupportsWebShare(!!navigator.share);
   }, []);
+
+  const getShareText = () => {
+    const preview = note.content.substring(0, 200) + (note.content.length > 200 ? '...' : '');
+    return `🥋 ${note.title}\n\n${preview}\n\nTracking my BJJ journey with Jits Journal!`;
+  };
 
   const generateShareImage = async (): Promise<Blob> => {
     return new Promise((resolve) => {
@@ -38,18 +43,15 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Instagram Post size (1080x1080)
       canvas.width = 1080;
       canvas.height = 1080;
 
-      // Background - Navy gradient
       const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
-      gradient.addColorStop(0, '#1e3a8a'); // Navy blue
-      gradient.addColorStop(1, '#0f172a'); // Dark navy
+      gradient.addColorStop(0, '#1e3a8a');
+      gradient.addColorStop(1, '#0f172a');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 1080, 1080);
 
-      // Add subtle pattern overlay
       ctx.globalAlpha = 0.05;
       for (let i = 0; i < 1080; i += 30) {
         ctx.strokeStyle = '#ffffff';
@@ -61,22 +63,18 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
       }
       ctx.globalAlpha = 1;
 
-      // Logo/Brand area - Top section
-      ctx.fillStyle = 'rgba(220, 38, 38, 0.9)'; // Red accent
+      ctx.fillStyle = 'rgba(220, 38, 38, 0.9)';
       ctx.fillRect(0, 0, 1080, 180);
 
-      // Brand Text - "BJJ JITS JOURNAL"
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 56px Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('BJJ JITS JOURNAL', 540, 70);
-      
-      // Subtitle
+
       ctx.font = '32px Arial, sans-serif';
-      ctx.fillStyle = '#fecaca'; // Light red
+      ctx.fillStyle = '#fecaca';
       ctx.fillText('Training Notes & Progress', 540, 130);
 
-      // Belt badge if available
       if (userBelt) {
         const beltY = 250;
         const beltColors: { [key: string]: string } = {
@@ -86,39 +84,36 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
           brown: '#92400e',
           black: '#0f172a'
         };
-        
+
         ctx.fillStyle = beltColors[userBelt.toLowerCase()] || '#6b7280';
         ctx.fillRect(80, beltY, 180, 60);
-        
+
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 28px Arial';
         ctx.textAlign = 'left';
         ctx.fillText(userBelt.toUpperCase(), 100, beltY + 40);
-        
-        // Stripes
+
         if (userStripes && userStripes > 0) {
-          ctx.fillStyle = '#fbbf24'; // Gold
+          ctx.fillStyle = '#fbbf24';
           for (let i = 0; i < Math.min(userStripes, 4); i++) {
             ctx.fillRect(280 + (i * 25), beltY + 15, 15, 30);
           }
         }
       }
 
-      // Note title - Main content
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 48px Arial, sans-serif';
       ctx.textAlign = 'center';
-      
-      // Word wrap title
+
       const maxWidth = 950;
       const words = note.title.split(' ');
       let line = '';
       let y = userBelt ? 400 : 300;
-      
+
       for (const word of words) {
         const testLine = line + word + ' ';
         const metrics = ctx.measureText(testLine);
-        
+
         if (metrics.width > maxWidth && line !== '') {
           ctx.fillText(line, 540, y);
           line = word + ' ';
@@ -129,24 +124,22 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
       }
       ctx.fillText(line, 540, y);
 
-      // Note content preview (first 150 chars)
       const contentPreview = note.content.substring(0, 150) + (note.content.length > 150 ? '...' : '');
       ctx.font = '32px Arial, sans-serif';
-      ctx.fillStyle = '#cbd5e1'; // Light gray
-      
-      // Word wrap content
+      ctx.fillStyle = '#cbd5e1';
+
       const contentWords = contentPreview.split(' ');
       line = '';
       y += 100;
       let lineCount = 0;
       const maxLines = 4;
-      
+
       for (const word of contentWords) {
         if (lineCount >= maxLines) break;
-        
+
         const testLine = line + word + ' ';
         const metrics = ctx.measureText(testLine);
-        
+
         if (metrics.width > maxWidth && line !== '') {
           ctx.fillText(line, 540, y);
           line = word + ' ';
@@ -160,31 +153,34 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
         ctx.fillText(line, 540, y);
       }
 
-      // Date at bottom
       const date = new Date(note.createdAt).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
         year: 'numeric'
       });
-      
+
       ctx.fillStyle = '#94a3b8';
       ctx.font = '28px Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(date, 540, 980);
 
-      // Bottom accent line
       ctx.fillStyle = '#dc2626';
       ctx.fillRect(0, 1020, 1080, 60);
-      
+
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 32px Arial';
       ctx.fillText('Track Your Journey • Share Your Progress', 540, 1060);
 
-      // Convert to blob
       canvas.toBlob((blob) => {
         if (blob) resolve(blob);
       }, 'image/png');
     });
+  };
+
+  const handleWhatsAppShare = () => {
+    const text = getShareText();
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleWebShare = async () => {
@@ -196,15 +192,13 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
         await navigator.share({
           files: [file],
           title: `BJJ Training Note: ${note.title}`,
-          text: `${note.title}\n\n${note.content.substring(0, 100)}...`
+          text: getShareText(),
         });
-        
         toast({
           title: 'Shared!',
           description: 'Your note has been shared successfully.',
         });
       } else {
-        // Fallback to download
         handleDownload();
       }
     } catch (err: any) {
@@ -226,7 +220,7 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
     link.download = `bjj-journal-${note.title.replace(/\s+/g, '-').toLowerCase()}.png`;
     link.click();
     URL.revokeObjectURL(url);
-    
+
     toast({
       title: 'Downloaded!',
       description: 'Image saved to your device.',
@@ -234,15 +228,13 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
   };
 
   const handleTwitterShare = () => {
-    const text = `${note.title}\n\nTracking my BJJ journey with Jits Journal! 🥋`;
-    // Always use production URL for social sharing (works on mobile too)
+    const text = `🥋 ${note.title}\n\nTracking my BJJ journey with Jits Journal!`;
     const url = 'https://jitsjournal-backend.onrender.com';
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank', 'width=600,height=400');
   };
 
   const handleFacebookShare = () => {
-    // Always use production URL for social sharing (works on mobile too)
     const url = 'https://jitsjournal-backend.onrender.com';
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     window.open(facebookUrl, '_blank', 'width=600,height=400');
@@ -250,23 +242,32 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
 
   return (
     <>
-      {/* Hidden canvas for image generation */}
       <canvas ref={canvasRef} style={{ display: 'none' }} />
-      
+
       {supportsWebShare ? (
-        // Mobile: Single share button with Web Share API
-        <Button
-          onClick={handleWebShare}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-          data-testid="button-share-note"
-        >
-          <Share2 className="w-4 h-4" />
-          Share to Social Media
-        </Button>
+        // Mobile: WhatsApp button + native share button
+        <div className="flex gap-2">
+          <Button
+            onClick={handleWhatsAppShare}
+            variant="outline"
+            size="sm"
+            className="gap-2 text-green-600 border-green-200 hover:bg-green-50"
+          >
+            <MessageCircle className="w-4 h-4" />
+            WhatsApp
+          </Button>
+          <Button
+            onClick={handleWebShare}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <Share2 className="w-4 h-4" />
+            Share
+          </Button>
+        </div>
       ) : (
-        // Desktop: Dropdown with share options
+        // Desktop: Dropdown with all options
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -276,10 +277,15 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
               data-testid="button-share-note"
             >
               <Share2 className="w-4 h-4" />
-              Share to Social Media
+              Share Note
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleWhatsAppShare}>
+              <MessageCircle className="w-4 h-4 mr-2 text-green-600" />
+              Share on WhatsApp
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleTwitterShare} data-testid="button-share-twitter">
               <Twitter className="w-4 h-4 mr-2" />
               Share on Twitter
@@ -288,6 +294,7 @@ export default function SocialShareButton({ note, userBelt, userStripes }: Socia
               <Facebook className="w-4 h-4 mr-2" />
               Share on Facebook
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleDownload} data-testid="button-download-image">
               <Download className="w-4 h-4 mr-2" />
               Download Image

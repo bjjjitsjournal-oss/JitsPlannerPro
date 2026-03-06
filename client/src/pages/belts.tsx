@@ -165,6 +165,10 @@ export default function Belts() {
   const handleStartUpdate = () => {
     if (currentBelt) {
       handleEdit(currentBelt);
+    } else {
+      setEditingBelt(null);
+      setShowUpdateForm(true);
+      form.reset();
     }
   };
 
@@ -362,7 +366,7 @@ export default function Belts() {
       {/* Update Button - positioned at bottom */}
       <div className="flex justify-center mt-8">
         <Button
-          onClick={() => setShowUpdateForm(true)}
+          onClick={handleStartUpdate}
           className="bg-bjj-red hover:bg-red-600 text-white px-8 py-3 text-lg border-2 border-bjj-red"
           size="lg"
           style={{ 
@@ -448,7 +452,7 @@ export default function Belts() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel className="text-black">Promotion Date</FormLabel>
-                        <Popover modal={true}>
+                        <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
