@@ -1436,6 +1436,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Note not found" });
       }
       
+      // Delete related records first to avoid foreign key constraint errors
+      await pool.query('DELETE FROM note_likes WHERE note_id = $1', [id]);
+      await pool.query('DELETE FROM note_reports WHERE note_id = $1', [id]).catch(() => {}); // ignore if table doesn't exist
+
       const deleted = await storage.deleteNote(id);
       
       // Invalidate cache when note is deleted
@@ -1448,6 +1452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(204).send();
     } catch (error) {
+      console.error('❌ Delete note error:', error);
       res.status(500).json({ message: "Failed to delete note" });
     }
   });
@@ -1464,6 +1469,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Admin access required" });
       }
       
+      // Delete related records first to avoid foreign key constraint errors
+      await pool.query('DELETE FROM note_likes WHERE note_id = $1', [id]);
+      await pool.query('DELETE FROM note_reports WHERE note_id = $1', [id]).catch(() => {});
+
       // Admin can delete any note regardless of owner
       const deleted = await storage.deleteNote(id);
       
@@ -3054,6 +3063,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "This note does not belong to your gym" });
       }
       
+      // Delete related records first to avoid foreign key constraint errors
+      await pool.query('DELETE FROM note_likes WHERE note_id = $1', [noteId]);
+      await pool.query('DELETE FROM note_reports WHERE note_id = $1', [noteId]).catch(() => {});
+
       // Delete the note
       await storage.deleteNote(noteId);
       
