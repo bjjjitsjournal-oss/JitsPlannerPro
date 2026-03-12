@@ -453,7 +453,8 @@ export class DatabaseStorage implements IStorage {
         isShared: notes.isShared,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
-        videoUrl: notes.videoUrl, // Just to check if video exists (not for display)
+        videoUrl: notes.videoUrl,
+        videoFileName: notes.videoFileName,
         // User info fields only
         authorFirstName: users.firstName,
         authorLastName: users.lastName,
@@ -478,8 +479,8 @@ export class DatabaseStorage implements IStorage {
       isShared: r.isShared,
       gymId: null,
       sharedWithUsers: [],
-      videoUrl: r.videoUrl ? '🎥' : null, // Show video indicator if video exists
-      videoFileName: null,
+      videoUrl: r.videoUrl || null,
+      videoFileName: r.videoFileName || null,
       videoFileSize: null,
       videoThumbnail: null,
       createdAt: r.createdAt,
