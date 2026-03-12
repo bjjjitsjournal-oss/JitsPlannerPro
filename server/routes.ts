@@ -31,6 +31,7 @@ const PREMIUM_EMAILS = [
   'bjjjitsjournal@gmail.com',
   'admin@apexbjj.com.au',
   'pakeliot@gmail.com',
+  'jaydetn@gmail.com',
 ];
 
 // Supabase admin client for token verification
