@@ -1,4 +1,4 @@
-﻿﻿import type { Express } from "express";
+﻿﻿﻿﻿import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -153,7 +153,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Supabase user not found in database, auto-creating:', decoded.email);
         
         // Auto-create user account with premium status for known emails
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const isPremiumUser = premiumEmails.includes(decoded.email);
         const isAdmin = adminEmails.includes(decoded.email);
@@ -180,7 +180,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
         
         // Auto-restore user account
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
         const isPremiumUser = premiumEmails.includes(decoded.email);
         
         const existingUser = await storage.getUserByEmail(decoded.email);
@@ -317,6 +317,45 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Supabase password reset page - must be before auth middleware
+  app.get("/reset-password", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "server", "reset-password.html"));
+  });
+
+  // Server-side password update using Supabase admin API (reliable)
+  app.post("/api/auth/reset-via-token", async (req, res) => {
+    try {
+      const { accessToken, newPassword } = req.body;
+      if (!accessToken || !newPassword) {
+        return res.status(400).json({ message: "Access token and new password are required" });
+      }
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+      if (!supabaseAdmin) {
+        return res.status(500).json({ message: "Server configuration error" });
+      }
+      // Get user from the access token
+      const { data: { user }, error: getUserError } = await supabaseAdmin.auth.getUser(accessToken);
+      if (getUserError || !user) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      // Update password via admin API
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+        password: newPassword,
+      });
+      if (updateError) {
+        console.error('Supabase admin password update error:', updateError);
+        return res.status(500).json({ message: "Failed to update password" });
+      }
+      console.log(`✅ Password reset via admin API for: ${user.email}`);
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      console.error('Reset via token error:', error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
   // PUBLIC Privacy Policy page for Google Play / App Store (no auth required)
   app.get("/privacy", (req, res) => {
     res.send(`
@@ -460,7 +499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
       // Create user with premium access for specific emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
       const isPremiumUser = premiumEmails.includes(userData.email);
       
       // Assign admin role for specific emails
@@ -590,8 +629,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash new password
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       
-      // Update user password
+      // Update user password in local DB
       await storage.updateUser(resetToken.userId, { password: hashedPassword });
+
+      // Also update password in Supabase so mobile login works
+      try {
+        const user = await storage.getUser(resetToken.userId);
+        if (user?.supabaseUid && supabaseAdmin) {
+          await supabaseAdmin.auth.admin.updateUserById(user.supabaseUid, {
+            password: newPassword,
+          });
+          console.log(`✅ Supabase password updated for user: ${user.email}`);
+        }
+      } catch (supabaseError) {
+        console.error('Failed to update Supabase password (non-fatal):', supabaseError);
+      }
       
       // Mark token as used
       await storage.markPasswordResetTokenAsUsed(resetToken.id);
@@ -631,7 +683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         console.log('Creating new user for Supabase ID:', supabaseUser.id);
         
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const isPremiumUser = premiumEmails.includes(supabaseUser.email!);
         const isAdmin = adminEmails.includes(supabaseUser.email!);
@@ -683,7 +735,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Auto-upgrade premium users if they don't already have premium
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
       const isPremiumUser = premiumEmails.includes(email);
       if (isPremiumUser && !user.subscriptionExpiresAt) {
         const updatedUser = await storage.updateUser(user.id, {
@@ -1297,7 +1349,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!existingNote || existingNote.userId !== userId) {
         return res.status(404).json({ message: "Note not found" });
       }
-      
+
+      // Delete related records first to avoid foreign key constraint errors
+      await pool.query('DELETE FROM note_likes WHERE note_id = $1', [id]);
+      await pool.query('DELETE FROM note_reports WHERE note_id = $1', [id]).catch(() => {});
+
       const deleted = await storage.deleteNote(id);
       
       // Invalidate cache when note is deleted
@@ -1310,6 +1366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(204).send();
     } catch (error) {
+      console.error('❌ Delete note error:', error);
       res.status(500).json({ message: "Failed to delete note" });
     }
   });
@@ -1325,7 +1382,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!adminEmails.includes(userEmail)) {
         return res.status(403).json({ message: "Admin access required" });
       }
-      
+
+      // Delete related records first to avoid foreign key constraint errors
+      await pool.query('DELETE FROM note_likes WHERE note_id = $1', [id]);
+      await pool.query('DELETE FROM note_reports WHERE note_id = $1', [id]).catch(() => {});
+
       // Admin can delete any note regardless of owner
       const deleted = await storage.deleteNote(id);
       
@@ -1886,40 +1947,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/by-supabase-id/:supabaseId", async (req, res) => {
     try {
       const { supabaseId } = req.params;
-      const email = req.query.email as string | undefined;
-      console.log('Looking up user by Supabase ID:', supabaseId, 'email:', email);
+      console.log('Looking up user by Supabase ID:', supabaseId);
       
-      let result = await pool.query(
+      const result = await pool.query(
         'SELECT * FROM users WHERE supabase_uid = $1',
         [supabaseId]
       );
-      
-      // If not found by supabase_uid but email is provided, try to find and link by email
-      if (result.rows.length === 0 && email) {
-        console.log('User not found by Supabase ID, trying email lookup:', email);
-        const emailResult = await pool.query(
-          'SELECT * FROM users WHERE email = $1',
-          [email]
-        );
-        
-        if (emailResult.rows.length > 0) {
-          const existingUser = emailResult.rows[0];
-          console.log('Found user by email, linking Supabase ID:', existingUser.id);
-          
-          // Update the user's supabase_uid to link their account
-          await pool.query(
-            'UPDATE users SET supabase_uid = $1 WHERE id = $2',
-            [supabaseId, existingUser.id]
-          );
-          console.log('✅ Linked Supabase ID to existing user:', existingUser.email);
-          
-          // Fetch the updated user
-          result = await pool.query(
-            'SELECT * FROM users WHERE id = $1',
-            [existingUser.id]
-          );
-        }
-      }
       
       if (result.rows.length > 0) {
         console.log('Found user:', result.rows[0].id);
@@ -1932,7 +1965,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const updatedUser = await storage.updateUser(user.id, {
             role: 'admin'
           });
-          console.log(`✅ Auto-assigned admin role to ${user.email}`);
+          console.log(`âœ… Auto-assigned admin role to ${user.email}`);
           
           // Return updated user
           if (updatedUser) {
