@@ -161,7 +161,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Supabase user not found in database, auto-creating:', decoded.email);
         
         // Auto-create user account with premium status for known emails
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com', 'info@jayceden.com.au'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const isPremiumUser = premiumEmails.includes(decoded.email);
         const isAdmin = adminEmails.includes(decoded.email);
@@ -188,7 +188,7 @@ const authenticateToken = async (req: any, res: any, next: any) => {
         console.log('Token valid but user not found in storage, userId:', decoded.userId, 'email:', decoded.email);
         
         // Auto-restore user account
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com', 'info@jayceden.com.au'];
         const isPremiumUser = premiumEmails.includes(decoded.email);
         
         const existingUser = await storage.getUserByEmail(decoded.email);
@@ -670,7 +670,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
       // Create user with premium access for specific emails
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com', 'info@jayceden.com.au'];
       const isPremiumUser = premiumEmails.includes(userData.email);
       
       // Assign admin role for specific emails
@@ -865,7 +865,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         console.log('Creating new user for Supabase ID:', supabaseUser.id);
         
-        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
+        const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com', 'info@jayceden.com.au'];
         const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
         const isPremiumUser = premiumEmails.includes(supabaseUser.email!);
         const isAdmin = adminEmails.includes(supabaseUser.email!);
@@ -917,7 +917,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Auto-upgrade premium users if they don't already have premium
-      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com'];
+      const premiumEmails = ['joe833360@gmail.com', 'Joe@cleancutconstructions.com.au', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au', 'pakeliot@gmail.com', 'jaydetn@gmail.com', 'info@jayceden.com.au'];
       const isPremiumUser = premiumEmails.includes(email);
       if (isPremiumUser && !user.subscriptionExpiresAt) {
         const updatedUser = await storage.updateUser(user.id, {
@@ -947,10 +947,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Check password
+      // Check password - try local hash first, then fall back to Supabase auth
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        // If local check fails and user has Supabase account, try Supabase auth
+        // This handles cases where password was reset via Supabase admin API
+        if (user.supabaseUid && supabaseAnon) {
+          const { data: supabaseData, error: supabaseError } = await supabaseAnon.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (supabaseError || !supabaseData?.user) {
+            return res.status(401).json({ message: "Invalid email or password" });
+          }
+          // Supabase auth succeeded - update local hash to keep them in sync
+          const newHash = await bcrypt.hash(password, 10);
+          await storage.updateUser(user.id, { password: newHash });
+          console.log(`🔄 Updated local password hash for ${email} after Supabase auth`);
+        } else {
+          return res.status(401).json({ message: "Invalid email or password" });
+        }
       }
       
       // Create JWT token (30 days for better mobile experience)
