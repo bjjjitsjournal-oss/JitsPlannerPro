@@ -366,7 +366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   </div>
   <script>
     var BACKEND = 'https://jitsjournal-backend.onrender.com';
-    var _tok = null;
+    var _resetKey = null;
 
     function show(id) {
       ['s-loading','s-form','s-invalid','s-done'].forEach(function(s){ document.getElementById(s).style.display = s===id ? '' : 'none'; });
@@ -382,10 +382,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       xhr.ontimeout = function(){ cb(null, 'Request timed out'); };
       xhr.onerror = function(){ cb(null, 'Network error'); };
       xhr.onload = function(){
-        try { cb(JSON.parse(xhr.responseText), xhr.status >= 400 ? (JSON.parse(xhr.responseText).message || 'Error') : null); }
-        catch(e){ cb(null, 'Invalid response'); }
+        try {
+          var d = JSON.parse(xhr.responseText);
+          cb(d, xhr.status >= 400 ? (d.message || 'Error') : null);
+        } catch(e){ cb(null, 'Invalid response'); }
       };
       xhr.send(JSON.stringify(body));
+    }
+
+    function exchangeForKey(payload) {
+      postJSON(BACKEND + '/api/auth/exchange-code', payload, function(data, e) {
+        if (!e && data && data.resetKey) { _resetKey = data.resetKey; show('s-form'); }
+        else { show('s-invalid'); }
+      });
     }
 
     function init() {
@@ -394,28 +403,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       var accessToken = h.get('access_token');
       if (accessToken && h.get('type') === 'recovery') {
-        _tok = accessToken;
-        show('s-form');
+        exchangeForKey({ accessToken: accessToken });
         return;
       }
 
       var tokenHash = q.get('token_hash');
-      if (tokenHash) {
-        postJSON(BACKEND + '/api/auth/exchange-code', { tokenHash: tokenHash }, function(data, e) {
-          if (!e && data && data.accessToken) { _tok = data.accessToken; show('s-form'); }
-          else { show('s-invalid'); }
-        });
-        return;
-      }
+      if (tokenHash) { exchangeForKey({ tokenHash: tokenHash }); return; }
 
       var code = q.get('code');
-      if (code) {
-        postJSON(BACKEND + '/api/auth/exchange-code', { code: code }, function(data, e) {
-          if (!e && data && data.accessToken) { _tok = data.accessToken; show('s-form'); }
-          else { show('s-invalid'); }
-        });
-        return;
-      }
+      if (code) { exchangeForKey({ code: code }); return; }
 
       show('s-invalid');
     }
@@ -425,10 +421,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       var pw2 = document.getElementById('pw2').value;
       if (pw.length < 8) { err('Password must be at least 8 characters.'); return; }
       if (pw !== pw2) { err('Passwords do not match.'); return; }
-      if (!_tok) { err('Session expired. Please request a new reset link.'); return; }
+      if (!_resetKey) { err('Session expired. Please request a new reset link.'); return; }
       var btn = document.getElementById('btn');
       btn.disabled = true; btn.textContent = 'Updating...';
-      postJSON(BACKEND + '/api/auth/reset-via-token', { accessToken: _tok, newPassword: pw }, function(data, e) {
+      postJSON(BACKEND + '/api/auth/reset-via-token', { resetKey: _resetKey, newPassword: pw }, function(data, e) {
         if (e) { err(e); btn.disabled=false; btn.textContent='Set New Password'; }
         else { show('s-done'); }
       });
@@ -440,12 +436,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 </html>`);
   });
 
+  // In-memory store for verified reset sessions (userId, 15-min TTL)
+  const resetSessions = new Map<string, { userId: string; expiresAt: number }>();
+  function createResetKey(userId: string): string {
+    const key = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    resetSessions.set(key, { userId, expiresAt: Date.now() + 15 * 60 * 1000 });
+    return key;
+  }
+
   // Server-side password update using Supabase admin API (reliable)
   app.post("/api/auth/reset-via-token", async (req, res) => {
     try {
-      const { accessToken, newPassword } = req.body;
-      if (!accessToken || !newPassword) {
-        return res.status(400).json({ message: "Access token and new password are required" });
+      const { resetKey, newPassword } = req.body;
+      if (!resetKey || !newPassword) {
+        return res.status(400).json({ message: "Reset key and new password are required" });
       }
       if (newPassword.length < 8) {
         return res.status(400).json({ message: "Password must be at least 8 characters" });
@@ -453,20 +457,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!supabaseAdmin) {
         return res.status(500).json({ message: "Server configuration error" });
       }
-      // Get user from the access token
-      const { data: { user }, error: getUserError } = await supabaseAdmin.auth.getUser(accessToken);
-      if (getUserError || !user) {
-        return res.status(400).json({ message: "Invalid or expired reset token" });
+      const session = resetSessions.get(resetKey);
+      if (!session || Date.now() > session.expiresAt) {
+        resetSessions.delete(resetKey);
+        return res.status(400).json({ message: "Reset link expired. Please request a new one." });
       }
-      // Update password via admin API
-      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(session.userId, {
         password: newPassword,
       });
       if (updateError) {
         console.error('Supabase admin password update error:', updateError);
         return res.status(500).json({ message: "Failed to update password" });
       }
-      console.log(`✅ Password reset via admin API for: ${user.email}`);
+      resetSessions.delete(resetKey);
+      console.log(`✅ Password reset via admin API for userId: ${session.userId}`);
       res.json({ message: "Password updated successfully" });
     } catch (error) {
       console.error('Reset via token error:', error);
@@ -474,31 +478,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Exchange a Supabase auth code or token_hash for an access token (server-side)
+  // Exchange a Supabase token for a server-issued reset key (15-min TTL, immune to token expiry)
   app.post("/api/auth/exchange-code", async (req, res) => {
     try {
-      const { code, tokenHash } = req.body;
+      const { code, tokenHash, accessToken } = req.body;
       if (!supabaseAdmin) return res.status(500).json({ message: "Server configuration error" });
 
-      if (tokenHash) {
+      let userId: string | null = null;
+
+      if (accessToken) {
+        const { data: { user }, error } = await supabaseAdmin.auth.getUser(accessToken);
+        if (!error && user) userId = user.id;
+      }
+
+      if (!userId && tokenHash) {
         const { data, error } = await supabaseAdmin.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
-        if (error || !data?.session) {
-          console.error('Token hash verification error:', error);
-          return res.status(400).json({ message: "Invalid or expired token" });
-        }
-        return res.json({ accessToken: data.session.access_token });
+        if (!error && data?.session?.user) userId = data.session.user.id;
+        else console.error('Token hash verification error:', error);
       }
 
-      if (code) {
+      if (!userId && code) {
         const { data, error } = await supabaseAdmin.auth.exchangeCodeForSession(code);
-        if (error || !data?.session) {
-          console.error('Code exchange error:', error);
-          return res.status(400).json({ message: "Invalid or expired code" });
-        }
-        return res.json({ accessToken: data.session.access_token });
+        if (!error && data?.session?.user) userId = data.session.user.id;
+        else console.error('Code exchange error:', error);
       }
 
-      return res.status(400).json({ message: "Code or token hash is required" });
+      if (!userId) return res.status(400).json({ message: "Invalid or expired reset link" });
+
+      const resetKey = createResetKey(userId);
+      return res.json({ resetKey });
     } catch (error) {
       console.error('Exchange code error:', error);
       res.status(500).json({ message: "Failed to exchange code" });
