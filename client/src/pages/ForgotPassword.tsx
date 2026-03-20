@@ -6,53 +6,38 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail } from "lucide-react";
 import { Link } from "wouter";
-import { Capacitor } from "@capacitor/core";
+import { supabase } from "@/lib/supabase";
 
-const API_BASE_URL = Capacitor.isNativePlatform()
-  ? 'https://jitsjournal-backend.onrender.com'
-  : (import.meta.env.VITE_API_BASE_URL || '');
+const RESET_REDIRECT = 'https://jitsjournal-backend.onrender.com/reset-password';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg("");
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: RESET_REDIRECT,
+    });
 
-      if (response.ok) {
-        setIsEmailSent(true);
-        toast({
-          title: "Reset link sent",
-          description: "If the email exists, a reset link has been sent to your inbox.",
-        });
-      } else {
-        const errorData = await response.json();
-        toast({
-          title: "Error",
-          description: errorData.message || "Failed to send reset email",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+    setIsLoading(false);
+
+    if (error) {
+      console.error("Reset password error:", error.message);
+      setErrorMsg(error.message);
       toast({
         title: "Error",
-        description: "An error occurred. Please try again.",
+        description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
+    } else {
+      setIsEmailSent(true);
     }
   };
 
@@ -82,6 +67,9 @@ export default function ForgotPassword() {
                   className="mt-1"
                 />
               </div>
+              {errorMsg && (
+                <p className="text-sm text-red-600">{errorMsg}</p>
+              )}
               <Button
                 type="submit"
                 className="w-full"
@@ -98,16 +86,19 @@ export default function ForgotPassword() {
               <div>
                 <h3 className="text-lg font-medium text-gray-900">Check your email</h3>
                 <p className="text-gray-600 mt-1">
-                  If the email address exists in our system, we've sent a password reset link to:
+                  We've sent a password reset link to:
                 </p>
                 <p className="font-medium text-gray-900 mt-2">{email}</p>
               </div>
               <div className="text-sm text-gray-500">
                 <p>Didn't receive the email? Check your spam folder or try again.</p>
               </div>
+              <Button variant="outline" className="w-full" onClick={() => { setIsEmailSent(false); setEmail(""); }}>
+                Try a different email
+              </Button>
             </div>
           )}
-          
+
           <div className="mt-6 text-center">
             <Link href="/login">
               <Button variant="ghost" className="text-sm">
