@@ -6,6 +6,11 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail } from "lucide-react";
 import { Link } from "wouter";
+import { Capacitor } from "@capacitor/core";
+
+const API_BASE_URL = Capacitor.isNativePlatform()
+  ? 'https://jitsjournal-backend.onrender.com'
+  : (import.meta.env.VITE_API_BASE_URL || '');
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -18,7 +23,7 @@ export default function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/forgot-password", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

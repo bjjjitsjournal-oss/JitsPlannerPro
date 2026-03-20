@@ -36,6 +36,14 @@ const supabaseAdmin = supabaseUrl && supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey)
   : null;
 
+// Anon key is PUBLIC - safe to hardcode as fallback (already visible in reset-password HTML page)
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
+  || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtb3RpZ3ByZm9zcnJqd3B4bG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAzMzQ4NDAsImV4cCI6MjAzNTkxMDg0MH0.d5yLGYOSzwvf0a2mR8XMIJo9mxgOAXZqSW8E6QdO7QU';
+// Anon client - REQUIRED for verifyOtp and resetPasswordForEmail (service role key does not work for these)
+const supabaseAnon = supabaseUrl
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
 // Configure multer for file uploads (using memory storage for R2 upload)
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -492,15 +500,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (!userId && tokenHash) {
-        const { data, error } = await supabaseAdmin.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
-        if (!error && data?.session?.user) userId = data.session.user.id;
-        else console.error('Token hash verification error:', error);
+        const anonClient = supabaseAnon || supabaseAdmin;
+        if (anonClient) {
+          const { data, error } = await anonClient.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+          if (!error && data?.session?.user) userId = data.session.user.id;
+          else console.error('Token hash verification error:', error?.message, error?.status);
+        }
       }
 
       if (!userId && code) {
-        const { data, error } = await supabaseAdmin.auth.exchangeCodeForSession(code);
-        if (!error && data?.session?.user) userId = data.session.user.id;
-        else console.error('Code exchange error:', error);
+        const anonClient = supabaseAnon || supabaseAdmin;
+        if (anonClient) {
+          const { data, error } = await anonClient.auth.exchangeCodeForSession(code);
+          if (!error && data?.session?.user) userId = data.session.user.id;
+          else console.error('Code exchange error:', error?.message);
+        }
       }
 
       if (!userId) return res.status(400).json({ message: "Invalid or expired reset link" });
@@ -727,18 +741,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Find user by email
       const user = await storage.getUserByEmail(email);
       if (!user) {
-        // Don't reveal whether email exists
+        return res.json({ message: "If the email exists, a reset link has been sent." });
+      }
+
+      // For Supabase users: trigger Supabase's own recovery email (goes to our backend reset page)
+      if (user.supabaseUid && supabaseAnon) {
+        try {
+          const { error } = await supabaseAnon.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://jitsjournal-backend.onrender.com/reset-password',
+          });
+          if (error) console.error('Supabase resetPasswordForEmail error:', error.message);
+          else console.log(`Supabase recovery email sent to ${email}`);
+        } catch (e) {
+          console.error('Supabase recovery email exception:', e);
+        }
         return res.json({ message: "If the email exists, a reset link has been sent." });
       }
       
-      // Generate reset token
+      // For local-only users: generate a local reset token and send custom email
       const resetToken = crypto.randomBytes(32).toString('hex');
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
       
-      // Store reset token
       await storage.createPasswordResetToken(user.id, resetToken, expiresAt);
       
-      // Send reset email
       try {
         await sendPasswordResetEmail(user.email, user.firstName || "", resetToken);
         console.log(`Password reset email sent to ${user.email}`);
