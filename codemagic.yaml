@@ -1,6 +1,6 @@
 workflows:
   ios-release:
-    name: Jits Journal iOS v1.0.140
+    name: Jits Journal iOS v1.0.152
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -51,17 +51,37 @@ workflows:
       - name: Sync Capacitor iOS
         script: npx cap sync ios
       
+      - name: Add CFBundleIconName to Info.plist
+        script: |
+          set -e
+          cd $CM_BUILD_DIR/ios/App/App
+          echo "Current directory: $(pwd)"
+          echo "Info.plist exists: $(test -f Info.plist && echo 'yes' || echo 'no')"
+          echo "Before modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist 2>/dev/null || echo "CFBundleIconName not found"
+          
+          # Try to add, if exists then set
+          /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" Info.plist 2>/dev/null || \
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" Info.plist
+          
+          echo "After modification:"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIconName" Info.plist
+          echo "CFBundleIconName successfully set to AppIcon"
+      
       - name: Install CocoaPods dependencies
         script: cd ios/App && pod install
       
       - name: Set up code signing
         script: xcode-project use-profiles
       
-      - name: Increment build number
+      - name: Increment build number and version
         script: |
           cd $CM_BUILD_DIR/ios/App
-          BUILD_NUM=$(($BUILD_NUMBER + 43))
+          BUILD_NUM=$(($BUILD_NUMBER + 44))
           agvtool new-version -all $BUILD_NUM
+          MARKETING_VERSION="1.0.$BUILD_NUM"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $MARKETING_VERSION" App/Info.plist
+          echo "Set version to $MARKETING_VERSION (build $BUILD_NUM)"
       
       - name: Build IPA
         script: |
@@ -87,7 +107,7 @@ workflows:
         submit_to_app_store: false
 
   android-release:
-    name: Jits Journal Android v1.0.140
+    name: Jits Journal Android v1.0.152
     max_build_duration: 120
     instance_type: mac_mini_m2
     
@@ -131,6 +151,14 @@ workflows:
       - name: Sync Capacitor Android
         script: npx cap sync android
       
+      - name: Increment Android build number and version
+        script: |
+          BUILD_NUM=$(($BUILD_NUMBER + 43))
+          MARKETING_VERSION="1.0.$BUILD_NUM"
+          sed -i "s/versionCode .*/versionCode $BUILD_NUM/" android/app/build.gradle
+          sed -i "s/versionName .*/versionName \"$MARKETING_VERSION\"/" android/app/build.gradle
+          echo "Set Android version to $MARKETING_VERSION (versionCode $BUILD_NUM)"
+
       - name: Build Android AAB
         script: |
           cd android
