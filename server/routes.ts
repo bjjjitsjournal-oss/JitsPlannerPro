@@ -377,24 +377,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     function showMessage(text, type) { const el = document.getElementById('message'); el.textContent = text; el.className = 'message ' + type; }
     function showInvalid() { document.getElementById('loading').style.display = 'none'; document.getElementById('invalid-container').style.display = 'block'; }
     function showForm() { document.getElementById('loading').style.display = 'none'; document.getElementById('form-container').style.display = 'block'; }
+    async function withTimeout(promise, ms) {
+      return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+    }
     async function init() {
-      const queryParams = new URLSearchParams(window.location.search);
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      if (accessToken && hashParams.get('type') === 'recovery') { _accessToken = accessToken; showForm(); return; }
-      const tokenHash = queryParams.get('token_hash');
-      if (tokenHash && queryParams.get('type') === 'recovery') {
-        const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
-        if (error || !data?.session) { showInvalid(); return; }
-        _accessToken = data.session.access_token; showForm(); return;
+      try {
+        const queryParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        // Method 1: access_token in hash (no async needed)
+        const accessToken = hashParams.get('access_token');
+        if (accessToken && hashParams.get('type') === 'recovery') {
+          _accessToken = accessToken; showForm(); return;
+        }
+        // Method 2: token_hash in query params - verify server-side to avoid browser hangs
+        const tokenHash = queryParams.get('token_hash');
+        if (tokenHash && queryParams.get('type') === 'recovery') {
+          try {
+            const resp = await withTimeout(fetch(BACKEND_URL + '/api/auth/exchange-code', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ tokenHash }),
+            }), 10000);
+            const result = await resp.json();
+            if (resp.ok && result.accessToken) { _accessToken = result.accessToken; showForm(); return; }
+          } catch (e) {}
+          showInvalid(); return;
+        }
+        // Method 3: code in query params - send to backend to handle server-side
+        const code = queryParams.get('code');
+        if (code) {
+          try {
+            const resp = await withTimeout(fetch(BACKEND_URL + '/api/auth/exchange-code', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code }),
+            }), 10000);
+            const result = await resp.json();
+            if (resp.ok && result.accessToken) { _accessToken = result.accessToken; showForm(); return; }
+          } catch (e) {}
+          showInvalid(); return;
+        }
+        showInvalid();
+      } catch (e) {
+        showInvalid();
       }
-      const code = queryParams.get('code');
-      if (code) {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error || !data?.session) { showInvalid(); return; }
-        _accessToken = data.session.access_token; showForm(); return;
-      }
-      showInvalid();
     }
     async function resetPassword() {
       const password = document.getElementById('password').value;
@@ -451,6 +475,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Reset via token error:', error);
       res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
+  // Exchange a Supabase auth code or token_hash for an access token (server-side)
+  app.post("/api/auth/exchange-code", async (req, res) => {
+    try {
+      const { code, tokenHash } = req.body;
+      if (!supabaseAdmin) return res.status(500).json({ message: "Server configuration error" });
+
+      if (tokenHash) {
+        const { data, error } = await supabaseAdmin.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+        if (error || !data?.session) {
+          console.error('Token hash verification error:', error);
+          return res.status(400).json({ message: "Invalid or expired token" });
+        }
+        return res.json({ accessToken: data.session.access_token });
+      }
+
+      if (code) {
+        const { data, error } = await supabaseAdmin.auth.exchangeCodeForSession(code);
+        if (error || !data?.session) {
+          console.error('Code exchange error:', error);
+          return res.status(400).json({ message: "Invalid or expired code" });
+        }
+        return res.json({ accessToken: data.session.access_token });
+      }
+
+      return res.status(400).json({ message: "Code or token hash is required" });
+    } catch (error) {
+      console.error('Exchange code error:', error);
+      res.status(500).json({ message: "Failed to exchange code" });
     }
   });
 
