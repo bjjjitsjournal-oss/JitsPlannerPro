@@ -55,15 +55,7 @@ workflows:
         script: |
           ICON="$CM_BUILD_DIR/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png"
           echo "Stripping alpha channel from app icon..."
-          python3 -c "
-from PIL import Image
-img = Image.open('$ICON').convert('RGB')
-img.save('$ICON')
-print('Alpha channel removed successfully')
-" || {
-            echo "Pillow not available, trying ImageMagick..."
-            convert "$ICON" -background white -flatten -alpha off "$ICON"
-          }
+          python3 -c "from PIL import Image; img = Image.open('$ICON').convert('RGB'); img.save('$ICON'); print('Alpha removed')" || convert "$ICON" -background white -flatten -alpha off "$ICON"
           echo "App icon alpha processing complete"
       
       - name: Add CFBundleIconName to Info.plist
