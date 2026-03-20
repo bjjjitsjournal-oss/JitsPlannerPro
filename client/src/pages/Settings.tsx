@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿﻿import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useLocation, Link } from 'wouter';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { isPremiumUser, getSubscriptionPlan, FREE_TIER_LIMITS } from '../utils/subscription';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useToast } from '../hooks/use-toast';
-import { Building2, Users, Trash2, Check, Infinity, ChevronRight } from 'lucide-react';
+import { Building2, Users, Trash2, Check, Infinity, ChevronRight, Lock } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,9 +25,13 @@ export default function Settings() {
   const [autoSync, setAutoSync] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [gymCode, setGymCode] = useState('');
-  const appVersion = '1.0.102'; // Will be auto-updated by build process
+  const appVersion = '1.0.152'; // Will be auto-updated by build process
   const { darkMode, setDarkMode } = useTheme();
   const { user } = useAuth();
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   
@@ -70,19 +74,23 @@ export default function Settings() {
   // Fetch user's actual stats and classes/notes count
   const { data: userStats } = useQuery({
     queryKey: ['/api/user-stats'],
+    staleTime: 60000, // Cache for 1 minute - prevents refetch on tab switch
   });
 
   const { data: userClasses } = useQuery({
     queryKey: ['/api/classes'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   const { data: userNotes } = useQuery({
     queryKey: ['/api/notes'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch user's gym membership
   const { data: gymMembership } = useQuery<{ id: number; name: string; code: string; role: string } | null>({
     queryKey: ['/api/my-gym'],
+    staleTime: 60000, // Cache for 1 minute
   });
 
   // Fetch gym members if user is admin
@@ -571,6 +579,63 @@ export default function Settings() {
         </div>
       </div>
 
+
+      {/* Change Password */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+          <Lock className="w-5 h-5" /> Change Password
+        </h3>
+        <div className="space-y-3">
+          <input
+            type="password"
+            placeholder="Current password"
+            value={currentPassword}
+            onChange={e => setCurrentPassword(e.target.value)}
+            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+          />
+          <input
+            type="password"
+            placeholder="New password (min 8 characters)"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+          />
+          <input
+            type="password"
+            placeholder="Confirm new password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+          />
+          <button
+            disabled={changingPassword}
+            onClick={async () => {
+              if (!currentPassword || !newPassword || !confirmPassword) {
+                toast({ title: "Please fill in all fields", variant: "destructive" }); return;
+              }
+              if (newPassword !== confirmPassword) {
+                toast({ title: "New passwords don't match", variant: "destructive" }); return;
+              }
+              if (newPassword.length < 8) {
+                toast({ title: "New password must be at least 8 characters", variant: "destructive" }); return;
+              }
+              setChangingPassword(true);
+              try {
+                await apiRequest('POST', '/api/auth/change-password', { currentPassword, newPassword });
+                toast({ title: "Password changed successfully" });
+                setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+              } catch (err: any) {
+                toast({ title: err.message || "Failed to change password", variant: "destructive" });
+              } finally {
+                setChangingPassword(false);
+              }
+            }}
+            className="w-full bg-blue-900 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors disabled:opacity-50"
+          >
+            {changingPassword ? "Changing..." : "Change Password"}
+          </button>
+        </div>
+      </div>
 
       {/* Account Deletion */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md mb-6">

@@ -453,6 +453,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   // Server-side password update using Supabase admin API (reliable)
+  app.post("/api/auth/change-password", authenticateToken, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const userId = (req as any).userId;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current and new password are required" });
+      }
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "New password must be at least 8 characters" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const isValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isValid) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+      }
+
+      const newHash = await bcrypt.hash(newPassword, 10);
+      await storage.updateUser(userId, { password: newHash });
+
+      if (user.supabaseUid && supabaseAdmin) {
+        await supabaseAdmin.auth.admin.updateUserById(user.supabaseUid, { password: newPassword });
+      }
+
+      res.json({ message: "Password changed successfully" });
+    } catch (error) {
+      console.error("Change password error:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
   app.post("/api/auth/reset-via-token", async (req, res) => {
     try {
       const { resetKey, newPassword } = req.body;
