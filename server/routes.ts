@@ -326,7 +326,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Password - Jits Journal</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1e3a8a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -335,14 +334,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     .logo h1 { color: #1e3a8a; font-size: 24px; font-weight: 700; }
     .logo p { color: #6b7280; font-size: 14px; margin-top: 4px; }
     label { display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 6px; }
-    input { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
-    input:focus { border-color: #1e3a8a; }
+    input { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; outline: none; margin-bottom: 16px; }
     button { width: 100%; padding: 14px; background: #1e3a8a; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
     button:disabled { background: #9ca3af; cursor: not-allowed; }
-    .message { padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; display: none; }
-    .message.error { background: #fee2e2; color: #dc2626; display: block; }
+    .msg-error { background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
     .center { text-align: center; padding: 20px 0; }
-    .center p { color: #6b7280; margin-top: 8px; font-size: 14px; }
     .spinner { border: 3px solid #e5e7eb; border-top: 3px solid #1e3a8a; border-radius: 50%; width: 32px; height: 32px; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
@@ -350,94 +346,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
 <body>
   <div class="card">
     <div class="logo"><h1>Jits Journal</h1><p>Brazilian Jiu-Jitsu Training Companion</p></div>
-    <div id="loading" class="center"><div class="spinner"></div><p>Verifying your reset link...</p></div>
-    <div id="message" class="message"></div>
-    <div id="form-container" style="display:none;">
-      <label for="password">New Password</label>
-      <input type="password" id="password" placeholder="At least 8 characters" minlength="8">
-      <label for="confirm">Confirm New Password</label>
-      <input type="password" id="confirm" placeholder="Re-enter your new password">
-      <button id="submit-btn" onclick="resetPassword()">Set New Password</button>
+    <div id="s-loading" class="center"><div class="spinner"></div><p style="color:#6b7280">Verifying your reset link...</p></div>
+    <div id="s-form" style="display:none">
+      <div id="s-err" style="display:none" class="msg-error"></div>
+      <label>New Password</label>
+      <input type="password" id="pw" placeholder="At least 8 characters">
+      <label>Confirm Password</label>
+      <input type="password" id="pw2" placeholder="Re-enter your password">
+      <button id="btn" onclick="doReset()">Set New Password</button>
     </div>
-    <div id="invalid-container" class="center" style="display:none;">
-      <p style="color:#dc2626;font-weight:600;">This reset link is invalid or has expired.</p>
-      <p>Please request a new password reset from the app.</p>
+    <div id="s-invalid" class="center" style="display:none">
+      <p style="color:#dc2626;font-weight:600;margin-bottom:8px">Reset link invalid or expired</p>
+      <p style="color:#6b7280;font-size:14px">Please request a new password reset from the app.</p>
     </div>
-    <div id="success-container" class="center" style="display:none;">
-      <p style="color:#16a34a;font-weight:600;font-size:18px;">Password Updated!</p>
-      <p>You can now log in to Jits Journal with your new password.</p>
+    <div id="s-done" class="center" style="display:none">
+      <p style="color:#16a34a;font-weight:600;font-size:18px;margin-bottom:8px">Password Updated!</p>
+      <p style="color:#6b7280;font-size:14px">You can now log in with your new password.</p>
     </div>
   </div>
   <script>
-    const SUPABASE_URL = 'https://umotigprfosrrjwpxlnp.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtb3RpZ3ByZm9zcnJqd3B4bG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjAzMzQ4NDAsImV4cCI6MjAzNTkxMDg0MH0.d5yLGYOSzwvf0a2mR8XMIJo9mxgOAXZqSW8E6QdO7QU';
-    const BACKEND_URL = 'https://jitsjournal-backend.onrender.com';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let _accessToken = null;
-    function showMessage(text, type) { const el = document.getElementById('message'); el.textContent = text; el.className = 'message ' + type; }
-    function showInvalid() { document.getElementById('loading').style.display = 'none'; document.getElementById('invalid-container').style.display = 'block'; }
-    function showForm() { document.getElementById('loading').style.display = 'none'; document.getElementById('form-container').style.display = 'block'; }
-    async function withTimeout(promise, ms) {
-      return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+    var BACKEND = 'https://jitsjournal-backend.onrender.com';
+    var _tok = null;
+
+    function show(id) {
+      ['s-loading','s-form','s-invalid','s-done'].forEach(function(s){ document.getElementById(s).style.display = s===id ? '' : 'none'; });
     }
-    async function init() {
-      try {
-        const queryParams = new URLSearchParams(window.location.search);
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        // Method 1: access_token in hash (no async needed)
-        const accessToken = hashParams.get('access_token');
-        if (accessToken && hashParams.get('type') === 'recovery') {
-          _accessToken = accessToken; showForm(); return;
-        }
-        // Method 2: token_hash in query params - verify server-side to avoid browser hangs
-        const tokenHash = queryParams.get('token_hash');
-        if (tokenHash && queryParams.get('type') === 'recovery') {
-          try {
-            const resp = await withTimeout(fetch(BACKEND_URL + '/api/auth/exchange-code', {
-              method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ tokenHash }),
-            }), 10000);
-            const result = await resp.json();
-            if (resp.ok && result.accessToken) { _accessToken = result.accessToken; showForm(); return; }
-          } catch (e) {}
-          showInvalid(); return;
-        }
-        // Method 3: code in query params - send to backend to handle server-side
-        const code = queryParams.get('code');
-        if (code) {
-          try {
-            const resp = await withTimeout(fetch(BACKEND_URL + '/api/auth/exchange-code', {
-              method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code }),
-            }), 10000);
-            const result = await resp.json();
-            if (resp.ok && result.accessToken) { _accessToken = result.accessToken; showForm(); return; }
-          } catch (e) {}
-          showInvalid(); return;
-        }
-        showInvalid();
-      } catch (e) {
-        showInvalid();
+
+    function err(msg) { var e=document.getElementById('s-err'); e.textContent=msg; e.style.display=''; }
+
+    function postJSON(url, body, cb) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 12000;
+      xhr.ontimeout = function(){ cb(null, 'Request timed out'); };
+      xhr.onerror = function(){ cb(null, 'Network error'); };
+      xhr.onload = function(){
+        try { cb(JSON.parse(xhr.responseText), xhr.status >= 400 ? (JSON.parse(xhr.responseText).message || 'Error') : null); }
+        catch(e){ cb(null, 'Invalid response'); }
+      };
+      xhr.send(JSON.stringify(body));
+    }
+
+    function init() {
+      var q = new URLSearchParams(window.location.search);
+      var h = new URLSearchParams(window.location.hash.replace(/^#/,''));
+
+      var accessToken = h.get('access_token');
+      if (accessToken && h.get('type') === 'recovery') {
+        _tok = accessToken;
+        show('s-form');
+        return;
       }
-    }
-    async function resetPassword() {
-      const password = document.getElementById('password').value;
-      const confirm = document.getElementById('confirm').value;
-      if (password.length < 8) { showMessage('Password must be at least 8 characters.', 'error'); return; }
-      if (password !== confirm) { showMessage('Passwords do not match.', 'error'); return; }
-      if (!_accessToken) { showMessage('Session expired. Please request a new reset link.', 'error'); return; }
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true; btn.textContent = 'Updating...';
-      try {
-        const response = await fetch(BACKEND_URL + '/api/auth/reset-via-token', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ accessToken: _accessToken, newPassword: password }),
+
+      var tokenHash = q.get('token_hash');
+      if (tokenHash) {
+        postJSON(BACKEND + '/api/auth/exchange-code', { tokenHash: tokenHash }, function(data, e) {
+          if (!e && data && data.accessToken) { _tok = data.accessToken; show('s-form'); }
+          else { show('s-invalid'); }
         });
-        const data = await response.json();
-        if (!response.ok) { showMessage(data.message || 'Failed to update password.', 'error'); btn.disabled = false; btn.textContent = 'Set New Password'; }
-        else { document.getElementById('form-container').style.display = 'none'; document.getElementById('success-container').style.display = 'block'; }
-      } catch (err) { showMessage('Network error. Please try again.', 'error'); btn.disabled = false; btn.textContent = 'Set New Password'; }
+        return;
+      }
+
+      var code = q.get('code');
+      if (code) {
+        postJSON(BACKEND + '/api/auth/exchange-code', { code: code }, function(data, e) {
+          if (!e && data && data.accessToken) { _tok = data.accessToken; show('s-form'); }
+          else { show('s-invalid'); }
+        });
+        return;
+      }
+
+      show('s-invalid');
     }
+
+    function doReset() {
+      var pw = document.getElementById('pw').value;
+      var pw2 = document.getElementById('pw2').value;
+      if (pw.length < 8) { err('Password must be at least 8 characters.'); return; }
+      if (pw !== pw2) { err('Passwords do not match.'); return; }
+      if (!_tok) { err('Session expired. Please request a new reset link.'); return; }
+      var btn = document.getElementById('btn');
+      btn.disabled = true; btn.textContent = 'Updating...';
+      postJSON(BACKEND + '/api/auth/reset-via-token', { accessToken: _tok, newPassword: pw }, function(data, e) {
+        if (e) { err(e); btn.disabled=false; btn.textContent='Set New Password'; }
+        else { show('s-done'); }
+      });
+    }
+
     init();
   </script>
 </body>
