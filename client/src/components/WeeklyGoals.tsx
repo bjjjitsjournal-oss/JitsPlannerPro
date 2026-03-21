@@ -50,6 +50,8 @@ export default function WeeklyGoals() {
     mutationFn: async (data: any) => {
       if (!user?.id) throw new Error('User not authenticated');
       
+      console.log('WeeklyGoals mutation starting...', { userId: user.id, hasCurrentCommitment: !!(currentCommitment && (currentCommitment as any).id) });
+      
       if (currentCommitment && (currentCommitment as any).id) {
         return await weeklyCommitmentsQueries.update((currentCommitment as any).id, user.id, data);
       } else {
@@ -59,7 +61,10 @@ export default function WeeklyGoals() {
     onSuccess: (result) => {
       console.log('Weekly goal mutation success:', result);
       
-      // Invalidate queries with new keys
+      // Directly update the cache with the server response so display is immediate
+      if (result) {
+        queryClient.setQueryData(['weeklyCommitments', 'current', user?.id], result);
+      }
       queryClient.invalidateQueries({ queryKey: ['weeklyCommitments', 'current', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['classes', user?.id] });
       
@@ -68,7 +73,16 @@ export default function WeeklyGoals() {
       toast({
         title: "Success",
         description: `Weekly goal set to ${goalClasses} classes!`,
-        duration: 4000, // Explicitly set 4 second duration
+        duration: 4000,
+      });
+    },
+    onError: (error: any) => {
+      console.error('Weekly goal mutation error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to set weekly goal. Please try again.",
+        variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -100,7 +114,9 @@ export default function WeeklyGoals() {
     });
   };
 
-  const goal = (currentCommitment as any)?.target_classes || 0; // Database uses snake_case
+  const rawGoal = (currentCommitment as any)?.targetClasses || (currentCommitment as any)?.target_classes || 0;
+  const goal = Number(rawGoal) || 0;
+  const hasGoal = goal > 0;
   const progress = thisWeekClasses;
   const progressPercentage = goal > 0 ? Math.min((progress / goal) * 100, 100) : 0;
   const remaining = Math.max(goal - progress, 0);
@@ -115,7 +131,7 @@ export default function WeeklyGoals() {
           onClick={() => setShowForm(!showForm)}
           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
         >
-          {currentCommitment ? 'Update' : 'Set Goal'}
+          {hasGoal ? 'Update' : 'Set Goal'}
         </button>
       </div>
 
@@ -158,7 +174,7 @@ export default function WeeklyGoals() {
         </form>
       )}
 
-      {currentCommitment ? (
+      {hasGoal ? (
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Progress this week</span>

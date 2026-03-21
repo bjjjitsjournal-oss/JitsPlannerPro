@@ -1,5 +1,6 @@
+import crypto from "crypto";
 import { 
-  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, appNotes, authIdentities, gamePlans, gyms, gymMemberships,
+  classes, videos, notes, drawings, belts, weeklyCommitments, trainingVideos, users, passwordResetTokens, noteLikes, noteReports, appNotes, authIdentities, gamePlans, gyms, gymMemberships,
   type Class, type InsertClass,
   type Video, type InsertVideo,
   type Note, type InsertNote,
@@ -10,6 +11,7 @@ import {
   type User, type InsertUser,
   type PasswordResetToken, type InsertPasswordResetToken,
   type NoteLike, type InsertNoteLike,
+  type NoteReport,
   type AppNote, type InsertAppNote,
   type AuthIdentity, type InsertAuthIdentity,
   type GamePlan, type InsertGamePlan,
@@ -17,7 +19,7 @@ import {
   type GymMembership, type InsertGymMembership
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, ilike, and, or, lt, sql, count } from "drizzle-orm";
+import { eq, desc, asc, ilike, and, or, lt, sql, count, inArray } from "drizzle-orm";
 
 // DTO for notes with enriched data
 export interface NoteWithAuthor extends Note {
@@ -109,12 +111,19 @@ export interface IStorage {
   deleteExpiredPasswordResetTokens(): Promise<void>;
 
   // Note Likes
-  likeNote(noteId: number, userId: number): Promise<boolean>;
-  unlikeNote(noteId: number, userId: number): Promise<boolean>;
+  likeNote(noteId: string, userId: number): Promise<boolean>;
+  unlikeNote(noteId: string, userId: number): Promise<boolean>;
   getNoteLikes(noteId: string): Promise<NoteLike[]>;
   getUserNoteLikes(userId: number): Promise<NoteLike[]>;
   isNoteLikedByUser(noteId: string, userId: number): Promise<boolean>;
   getNoteWithLikes(noteId: string, userId?: number): Promise<Note & { likeCount: number; isLikedByUser: boolean } | undefined>;
+  getBatchNoteLikes(noteIds: string[], userId?: number): Promise<Map<string, { likeCount: number; isLikedByUser: boolean }>>;
+
+  // Note Reports
+  reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport>;
+  getReports(status?: string): Promise<any[]>;
+  updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined>;
+  getReportsByNoteId(noteId: string): Promise<NoteReport[]>;
 
   // Game Plans
   getGamePlans(userId: number): Promise<GamePlan[]>;
@@ -127,6 +136,7 @@ export interface IStorage {
   // Gyms
   createGym(gymData: InsertGym): Promise<Gym>;
   getGymByCode(code: string): Promise<Gym | undefined>;
+  getGymByOwnerId(ownerId: number): Promise<Gym | undefined>;
   getAllGyms(): Promise<Gym[]>;
   getUserGyms(userId: number): Promise<Gym[]>;
   deleteGym(gymId: number): Promise<boolean>;
@@ -358,18 +368,27 @@ export class DatabaseStorage implements IStorage {
 
   async getCurrentWeekCommitment(userId?: number): Promise<WeeklyCommitment | undefined> {
     const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-    startOfWeek.setHours(0, 0, 0, 0);
-    
+    const startOfWeek = new Date(now);
+    startOfWeek.setUTCHours(0, 0, 0, 0);
+    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - startOfWeek.getUTCDay());
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setUTCDate(endOfWeek.getUTCDate() + 7);
+
     if (userId) {
-      const [commitment] = await db.select().from(weeklyCommitments)
-        .where(and(eq(weeklyCommitments.userId, userId), eq(weeklyCommitments.weekStartDate, startOfWeek)));
-      return commitment || undefined;
+      const results = await db.select().from(weeklyCommitments)
+        .where(and(
+          eq(weeklyCommitments.userId, userId),
+          sql`${weeklyCommitments.weekStartDate} >= ${startOfWeek} AND ${weeklyCommitments.weekStartDate} < ${endOfWeek}`
+        ))
+        .orderBy(desc(weeklyCommitments.id));
+      return results[0] || undefined;
     }
-    
-    const [commitment] = await db.select().from(weeklyCommitments)
-      .where(eq(weeklyCommitments.weekStartDate, startOfWeek));
-    return commitment || undefined;
+
+    const results = await db.select().from(weeklyCommitments)
+      .where(sql`${weeklyCommitments.weekStartDate} >= ${startOfWeek} AND ${weeklyCommitments.weekStartDate} < ${endOfWeek}`)
+      .orderBy(desc(weeklyCommitments.id));
+    return results[0] || undefined;
   }
 
   async createWeeklyCommitment(commitmentData: InsertWeeklyCommitment): Promise<WeeklyCommitment> {
@@ -443,7 +462,8 @@ export class DatabaseStorage implements IStorage {
         isShared: notes.isShared,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
-        videoUrl: notes.videoUrl, // Just to check if video exists (not for display)
+        videoUrl: notes.videoUrl,
+        videoFileName: notes.videoFileName,
         // User info fields only
         authorFirstName: users.firstName,
         authorLastName: users.lastName,
@@ -468,8 +488,8 @@ export class DatabaseStorage implements IStorage {
       isShared: r.isShared,
       gymId: null,
       sharedWithUsers: [],
-      videoUrl: r.videoUrl ? '🎥' : null, // Show video indicator if video exists
-      videoFileName: null,
+      videoUrl: r.videoUrl || null,
+      videoFileName: r.videoFileName || null,
       videoFileSize: null,
       videoThumbnail: null,
       createdAt: r.createdAt,
@@ -513,7 +533,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Note Likes
-  async likeNote(noteId: number, userId: number): Promise<boolean> {
+  async likeNote(noteId: string, userId: number): Promise<boolean> {
     try {
       await db.insert(noteLikes).values({ noteId, userId });
       return true;
@@ -522,7 +542,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async unlikeNote(noteId: number, userId: number): Promise<boolean> {
+  async unlikeNote(noteId: string, userId: number): Promise<boolean> {
     const result = await db.delete(noteLikes)
       .where(and(eq(noteLikes.noteId, noteId), eq(noteLikes.userId, userId)));
     return (result.rowCount || 0) > 0;
@@ -554,6 +574,32 @@ export class DatabaseStorage implements IStorage {
       likeCount: likes.length,
       isLikedByUser
     };
+  }
+
+  async getBatchNoteLikes(noteIds: string[], userId?: number): Promise<Map<string, { likeCount: number; isLikedByUser: boolean }>> {
+    const result = new Map<string, { likeCount: number; isLikedByUser: boolean }>();
+    if (noteIds.length === 0) return result;
+
+    const allLikes = await db.select().from(noteLikes).where(inArray(noteLikes.noteId, noteIds));
+
+    const likeCounts = new Map<string, number>();
+    const userLiked = new Set<string>();
+
+    for (const like of allLikes) {
+      likeCounts.set(like.noteId, (likeCounts.get(like.noteId) || 0) + 1);
+      if (userId && like.userId === userId) {
+        userLiked.add(like.noteId);
+      }
+    }
+
+    for (const noteId of noteIds) {
+      result.set(noteId, {
+        likeCount: likeCounts.get(noteId) || 0,
+        isLikedByUser: userLiked.has(noteId),
+      });
+    }
+
+    return result;
   }
 
   // Helper methods
@@ -730,6 +776,11 @@ export class DatabaseStorage implements IStorage {
     return gym || undefined;
   }
 
+  async getGymByOwnerId(ownerId: number): Promise<Gym | undefined> {
+    const [gym] = await db.select().from(gyms).where(eq(gyms.ownerId, ownerId));
+    return gym || undefined;
+  }
+
   async getAllGyms(): Promise<Gym[]> {
     return await db.select().from(gyms).orderBy(desc(gyms.createdAt));
   }
@@ -843,6 +894,56 @@ export class DatabaseStorage implements IStorage {
     return gym || undefined;
   }
   
+  async reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport> {
+    const [report] = await db.insert(noteReports).values({
+      noteId,
+      reportedBy,
+      reason,
+      status: "pending",
+    }).returning();
+    return report;
+  }
+
+  async getReports(status?: string): Promise<any[]> {
+    let query = db.select({
+      report: noteReports,
+      note: notes,
+      reporter: {
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+      }
+    })
+    .from(noteReports)
+    .leftJoin(notes, eq(noteReports.noteId, notes.id))
+    .leftJoin(users, eq(noteReports.reportedBy, users.id))
+    .orderBy(desc(noteReports.createdAt));
+    
+    if (status) {
+      query = query.where(eq(noteReports.status, status));
+    }
+    
+    const results = await query;
+    return results.map(r => ({
+      ...r.report,
+      note: r.note,
+      reporter: r.reporter,
+    }));
+  }
+
+  async updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined> {
+    const [report] = await db.update(noteReports)
+      .set({ status })
+      .where(eq(noteReports.id, reportId))
+      .returning();
+    return report;
+  }
+
+  async getReportsByNoteId(noteId: string): Promise<NoteReport[]> {
+    return await db.select().from(noteReports).where(eq(noteReports.noteId, noteId));
+  }
+
   async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
     const [user] = await db.update(users)
       .set({ stripeCustomerId })
@@ -888,8 +989,8 @@ class MemStoragePrimary implements IStorage {
     try {
       // Import bcrypt dynamically for ES modules
       const bcrypt = await import('bcrypt');
-      const hashedPassword = await bcrypt.hash('password123', 10);
-      const joePassword = await bcrypt.hash('jitsjournal2025', 10);
+      const hashedPassword = await bcrypt.hash(crypto.randomUUID(), 10);
+      const joePassword = await bcrypt.hash(crypto.randomUUID(), 10);
       
       const testUser: User = {
         id: this.nextId++,
@@ -1416,7 +1517,7 @@ class MemStoragePrimary implements IStorage {
   }
 
   // Note Likes Implementation
-  async likeNote(noteId: number, userId: number): Promise<boolean> {
+  async likeNote(noteId: string, userId: number): Promise<boolean> {
     // Check if already liked
     const existingLike = this.noteLikes.find(like => like.noteId === noteId && like.userId === userId);
     if (existingLike) {
@@ -1434,7 +1535,7 @@ class MemStoragePrimary implements IStorage {
     return true;
   }
 
-  async unlikeNote(noteId: number, userId: number): Promise<boolean> {
+  async unlikeNote(noteId: string, userId: number): Promise<boolean> {
     const index = this.noteLikes.findIndex(like => like.noteId === noteId && like.userId === userId);
     if (index === -1) {
       return false; // Not liked
@@ -1504,6 +1605,10 @@ class MemStoragePrimary implements IStorage {
     return undefined;
   }
 
+  async getGymByOwnerId(ownerId: number): Promise<Gym | undefined> {
+    return undefined;
+  }
+
   async getAllGyms(): Promise<Gym[]> {
     return [];
   }
@@ -1544,6 +1649,22 @@ class MemStoragePrimary implements IStorage {
     return undefined;
   }
   
+  async reportNote(noteId: string, reportedBy: number, reason: string): Promise<NoteReport> {
+    return { id: 0, noteId, reportedBy, reason, status: "pending", createdAt: new Date() };
+  }
+
+  async getReports(status?: string): Promise<any[]> {
+    return [];
+  }
+
+  async updateReportStatus(reportId: number, status: string): Promise<NoteReport | undefined> {
+    return undefined;
+  }
+
+  async getReportsByNoteId(noteId: string): Promise<NoteReport[]> {
+    return [];
+  }
+
   async updateUserStripeCustomer(userId: number, stripeCustomerId: string): Promise<User | undefined> {
     throw new Error("Stripe not implemented in memory storage mode");
   }
