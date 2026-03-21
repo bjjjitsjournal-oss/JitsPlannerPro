@@ -49,7 +49,7 @@ export default function Classes() {
   // Check if user has premium access
   const isPremium = isPremiumUser(user?.email, user?.subscriptionStatus);
 
-  // Fetch classes from Supabase
+  // Fetch classes from backend API
   const { data: classes = [], isLoading } = useQuery({
     queryKey: ['classes', user?.id],
     queryFn: async () => {
@@ -57,6 +57,7 @@ export default function Classes() {
       return await classesQueries.getAll(user.id);
     },
     enabled: !!user?.id,
+    staleTime: 60000, // Cache for 1 minute - prevents refetch on tab switch
   });
 
   // Ensure classes is always an array
@@ -332,6 +333,7 @@ export default function Classes() {
               <option value="Gi">Gi</option>
               <option value="No Gi">No Gi</option>
               <option value="Open Mat">Open Mat</option>
+              <option value="Wrestling">Wrestling</option>
               <option value="Competition">Competition</option>
               <option value="Drilling">Drilling</option>
             </select>
@@ -521,11 +523,11 @@ export default function Classes() {
                       {classItem.cardioRating && (
                         <span>
                           <strong>Cardio:</strong> {classItem.cardioRating}/5 
-                          {classItem.cardioRating === 1 && ' 😵'}
-                          {classItem.cardioRating === 2 && ' 😓'}
-                          {classItem.cardioRating === 3 && ' 😐'}
-                          {classItem.cardioRating === 4 && ' 😊'}
-                          {classItem.cardioRating === 5 && ' 💪'}
+                          {classItem.cardioRating === 1 && ' (Exhausted)'}
+                          {classItem.cardioRating === 2 && ' (Tired)'}
+                          {classItem.cardioRating === 3 && ' (OK)'}
+                          {classItem.cardioRating === 4 && ' (Good)'}
+                          {classItem.cardioRating === 5 && ' (Great!)'}
                         </span>
                       )}
                     </div>

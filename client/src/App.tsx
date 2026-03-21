@@ -4,62 +4,86 @@ import { queryClient } from './lib/queryClient';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useScrollToTop } from './hooks/useScrollToTop';
+import { lazy, Suspense, useEffect } from 'react';
+
 import Dashboard from './pages/Dashboard';
 import Classes from './pages/Classes';
 import Notes from './pages/Notes';
-import Videos from './pages/Videos';
-import Settings from './pages/Settings';
-import Belts from './pages/belts';
-import Social from './pages/Social';
-import MyVideos from './pages/MyVideos';
-import Drawing from './pages/Drawing';
-import Contact from './pages/Contact';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Subscribe from './pages/Subscribe';
-import SubscribeSuccess from './pages/SubscribeSuccess';
 import Auth from './pages/Auth';
-import Admin from './pages/Admin';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import GamePlans from './pages/GamePlans';
 import BottomNav from './components/BottomNav';
-
 import { Toaster } from './components/ui/toaster';
 import EnvCheck from './components/EnvCheck';
 
+const Videos = lazy(() => import('./pages/Videos'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Belts = lazy(() => import('./pages/belts'));
+const Social = lazy(() => import('./pages/Social'));
+const MyVideos = lazy(() => import('./pages/MyVideos'));
+const Drawing = lazy(() => import('./pages/Drawing'));
+const Contact = lazy(() => import('./pages/Contact'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Subscribe = lazy(() => import('./pages/Subscribe'));
+const SubscribeSuccess = lazy(() => import('./pages/SubscribeSuccess'));
+const Admin = lazy(() => import('./pages/Admin'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const GamePlans = lazy(() => import('./pages/GamePlans'));
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center p-8">
+      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
+function usePrefetchData() {
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) return;
+    const prefetchKeys = [
+      '/api/notes',
+      '/api/notes/shared',
+      '/api/classes',
+    ];
+    prefetchKeys.forEach((key) => {
+      queryClient.prefetchQuery({ queryKey: [key] });
+    });
+  }, [user]);
+}
+
 function AuthenticatedApp() {
-  // Automatically scroll to top when navigating between pages
   useScrollToTop();
+  usePrefetchData();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <EnvCheck />
       <main className="pb-20">
-        <Switch>
-          <Route path="/" component={Dashboard} />
-          <Route path="/classes" component={Classes} />
-          <Route path="/notes" component={Notes} />
-          <Route path="/videos" component={Videos} />
-          <Route path="/game-plans" component={GamePlans} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/belts" component={Belts} />
-          <Route path="/social" component={Social} />
-          <Route path="/my-videos" component={MyVideos} />
-          <Route path="/drawing" component={Drawing} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/admin" component={Admin} />
-          <Route path="/subscribe" component={Subscribe} />
-          <Route path="/subscribe/success" component={SubscribeSuccess} />
-          <Route path="/privacy" component={PrivacyPolicy} />
-          <Route path="/terms" component={TermsOfService} />
-          <Route>
-            <div className="p-6 text-center">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Page Not Found</h2>
-              <p className="text-gray-600 dark:text-gray-400">The page you're looking for doesn't exist.</p>
-            </div>
-          </Route>
-        </Switch>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/" component={Dashboard} />
+            <Route path="/classes" component={Classes} />
+            <Route path="/notes" component={Notes} />
+            <Route path="/videos" component={Videos} />
+            <Route path="/game-plans" component={GamePlans} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/belts" component={Belts} />
+            <Route path="/social" component={Social} />
+            <Route path="/my-videos" component={MyVideos} />
+            <Route path="/drawing" component={Drawing} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/admin" component={Admin} />
+            <Route path="/subscribe" component={Subscribe} />
+            <Route path="/subscribe/success" component={SubscribeSuccess} />
+            <Route path="/privacy" component={PrivacyPolicy} />
+            <Route path="/terms" component={TermsOfService} />
+            <Route>
+              <RedirectToHome />
+            </Route>
+          </Switch>
+        </Suspense>
       </main>
       <BottomNav />
 
@@ -69,11 +93,16 @@ function AuthenticatedApp() {
   );
 }
 
+function RedirectToHome() {
+  const [, navigate] = useLocation();
+  useEffect(() => { navigate('/'); }, []);
+  return null;
+}
+
 function Router() {
   const { isAuthenticated, isLoading, loadingMessage, login } = useAuth();
   const [location] = useLocation();
 
-  // Check if user is trying to access public routes (password reset, forgot password)
   const isPublicRoute = location === '/reset-password' || location === '/forgot-password';
 
   if (isLoading) {
@@ -90,14 +119,15 @@ function Router() {
     );
   }
 
-  // Allow public routes even when not authenticated
   if (isPublicRoute) {
     return (
       <div className="min-h-screen">
-        <Switch>
-          <Route path="/forgot-password" component={ForgotPassword} />
-          <Route path="/reset-password" component={ResetPassword} />
-        </Switch>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/reset-password" component={ResetPassword} />
+          </Switch>
+        </Suspense>
         <Toaster />
       </div>
     );

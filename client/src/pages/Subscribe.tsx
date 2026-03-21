@@ -115,24 +115,45 @@ export default function Subscribe() {
       setLoadingTier(tier);
       
       try {
-        if (!offerings || !offerings.current) {
+        // Try current (default) offering first, then look for named offerings
+        let offering = offerings?.current || 
+                       offerings?.all?.['Premium'] || 
+                       offerings?.all?.['premium'] ||
+                       offerings?.all?.['default'];
+        
+        // If still not found, try to get the first available offering
+        if (!offering && offerings?.all) {
+          const offeringKeys = Object.keys(offerings.all);
+          console.log('📦 iOS - Available offering keys:', offeringKeys);
+          if (offeringKeys.length > 0) {
+            offering = offerings.all[offeringKeys[0]];
+            console.log('📦 iOS - Using first available offering:', offeringKeys[0]);
+          }
+        }
+        
+        if (!offering) {
+          console.error('❌ iOS - No offerings found. Full offerings object:', JSON.stringify(offerings, null, 2));
           throw new Error('No offerings available');
         }
+        
+        console.log('📦 iOS - Using offering:', offering);
+
+        let pkg;
 
         if (tier === 'gym_pro') {
-          toast({
-            title: 'Contact Required',
-            description: 'Please contact us for Gym Pro subscription.',
-          });
-          return;
-        }
-
-        // Find the first available package in the current offering (Premium)
-        const pkg = offerings.current.availablePackages[0];
-
-        if (!pkg) {
-          console.error('Available packages:', offerings.current.availablePackages);
-          throw new Error('No subscription package found in offering');
+          const gymProOffering = offerings?.all?.['Gym Pro'] || offerings?.all?.['gym_pro'];
+          if (gymProOffering && gymProOffering.availablePackages.length > 0) {
+            pkg = gymProOffering.availablePackages[0];
+            console.log('📦 iOS - Found Gym Pro package:', pkg.identifier);
+          } else {
+            throw new Error('Gym Pro subscription is not available right now. Please try again later.');
+          }
+        } else {
+          pkg = offering.availablePackages[0];
+          if (!pkg) {
+            console.error('Available packages:', offering.availablePackages);
+            throw new Error('No subscription package found in offering');
+          }
         }
         
         console.log('📦 Purchasing package:', pkg.identifier, pkg);
@@ -172,25 +193,45 @@ export default function Subscribe() {
       setLoadingTier(tier);
       
       try {
-        if (!offerings || !offerings.current) {
+        // Try current (default) offering first, then look for named offerings
+        let offering = offerings?.current || 
+                       offerings?.all?.['Premium'] || 
+                       offerings?.all?.['premium'] ||
+                       offerings?.all?.['default'];
+        
+        // If still not found, try to get the first available offering
+        if (!offering && offerings?.all) {
+          const offeringKeys = Object.keys(offerings.all);
+          console.log('📦 Android - Available offering keys:', offeringKeys);
+          if (offeringKeys.length > 0) {
+            offering = offerings.all[offeringKeys[0]];
+            console.log('📦 Android - Using first available offering:', offeringKeys[0]);
+          }
+        }
+        
+        if (!offering) {
+          console.error('❌ Android - No offerings found. Full offerings object:', JSON.stringify(offerings, null, 2));
           throw new Error('No offerings available');
         }
+        
+        console.log('📦 Android - Using offering:', offering);
+
+        let pkg;
 
         if (tier === 'gym_pro') {
-          toast({
-            title: 'Contact Required',
-            description: 'Please contact us for Gym Pro subscription.',
-          });
-          setLoadingTier(null);
-          return;
-        }
-
-        // Find the first available package in the current offering (Premium)
-        const pkg = offerings.current.availablePackages[0];
-
-        if (!pkg) {
-          console.error('Available packages:', offerings.current.availablePackages);
-          throw new Error('No subscription package found in offering');
+          const gymProOffering = offerings?.all?.['Gym Pro'] || offerings?.all?.['gym_pro'];
+          if (gymProOffering && gymProOffering.availablePackages.length > 0) {
+            pkg = gymProOffering.availablePackages[0];
+            console.log('📦 Android - Found Gym Pro package:', pkg.identifier);
+          } else {
+            throw new Error('Gym Pro subscription is not available right now. Please try again later.');
+          }
+        } else {
+          pkg = offering.availablePackages[0];
+          if (!pkg) {
+            console.error('Available packages:', offering.availablePackages);
+            throw new Error('No subscription package found in offering');
+          }
         }
         
         console.log('📦 Purchasing package:', pkg.identifier, pkg);
@@ -280,10 +321,9 @@ export default function Subscribe() {
     },
     {
       name: 'Gym Pro',
-      price: 'Contact Us',
+      price: '$99.99',
       tier: 'gym_pro',
       description: 'For gym owners & coaches',
-      contactEmail: 'bjjjitsjournal@gmail.com',
       features: [
         'Everything in Enthusiast',
         'Share to community: 10x/week',
@@ -321,22 +361,20 @@ export default function Subscribe() {
                 </p>
               </div>
             </div>
-            {platform === 'ios' && (
-              <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
-                <Button
-                  variant="outline"
-                  onClick={handleRestorePurchases}
-                  disabled={isRestoring}
-                  className="w-full sm:w-auto"
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isRestoring ? 'animate-spin' : ''}`} />
-                  {isRestoring ? 'Restoring...' : 'Restore Purchases'}
-                </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  Already subscribed? Restore your purchases here.
-                </p>
-              </div>
-            )}
+            <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
+              <Button
+                variant="outline"
+                onClick={handleRestorePurchases}
+                disabled={isRestoring}
+                className="w-full sm:w-auto"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isRestoring ? 'animate-spin' : ''}`} />
+                {isRestoring ? 'Restoring...' : 'Restore Purchases'}
+              </Button>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Already subscribed? Restore your purchases here.
+              </p>
+            </div>
           </div>
         )}
 
@@ -384,13 +422,18 @@ export default function Subscribe() {
                     <span className="text-4xl font-bold text-gray-900 dark:text-white">
                       {tier.price}
                     </span>
-                    {tier.tier !== 'free' && tier.tier !== 'gym_pro' && (
+                    {tier.tier !== 'free' && (
                       <span className="text-gray-600 dark:text-gray-400">/month</span>
                     )}
                   </div>
+                  {tier.tier === 'enthusiast' && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Auto-renewable monthly subscription. Billed at $9.99 AUD/month. Cancel anytime.
+                    </p>
+                  )}
                   {tier.tier === 'gym_pro' && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                      Email: bjjjitsjournal@gmail.com
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Auto-renewable monthly subscription. Billed at $99.99 AUD/month. Cancel anytime.
                     </p>
                   )}
                 </CardHeader>
@@ -406,28 +449,15 @@ export default function Subscribe() {
                   </ul>
 
                   {tier.tier !== 'free' && !tier.isCurrent && (
-                    <>
-                      {tier.tier === 'gym_pro' ? (
-                        <Button
-                          className="w-full"
-                          variant="outline"
-                          onClick={() => window.location.href = `mailto:${tier.contactEmail}?subject=Gym Pro Subscription Inquiry&body=Hi, I'm interested in the Gym Pro plan for my gym.`}
-                          data-testid={`button-subscribe-${tier.tier}`}
-                        >
-                          Contact Us
-                        </Button>
-                      ) : (
-                        <Button
-                          className="w-full"
-                          variant={tier.popular ? 'default' : 'outline'}
-                          onClick={() => handleSubscribe(tier.tier)}
-                          disabled={loadingTier === tier.tier}
-                          data-testid={`button-subscribe-${tier.tier}`}
-                        >
-                          {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
-                        </Button>
-                      )}
-                    </>
+                    <Button
+                      className="w-full"
+                      variant={tier.popular ? 'default' : 'outline'}
+                      onClick={() => handleSubscribe(tier.tier)}
+                      disabled={loadingTier === tier.tier}
+                      data-testid={`button-subscribe-${tier.tier}`}
+                    >
+                      {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
+                    </Button>
                   )}
 
                   {tier.isCurrent && (
@@ -528,6 +558,31 @@ export default function Subscribe() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+
+        {/* Subscription Terms - Required by Apple Guideline 3.1.2 */}
+        <div className="mt-12 max-w-4xl mx-auto">
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Subscription Terms</h3>
+            <div className="space-y-2 text-xs text-gray-500 dark:text-gray-400">
+              <p>
+                <strong>Jits Journal Premium (BJJ Enthusiast)</strong> is available as a monthly auto-renewable subscription at <strong>$9.99 AUD/month</strong>.
+              </p>
+              <p>
+                <strong>Gym Pro</strong> is available as a monthly auto-renewable subscription at <strong>$99.99 AUD/month</strong>.
+              </p>
+              <p>
+                Payment will be charged to your Apple ID or Google Play account at confirmation of purchase. Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the end of the current billing period. Your account will be charged for renewal within 24 hours prior to the end of the current period at the same price. You can manage and cancel your subscriptions by going to your account settings on the App Store or Google Play Store after purchase.
+              </p>
+              <p>
+                Any unused portion of a free trial period, if offered, will be forfeited when you purchase a subscription.
+              </p>
+              <div className="flex gap-4 mt-3">
+                <a href="https://jitsjournal-backend.onrender.com/privacy" className="text-blue-600 dark:text-blue-400 underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <a href="https://jitsjournal-backend.onrender.com/terms" className="text-blue-600 dark:text-blue-400 underline" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

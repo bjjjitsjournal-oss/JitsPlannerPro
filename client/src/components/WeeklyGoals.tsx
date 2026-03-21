@@ -35,10 +35,10 @@ export default function WeeklyGoals() {
     staleTime: 60000, // Cache for 1 minute
   });
 
-  // Calculate this week's progress (start of week in UTC) - Sunday start
+  // Calculate this week's progress - Sunday start, fully UTC to avoid timezone issues
   const today = new Date();
-  const thisWeekStart = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - today.getUTCDay() + 1);
-  thisWeekStart.setUTCHours(0, 0, 0, 0);
+  const utcDayOfWeek = today.getUTCDay(); // 0=Sunday
+  const thisWeekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - utcDayOfWeek, 0, 0, 0, 0));
 
   const thisWeekClasses = Array.isArray(classes) ? classes.filter((cls: any) => {
     const classDate = new Date(cls.date);
@@ -95,12 +95,8 @@ export default function WeeklyGoals() {
       return;
     }
     
-    const today = new Date();
-    // Calculate start of current week (Sunday-based week)
-    const dayOfWeek = today.getUTCDay();
-    // If today is Sunday (0), use today; otherwise go back to previous Sunday
-    const daysToSunday = dayOfWeek === 0 ? 0 : -dayOfWeek;
-    const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + daysToSunday, 0, 0, 0, 0));
+    // Use same UTC Sunday-start logic as the week display above
+    const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - utcDayOfWeek, 0, 0, 0, 0));
     
     console.log('FRONTEND: Creating goal for week:', weekStart.toISOString());
     
