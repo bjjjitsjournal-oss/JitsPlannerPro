@@ -1604,14 +1604,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint for deleting any community note (moderation)
-  app.delete("/api/notes/:id/admin", authenticateToken, async (req, res) => {
+  app.delete("/api/notes/:id/admin", flexibleAuth, async (req, res) => {
     try {
       const id = req.params.id; // UUID string
-      const userEmail = (req as any).user.email;
-      
-      // Check if user is admin (bjjjitsjournal@gmail.com - case insensitive)
-      const adminEmails = ['Bjjjitsjournal@gmail.com', 'bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
-      if (!adminEmails.includes(userEmail)) {
+      const userId = (req as any).userId;
+
+      // Look up user's email from DB to check admin status
+      const user = await storage.getUser(userId);
+      const userEmail = user?.email?.toLowerCase() || '';
+      const adminEmails = ['bjjjitsjournal@gmail.com', 'admin@apexbjj.com.au'];
+      if (!adminEmails.includes(userEmail) && user?.role !== 'admin') {
         return res.status(403).json({ message: "Admin access required" });
       }
 
@@ -2881,8 +2883,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('📝 Fetching notes for gym ID:', gymId);
       const gymNotes = await storage.getGymNotes(gymId);
       console.log('✅ Gym notes found:', gymNotes.length);
-      
-      res.json(gymNotes);
+
+      // Attach like counts and user like status
+      const gymNotesWithLikes = await Promise.all(gymNotes.map(async (note: any) => {
+        const likeResult = await pool.query(
+          'SELECT COUNT(*) as count FROM note_likes WHERE note_id = $1',
+          [note.id]
+        );
+        const userLikeResult = userId ? await pool.query(
+          'SELECT 1 FROM note_likes WHERE note_id = $1 AND user_id = $2',
+          [note.id, userId]
+        ) : { rows: [] };
+        return {
+          ...note,
+          likeCount: parseInt(likeResult.rows[0]?.count || '0'),
+          isLikedByUser: userLikeResult.rows.length > 0,
+        };
+      }));
+
+      res.json(gymNotesWithLikes);
     } catch (error) {
       console.error("Error getting gym notes:", error);
       res.status(500).json({ message: "Failed to get gym notes" });
