@@ -186,6 +186,20 @@ export const noteLikes = pgTable("note_likes", {
   };
 });
 
+export const noteReports = pgTable("note_reports", {
+  id: serial("id").primaryKey(),
+  noteId: varchar("note_id").references(() => notes.id).notNull(),
+  reportedBy: integer("reported_by").references(() => users.id).notNull(),
+  reason: text("reason").notNull(),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => {
+  return {
+    noteIdIdx: index("note_reports_note_id_idx").on(table.noteId),
+    statusIdx: index("note_reports_status_idx").on(table.status),
+  };
+});
+
 export const gamePlans = pgTable("game_plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: integer("user_id").references(() => users.id).notNull(),
@@ -391,3 +405,12 @@ export const insertGymMembershipSchema = createInsertSchema(gymMemberships).omit
 
 export type GymMembership = typeof gymMemberships.$inferSelect;
 export type InsertGymMembership = z.infer<typeof insertGymMembershipSchema>;
+
+export const insertNoteReportSchema = createInsertSchema(noteReports).omit({
+  id: true,
+  createdAt: true,
+  status: true,
+});
+
+export type NoteReport = typeof noteReports.$inferSelect;
+export type InsertNoteReport = z.infer<typeof insertNoteReportSchema>;
