@@ -2104,10 +2104,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Note likes routes
-  app.post("/api/notes/:id/like", authenticateToken, async (req, res) => {
+  app.post("/api/notes/:id/like", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).userId;
 
       const success = await storage.likeNote(noteId, userId);
       
@@ -2128,10 +2128,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/notes/:id/like", authenticateToken, async (req, res) => {
+  app.delete("/api/notes/:id/like", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).userId;
 
       const success = await storage.unlikeNote(noteId, userId);
       
@@ -2152,10 +2152,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/notes/:id/likes", authenticateToken, async (req, res) => {
+  app.get("/api/notes/:id/likes", flexibleAuth, async (req, res) => {
     try {
-      const noteId = parseInt(req.params.id);
-      const userId = (req as any).user.userId;
+      const noteId = req.params.id;
+      const userId = (req as any).userId;
 
       const likeCount = (await storage.getNoteLikes(noteId)).length;
       const isLiked = await storage.isNoteLikedByUser(noteId, userId);
