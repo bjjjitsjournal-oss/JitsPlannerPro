@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useScrollToTop } from './hooks/useScrollToTop';
 import { lazy, Suspense, useEffect } from 'react';
+import { beltsQueries, classesQueries, weeklyCommitmentsQueries } from './lib/supabaseQueries';
 
 import Dashboard from './pages/Dashboard';
 import Classes from './pages/Classes';
@@ -41,16 +42,38 @@ function PageLoader() {
 function usePrefetchData() {
   const { user } = useAuth();
   useEffect(() => {
-    if (!user) return;
-    const prefetchKeys = [
+    if (!user?.id) return;
+
+    // Prefetch backend API queries that use the default queryFn
+    const apiKeys = [
       '/api/notes',
       '/api/notes/shared',
-      '/api/classes',
+      '/api/my-gym',
+      '/api/gym-notes',
     ];
-    prefetchKeys.forEach((key) => {
+    apiKeys.forEach((key) => {
       queryClient.prefetchQuery({ queryKey: [key] });
     });
-  }, [user]);
+
+    // Prefetch supabase-style queries with their custom queryFns so screens
+    // (Dashboard, Belts, Classes, WeeklyGoals) load instantly from cache
+    queryClient.prefetchQuery({
+      queryKey: ['classes', user.id],
+      queryFn: () => classesQueries.getAll(user.id),
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['belts', 'current', user.id],
+      queryFn: () => beltsQueries.getCurrent(user.id),
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['belts', user.id],
+      queryFn: () => beltsQueries.getAll(user.id),
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['weeklyCommitments', 'current', user.id],
+      queryFn: () => weeklyCommitmentsQueries.getCurrent(user.id),
+    });
+  }, [user?.id]);
 }
 
 function AuthenticatedApp() {
