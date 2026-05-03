@@ -468,6 +468,8 @@ export class DatabaseStorage implements IStorage {
         authorFirstName: users.firstName,
         authorLastName: users.lastName,
         authorEmail: users.email,
+        // Like count via correlated subquery (single query, no N+1)
+        likeCount: sql<number>`(SELECT COUNT(*)::int FROM ${noteLikes} WHERE ${noteLikes.noteId} = ${notes.id})`,
       })
       .from(notes)
       .leftJoin(users, eq(notes.userId, users.id))
@@ -499,7 +501,7 @@ export class DatabaseStorage implements IStorage {
         lastName: r.authorLastName,
         email: r.authorEmail,
       } : null,
-      likeCount: 0,
+      likeCount: Number(r.likeCount) || 0,
     }));
   }
 

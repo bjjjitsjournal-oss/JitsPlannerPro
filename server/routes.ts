@@ -4,12 +4,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { pool, db } from "./db";
 
-import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users } from "@shared/schema";
+import { insertClassSchema, insertVideoSchema, insertNoteSchema, insertDrawingSchema, insertBeltSchema, insertWeeklyCommitmentSchema, insertTrainingVideoSchema, insertUserSchema, insertGamePlanSchema, insertGymSchema, insertGymMembershipSchema, notes, users, noteLikes } from "@shared/schema";
 import { generateBJJCounterMoves } from "./openaiService";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 import { createClient } from "@supabase/supabase-js";
 
 import * as nodemailer from "nodemailer";
@@ -1644,32 +1644,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { offset = 0, limit = 15 } = req.query;
       const offsetNum = Math.max(0, parseInt(offset as string) || 0);
       const limitNum = Math.min(50, Math.max(1, parseInt(limit as string) || 15));
-      
-      // Check cache first
+      const currentUserId = (req as any).userId as number | undefined;
+
+      // Helper: attach per-user isLikedByUser to a list of notes (uses one indexed query)
+      const attachUserLikes = async (notesList: any[]): Promise<any[]> => {
+        if (!currentUserId || notesList.length === 0) {
+          return notesList.map(n => ({ ...n, isLikedByUser: false }));
+        }
+        const noteIds = notesList.map(n => n.id);
+        const likedRows = await db
+          .select({ noteId: noteLikes.noteId })
+          .from(noteLikes)
+          .where(and(eq(noteLikes.userId, currentUserId), inArray(noteLikes.noteId, noteIds)));
+        const likedSet = new Set(likedRows.map(r => r.noteId));
+        return notesList.map(n => ({ ...n, isLikedByUser: likedSet.has(n.id) }));
+      };
+
+      // Check cache first - cache holds global notes (with likeCount), per-user data is added below
       const cacheKey = getCacheKey(null, 'shared', offsetNum);
       const cachedNotes = getFromCache(cacheKey);
-      
+
       if (cachedNotes) {
+        const withLikes = await attachUserLikes(cachedNotes);
         const duration = Date.now() - startTime;
         console.log(`⏱️ GET /api/notes/shared completed in ${duration}ms (CACHED - ${cachedNotes.length} notes)`);
-        return res.json(cachedNotes.map(note => ({
-          ...note,
-          isLikedByUser: false
-        })));
+        return res.json(withLikes);
       }
-      
-      // Optimized: getSharedNotes now uses JOIN - ONE query instead of N+1 with pagination
+
+      // Optimized: getSharedNotes now uses JOIN with likeCount subquery - ONE query
       const sharedNotes = await storage.getSharedNotes(offsetNum, limitNum);
       setInCache(cacheKey, sharedNotes);
-      
+
+      const withLikes = await attachUserLikes(sharedNotes);
+
       const totalDuration = Date.now() - startTime;
       console.log(`⏱️ GET /api/notes/shared completed in ${totalDuration}ms (${sharedNotes.length} notes) - OPTIMIZED with JOIN`);
-      
-      // Notes already include author info and like count from the JOIN query
-      res.json(sharedNotes.map(note => ({
-        ...note,
-        isLikedByUser: false // TODO: Add user-specific like status in future optimization
-      })));
+
+      res.json(withLikes);
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(`❌ GET /api/notes/shared failed after ${duration}ms:`, error);
@@ -1970,6 +1981,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ))
         .returning();
 
+      // Invalidate caches so refetch returns the new video URL immediately
+      invalidateCache(`notes_${parsedUserId}`);
+      invalidateCache('shared_');
+
       if (!updatedNote) {
         console.error('❌ Note not found or access denied');
         return res.status(404).json({ message: "Note not found or access denied" });
@@ -2092,6 +2107,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Storage usage decreased by ${formatBytes(videoFileSize)}`);
       }
 
+      // Invalidate caches so refetch reflects the removed video immediately
+      invalidateCache(`notes_${userId}`);
+      invalidateCache('shared_');
+
       res.json({ 
         message: "Video removed successfully",
         note: updatedNote,
@@ -2116,7 +2135,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const likeCount = (await storage.getNoteLikes(noteId)).length;
-      
+
+      // Invalidate cached community feed so the new like count shows on next refetch
+      invalidateCache('shared_');
+
       res.json({ 
         message: "Note liked successfully",
         likeCount,
@@ -2140,7 +2162,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const likeCount = (await storage.getNoteLikes(noteId)).length;
-      
+
+      // Invalidate cached community feed so the updated like count shows on next refetch
+      invalidateCache('shared_');
+
       res.json({ 
         message: "Note unliked successfully",
         likeCount,
@@ -2934,7 +2959,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Share note to gym
       await storage.shareNoteToGym(noteId, userGyms[0].id);
-      
+
+      // Invalidate caches so the note's new gym status is reflected immediately
+      invalidateCache(`notes_${userId}`);
+
       res.json({ message: "Note shared to gym successfully" });
     } catch (error) {
       console.error("Error sharing note to gym:", error);
@@ -3034,7 +3062,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Unshare note from gym
       await storage.unshareNoteFromGym(noteId);
-      
+
+      // Invalidate caches so the note's new gym status is reflected immediately
+      invalidateCache(`notes_${userId}`);
+
       res.json({ message: "Note removed from gym successfully" });
     } catch (error) {
       console.error("Error unsharing note from gym:", error);
