@@ -813,23 +813,61 @@ export class DatabaseStorage implements IStorage {
     return result.rowCount ? result.rowCount > 0 : false;
   }
 
-  async getGymNotes(gymId: number): Promise<Note[]> {
-    const gymNotes = await db.select({
-      note: notes,
-      user: users
-    })
+  async getGymNotes(gymId: number, limit: number = 50): Promise<Note[]> {
+    // OPTIMIZED: explicit column selection (no password hashes / sensitive user fields)
+    // and a hard limit to prevent unbounded responses for large gyms.
+    // Mirrors the pattern used by getSharedNotes.
+    const results = await db
+      .select({
+        id: notes.id,
+        title: notes.title,
+        content: notes.content,
+        tags: notes.tags,
+        linkedClassId: notes.linkedClassId,
+        linkedVideoId: notes.linkedVideoId,
+        userId: notes.userId,
+        isShared: notes.isShared,
+        gymId: notes.gymId,
+        sharedWithUsers: notes.sharedWithUsers,
+        videoUrl: notes.videoUrl,
+        videoFileName: notes.videoFileName,
+        videoFileSize: notes.videoFileSize,
+        videoThumbnail: notes.videoThumbnail,
+        createdAt: notes.createdAt,
+        updatedAt: notes.updatedAt,
+        // Only safe author fields - never select password / supabaseId / tokens
+        authorFirstName: users.firstName,
+        authorLastName: users.lastName,
+        authorEmail: users.email,
+      })
       .from(notes)
       .innerJoin(users, eq(notes.userId, users.id))
       .where(eq(notes.gymId, gymId))
-      .orderBy(desc(notes.createdAt));
-    
-    return gymNotes.map(gn => ({
-      ...gn.note,
+      .orderBy(desc(notes.createdAt))
+      .limit(limit);
+
+    return results.map(r => ({
+      id: r.id,
+      title: r.title,
+      content: r.content,
+      tags: r.tags,
+      linkedClassId: r.linkedClassId,
+      linkedVideoId: r.linkedVideoId,
+      userId: r.userId,
+      isShared: r.isShared,
+      gymId: r.gymId,
+      sharedWithUsers: r.sharedWithUsers,
+      videoUrl: r.videoUrl,
+      videoFileName: r.videoFileName,
+      videoFileSize: r.videoFileSize,
+      videoThumbnail: r.videoThumbnail,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
       author: {
-        firstName: gn.user.firstName,
-        lastName: gn.user.lastName,
-        email: gn.user.email
-      }
+        firstName: r.authorFirstName,
+        lastName: r.authorLastName,
+        email: r.authorEmail,
+      },
     })) as any;
   }
 

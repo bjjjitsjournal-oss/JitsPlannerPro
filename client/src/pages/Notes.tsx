@@ -157,7 +157,6 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      notesQuery.refetch(); // Force immediate refresh
       toast({
         title: 'Note Saved!',
         description: 'Your technique note has been saved.',
@@ -198,7 +197,6 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      notesQuery.refetch();
       toast({
         title: 'Note Updated!',
         description: 'Your note has been updated successfully.',
@@ -239,7 +237,6 @@ export default function Notes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-      notesQuery.refetch();
       toast({
         title: 'Note Deleted!',
         description: 'Your note has been deleted successfully.',

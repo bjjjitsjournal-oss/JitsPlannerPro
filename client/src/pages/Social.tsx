@@ -30,52 +30,49 @@ export default function Social() {
   });
 
   // Fetch gym notes
+  // Note: no `enabled` gate - backend returns [] when user has no gym,
+  // and removing the gate eliminates the my-gym -> gym-notes waterfall.
   const { data: gymNotes = [], isLoading: gymNotesLoading } = useQuery<any[]>({
     queryKey: ['/api/gym-notes'],
-    enabled: !!gymMembership,
     staleTime: 60000,
   });
 
   // Like/unlike mutation
+  // OPTIMIZED: Caller passes `source` so we only touch the list the like belongs to
+  // (was invalidating BOTH community + gym lists on every like).
   const likeMutation = useMutation({
-    mutationFn: async ({ noteId, isLiked }: { noteId: string; isLiked: boolean }) => {
+    mutationFn: async ({ noteId, isLiked }: { noteId: string; isLiked: boolean; source: 'shared' | 'gym' }) => {
       if (isLiked) {
         return await apiRequest("DELETE", `/api/notes/${noteId}/like`);
       } else {
         return await apiRequest("POST", `/api/notes/${noteId}/like`);
       }
     },
-    onMutate: async ({ noteId, isLiked }) => {
-      await queryClient.cancelQueries({ queryKey: ['/api/notes/shared'] });
-      await queryClient.cancelQueries({ queryKey: ['/api/gym-notes'] });
+    onMutate: async ({ noteId, isLiked, source }) => {
+      const queryKey = source === 'shared' ? ['/api/notes/shared'] : ['/api/gym-notes'];
+      await queryClient.cancelQueries({ queryKey });
 
-      const previousShared = queryClient.getQueryData<any[]>(['/api/notes/shared']);
-      const previousGym = queryClient.getQueryData<any[]>(['/api/gym-notes']);
+      const previous = queryClient.getQueryData<any[]>(queryKey);
 
-      const updateNotes = (notes: any[] | undefined) =>
-        notes?.map((note: any) =>
-          note.id === noteId
-            ? {
-                ...note,
-                isLikedByUser: !isLiked,
-                likeCount: (note.likeCount || 0) + (isLiked ? -1 : 1),
-              }
-            : note
-        );
+      const updated = previous?.map((note: any) =>
+        note.id === noteId
+          ? {
+              ...note,
+              isLikedByUser: !isLiked,
+              likeCount: (note.likeCount || 0) + (isLiked ? -1 : 1),
+            }
+          : note
+      );
 
-      if (previousShared) {
-        queryClient.setQueryData(['/api/notes/shared'], updateNotes(previousShared));
-      }
-      if (previousGym) {
-        queryClient.setQueryData(['/api/gym-notes'], updateNotes(previousGym));
+      if (previous) {
+        queryClient.setQueryData(queryKey, updated);
       }
 
-      return { previousShared, previousGym, hasSnapshot: true };
+      return { previous, queryKey, hasSnapshot: true };
     },
     onError: (error: any, variables, context) => {
-      if (context?.hasSnapshot) {
-        queryClient.setQueryData(['/api/notes/shared'], context.previousShared);
-        queryClient.setQueryData(['/api/gym-notes'], context.previousGym);
+      if (context?.hasSnapshot && context.queryKey) {
+        queryClient.setQueryData(context.queryKey, context.previous);
       }
       toast({
         title: "Error",
@@ -83,9 +80,10 @@ export default function Social() {
         variant: "destructive",
       });
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notes/shared'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/gym-notes'] });
+    onSettled: (data, error, variables, context) => {
+      if (context?.queryKey) {
+        queryClient.invalidateQueries({ queryKey: context.queryKey });
+      }
     },
   });
 
@@ -241,6 +239,8 @@ export default function Social() {
                         <div className="mt-3">
                           <video 
                             controls 
+                            preload="none"
+                            poster={note.videoThumbnail || undefined}
                             className="w-full max-w-md rounded-lg shadow-sm"
                             style={{ maxHeight: '300px' }}
                           >
@@ -276,7 +276,8 @@ export default function Social() {
                           <button 
                             onClick={() => likeMutation.mutate({ 
                               noteId: note.id, 
-                              isLiked: note.isLikedByUser || false 
+                              isLiked: note.isLikedByUser || false,
+                              source: 'shared',
                             })}
                             disabled={likeMutation.isPending}
                             className={`flex items-center gap-1 transition-colors ${
@@ -373,6 +374,8 @@ export default function Social() {
                         <div className="mt-3">
                           <video 
                             controls 
+                            preload="none"
+                            poster={note.videoThumbnail || undefined}
                             className="w-full max-w-md rounded-lg shadow-sm"
                             style={{ maxHeight: '300px' }}
                           >
@@ -408,7 +411,8 @@ export default function Social() {
                           <button 
                             onClick={() => likeMutation.mutate({ 
                               noteId: note.id, 
-                              isLiked: note.isLikedByUser || false 
+                              isLiked: note.isLikedByUser || false,
+                              source: 'gym',
                             })}
                             disabled={likeMutation.isPending}
                             className={`flex items-center gap-1 transition-colors ${

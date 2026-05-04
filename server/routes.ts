@@ -2909,21 +2909,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const gymNotes = await storage.getGymNotes(gymId);
       console.log('✅ Gym notes found:', gymNotes.length);
 
-      // Attach like counts and user like status
-      const gymNotesWithLikes = await Promise.all(gymNotes.map(async (note: any) => {
-        const likeResult = await pool.query(
-          'SELECT COUNT(*) as count FROM note_likes WHERE note_id = $1',
-          [note.id]
-        );
-        const userLikeResult = userId ? await pool.query(
-          'SELECT 1 FROM note_likes WHERE note_id = $1 AND user_id = $2',
-          [note.id, userId]
-        ) : { rows: [] };
-        return {
-          ...note,
-          likeCount: parseInt(likeResult.rows[0]?.count || '0'),
-          isLikedByUser: userLikeResult.rows.length > 0,
-        };
+      // OPTIMIZED: Batch like counts + user-liked status into 2 queries total (was 2*N queries)
+      const noteIds = gymNotes.map((n: any) => n.id);
+
+      const [likeCountRows, userLikedRows] = noteIds.length === 0
+        ? [[], []]
+        : await Promise.all([
+            db
+              .select({
+                noteId: noteLikes.noteId,
+                count: sql<number>`COUNT(*)::int`,
+              })
+              .from(noteLikes)
+              .where(inArray(noteLikes.noteId, noteIds))
+              .groupBy(noteLikes.noteId),
+            userId
+              ? db
+                  .select({ noteId: noteLikes.noteId })
+                  .from(noteLikes)
+                  .where(and(eq(noteLikes.userId, userId), inArray(noteLikes.noteId, noteIds)))
+              : Promise.resolve([]),
+          ]);
+
+      const likeCountMap = new Map<string, number>(
+        likeCountRows.map((r: any) => [r.noteId, Number(r.count) || 0])
+      );
+      const likedSet = new Set<string>(userLikedRows.map((r: any) => r.noteId));
+
+      const gymNotesWithLikes = gymNotes.map((note: any) => ({
+        ...note,
+        likeCount: likeCountMap.get(note.id) || 0,
+        isLikedByUser: likedSet.has(note.id),
       }));
 
       res.json(gymNotesWithLikes);
