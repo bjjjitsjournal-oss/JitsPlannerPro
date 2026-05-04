@@ -597,9 +597,8 @@ export default function Notes() {
                     videoThumbnail: note.videoThumbnail
                   } : null}
                   onVideoUploaded={() => {
-                    // Refresh the notes list when video is uploaded/removed
+                    // invalidateQueries triggers an automatic refetch - no explicit refetch() needed
                     queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
-                    notesQuery.refetch();
                   }}
                 />
                 

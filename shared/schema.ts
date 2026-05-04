@@ -183,6 +183,9 @@ export const noteLikes = pgTable("note_likes", {
   return {
     noteIdUserIdIdx: index("note_likes_note_id_user_id_idx").on(table.noteId, table.userId),
     noteIdIdx: index("note_likes_note_id_idx").on(table.noteId),
+    // Standalone user_id index - composite (note_id, user_id) above can't serve
+    // queries that filter only on user_id (leftmost-prefix rule).
+    userIdIdx: index("note_likes_user_id_idx").on(table.userId),
   };
 });
 

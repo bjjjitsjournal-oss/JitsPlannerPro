@@ -224,6 +224,34 @@ const authenticateToken = async (req: any, res: any, next: any) => {
   }
 };
 
+// In-memory user cache for flexibleAuth - eliminates DB lookup on every API request.
+// Keyed by a path-specific prefix so all three auth paths (Supabase email / legacy id / mobile supabaseId)
+// benefit. TTL is short enough (5 min) that subscription/premium changes propagate quickly,
+// and clearUserCache() below lets us invalidate immediately when we know a user changed.
+const userCache = new Map<string, { user: any; timestamp: number }>();
+const USER_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCachedUser(key: string): any | null {
+  const cached = userCache.get(key);
+  if (cached && Date.now() - cached.timestamp < USER_CACHE_TTL) {
+    return cached.user;
+  }
+  if (cached) userCache.delete(key); // expired - clean up
+  return null;
+}
+
+function setCachedUser(key: string, user: any): void {
+  userCache.set(key, { user, timestamp: Date.now() });
+}
+
+// Exported so other handlers (e.g. premium upgrade, profile update) can invalidate stale entries.
+export function clearUserCache(user: { id?: number; email?: string; supabaseId?: string } | null | undefined): void {
+  if (!user) return;
+  if (user.email) userCache.delete(`email:${user.email}`);
+  if (user.id !== undefined) userCache.delete(`id:${user.id}`);
+  if (user.supabaseId) userCache.delete(`sid:${user.supabaseId}`);
+}
+
 // Flexible auth middleware - accepts either Authorization header OR supabaseId in body (for mobile)
 const flexibleAuth = async (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
@@ -281,11 +309,23 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
       try {
         let user;
         if (isSupabaseToken) {
-          user = await storage.getUserByEmail(decoded.email);
+          // CACHE: check before hitting DB
+          const cacheKey = `email:${decoded.email}`;
+          user = getCachedUser(cacheKey);
+          if (!user) {
+            user = await storage.getUserByEmail(decoded.email);
+            if (user) setCachedUser(cacheKey, user);
+          }
         } else {
-          user = await storage.getUser(decoded.userId);
+          // CACHE: check before hitting DB
+          const cacheKey = `id:${decoded.userId}`;
+          user = getCachedUser(cacheKey);
+          if (!user) {
+            user = await storage.getUser(decoded.userId);
+            if (user) setCachedUser(cacheKey, user);
+          }
         }
-        
+
         if (user) {
           req.userId = user.id;
           req.user = user;
@@ -301,16 +341,25 @@ const flexibleAuth = async (req: any, res: any, next: any) => {
   const supabaseId = req.body?.supabaseId || req.query?.supabaseId;
   if (supabaseId) {
     console.log('📱 Mobile auth: Using supabaseId from', req.body?.supabaseId ? 'body' : 'query', ':', supabaseId);
-    
+
     try {
-      // Look up user by Supabase UID
-      const result = await pool.query(
-        'SELECT * FROM users WHERE supabase_uid = $1',
-        [supabaseId]
-      );
-      
-      if (result.rows.length > 0) {
-        const user = result.rows[0];
+      // CACHE: check before hitting DB
+      const cacheKey = `sid:${supabaseId}`;
+      let user = getCachedUser(cacheKey);
+
+      if (!user) {
+        // Look up user by Supabase UID
+        const result = await pool.query(
+          'SELECT * FROM users WHERE supabase_uid = $1',
+          [supabaseId]
+        );
+        if (result.rows.length > 0) {
+          user = result.rows[0];
+          setCachedUser(cacheKey, user);
+        }
+      }
+
+      if (user) {
         req.userId = user.id;
         req.user = user;
         console.log('✅ Mobile auth successful for user:', user.id);
@@ -1474,6 +1523,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notes routes - using existing notes table with UUID mapping
   app.get("/api/notes", flexibleAuth, async (req, res) => {
     const startTime = Date.now();
+    // Cache-Control: cache per-user but always revalidate via ETag (Express sets ETag automatically).
+    // Returns cheap 304 Not Modified when unchanged - no body transferred. Safe with optimistic UI.
+    res.set('Cache-Control', 'private, max-age=0, must-revalidate');
     try {
       const userId = (req as any).user.id; // Integer user ID
       const { search, offset = 0, limit = 15 } = req.query;
@@ -1640,6 +1692,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Shared notes routes
   app.get("/api/notes/shared", flexibleAuth, async (req, res) => {
     const startTime = Date.now();
+    // Cache-Control: per-user (response includes user-specific isLikedByUser),
+    // always revalidate so the like button optimistic UI stays accurate.
+    res.set('Cache-Control', 'private, max-age=0, must-revalidate');
     try {
       const { offset = 0, limit = 15 } = req.query;
       const offsetNum = Math.max(0, parseInt(offset as string) || 0);
@@ -2863,6 +2918,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get user's gym membership
   app.get("/api/my-gym", flexibleAuth, async (req, res) => {
+    // Cache-Control: per-user, revalidate via ETag (gym membership rarely changes).
+    res.set('Cache-Control', 'private, max-age=0, must-revalidate');
     try {
       const userId = req.userId;
       
@@ -2890,6 +2947,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get gym notes (only for gym members)
   app.get("/api/gym-notes", flexibleAuth, async (req, res) => {
+    // Cache-Control: per-user, revalidate via ETag so like-button optimistic UI stays correct.
+    res.set('Cache-Control', 'private, max-age=0, must-revalidate');
     try {
       const userId = req.userId;
       console.log('🔍 GET /api/gym-notes - userId:', userId);
