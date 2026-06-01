@@ -378,6 +378,21 @@ export default function Subscribe() {
           </div>
         )}
 
+        {/* Social Proof Banner */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-full px-4 py-2 mb-4">
+            <span className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+              🥋 Trusted by grapplers from white to black belt
+            </span>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Serious grapplers track everything
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+            Join premium members who are levelling up their game with detailed notes, video uploads, and gym community access.
+          </p>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -456,7 +471,7 @@ export default function Subscribe() {
                       disabled={loadingTier === tier.tier}
                       data-testid={`button-subscribe-${tier.tier}`}
                     >
-                      {loadingTier === tier.tier ? 'Loading...' : 'Get Started'}
+                      {loadingTier === tier.tier ? 'Loading...' : 'Unlock Premium 🔓'}
                     </Button>
                   )}
 
@@ -507,9 +522,9 @@ export default function Subscribe() {
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl font-bold text-blue-600 dark:text-blue-400">3</span>
                 </div>
-                <h3 className="font-semibold mb-2">Start Training</h3>
+                <h3 className="font-semibold mb-2">Elevate Your Game</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Access all premium features instantly!
+                  Track every session, note every technique, and watch your game transform.
                 </p>
               </div>
             </div>

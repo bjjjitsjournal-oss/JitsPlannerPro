@@ -53,8 +53,6 @@ export default function Dashboard() {
     staleTime: 60000, // Cache for 1 minute
   });
 
-  console.log('Current belt data:', currentBelt);
-
   // Fetch user's classes for statistics  
   const { data: classes = [] } = useQuery({
     queryKey: ['classes', user?.id],
@@ -74,6 +72,17 @@ export default function Dashboard() {
     const classDate = new Date(cls.date);
     return classDate >= startOfWeek;
   }).length : 0;
+
+  const trainingDaysThisWeek = Array.isArray(classes)
+    ? new Set(
+        classes
+          .filter((cls: any) => {
+            const classDate = new Date(cls.date);
+            return classDate >= startOfWeek;
+          })
+          .map((cls: any) => new Date(cls.date).toDateString())
+      ).size
+    : 0;
 
   const totalClasses = Array.isArray(classes) ? classes.length : 0;
   
@@ -181,6 +190,21 @@ export default function Dashboard() {
       <div className="mb-8">
         <WeeklyGoals />
       </div>
+
+      {/* Training Streak Banner */}
+      {trainingDaysThisWeek > 0 && (
+        <div className="mb-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-4 text-white flex items-center justify-between shadow-lg">
+          <div>
+            <div className="font-bold text-lg">
+              {trainingDaysThisWeek === 1 && "1 day on the mats this week 💪"}
+              {trainingDaysThisWeek === 2 && "2 days training this week 🔥"}
+              {trainingDaysThisWeek >= 3 && `${trainingDaysThisWeek} days on fire this week 🔥🔥`}
+            </div>
+            <div className="text-sm opacity-90">Keep showing up. That's the game.</div>
+          </div>
+          <div className="text-4xl">🥋</div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="mb-8">
@@ -293,8 +317,10 @@ export default function Dashboard() {
             ))
           ) : (
             <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-              <p>No recent activity</p>
-              <p className="text-sm">Start by logging your first class!</p>
+              <p>No sessions yet. Your journey starts today.</p>
+              <Link to="/classes" className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline mt-2 inline-block">
+                Log Your First Class →
+              </Link>
             </div>
           )}
         </div>

@@ -253,18 +253,29 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-red-600 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Hero section */}
+        <div className="text-center text-white mb-8">
+          <div className="text-6xl mb-4">🥋</div>
+          <h1 className="text-3xl font-bold mb-2">Track Every Roll. Level Up Faster.</h1>
+          {!isLogin && (
+            <p className="text-white/80 text-base">
+              Join 2,400+ BJJ athletes already tracking their game
+            </p>
+          )}
+        </div>
+
         <Card className="backdrop-blur-sm bg-white/10 border-white/20 shadow-xl">
           <CardHeader className="text-center">
             <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-red-500 rounded-full flex items-center justify-center mb-4">
               <span className="text-white font-bold text-xl">🥋</span>
             </div>
             <CardTitle className="text-2xl font-bold text-white">
-              {isLogin ? 'Welcome Back' : 'Join Jits Journal'}
+              {isLogin ? 'Welcome Back, Grappler' : 'Start Your BJJ Journey'}
             </CardTitle>
             <CardDescription className="text-white/80">
               {isLogin 
-                ? 'Sign in to continue your BJJ journey' 
-                : 'Start tracking your BJJ progress today'
+                ? 'Your training log is waiting' 
+                : "Every black belt was once a white belt who didn't quit"
               }
             </CardDescription>
           </CardHeader>
@@ -431,7 +442,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                   ) : (
                     <div className="flex items-center gap-2">
                       <UserPlus size={16} />
-                      Create Account
+                      Join the Mat 🥋
                     </div>
                   )}
                 </Button>
@@ -447,7 +458,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
                 className="text-white/80 hover:text-white text-sm underline"
               >
                 {isLogin 
-                  ? "Don't have an account? Sign up" 
+                  ? "New to BJJ tracking? Join free" 
                   : "Already have an account? Sign in"
                 }
               </button>
