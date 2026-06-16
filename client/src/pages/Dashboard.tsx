@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import WeeklyGoals from '../components/WeeklyGoals';
 import ProfileDropdown from '../components/ProfileDropdown';
+import StatsShareCard from '../components/StatsShareCard';
 import { type Belt } from '@shared/schema';
 import { useAuth } from '@/contexts/AuthContext';
 import { beltsQueries, classesQueries } from '@/lib/supabaseQueries';
@@ -296,6 +297,22 @@ export default function Dashboard() {
           <div className="mt-2 text-2xl">⏱️</div>
         </div>
       </div>
+
+      {/* Share Stats */}
+      {totalClasses > 0 && (
+        <div className="mb-8">
+          <StatsShareCard
+            totalClasses={stats.totalClasses}
+            totalHours={stats.totalMinutes / 60}
+            classBreakdown={stats.classTypeBreakdown}
+            bestSessionSubs={stats.highestSubsPerSession}
+            bestWeekSubs={stats.highestSubsPerWeek}
+            belt={currentBelt?.belt}
+            stripes={currentBelt?.stripes ?? 0}
+            userName={user?.firstName}
+          />
+        </div>
+      )}
 
       {/* Recent Activity */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
