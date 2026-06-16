@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { weeklyCommitmentsQueries, classesQueries } from '@/lib/supabaseQueries';
+import ShareCard from './ShareCard';
 
 export default function WeeklyGoals() {
   const [showForm, setShowForm] = useState(false);
@@ -120,12 +121,12 @@ export default function WeeklyGoals() {
 
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md">
+    <div className="bg-gray-900 rounded-xl p-6 shadow-md">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">Weekly Goals</h3>
+        <h3 className="text-lg font-semibold text-white">Weekly Goals</h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          className="text-blue-400 hover:text-blue-300 text-sm font-medium"
         >
           {hasGoal ? 'Update' : 'Set Goal'}
         </button>
@@ -173,13 +174,13 @@ export default function WeeklyGoals() {
       {hasGoal ? (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Progress this week</span>
-            <span className="text-sm font-medium text-gray-800">
+            <span className="text-sm text-gray-400">Progress this week</span>
+            <span className="text-sm font-medium text-white">
               {progress} / {goal} classes
             </span>
           </div>
           
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-3">
+          <div className="w-full bg-gray-700 rounded-full h-3 mb-3">
             <div
               className={`h-3 rounded-full transition-all duration-300 ${
                 progressPercentage >= 100 
@@ -193,7 +194,7 @@ export default function WeeklyGoals() {
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <div className={`${progressPercentage >= 100 ? 'text-green-600' : 'text-gray-600'}`}>
+            <div className={`${progressPercentage >= 100 ? 'text-green-400' : 'text-gray-400'}`}>
               {progressPercentage >= 100 ? (
                 <span className="font-medium">🎉 Goal completed!</span>
               ) : remaining === 1 ? (
@@ -204,7 +205,7 @@ export default function WeeklyGoals() {
                 <span>Keep it up!</span>
               )}
             </div>
-            <div className="text-gray-500">
+            <div className="text-gray-400">
               {Math.round(progressPercentage)}%
             </div>
           </div>
@@ -219,9 +220,32 @@ export default function WeeklyGoals() {
               </div>
             </div>
           )}
+
+          <div className="mt-4 flex justify-end">
+            <ShareCard
+              weeklyProgress={progress}
+              weeklyGoal={goal}
+              totalClasses={Array.isArray(classes) ? classes.length : 0}
+              classBreakdown={
+                Array.isArray(classes)
+                  ? classes.reduce((acc: Record<string, number>, cls: any) => {
+                      const type = cls.classType || cls.class_type || 'Unknown';
+                      acc[type] = (acc[type] || 0) + 1;
+                      return acc;
+                    }, {})
+                  : {}
+              }
+              totalHours={
+                Array.isArray(classes)
+                  ? classes.reduce((total: number, cls: any) =>
+                      total + (cls.duration || 0), 0) / 60
+                  : 0
+              }
+            />
+          </div>
         </div>
       ) : (
-        <div className="text-center py-4 text-gray-500">
+        <div className="text-center py-4 text-gray-400">
           <p className="text-sm">No weekly goal set yet.</p>
           <p className="text-xs">Set a goal to track your progress!</p>
         </div>
