@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 
 const QUICK_WINS = [
   { emoji: '🔒', label: 'Escaped mount' },
@@ -23,20 +24,12 @@ export default function QuickWin() {
 
   const quickWinMutation = useMutation({
     mutationFn: async (win: string) => {
-      const response = await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          title: `Quick Win 🏆`,
-          content: win,
-          isShared: false,
-          userId: user?.id,
-          supabaseId: user?.supabaseId,
-        }),
+      return await apiRequest('POST', '/api/notes', {
+        title: 'Quick Win 🏆',
+        content: win,
+        isShared: false,
+        userId: user?.id,
       });
-      if (!response.ok) throw new Error('Failed to log quick win');
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notes'] });
