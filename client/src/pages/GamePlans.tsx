@@ -268,120 +268,113 @@ export default function GamePlans() {
     setExpandedMoves(newExpanded);
   };
 
-  const renderMoveTree = (moves: GamePlanMove[], depth: number = 0) => {
-    return moves.map((move, index) => (
-      <div key={move.id} className="relative">
+  const renderMoveTree = (moves: GamePlanMove[], depth: number = 0, prefix: string = '') => {
+    return moves.map((move, index) => {
+      const number = prefix ? `${prefix}.${index + 1}` : `${index + 1}`;
+      const isRoot = depth === 0;
+      const hasChildren = !!(move.children && move.children.length > 0);
+      const isLast = index === moves.length - 1;
 
-        {/* Connector line from parent */}
-        {depth > 0 && (
-          <div className="flex justify-center mb-1">
-            <div className="w-0.5 h-6 bg-gradient-to-b from-blue-500 to-blue-300 rounded-full" />
-          </div>
-        )}
-
-        {/* Move Card */}
-        <div className={`
-          rounded-2xl p-4 shadow-md mb-1
-          ${depth === 0
-            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0'
-            : depth === 1
-            ? 'bg-gray-800 text-white border border-blue-500/30'
-            : 'bg-gray-900 text-white border border-gray-700'}
-        `}>
-          {/* Header row */}
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              {/* Depth indicator */}
-              <span className={`
-                text-xs font-bold px-2 py-0.5 rounded-full shrink-0
-                ${depth === 0 ? 'bg-white/20 text-white' :
-                  depth === 1 ? 'bg-blue-500/30 text-blue-300' :
-                  'bg-gray-700 text-gray-400'}
+      return (
+        <div key={move.id} className="relative">
+          <div className="flex gap-3">
+            {/* Number badge + connector spine */}
+            <div className="flex flex-col items-center shrink-0">
+              <div className={`
+                flex items-center justify-center rounded-full font-bold shrink-0
+                ${isRoot
+                  ? 'w-9 h-9 text-sm bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-md'
+                  : 'w-7 h-7 text-xs bg-gray-700 text-blue-300 border border-blue-500/40'}
               `}>
-                {depth === 0 ? '🎯 Start' : depth === 1 ? '↳ Move' : '↳ Counter'}
-              </span>
-              <h3 className={`font-bold truncate ${depth === 0 ? 'text-lg' : 'text-base'}`}>
-                {move.moveName}
-              </h3>
+                {number}
+              </div>
+              {(hasChildren || !isLast) && (
+                <div className="w-0.5 flex-1 bg-blue-500/20 mt-1" />
+              )}
             </div>
 
-            {/* Action buttons */}
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                onClick={() => handleAiSuggest(move)}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-purple-500/30 transition-colors"
-                title="AI suggest counter"
-                data-testid={`button-ai-${move.id}`}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => {
-                  setMoveData({ moveName: '', description: '', parentId: move.id });
-                  setShowMoveForm(true);
-                }}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-green-500/30 transition-colors"
-                title="Add counter move"
-                data-testid={`button-add-child-${move.id}`}
-              >
-                <Plus className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => handleEdit(move)}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-yellow-500/30 transition-colors"
-                title="Edit"
-                data-testid={`button-edit-${move.id}`}
-              >
-                <Edit2 className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => handleDelete(move.id)}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-red-500/30 transition-colors"
-                title="Delete"
-                data-testid={`button-delete-${move.id}`}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
+            {/* Step card */}
+            <div className={`
+              flex-1 min-w-0 rounded-xl p-4 mb-3 shadow-sm
+              ${isRoot
+                ? 'bg-gray-800 border border-blue-500/30'
+                : 'bg-gray-900 border border-gray-700'}
+            `}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <span className={`
+                    text-[11px] font-bold uppercase tracking-wider
+                    ${isRoot ? 'text-blue-400' : 'text-gray-500'}
+                  `}>
+                    {isRoot ? 'Step' : 'If countered'}
+                  </span>
+                  <h3 className={`font-bold text-white mt-0.5 ${isRoot ? 'text-lg' : 'text-base'}`}>
+                    {move.moveName}
+                  </h3>
+                  {move.description && (
+                    <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+                      {move.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => handleAiSuggest(move)}
+                    className="p-1.5 rounded-lg bg-white/10 hover:bg-purple-500/30 transition-colors"
+                    title="AI suggest counter"
+                    data-testid={`button-ai-${move.id}`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-white" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMoveData({ moveName: '', description: '', parentId: move.id });
+                      setShowMoveForm(true);
+                    }}
+                    className="p-1.5 rounded-lg bg-white/10 hover:bg-green-500/30 transition-colors"
+                    title="Add follow-up step"
+                    data-testid={`button-add-child-${move.id}`}
+                  >
+                    <Plus className="w-3.5 h-3.5 text-white" />
+                  </button>
+                  <button
+                    onClick={() => handleEdit(move)}
+                    className="p-1.5 rounded-lg bg-white/10 hover:bg-yellow-500/30 transition-colors"
+                    title="Edit"
+                    data-testid={`button-edit-${move.id}`}
+                  >
+                    <Edit2 className="w-3.5 h-3.5 text-white" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(move.id)}
+                    className="p-1.5 rounded-lg bg-white/10 hover:bg-red-500/30 transition-colors"
+                    title="Delete"
+                    data-testid={`button-delete-${move.id}`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-white" />
+                  </button>
+                </div>
+              </div>
+
+              {hasChildren && (
+                <div className="mt-3 text-xs text-gray-500 font-medium">
+                  {move.children!.length} {move.children!.length === 1 ? 'follow-up' : 'follow-ups'} ↓
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Description */}
-          {move.description && (
-            <p className={`text-sm mt-1 leading-relaxed
-              ${depth === 0 ? 'text-blue-100' : 'text-gray-400'}
-            `}>
-              {move.description}
-            </p>
-          )}
-
-          {/* Children count hint */}
-          {move.children && move.children.length > 0 && (
-            <div className="mt-2 flex items-center gap-1">
-              <div className="h-px flex-1 bg-white/10" />
-              <span className="text-xs text-gray-500 px-2">
-                {move.children.length} {move.children.length === 1 ? 'follow-up' : 'follow-ups'} ↓
-              </span>
-              <div className="h-px flex-1 bg-white/10" />
+          {/* Nested sub-steps */}
+          {hasChildren && (
+            <div className="ml-4 pl-3 border-l-2 border-blue-500/15">
+              {renderMoveTree(move.children!, depth + 1, number)}
             </div>
           )}
         </div>
-
-        {/* Children */}
-        {move.children && move.children.length > 0 && (
-          <div className={`
-            ml-4 pl-4 border-l-2 border-blue-500/20
-            ${depth === 0 ? 'mt-0' : 'mt-0'}
-          `}>
-            {renderMoveTree(move.children, depth + 1)}
-          </div>
-        )}
-
-        {/* Spacing between siblings */}
-        {index < moves.length - 1 && depth > 0 && (
-          <div className="h-3" />
-        )}
-      </div>
-    ));
+      );
+    });
   };
 
   return (

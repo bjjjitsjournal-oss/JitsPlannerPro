@@ -1,45 +1,60 @@
 import React, { useRef } from 'react';
 import { shareElementAsImage } from '@/lib/shareImage';
 
-interface ShareCardProps {
-  weeklyProgress: number;
-  weeklyGoal: number;
+interface StatsShareCardProps {
   totalClasses: number;
-  classBreakdown: Record<string, number>;
   totalHours: number;
+  classBreakdown: Record<string, number>;
+  bestSessionSubs: number;
+  bestWeekSubs: number;
+  belt?: string;
+  stripes?: number;
   userName?: string;
+  recentWins?: string[];
+  badges?: { icon: string; title: string }[];
 }
 
-export default function ShareCard({
-  weeklyProgress,
-  weeklyGoal,
-  totalClasses,
-  classBreakdown,
-  totalHours,
-  userName,
-}: ShareCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
+const BELT_COLORS: Record<string, string> = {
+  white: '#e2e8f0',
+  blue: '#3b82f6',
+  purple: '#a78bfa',
+  brown: '#a16207',
+  black: '#1e293b',
+};
 
-  const progressPercentage = weeklyGoal > 0
-    ? Math.min(Math.round((weeklyProgress / weeklyGoal) * 100), 100)
-    : 0;
+export default function StatsShareCard({
+  totalClasses,
+  totalHours,
+  classBreakdown,
+  bestSessionSubs,
+  bestWeekSubs,
+  belt,
+  stripes = 0,
+  userName,
+  recentWins = [],
+  badges = [],
+}: StatsShareCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleShare = async () => {
     if (!cardRef.current) return;
     await shareElementAsImage(cardRef.current, {
       title: 'My BJJ Stats — Jits Journal',
-      text: 'Check out my BJJ training stats from Jits Journal! 🥋',
-      fileName: 'jits-journal-weekly-stats',
+      text: 'Check out my all-time BJJ training stats from Jits Journal! 🥋',
+      fileName: 'jits-journal-stats',
     });
   };
+
+  const beltColor = belt ? (BELT_COLORS[belt.toLowerCase()] || '#64748b') : null;
 
   return (
     <div>
       {/* Hidden card that gets screenshotted */}
       <div
-        ref={cardRef}
-        style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
+        aria-hidden="true"
+        style={{ position: 'fixed', top: 0, left: 0, width: 0, height: 0, overflow: 'hidden', zIndex: -1, pointerEvents: 'none' }}
       >
+      <div ref={cardRef}>
         <div style={{
           width: '400px',
           background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
@@ -67,41 +82,43 @@ export default function ShareCard({
               fontSize: '12px',
               color: '#94a3b8',
             }}>
-              This Week
+              All Time
             </div>
           </div>
 
-          {/* Weekly Goal Progress */}
-          <div style={{
-            background: 'rgba(255,255,255,0.07)',
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '16px',
-          }}>
-            <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px' }}>
-              WEEKLY GOAL
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '42px', fontWeight: '800', color: '#60a5fa' }}>
-                {weeklyProgress}
-              </span>
-              <span style={{ fontSize: '18px', color: '#64748b' }}>/ {weeklyGoal} classes</span>
-            </div>
-            {/* Progress bar */}
-            <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '999px', height: '8px' }}>
+          {/* Belt */}
+          {belt && (
+            <div style={{
+              background: 'rgba(255,255,255,0.07)',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}>
               <div style={{
-                width: `${progressPercentage}%`,
-                height: '8px',
-                borderRadius: '999px',
-                background: progressPercentage >= 100
-                  ? 'linear-gradient(90deg, #22c55e, #16a34a)'
-                  : 'linear-gradient(90deg, #3b82f6, #60a5fa)',
-              }} />
+                width: '64px',
+                height: '18px',
+                borderRadius: '4px',
+                background: beltColor || '#64748b',
+                border: belt.toLowerCase() === 'white' ? '1px solid #94a3b8' : 'none',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: '4px',
+                gap: '2px',
+              }}>
+                {Array.from({ length: stripes }).map((_, i) => (
+                  <div key={i} style={{ width: '3px', height: '12px', background: '#cbd5e1', borderRadius: '1px' }} />
+                ))}
+              </div>
+              <div style={{ fontSize: '15px', fontWeight: '700', textTransform: 'capitalize' }}>
+                {belt} Belt{stripes > 0 ? ` · ${stripes} stripe${stripes !== 1 ? 's' : ''}` : ''}
+              </div>
             </div>
-            <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '8px', textAlign: 'right' }}>
-              {progressPercentage}% complete
-            </div>
-          </div>
+          )}
 
           {/* Total Stats Row */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
@@ -112,7 +129,7 @@ export default function ShareCard({
               padding: '16px',
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#a78bfa' }}>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#34d399' }}>
                 {totalClasses}
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>Total Classes</div>
@@ -124,7 +141,7 @@ export default function ShareCard({
               padding: '16px',
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: '#34d399' }}>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#fb923c' }}>
                 {totalHours.toFixed(1)}h
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>Total Hours</div>
@@ -137,7 +154,7 @@ export default function ShareCard({
               background: 'rgba(255,255,255,0.07)',
               borderRadius: '16px',
               padding: '16px',
-              marginBottom: '20px',
+              marginBottom: '16px',
             }}>
               <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '12px' }}>
                 CLASS BREAKDOWN
@@ -163,6 +180,90 @@ export default function ShareCard({
             </div>
           )}
 
+          {/* Submission Stats */}
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+            <div style={{
+              flex: 1,
+              background: 'rgba(255,255,255,0.07)',
+              borderRadius: '16px',
+              padding: '16px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '28px', fontWeight: '800', color: '#a78bfa' }}>
+                {bestSessionSubs}
+              </div>
+              <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>Best Session Subs</div>
+            </div>
+            <div style={{
+              flex: 1,
+              background: 'rgba(255,255,255,0.07)',
+              borderRadius: '16px',
+              padding: '16px',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '28px', fontWeight: '800', color: '#f472b6' }}>
+                {bestWeekSubs}
+              </div>
+              <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>Best Week Subs</div>
+            </div>
+          </div>
+
+          {/* Recent Wins */}
+          {recentWins.length > 0 && (
+            <div style={{
+              background: 'rgba(250,204,21,0.08)',
+              borderRadius: '16px',
+              padding: '16px',
+              marginBottom: '20px',
+              border: '1px solid rgba(250,204,21,0.2)',
+            }}>
+              <div style={{ fontSize: '13px', color: '#facc15', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '12px' }}>
+                RECENT WINS 🏆
+              </div>
+              {recentWins.slice(0, 5).map((win, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: i === recentWins.slice(0, 5).length - 1 ? '0' : '8px',
+                }}>
+                  <span style={{ fontSize: '18px' }}>{win.split(' ')[0]}</span>
+                  <span style={{ fontSize: '14px', color: '#e2e8f0' }}>{win.split(' ').slice(1).join(' ')}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Achievements */}
+          {badges.length > 0 && (
+            <div style={{
+              background: 'rgba(255,255,255,0.07)',
+              borderRadius: '16px',
+              padding: '16px',
+              marginBottom: '20px',
+            }}>
+              <div style={{ fontSize: '13px', color: '#facc15', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '12px' }}>
+                ACHIEVEMENTS 🏅
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {badges.map((b, i) => (
+                  <div key={i} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: 'rgba(250,204,21,0.12)',
+                    border: '1px solid rgba(250,204,21,0.25)',
+                    borderRadius: '999px',
+                    padding: '5px 10px',
+                  }}>
+                    <span style={{ fontSize: '16px' }}>{b.icon}</span>
+                    <span style={{ fontSize: '12px', color: '#fde68a', fontWeight: '600' }}>{b.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Footer */}
           <div style={{
             textAlign: 'center',
@@ -175,16 +276,17 @@ export default function ShareCard({
           </div>
         </div>
       </div>
+      </div>
 
       {/* Share Button */}
       <button
         onClick={handleShare}
-        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 
-          text-white px-4 py-2 rounded-xl text-sm font-medium shadow-lg 
+        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-purple-600 
+          text-white px-4 py-3 rounded-2xl text-sm font-medium shadow-lg 
           hover:opacity-90 active:scale-95 transition-all duration-150"
       >
         <span>📤</span>
-        <span>Share Stats</span>
+        <span>Share My Stats</span>
       </button>
     </div>
   );

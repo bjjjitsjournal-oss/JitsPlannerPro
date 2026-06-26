@@ -394,6 +394,7 @@ export default function Dashboard() {
                     .map((n: any) => n.content)
                 : []
             }
+            badges={earnedBadges.map(b => ({ icon: b.icon, title: b.title }))}
           />
         </div>
       )}
