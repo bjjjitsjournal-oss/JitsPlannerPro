@@ -11,8 +11,8 @@ android {
         applicationId "com.jitsjournal.app"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 171
-        versionName "1.0.171"
+        versionCode 172
+        versionName "1.0.172"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
