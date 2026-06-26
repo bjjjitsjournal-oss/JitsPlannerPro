@@ -386,6 +386,14 @@ export default function Dashboard() {
             belt={currentBelt?.belt}
             stripes={currentBelt?.stripes ?? 0}
             userName={user?.firstName}
+            recentWins={
+              Array.isArray(notesData)
+                ? notesData
+                    .filter((n: any) => n.title === 'Quick Win 🏆')
+                    .slice(0, 5)
+                    .map((n: any) => n.content)
+                : []
+            }
           />
         </div>
       )}
