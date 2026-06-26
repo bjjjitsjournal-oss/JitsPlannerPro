@@ -7,6 +7,9 @@ import StatsShareCard from '../components/StatsShareCard';
 import { type Belt } from '@shared/schema';
 import { useAuth } from '@/contexts/AuthContext';
 import { beltsQueries, classesQueries } from '@/lib/supabaseQueries';
+import QuickWin from '../components/QuickWin';
+import { BadgeGrid, BadgePopup, computeBadges } from '../components/AchievementBadge';
+import { useQuery as useNotesQuery } from '@tanstack/react-query';
 
 // BJJ Quotes Component
 const BJJQuoteBanner = () => {
@@ -61,6 +64,11 @@ export default function Dashboard() {
     enabled: !!user?.id,
     staleTime: 60000, // Cache for 1 minute
   });
+
+  const { data: notesData = [] } = useNotesQuery({
+    queryKey: ['/api/notes'],
+    staleTime: 60000,
+  });
   
 
 
@@ -86,6 +94,36 @@ export default function Dashboard() {
     : 0;
 
   const totalClasses = Array.isArray(classes) ? classes.length : 0;
+
+  const totalBelts = Array.isArray((currentBelt as any)) 
+    ? (currentBelt as any).length 
+    : currentBelt ? 1 : 0;
+
+  const badges = computeBadges(
+    totalClasses,
+    Array.isArray(notesData) && notesData.length > 0,
+    false,
+    trainingDaysThisWeek,
+    totalBelts > 0,
+  );
+
+  const earnedBadges = badges.filter(b => b.earned);
+  const [lastSeenBadgeIds, setLastSeenBadgeIds] = React.useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('seenBadgeIds') || '[]');
+    } catch { return []; }
+  });
+  const [popupBadge, setPopupBadge] = React.useState<typeof badges[0] | null>(null);
+
+  React.useEffect(() => {
+    const newBadge = earnedBadges.find(b => !lastSeenBadgeIds.includes(b.id));
+    if (newBadge && !popupBadge) {
+      setPopupBadge(newBadge);
+      const updated = [...lastSeenBadgeIds, newBadge.id];
+      setLastSeenBadgeIds(updated);
+      localStorage.setItem('seenBadgeIds', JSON.stringify(updated));
+    }
+  }, [earnedBadges.length]);
   
   const totalMinutes = Array.isArray(classes) ? classes.reduce((total: number, cls: any) => {
     return total + (cls.duration || 0);
@@ -169,6 +207,13 @@ export default function Dashboard() {
   };
 
   return (
+    <>
+      {popupBadge && (
+        <BadgePopup
+          badge={popupBadge}
+          onClose={() => setPopupBadge(null)}
+        />
+      )}
     <div className="p-6 max-w-md mx-auto min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Profile Dropdown */}
       <div className="flex justify-end mb-4">
@@ -208,6 +253,9 @@ export default function Dashboard() {
       )}
 
       {/* Quick Actions */}
+      <div className="mb-6">
+        <QuickWin />
+      </div>
       <div className="mb-8">
         <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           Quick Actions ⚡
@@ -314,6 +362,13 @@ export default function Dashboard() {
         </div>
       )}
 
+      <div className="mb-8">
+        <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          Achievements 🏅
+        </h3>
+        <BadgeGrid badges={badges} />
+      </div>
+
       {/* Recent Activity */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Recent Activity</h3>
@@ -343,5 +398,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
