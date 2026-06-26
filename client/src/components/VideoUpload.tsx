@@ -72,30 +72,55 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
       console.log('  - fileSize:', file.size);
       
       // Upload to backend (which will use R2)
-      setUploadProgress(30);
       const uploadUrl = `${API_BASE_URL}/api/notes/${noteId}/upload-video`;
       console.log('🎥 Starting video upload to:', uploadUrl);
       console.log('📦 File size:', file.size, 'bytes');
       
-      const response = await fetch(uploadUrl, {
-        method: 'POST',
-        body: formData,
-      }).catch((fetchError) => {
-        console.error('❌ Fetch error:', fetchError);
-        throw new Error(`Network error: ${fetchError.message}`);
+      const result = await new Promise<any>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        // Real upload progress tracking
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 70) + 20;
+            setUploadProgress(Math.min(percent, 90));
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              setUploadProgress(100);
+              resolve(data);
+            } catch {
+              reject(new Error('Invalid server response'));
+            }
+          } else {
+            try {
+              const error = JSON.parse(xhr.responseText);
+              reject(new Error(error.message || 'Upload failed'));
+            } catch {
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error during upload. Check your connection and try again.'));
+        });
+
+        xhr.addEventListener('timeout', () => {
+          reject(new Error('Upload timed out. Try a shorter video or check your connection.'));
+        });
+
+        // 10 minute timeout for large videos
+        xhr.timeout = 10 * 60 * 1000;
+
+        xhr.open('POST', uploadUrl);
+        xhr.send(formData);
       });
-      
-      console.log('📡 Response status:', response.status);
-      
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('❌ Server error:', error);
-        throw new Error(error.message || 'Upload failed');
-      }
-      
-      setUploadProgress(80);
-      const result = await response.json();
-      setUploadProgress(100);
+
       return result;
     },
     onSuccess: () => {
@@ -325,9 +350,9 @@ export default function VideoUpload({ noteId, existingVideo, onVideoUploaded }: 
           <div className="text-center">
             <Video className="w-8 h-8 text-blue-600 mx-auto mb-3 animate-pulse" />
             <p className="text-blue-800 font-medium mb-2">
-              {uploadProgress < 50 ? "Reading video file..." : 
-               uploadProgress < 60 ? "Generating thumbnail..." : 
-               uploadProgress < 100 ? "Uploading to server..." : "Finalizing..."}
+              {uploadProgress < 20 ? "Preparing video..." : 
+               uploadProgress < 90 ? `Uploading... ${uploadProgress}%` : 
+               uploadProgress < 100 ? "Finalizing upload..." : "Done!"}
             </p>
             <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
               <div 
