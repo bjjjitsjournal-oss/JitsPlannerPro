@@ -269,75 +269,116 @@ export default function GamePlans() {
   };
 
   const renderMoveTree = (moves: GamePlanMove[], depth: number = 0) => {
-    return moves.map(move => (
-      <div key={move.id} className={`${depth > 0 ? 'ml-6 border-l-2 border-blue-200 dark:border-blue-800' : ''}`}>
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3 shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                {move.children && move.children.length > 0 && (
-                  <button
-                    onClick={() => toggleExpand(move.id)}
-                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                    data-testid={`button-toggle-${move.id}`}
-                  >
-                    {expandedMoves.has(move.id) ? (
-                      <ChevronDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    )}
-                  </button>
-                )}
-                <h3 className="font-semibold text-gray-900 dark:text-white">{move.moveName}</h3>
-              </div>
-              {move.description && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 ml-9">{move.description}</p>
-              )}
+    return moves.map((move, index) => (
+      <div key={move.id} className="relative">
+
+        {/* Connector line from parent */}
+        {depth > 0 && (
+          <div className="flex justify-center mb-1">
+            <div className="w-0.5 h-6 bg-gradient-to-b from-blue-500 to-blue-300 rounded-full" />
+          </div>
+        )}
+
+        {/* Move Card */}
+        <div className={`
+          rounded-2xl p-4 shadow-md mb-1
+          ${depth === 0
+            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0'
+            : depth === 1
+            ? 'bg-gray-800 text-white border border-blue-500/30'
+            : 'bg-gray-900 text-white border border-gray-700'}
+        `}>
+          {/* Header row */}
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              {/* Depth indicator */}
+              <span className={`
+                text-xs font-bold px-2 py-0.5 rounded-full shrink-0
+                ${depth === 0 ? 'bg-white/20 text-white' :
+                  depth === 1 ? 'bg-blue-500/30 text-blue-300' :
+                  'bg-gray-700 text-gray-400'}
+              `}>
+                {depth === 0 ? '🎯 Start' : depth === 1 ? '↳ Move' : '↳ Counter'}
+              </span>
+              <h3 className={`font-bold truncate ${depth === 0 ? 'text-lg' : 'text-base'}`}>
+                {move.moveName}
+              </h3>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Action buttons */}
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={() => handleAiSuggest(move)}
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-purple-500/30 transition-colors"
+                title="AI suggest counter"
+                data-testid={`button-ai-${move.id}`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+              </button>
               <button
                 onClick={() => {
                   setMoveData({ moveName: '', description: '', parentId: move.id });
                   setShowMoveForm(true);
                 }}
-                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-green-500/30 transition-colors"
                 title="Add counter move"
-                data-testid={`button-add-counter-${move.id}`}
+                data-testid={`button-add-child-${move.id}`}
               >
-                <Plus className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => handleAiSuggest(move)}
-                disabled={aiLoading}
-                className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors disabled:opacity-50"
-                title="AI suggest counter moves"
-                data-testid={`button-ai-suggest-${move.id}`}
-              >
-                <Sparkles className="w-4 h-4" />
+                <Plus className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleEdit(move)}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-yellow-500/30 transition-colors"
+                title="Edit"
                 data-testid={`button-edit-${move.id}`}
               >
-                <Edit2 className="w-4 h-4" />
+                <Edit2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => handleDelete(move.id)}
-                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-red-500/30 transition-colors"
+                title="Delete"
                 data-testid={`button-delete-${move.id}`}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
+
+          {/* Description */}
+          {move.description && (
+            <p className={`text-sm mt-1 leading-relaxed
+              ${depth === 0 ? 'text-blue-100' : 'text-gray-400'}
+            `}>
+              {move.description}
+            </p>
+          )}
+
+          {/* Children count hint */}
+          {move.children && move.children.length > 0 && (
+            <div className="mt-2 flex items-center gap-1">
+              <div className="h-px flex-1 bg-white/10" />
+              <span className="text-xs text-gray-500 px-2">
+                {move.children.length} {move.children.length === 1 ? 'follow-up' : 'follow-ups'} ↓
+              </span>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
+          )}
         </div>
 
-        {move.children && move.children.length > 0 && expandedMoves.has(move.id) && (
-          <div className="mt-2">
+        {/* Children */}
+        {move.children && move.children.length > 0 && (
+          <div className={`
+            ml-4 pl-4 border-l-2 border-blue-500/20
+            ${depth === 0 ? 'mt-0' : 'mt-0'}
+          `}>
             {renderMoveTree(move.children, depth + 1)}
           </div>
+        )}
+
+        {/* Spacing between siblings */}
+        {index < moves.length - 1 && depth > 0 && (
+          <div className="h-3" />
         )}
       </div>
     ));
@@ -518,7 +559,23 @@ export default function GamePlans() {
       {/* Move Tree */}
       {selectedPlan && moveTree.length > 0 ? (
         <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{selectedPlan}</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              🥋 {selectedPlan}
+            </h2>
+            <button
+              onClick={() => {
+                setMoveData({ moveName: '', description: '', parentId: null });
+                setShowMoveForm(true);
+              }}
+              className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 
+                rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+              data-testid="button-add-root-move"
+            >
+              <Plus className="w-4 h-4" />
+              Add Step
+            </button>
+          </div>
           {renderMoveTree(moveTree)}
         </div>
       ) : selectedPlan ? (
