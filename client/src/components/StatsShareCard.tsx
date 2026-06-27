@@ -51,10 +51,9 @@ export default function StatsShareCard({
     <div>
       {/* Hidden card that gets screenshotted */}
       <div
-        aria-hidden="true"
-        style={{ position: 'fixed', top: 0, left: 0, width: 0, height: 0, overflow: 'hidden', zIndex: -1, pointerEvents: 'none' }}
+        ref={cardRef}
+        style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
       >
-      <div ref={cardRef}>
         <div style={{
           width: '400px',
           background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
@@ -275,7 +274,6 @@ export default function StatsShareCard({
             Track your BJJ journey • jitsjournal.com
           </div>
         </div>
-      </div>
       </div>
 
       {/* Share Button */}

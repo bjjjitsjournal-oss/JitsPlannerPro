@@ -311,11 +311,6 @@ export default function GamePlans() {
                   <h3 className={`font-bold text-white mt-0.5 ${isRoot ? 'text-lg' : 'text-base'}`}>
                     {move.moveName}
                   </h3>
-                  {move.description && (
-                    <p className="text-sm text-gray-400 mt-1 leading-relaxed">
-                      {move.description}
-                    </p>
-                  )}
                 </div>
 
                 {/* Action buttons */}
@@ -357,6 +352,12 @@ export default function GamePlans() {
                   </button>
                 </div>
               </div>
+
+              {move.description && (
+                <p className="text-sm text-gray-400 mt-2 leading-relaxed">
+                  {move.description}
+                </p>
+              )}
 
               {hasChildren && (
                 <div className="mt-3 text-xs text-gray-500 font-medium">
